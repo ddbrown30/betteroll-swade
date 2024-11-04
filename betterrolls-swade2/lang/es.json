@@ -392,5 +392,6 @@
     "BRSW.PowerModifiersBoostLowerGreater": "☆ Impulso mayor/menor [+2PP]",
     "BRSW.PowerModifiersBoostLowerStrong": "Fuerte (Sólo inferior)[+1PP]",
     "BRSW.PowerModifiersBurrowPower": "Poder [+1PP]",
-    "BRSW.PowerModifiersBurstDamage": "Daño(+1d6)[+2PP]"
+    "BRSW.PowerModifiersBurstDamage": "Daño(+1d6)[+2PP]",
+    "BRSW.MarkDefeated": "Derrotado"
 }
