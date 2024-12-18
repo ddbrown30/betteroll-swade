@@ -1,3 +1,8 @@
+# Version 4.8 aka Rushed compatibility
+* Bugfix: Check that range is a string to avoid a crash (Dan Brown)
+* Bugfix: Fix range calculation for spells with new system calculation
+* Feature: Taking advantage of the above, warn when a spell is cast over range. 
+
 # Version 4.7 aka little small things.
 * Defaults: Change default ROF to 1 (only for new worlds)
 * Resist rolls: Use some heuristics to set the TN
