@@ -1806,7 +1806,7 @@ function get_template_from_item(item) {
         (item.system?.description
           ?.toLowerCase() // jshint ignore:line
           .includes(translated_key_text) ||
-          item.system?.range?.toLowerCase().includes(translated_key_text)) && // jshint ignore:line
+          (typeof item.system?.range == "string" &&  item.system?.range?.toLowerCase().includes(translated_key_text))) && // jshint ignore:line
         !templates_found.includes(template_key)
       ) {
         templates_found.push(template_key);
