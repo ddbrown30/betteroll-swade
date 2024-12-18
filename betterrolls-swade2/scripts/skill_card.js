@@ -1,5 +1,5 @@
 // Functions for cards representing skills
-/* globals TokenDocument, Token, game, CONST, canvas, console, Ray, succ, fromUuid, $ */
+/* globals TokenDocument, Token, game, CONST, canvas, console, Ray, succ, fromUuid, ui, $ */
 // noinspection JSCheckFunctionSignatures
 
 import {
@@ -250,6 +250,73 @@ export function is_shooting_skill(skill) {
 }
 
 /**
+ * Calculates the distance modifier for normal weapons
+ * @param item
+ * @param distance
+ * @param origin_token
+ * @param target_token
+ * @param skill
+ * @param tn
+ * @returns {number}
+ */
+function calculate_generic_distance_modifier(
+  item,
+  distance,
+  origin_token,
+  target_token,
+  skill,
+  tn,
+) {
+  const range = item.system.range.split("/");
+  if (origin_token.document.elevation !== target_token.document.elevation) {
+    let h_diff = Math.abs(
+      origin_token.document.elevation - target_token.document.elevation,
+    );
+    distance = Math.sqrt(Math.pow(h_diff, 2) + Math.pow(distance, 2));
+  }
+  let distance_penalty = 0;
+  let rangeEffects;
+  if (!is_shooting_skill(skill)) {
+    // Throwing skill them
+    rangeEffects = origin_token.actor.appliedEffects.find((e) =>
+      e.changes.find((ch) => ch.key === "brsw.thrown-range-modifier"),
+    );
+    if (rangeEffects) {
+      if (rangeEffects.disabled) {
+        rangeEffects = null;
+      } else {
+        rangeEffects = rangeEffects.changes.find(
+          (ch) => ch.key === "brsw.thrown-range-modifier",
+        ).value;
+      }
+    }
+  }
+  let extreme_range = 0;
+  for (let i = 0; i < 3 && i < range.length; i++) {
+    let range_int = parseInt(range[i]);
+    if (rangeEffects) {
+      range_int += rangeEffects * (i + 1);
+    }
+    if (range_int && range_int < distance) {
+      distance_penalty = i < 2 ? (i + 1) * 2 : 8;
+    }
+  }
+  if (extreme_range && distance > extreme_range * 4) {
+    tn.modifiers.push(
+      new TraitModifier(game.i18n.localize("BRSW.OverExtremeRange"), -999),
+    );
+  }
+  if (distance_penalty) {
+    tn.modifiers.push(
+      new TraitModifier(
+        game.i18n.localize("BRSW.Range") + " " + distance.toFixed(2),
+        -distance_penalty,
+      ),
+    );
+  }
+}
+
+/**
  * Calculates the distance between tokens
  * @param origin_token
  * @param target_token
@@ -279,54 +346,21 @@ export function calculate_distance(
   ) {
     use_parry_as_tn = item.type !== "power";
   } else if (item) {
-    const range = item.system.range.split("/");
     if (grid_unit % 5 === 0) {
       distance /= 5;
     }
-    if (origin_token.document.elevation !== target_token.document.elevation) {
-      let h_diff = Math.abs(
-        origin_token.document.elevation - target_token.document.elevation,
-      );
-      distance = Math.sqrt(Math.pow(h_diff, 2) + Math.pow(distance, 2));
-    }
-    let distance_penalty = 0;
-    let rangeEffects;
-    if (!is_shooting_skill(skill)) {
-      // Throwing skill them
-      rangeEffects = origin_token.actor.appliedEffects.find((e) =>
-        e.changes.find((ch) => ch.key === "brsw.thrown-range-modifier"),
-      );
-      if (rangeEffects) {
-        if (rangeEffects.disabled) {
-          rangeEffects = null;
-        } else {
-          rangeEffects = rangeEffects.changes.find(
-            (ch) => ch.key === "brsw.thrown-range-modifier",
-          ).value;
-        }
+    if (item.type === "power") {
+      if (distance > item.system.range) {
+        ui.notifications.error(game.i18n.localize("BRSW.SpellOverRange"));
       }
-    }
-    let extreme_range = 0;
-    for (let i = 0; i < 3 && i < range.length; i++) {
-      let range_int = parseInt(range[i]);
-      if (rangeEffects) {
-        range_int += rangeEffects * (i + 1);
-      }
-      if (range_int && range_int < distance) {
-        distance_penalty = i < 2 ? (i + 1) * 2 : 8;
-      }
-    }
-    if (extreme_range && distance > extreme_range * 4) {
-      tn.modifiers.push(
-        new TraitModifier(game.i18n.localize("BRSW.OverExtremeRange"), -999),
-      );
-    }
-    if (distance_penalty) {
-      tn.modifiers.push(
-        new TraitModifier(
-          game.i18n.localize("BRSW.Range") + " " + distance.toFixed(2),
-          -distance_penalty,
-        ),
+    } else {
+      calculate_generic_distance_modifier(
+        item,
+        distance,
+        origin_token,
+        target_token,
+        skill,
+        tn,
       );
     }
   }
