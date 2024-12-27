@@ -1806,7 +1806,8 @@ function get_template_from_item(item) {
         (item.system?.description
           ?.toLowerCase() // jshint ignore:line
           .includes(translated_key_text) ||
-          (typeof item.system?.range == "string" &&  item.system?.range?.toLowerCase().includes(translated_key_text))) && // jshint ignore:line
+          (typeof item.system?.range == "string" &&
+            item.system?.range?.toLowerCase().includes(translated_key_text))) && // jshint ignore:line
         !templates_found.includes(template_key)
       ) {
         templates_found.push(template_key);
@@ -1846,14 +1847,24 @@ async function execute_macro(action, br_card) {
     return null;
   }
   //The System uses an item actor if macroActor is set to 'self' or the first selected tokens actor if not.
-  const targetActor =
-    action.macroActor === "self" || game.canvas.tokens.controlled.length < 1
-      ? br_card.actor
-      : game.canvas.tokens.controlled[0].actor;
-  const targetToken =
-    action.macroActor === "self" || game.canvas.tokens.controlled.length < 1
-      ? br_card.token
-      : game.canvas.tokens.controlled[0];
+  let targetActor,
+    targetToken = null;
+  if (action.macroActor === "self") {
+    targetActor = br_card.actor;
+    targetToken = br_card.token;
+  } else if (action.macroActor === "target") {
+    targetToken = game.user.targets.first() || br_card.token;
+    targetActor = targetToken.actor;
+  } else {
+    targetToken =
+      game.canvas.tokens.controlled.length < 1
+        ? br_card.token
+        : game.canvas.tokens.controlled[0];
+    targetActor =
+      game.canvas.tokens.controlled.length < 1
+        ? br_card.actor
+        : game.canvas.tokens.controlled[0].actor;
+  }
   await macro.execute({
     actor: targetActor,
     token: targetToken,
