@@ -1,3 +1,6 @@
+# Version 4.9 aka New macros support
+* Added support for "target" marked macros.
+
 # Version 4.8 aka Rushed compatibility
 * Bugfix: Check that range is a string to avoid a crash (Dan Brown)
 * Bugfix: Fix range calculation for spells with new system calculation
