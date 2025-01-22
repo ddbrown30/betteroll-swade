@@ -168,9 +168,9 @@ async function apply_damage(token_or_token_id, wounds, soaked = 0) {
   incapacitated = final_wounds > token.actor.system.wounds.max;
   const downed_condition = token.actor.isWildcard ? "incapacitated" : "dead";
   if (incapacitated) {
-    await game.succ.addCondition(downed_condition, token);
+    await token.actor.toggleStatusEffect(downed_condition, { active: true });
   } else {
-    await game.succ.removeCondition(downed_condition, token);
+    await token.actor.toggleStatusEffect(downed_condition, { active: false });
   }
   if (incapacitated) {
     final_shaken = false;
@@ -180,9 +180,9 @@ async function apply_damage(token_or_token_id, wounds, soaked = 0) {
   // Finally, we update actor and mark defeated
   await token.actor.update({ "system.wounds.value": final_wounds });
   if (final_shaken) {
-    await game.succ.addCondition("shaken", token);
+    await token.actor.toggleStatusEffect("shaken", { active: true });
   } else {
-    await game.succ.removeCondition("shaken", token);
+    await token.actor.toggleStatusEffect("shaken", { active: false });
   }
   Hooks.call(
     "BRSW-AfterApplyDamage",
@@ -209,11 +209,9 @@ async function undo_damage(message) {
     // Remove incapacitation and shaken
     let token_object = br_card.token.document;
     if (render_data.undo_values.shaken) {
-      // noinspection JSCheckFunctionSignatures
-      await game.succ.addCondition("shaken", token_object);
+    await actor.toggleStatusEffect("shaken", {active: true});
     } else {
-      // noinspection JSCheckFunctionSignatures
-      await game.succ.removeCondition("shaken", token_object);
+      await actor.toggleStatusEffect("shaken", {active: true});
     }
     let inc_effects = [...token_object.actor.allApplicableEffects()]
       .filter((e) => {
@@ -259,9 +257,9 @@ export function activate_damage_card_listeners(message, html) {
     });
   });
   html.find(".brsw-mark-defeated").click(async () => {
-    await game.succ.removeCondition("incapacitated", br_card.token);
-    await game.succ.removeCondition("bleeding-out", br_card.token);
-    await game.succ.addCondition("dead", br_card.token);
+    await br_card.actor.toggleStatusEffect("incapacitated", {active: false});
+    await br_card.actor.toggleStatusEffect("bleeding-out", {active: false});
+    await br_card.actor.toggleStatusEffect("dead", {active: true});
   });
   html.find(".brsw-injury-button").click(() => {
     // noinspection JSIgnoredPromiseFromCall

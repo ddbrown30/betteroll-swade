@@ -170,19 +170,22 @@ async function roll_incapacitation(br_card, spend_benny) {
       "BRSW.Fumble",
     )}</p><p>${br_card.token.name} ${game.i18n.localize("BRSW.IsDead")}</p>`;
     br_card.render_data.show_roll_injury = false; // For what...
-    await game.succ.removeCondition("incapacitated", br_card.token);
-    await game.succ.addCondition("dead", br_card.token);
+    await br_card.actor.toggleStatusEffect("incapacitated", { active: false });
+    await br_card.actor.toggleStatusEffect("dead", { active: true });
   } else if (result < 4) {
     br_card.render_data.text_after = game.i18n.localize(
       "BRSW.BleedingOutResult",
     );
     br_card.render_data.injury_type = "permanent";
     if (game.succ.hasCondition("incapacitated", br_card.token)) {
-      await game.succ.removeCondition("incapacitated", br_card.token); //remove Inc as overlay
-      await game.succ.addCondition("incapacitated", br_card.token, {
-        forceOverlay: false,
-      }); //add it as regular (small) icon
-    }
+      await br_card.actor.toggleStatusEffect("incapacitated", {
+        active: false,
+      });
+      await br_card.actor.toggleStatusEffect("incapacitated", {
+        active: true,
+        overlay: false,
+      });
+    } //add it as regular (small) icon
     // noinspection ES6MissingAwait
     const ignoreBleedOut =
       game.settings.get("swade", "heroesNeverDie") ||
@@ -192,8 +195,8 @@ async function roll_incapacitation(br_card, spend_benny) {
         .addCondition("bleeding-out", br_card.token, { forceOverlay: true })
         .catch(() => {
           console.error("Error while applying bleeding out");
-        }); //make bleeding out overlay
-    }
+        });
+    } //make bleeding out overlay
   } else if (result < 8) {
     br_card.render_data.text_after = game.i18n.localize("BRSW.TempInjury");
     br_card.render_data.injury_type = "temporal-wounds";
@@ -254,14 +257,20 @@ export async function create_injury_card(token_id, reason) {
     new_effect = { ...INJURY_ACTIVE_EFFECT[active_effect_index] };
     new_effect.name = game.i18n.localize(first_result);
     if (second_result) {
-      if (first_result == "BRSW.Guts") {
-        new_effect.name = game.i18n.localize(second_result) + " " + new_effect.name;
+      if (first_result === "BRSW.Guts") {
+        new_effect.name =
+          game.i18n.localize(second_result) + " " + new_effect.name;
       } else {
         new_effect.name = game.i18n.localize(second_result);
       }
     }
-    const injury_duration_name = (reason == "permanent" ? "BRSW.PermanentInjuryName" : reason == "temporal-wounds" ? "BRSW.TempInjuryName" : "BRSW.TempInjury24Name");
-    new_effect.name = new_effect.name + game.i18n.localize(injury_duration_name);
+    const injury_duration_name =
+      reason === "permanent"
+        ? "BRSW.PermanentInjuryName"
+        : reason === "temporal-wounds"
+          ? "BRSW.TempInjuryName"
+          : "BRSW.TempInjury24Name";
+    new_effect.name += game.i18n.localize(injury_duration_name);
     new_effect.icon = "/systems/swade/assets/icons/skills/medical-pack.svg";
     injury_effect = await actor.createEmbeddedDocuments("ActiveEffect", [
       new_effect,
