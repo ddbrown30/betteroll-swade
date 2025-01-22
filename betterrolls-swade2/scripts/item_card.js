@@ -1455,7 +1455,8 @@ export async function roll_dmg(
   }
   await update_message(br_card, render_data);
   // Run macros
-  await run_macros(macros, actor, item, br_card);
+  await run_macros(macros, actor, item, br_card);  
+  Hooks.call("BRSW-RollDamage", br_card, html);
 }
 
 /**
