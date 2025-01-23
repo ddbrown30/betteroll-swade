@@ -177,7 +177,7 @@ async function roll_incapacitation(br_card, spend_benny) {
       "BRSW.BleedingOutResult",
     );
     br_card.render_data.injury_type = "permanent";
-    if (game.succ.hasCondition("incapacitated", br_card.token)) {
+    if (br_card.actor.statuses.has("incapacitated")) {
       await br_card.actor.toggleStatusEffect("incapacitated", {
         active: false,
       });
