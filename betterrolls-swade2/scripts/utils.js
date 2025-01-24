@@ -1,7 +1,7 @@
 import * as BRSW2_CONFIG from "./brsw2-config.js";
 
 // Utility functions that can be used out of the module
-/* globals ChatMessage, game, Dialog, console, foundry, ClientSetting */
+/* globals ChatMessage, game, Dialog, console, foundry, ClientSetting, CONFIG */
 
 export function getWhisperData() {
   let rollMode, whisper, blind;
@@ -124,10 +124,10 @@ export function get_targeted_token() {
  */
 export async function set_or_update_condition(condition_id, actor) {
   // noinspection ES6RedundantAwait
-  let condition;
-  if (actor.statuses.has(condition_id)) {
-    condition = await game.succ.getConditionFrom(condition_id, actor);
-  } else {
+  let condition = actor.effects.find((ef) => {
+    return ef.statuses.has(condition_id);
+  });
+  if (!condition) {
     condition = await actor.toggleStatusEffect(condition_id, { active: true });
   }
   await condition.update({
