@@ -78,14 +78,6 @@
     }
   ],
   "relationships": {
-    "requires": [
-      {
-        "id": "succ",
-        "type": "module",
-        "manifest": "https://raw.githubusercontent.com/SalieriC/SUCC/main/succ/module.json",
-        "compatibility": {}
-      }
-    ],
     "conflicts": [
       {
         "id": "swade-tools",

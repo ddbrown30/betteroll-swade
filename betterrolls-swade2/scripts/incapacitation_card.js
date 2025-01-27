@@ -191,8 +191,7 @@ async function roll_incapacitation(br_card, spend_benny) {
       game.settings.get("swade", "heroesNeverDie") ||
       br_card.actor.getFlag("swade", "ignoreBleedOut");
     if (!ignoreBleedOut) {
-      game.succ
-        .addCondition("bleeding-out", br_card.token, { forceOverlay: true })
+      br_card.actor.toggleStatusEffect("bleeding-out", {active: true, overlay: true})
         .catch(() => {
           console.error("Error while applying bleeding out");
         });

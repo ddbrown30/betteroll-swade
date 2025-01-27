@@ -124,8 +124,8 @@ async function roll_unshaken(br_card, use_bennie) {
     br_card.render_data.text = game.i18n.format("BRSW.UnshakeBennie", {
       name: br_card.actor.name,
     });
-    game.succ
-      .removeCondition("shaken", br_card.actor)
+    br_card.actor
+      .toggleStatusEffect("shaken", { active: false })
       .catch(console.error("Error removing shaken") || false);
   } else {
     // Check for Edges & Abilities
@@ -157,8 +157,7 @@ async function roll_unshaken(br_card, use_bennie) {
           { name: br_card.actor.name },
         );
       }
-      game.succ
-        .removeCondition("shaken", br_card.actor)
+      br_card.actor.toggleStatusEffect("shaken", { active: false })
         .catch(console.error("Error removing shaken") || false);
     } else {
       br_card.render_data.text = game.i18n.format("BRSW.UnshakeFailure", {
@@ -288,8 +287,7 @@ async function roll_unstun(br_card) {
     br_card.render_data.text = game.i18n.format("BRSW.UnstunSuccessfulRoll", {
       name: br_card.actor.name,
     });
-    game.succ
-      .removeCondition("stunned", br_card.actor)
+    br_card.actor.toggleStatusEffect("stunned", { active: false })
       .catch(console.error("Error removing stunned") || false);
   } else {
     br_card.render_data.text = game.i18n.format("BRSW.UnstunFailure", {
