@@ -1,3 +1,8 @@
+# Version 4.10 aka It was a ride, thank you SUCC
+* Refactoring: SUCC is removed as a dependency. Everything should be compatible with it and compatibility with SUCC remains a goal. But it is not mandatory any more.
+* Hooks: Added a hook when rolling damage so other modules (specially animation ones). (Dan Brown)
+* Translations: Added initial Russian translations (Ras)
+
 # Version 4.9 aka New macros support
 * Added support for "target" marked macros.
 
