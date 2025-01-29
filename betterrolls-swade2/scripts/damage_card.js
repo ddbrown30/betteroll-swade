@@ -207,23 +207,10 @@ async function undo_damage(message) {
   await actor.update({ "system.wounds.value": render_data.undo_values.wounds });
   if (br_card.token) {
     // Remove incapacitation and shaken
-    let token_object = br_card.token.document;
-    if (render_data.undo_values.shaken) {
-    await actor.toggleStatusEffect("shaken", {active: true});
-    } else {
-      await actor.toggleStatusEffect("shaken", {active: true});
-    }
-    let inc_effects = [...token_object.actor.allApplicableEffects()]
-      .filter((e) => {
-        return e.flags?.succ?.conditionId === "incapacitated";
-      })
-      .map((effect) => {
-        return effect.id;
-      });
-    await token_object.actor.deleteEmbeddedDocuments(
-      "ActiveEffect",
-      inc_effects,
-    );
+    await actor.toggleStatusEffect("shaken", {
+      active: render_data.undo_values.shaken,
+    });
+    await actor.toggleStatusEffect("incapacitated", { active: false });
   }
   await message.delete();
 }
@@ -257,9 +244,9 @@ export function activate_damage_card_listeners(message, html) {
     });
   });
   html.find(".brsw-mark-defeated").click(async () => {
-    await br_card.actor.toggleStatusEffect("incapacitated", {active: false});
-    await br_card.actor.toggleStatusEffect("bleeding-out", {active: false});
-    await br_card.actor.toggleStatusEffect("dead", {active: true});
+    await br_card.actor.toggleStatusEffect("incapacitated", { active: false });
+    await br_card.actor.toggleStatusEffect("bleeding-out", { active: false });
+    await br_card.actor.toggleStatusEffect("dead", { active: true });
   });
   html.find(".brsw-injury-button").click(() => {
     // noinspection JSIgnoredPromiseFromCall
