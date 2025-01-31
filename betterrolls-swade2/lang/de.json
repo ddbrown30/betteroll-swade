@@ -452,7 +452,7 @@
     "BRSW.PowerModifiersBlindAreaEffect3LBTStream": "Flächeneffekt (GFS) [+3MP]",
     "BRSW.PowerModifiersBlindStrong": "Stark (Kon-2) [+1MP]",
     "BRSW.PowerModifiersBoltDisintegrate": "☆ Zerfall [+2MP]",
-    "BRSW.PowerModifiersBoltGreaterBolt": "☆ Großes Geschoss (+4W6) [+4MP]",
+    "BRSW.PowerModifiersBoltGreaterBolt": "☆ Größeres Geschoss (+4W6) [+4MP]",
     "BRSW.PowerModifiersBurrowPower": "Macht [+1MP]",
     "BRSW.PowerModifiersBurst": "Machtmodifikatoren - Strahl",
     "BRSW.PowerModifiersBurstGreaterBurst": "☆ Großer Strahl (+4W6) [+4MP]",
@@ -499,5 +499,8 @@
     "BRSW.Shots": "Schüsse",
     "BRSW.NoActionsSelected": "Keine Aktionen ausgewählt",
     "BRSW.Yes": "Ja",
-    "BRSW.No": "Nein"
+    "BRSW.No": "Nein",
+    "BRSW.VehicleOperationSkillNotSetError": "Du musst für dieses Fahrzeug eine Manöverfertigkeit einstellen.",
+    "BRSW.VehicleCharacterSkillMissingError": "Der Operator-Charakter hat weder die relevante Fertigkeit noch die Ungeübter Versuch-Fertigkeit.",
+    "BRSW.SpellOverRange": "Wirken des Spruches über maximaler Reichweite"
 }
