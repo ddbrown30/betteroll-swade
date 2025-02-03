@@ -51,7 +51,11 @@
             </span>
         {{/if}}
     </div>
+{{/if}}
+{{# if (or damage skill) }}
     {{>"modules/betterrolls-swade2/templates/actions_partial.html"}}
+{{/if}}
+{{# if skill }}
     <div class="brsw-button-row">
         {{# unless trait_roll.is_rolled}}
             <button class="brsw-roll-button brsw-form twbr-py-0.5 twbr-px-5 twbr-mr-2 twbr-mb-2
