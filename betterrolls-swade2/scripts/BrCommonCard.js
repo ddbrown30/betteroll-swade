@@ -697,7 +697,6 @@ export class BrCommonCard {
    */
   create_basic_chat_data() {
     let whisper_data = getWhisperData();
-    // noinspection JSUnresolvedVariable
     let chatData = {
       user: this.actor._idx,
       content: "<p>Default content, likely an error in Better Rolls</p>",
@@ -714,7 +713,6 @@ export class BrCommonCard {
     }
     chatData.roll = new Roll("0").roll();
     chatData.rollMode = whisper_data.rollMode;
-    // noinspection JSValidateTypes
     return chatData;
   }
 }
