@@ -1,0 +1,16 @@
+dictionaries = []
+words = [
+    "betterrolls",
+    "brsw",
+    "globals",
+    "popout",
+    "popouts",
+    "rerolls",
+    "swade",
+    "unshake",
+    "unstun",
+    "vehicle_actor",
+    "vehicle_actor_id",
+]
+flag_words = []
+ignore_paths = []
