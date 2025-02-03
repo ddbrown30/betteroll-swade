@@ -660,7 +660,6 @@ function check_skill_in_actor(actor, possible_skills) {
       skill_found = skill;
     }
   });
-  // noinspection JSUnusedAssignment
   return skill_found;
 }
 
