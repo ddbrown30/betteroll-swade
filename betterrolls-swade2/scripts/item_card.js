@@ -359,9 +359,8 @@ function preview_template(ev, br_card) {
     { parent: canvas.scene },
   );
   // noinspection JSPotentiallyInvalidConstructorUsage
-  let template = new CONFIG.MeasuredTemplate.objectClass(template_base);
-  Hooks.call("BRSW-BeforePreviewingTemplate", template, br_card, ev);
-  template.drawPreview(ev);
+  CONFIG.MeasuredTemplate.objectClass.fromPreset(type);
+  Hooks.call("BRSW-BeforePreviewingTemplate", CONFIG.SWADE.activeMeasuredTemplatePreview, br_card, ev);
 }
 
 /**
