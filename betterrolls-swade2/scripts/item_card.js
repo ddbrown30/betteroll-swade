@@ -337,8 +337,9 @@ function preview_template(ev, br_card) {
     y: 0,
     fillColor: game.user.color,
   };
-  const type = ev.currentTarget.dataset.size;
+  let type = ev.currentTarget.dataset.size;
   if (type === "cone") {
+    type = "swcone";
     templateData.t = "cone";
     templateData.distance = 9;
   } else if (type === "stream") {
@@ -353,12 +354,6 @@ function preview_template(ev, br_card) {
   if (canvas.grid.distance % 5 === 0) {
     templateData.distance *= 5;
   }
-  // noinspection JSPotentiallyInvalidConstructorUsage
-  const template_base = new CONFIG.MeasuredTemplate.documentClass(
-    templateData,
-    { parent: canvas.scene },
-  );
-  // noinspection JSPotentiallyInvalidConstructorUsage
   CONFIG.MeasuredTemplate.objectClass.fromPreset(type);
   Hooks.call("BRSW-BeforePreviewingTemplate", CONFIG.SWADE.activeMeasuredTemplatePreview, br_card, ev);
 }
