@@ -1786,7 +1786,7 @@ function get_template_from_item(item) {
     small: "sbt",
     stream: "stream",
   };
-  if (["weapon", "power", "action"].indexOf(item.type) < 0) {
+  if (["weapon", "power", "action", "gear"].indexOf(item.type) < 0) {
     return;
   }
   let templates_found = [];
