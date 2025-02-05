@@ -515,5 +515,6 @@
   "BRSW.AutoCheckFumbles": "Check for Extra Critical Failures",
   "BRSW.AutoCheckFumblesHint": "When enabled, if an Extra rolls on 1 on their Trait roll, another d6 will automatically be rolled to check if it's a Critical Failure",
   "BRSW.Opposed": "opposed",
+  "BRSW.NoPP": "No Power Points",
   "I18N.MAINTAINERS": ["Javier Rivera"]
 }

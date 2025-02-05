@@ -276,7 +276,7 @@ export class BrCommonCard {
     return target_array;
   }
 
-  get bennie_avaliable() {
+  get bennie_available() {
     return are_bennies_available(this.actor);
   }
 
@@ -312,6 +312,7 @@ export class BrCommonCard {
     }
     this.populate_active_effect_actions();
     this.populate_resist_actions();
+    this.populate_no_power_points_actions();
     for (const group in this.action_groups) {
       this.action_groups[group].actions.sort((a, b) => {
         if (group === "Active effects" || group === "Item actions") {
@@ -452,6 +453,41 @@ export class BrCommonCard {
         });
       }
     }
+  }
+
+  /**
+   * Populates actions needed for the No Power Points optional rule
+   */
+  populate_no_power_points_actions() {
+    if (
+      !game.settings.get("swade", "noPowerPoints") ||
+      !this.item ||
+      !this.item.system.pp
+    ) {
+      return;
+    }
+    const action_array = [];
+    for (let penalty = -1; penalty > -7; penalty--) {
+      const new_action = new brAction(
+        `PP ${penalty}`,
+        {
+          name: `${game.i18n.localize("BRSW.NoPP")} ${penalty}`,
+          id: `no_pp_${-penalty}`,
+          skillMod: penalty,
+        },
+        "no_pp",
+      );
+      if (penalty === -Math.ceil(this.item.system.pp / 2)) {
+        new_action.selected = true;
+      }
+      action_array.push(new_action);
+    }
+    this.action_groups[game.i18n.localize("BRSW.NoPP")] = {
+      name: game.i18n.localize("BRSW.NoPP"),
+      actions: action_array,
+      id: broofa(),
+      single_choice: true,
+    };
   }
 
   get has_feet_buttons() {
@@ -621,7 +657,7 @@ export class BrCommonCard {
     data.actor = this.actor;
     data.vehicle_actor = this.vehicle_actor;
     data.item = this.item;
-    data.bennie_avaliable = this.bennie_avaliable;
+    data.bennie_avaliable = this.bennie_available;
     data.show_rerolls = this.show_rerolls;
     data.selected_actions = this.get_selected_actions();
     data.no_actions_message =
