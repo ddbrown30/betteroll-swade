@@ -1,7 +1,10 @@
 dictionaries = []
 words = [
+    "abl",
+    "att",
     "betterrolls",
     "brsw",
+    "dmg",
     "globals",
     "popout",
     "popouts",
