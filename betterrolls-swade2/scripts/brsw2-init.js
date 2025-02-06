@@ -64,7 +64,6 @@ import { BrCommonCard } from "./BrCommonCard.js";
 
 // Init Hook
 Hooks.on(`init`, () => {
-  // noinspection JSUndefinedPropertyAssignment
   game.brsw = {};
   game.brsw.cascade_count = 0;
   game.brsw.get_action_from_click = get_action_from_click;
@@ -86,7 +85,6 @@ Hooks.on(`ready`, () => {
     insertKeys: false,
   });
   // Create a base object to hook functions
-  // noinspection JSUndefinedPropertyAssignment
   attribute_card_hooks();
   skill_card_hooks();
   expose_item_functions();
@@ -210,12 +208,11 @@ Hooks.on("renderChatMessage", (message, html) => {
 // Hooks for the option form
 Hooks.on("renderSidebarTab", (_, html) => {
   const place = html.find("#chat-controls");
-  // noinspection JSIgnoredPromiseFromCall
   renderTemplate("modules/betterrolls-swade2/templates/options_form.html", {
     isGM: game.user.isGM,
   }).then((content) => {
     let jquery_content = $(content);
-    // Activate selectable control.
+    // Activate select-able control.
     jquery_content
       .find(".brsw-player-modifiers>.brws-selectable")
       .click(manage_selectable_click);
@@ -249,8 +246,7 @@ Hooks.on("dropCanvasData", (canvas, item) => {
             actor_id = item.parent.id;
           }
           const command = create_macro_command(item, actor_id, token_id);
-          // sourcery skip: no-eval
-          eval("(async () => {" + command + "})()"); // jshint ignore:line
+          eval("(async () => {" + command + "})()");
         });
       } else if (item.type === "target_click") {
         const selector = `[data-message-id="${item.message_id}"] #${item.tag_id}`;
@@ -324,7 +320,6 @@ Hooks.on("hotbarDrop", (bar, data, slot) => {
         command: command,
         scope: "global",
       }).then((macro) => {
-        // noinspection JSIgnoredPromiseFromCall
         game.user.assignHotbarMacro(macro, slot);
       });
     });
@@ -338,7 +333,6 @@ Hooks.on("hotbarDrop", (bar, data, slot) => {
       command: command,
       scope: "global",
     }).then((macro) => {
-      // noinspection JSIgnoredPromiseFromCall
       game.user.assignHotbarMacro(macro, slot);
     });
   }
@@ -656,7 +650,6 @@ function register_settings_version2() {
 
 function register_dsn_settings() {
   let theme_choice = {};
-  // noinspection JSUnresolvedVariable
   for (let theme in game.dice3d.exports.COLORSETS) {
     if (game.dice3d.exports.COLORSETS.hasOwnProperty(theme)) {
       theme_choice[theme] = theme;
