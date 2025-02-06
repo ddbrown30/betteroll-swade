@@ -120,9 +120,9 @@ Hooks.on(`ready`, () => {
     // Thanks to a comment by @Martin, adding support for
     // namespaced events too.
     this.each(function () {
-      let handlers = $._data(this, "events")[name.split(".")[0]];
+      const handlers = $._data(this, "events")[name.split(".")[0]];
       // take out the handler we just inserted from the end
-      let handler = handlers.pop();
+      const handler = handlers.pop();
       // move it at the beginning
       handlers.splice(0, 0, handler);
     });
@@ -170,7 +170,7 @@ function activateCardListeners(card, html, message) {
 }
 
 Hooks.on("renderChatMessage", (message, html) => {
-  let br_card = message.getFlag("betterrolls-swade2", "br_data");
+  const br_card = message.getFlag("betterrolls-swade2", "br_data");
   if (br_card) {
     // This chat card is one of ours
     const card = new BrCommonCard(message);
@@ -182,7 +182,7 @@ Hooks.on("renderChatMessage", (message, html) => {
     // Hide master only sections
     if (!game.user.isGM) {
       html.find(".brsw-master-only").remove();
-    }    
+    }
     // Hide save macro button from non-owner, non-trusted players
     if (!message.isOwner && !game.user.isTrusted) {
       html.find(".brsw-owner-trusted-only").remove();
@@ -193,7 +193,7 @@ Hooks.on("renderChatMessage", (message, html) => {
     }
     // Scroll the chat to the bottom if this is the last message
     if (game.messages.contents[game.messages.contents.length - 1] === message) {
-      let chat_bar = $("#chat-log");
+      const chat_bar = $("#chat-log");
       if (
         chat_bar.length &&
         chat_bar[0].scrollHeight - chat_bar.height() * 2 < chat_bar[0].scrollTop
@@ -211,7 +211,7 @@ Hooks.on("renderSidebarTab", (_, html) => {
   renderTemplate("modules/betterrolls-swade2/templates/options_form.html", {
     isGM: game.user.isGM,
   }).then((content) => {
-    let jquery_content = $(content);
+    const jquery_content = $(content);
     // Activate select-able control.
     jquery_content
       .find(".brsw-player-modifiers>.brws-selectable")
@@ -227,7 +227,7 @@ Hooks.on("renderSidebarTab", (_, html) => {
 // Addon by JuanV, make attack target possible by drag and drop
 Hooks.on("dropCanvasData", (canvas, item) => {
   if (item.type === "Item" || item.type === "target_click") {
-    let grid_size = canvas.scene.grid.size;
+    const grid_size = canvas.scene.grid.size;
     const number_marked = canvas.tokens.targetObjects({
       x: item.x - grid_size / 2,
       y: item.y - grid_size / 2,
@@ -276,7 +276,7 @@ function create_macro_command(data, actor_id, token_id) {
             }
             if (event) {
                 if (behaviour.includes('trait')) {
-                    if (${data.type === "skill"}) {                  
+                    if (${data.type === "skill"}) {
                         game.brsw.roll_skill(message, $(message.content), false)
                     } else {
                         game.brsw.roll_item(message, $(message.content), false, behaviour.includes('damage'))
@@ -336,6 +336,7 @@ Hooks.on("hotbarDrop", (bar, data, slot) => {
       game.user.assignHotbarMacro(macro, slot);
     });
   }
+  return true;
 });
 
 // Hooks for Dice So Nice
@@ -399,7 +400,7 @@ function register_world_settings() {
     name: game.i18n.localize("BRSW.No_Action_Message"),
     hint: game.i18n.localize("BRSW.No_Action_MessageHint"),
     default: game.i18n.localize("BRSW.NoActionsSelected"),
-    type: String
+    type: String,
   });
   SettingsUtils.registerBR2WorldSetting("result-card", {
     name: game.i18n.localize("BRSW.See_result_card"),
@@ -649,13 +650,13 @@ function register_settings_version2() {
 // Settings related to Dice So Nice.
 
 function register_dsn_settings() {
-  let theme_choice = {};
-  for (let theme in game.dice3d.exports.COLORSETS) {
+  const theme_choice = {};
+  for (const theme in game.dice3d.exports.COLORSETS) {
     if (game.dice3d.exports.COLORSETS.hasOwnProperty(theme)) {
       theme_choice[theme] = theme;
     }
   }
-  let damage_theme_choice = Object.assign({}, theme_choice);
+  const damage_theme_choice = Object.assign({}, theme_choice);
   damage_theme_choice.None = "None";
   SettingsUtils.registerBR2UserSetting("damageDieTheme", {
     name: game.i18n.localize("BRSW.DamageDiceTheme"),
