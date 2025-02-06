@@ -310,13 +310,14 @@ export function activate_item_listeners(app, html) {
       " .gear-card .card-header>.item-name, .damage-roll, .item-name>h4," +
       " .power-header>.item-name, .card-button, .item-control.item-show," +
       " .power button.item-show, .weapon button.item-show, .edge-hindrance>.item-control" +
-      " .item-control.item-edit, .item-control.item-show, .item.edge-hindrance>.item-show",
+      " .item-control.item-edit, .item-control.item-show, .item.edge-hindrance>.item-show," +
+      " .item>.item-show",
   );
   item_images.bindFirst("click", async (ev) => {
     await item_click_listener(ev, target);
   });
   let item_li = html.find(
-    ".gear-card.item, .item.flexrow, .power.item, .weapon.item",
+    ".gear-card.item, .item.flexrow, .power.item, .weapon.item, .item>.item-show",
   );
   item_li.attr("draggable", "true");
   item_li.off("dragstart");
@@ -355,7 +356,12 @@ function preview_template(ev, br_card) {
     templateData.distance *= 5;
   }
   CONFIG.MeasuredTemplate.objectClass.fromPreset(type);
-  Hooks.call("BRSW-BeforePreviewingTemplate", CONFIG.SWADE.activeMeasuredTemplatePreview, br_card, ev);
+  Hooks.call(
+    "BRSW-BeforePreviewingTemplate",
+    CONFIG.SWADE.activeMeasuredTemplatePreview,
+    br_card,
+    ev,
+  );
 }
 
 /**
@@ -1448,7 +1454,7 @@ export async function roll_dmg(
   }
   await update_message(br_card, render_data);
   // Run macros
-  await run_macros(macros, actor, item, br_card);  
+  await run_macros(macros, actor, item, br_card);
   Hooks.call("BRSW-RollDamage", br_card, html);
 }
 
@@ -1697,7 +1703,7 @@ async function manual_pp(actor, item) {
   const amount_pp = game.i18n.localize("BRSW.AmountPP");
   new Dialog({
     title: game.i18n.localize("BRSW.PPManagement"),
-    content: `<form> <div class="form-group"> 
+    content: `<form> <div class="form-group">
             <label for="num">${amount_pp}: </label>
              <input id="brsw2-num" name="num" type="number" min="0" value="5">
               </div> </form><script>$("#brsw2-num").focus()</script>`,
