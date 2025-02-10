@@ -228,11 +228,12 @@ Hooks.on("renderSidebarTab", (_, html) => {
 Hooks.on("dropCanvasData", (canvas, item) => {
   if (item.type === "Item" || item.type === "target_click") {
     const grid_size = canvas.scene.grid.size;
+    const square_size = grid_size * 0.3;
     const number_marked = canvas.tokens.targetObjects({
-      x: item.x - grid_size / 2,
-      y: item.y - grid_size / 2,
-      height: grid_size,
-      width: grid_size,
+      x: item.x - square_size / 2,
+      y: item.y - square_size / 2,
+      height: square_size,
+      width: square_size,
     });
     if (number_marked) {
       if (item.type === "Item") {
