@@ -76,7 +76,7 @@ export function expose_card_class() {
  * @param {string} template - Path to the template that renders this card.
  * @returns {BrCommonCard} The created common card.
  */
-export async function create_common_card(origin, render_data, template) {
+export function create_common_card(origin, render_data, template) {
   let actor;
   if (origin instanceof TokenDocument || origin instanceof Token) {
     actor = origin.actor;
@@ -93,9 +93,9 @@ export async function create_common_card(origin, render_data, template) {
   let br_message = new BrCommonCard(undefined);
   br_message.actor_id = actor.id;
   if (actor !== origin) {
-    br_message.token_id = origin.id;  
+    br_message.token_id = origin.id;
   } else if (actor.isToken) {
-    br_message.token_id = actor.token.id;  
+    br_message.token_id = actor.token.id;
   }
   br_message.generate_render_data(render_data, template);
   return br_message;
@@ -550,7 +550,9 @@ export async function detect_fumble(has_wild_die, num_fumble_results, dice) {
     if (dice.length == 1) {
       //The extra is only rolling a single trait die and it came up as 1
       //In this case, we need to roll an extra d6 to confirm if it's a fumble
-      if (!SettingsUtils.getWorldSetting(SETTING_KEYS.auto_check_extra_fumbles)) {
+      if (
+        !SettingsUtils.getWorldSetting(SETTING_KEYS.auto_check_extra_fumbles)
+      ) {
         //The option to auto-check for fumbles on extras is disabled, so we can return false
         return false;
       }
@@ -564,8 +566,8 @@ export async function detect_fumble(has_wild_die, num_fumble_results, dice) {
     }
   } else {
     //This roll does have a wild die so we need to check if it came up as a 1
-    const wild_die = dice.find(d => d.wild_die);
-    if (wild_die.raw_total != 1){
+    const wild_die = dice.find((d) => d.wild_die);
+    if (wild_die.raw_total != 1) {
       //It's not possible to fumble unless the wild die is a 1
       return false;
     }
@@ -922,7 +924,9 @@ function set_wild_die_theme(wildDie) {
     foundry.utils.setProperty(wildDie, "options.appearance.system", dieSystem);
   }
   // Get the dicePreset for the given die type
-const dicePreset = game.dice3d?.DiceFactory.systems.get(dieSystem)?.dice?.get("d" + wildDie.faces);
+  const dicePreset = game.dice3d?.DiceFactory.systems
+    .get(dieSystem)
+    ?.dice?.get("d" + wildDie.faces);
   if (!dicePreset) {
     return;
   }
@@ -1280,7 +1284,11 @@ export function process_common_actions(action, extra_data, macros, actor) {
     extra_data.rof = action.dice;
   }
   if (action.tnOverride) {
-    if (isNaN(action.tnOverride) && action.tnOverride.toLowerCase() === "parry" && game.user.targets) {
+    if (
+      isNaN(action.tnOverride) &&
+      action.tnOverride.toLowerCase() === "parry" &&
+      game.user.targets
+    ) {
       extra_data.tn = parseInt(
         game.user.targets.first().actor.system.stats.parry.value,
       );

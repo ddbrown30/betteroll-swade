@@ -72,7 +72,7 @@ async function create_skill_card(
     return item.id === skill_id;
   });
   const extra_name = skill.name + " " + trait_to_string(skill.system);
-  let br_message = await create_common_card(
+  const br_message = create_common_card(
     origin,
     {
       header: {
@@ -149,7 +149,7 @@ async function skill_click_listener(ev, target) {
     ev.currentTarget.parentElement.parentElement.dataset.itemId ||
     ev.currentTarget.parentElement.dataset.itemId;
   // Show card
-  let br_card = await create_skill_card(target, skill_id);
+  const br_card = await create_skill_card(target, skill_id);
   if (action.includes("dialog")) {
     game.brsw.dialog.show_card(br_card);
   } else if (action.includes("trait")) {
@@ -163,7 +163,7 @@ async function skill_click_listener(ev, target) {
  * @param html Html code
  */
 export function activate_skill_listeners(app, html) {
-  let target = app.token || app.object;
+  const target = app.token || app.object;
   const skill_labels = html.find(
     ".skill-label a, .skill.item>a, .skill-name, .skill-die",
   );
@@ -198,13 +198,13 @@ export function activate_skill_card_listeners(br_card, html) {
  * @param {boolean} expend_bennie True if we want to spend a bennie
  */
 export async function roll_skill(br_card, expend_bennie) {
-  let extra_data = { modifiers: [] };
-  let macros = [];
+  const extra_data = { modifiers: [] };
+  const macros = [];
   // Actions
-  for (let action of br_card.get_selected_actions()) {
+  for (const action of br_card.get_selected_actions()) {
     process_common_actions(action.code, extra_data, macros, br_card.actor);
   }
-  for (let action of get_enabled_gm_actions()) {
+  for (const action of get_enabled_gm_actions()) {
     process_common_actions(action, extra_data, macros, br_card.actor);
   }
   if (expend_bennie) {
@@ -226,7 +226,7 @@ export async function roll_skill(br_card, expend_bennie) {
  * @return {boolean}
  */
 export function is_skill_fighting(skill) {
-  let fighting_names = FIGHTING_SKILLS;
+  const fighting_names = FIGHTING_SKILLS;
   fighting_names.push(
     game.settings.get("swade", "parryBaseSkill").toLowerCase(),
   );
@@ -239,7 +239,7 @@ export function is_skill_fighting(skill) {
  * @return {boolean}
  */
 export function is_shooting_skill(skill) {
-  let shooting_names = SHOOTING_SKILLS;
+  const shooting_names = SHOOTING_SKILLS;
   shooting_names.push(game.i18n.localize("BRSW.ShootingSkill"));
   for (const name of shooting_names) {
     if (skill.name.toLowerCase().includes(name.toLowerCase())) {
@@ -269,7 +269,7 @@ function calculate_generic_distance_modifier(
 ) {
   const range = item.system.range.split("/");
   if (origin_token.document.elevation !== target_token.document.elevation) {
-    let h_diff = Math.abs(
+    const h_diff = Math.abs(
       origin_token.document.elevation - target_token.document.elevation,
     );
     distance = Math.sqrt(Math.pow(h_diff, 2) + Math.pow(distance, 2));
@@ -291,7 +291,7 @@ function calculate_generic_distance_modifier(
       }
     }
   }
-  let extreme_range = 0;
+  const extreme_range = 0;
   for (let i = 0; i < 3 && i < range.length; i++) {
     let range_int = parseInt(range[i]);
     if (rangeEffects) {
@@ -334,7 +334,7 @@ export function calculate_distance(
 ) {
   const grid_unit = canvas.grid.distance;
   let use_parry_as_tn = false;
-  let use_grid_calc = SettingsUtils.getWorldSetting("range_calc_grid");
+  const use_grid_calc = SettingsUtils.getWorldSetting("range_calc_grid");
   let distance = canvas.grid.measureDistance(
     origin_token.center,
     target_token.center,
@@ -376,9 +376,9 @@ async function get_vehicle_tn(tn, target_token) {
   tn.reason = `Veh - ${target_token.name}`;
   //lookup the vehicle operator and get their maneuveringSkill
   let operator_skill;
-  let target_operator_id = target_token.actor.system.driver.id;
-  let target_operator = await fromUuid(target_operator_id);
-  let operatorItems = target_operator.items;
+  const target_operator_id = target_token.actor.system.driver.id;
+  const target_operator = await fromUuid(target_operator_id);
+  const operatorItems = target_operator.items;
   const maneuveringSkill = target_token.actor.system.driver.skill;
   for (const value of operatorItems) {
     if (value.name === maneuveringSkill) {
@@ -405,7 +405,7 @@ export async function get_tn_from_token(
   origin_token,
   item,
 ) {
-  let tn = {
+  const tn = {
     reason: game.i18n.localize("BRSW.Default"),
     value: 4,
     modifiers: [],
@@ -446,7 +446,7 @@ export async function get_tn_from_token(
         1,
     ); // actor or default
     if (origin_scale_mod !== target_scale_mod) {
-      let scale_mod = target_scale_mod - origin_scale_mod;
+      const scale_mod = target_scale_mod - origin_scale_mod;
       tn.modifiers.push(
         new TraitModifier(game.i18n.localize("BRSW.Scale"), scale_mod),
       );
@@ -462,7 +462,7 @@ export async function get_tn_from_token(
         });
         if (swat) {
           // The swat ability ignores up to 4 points of scale penalties
-          let swat_mod = scale_mod < -4 ? 4 : scale_mod * -1;
+          const swat_mod = scale_mod < -4 ? 4 : scale_mod * -1;
           tn.modifiers.push(
             new TraitModifier(game.i18n.localize("BRSW.Swat"), swat_mod),
           );
@@ -508,6 +508,7 @@ function sizeToScale(size) {
   } else if (size >= 12) {
     return 6;
   }
+  return 0; // Failsafe.
 }
 
 /**
@@ -516,7 +517,7 @@ function sizeToScale(size) {
  * @param {Token }target
  * @return {number} modifier
  * pg 101 swade core
- * - Each additional adjacent foe (who isn’t Stunned)
+ * - Each additional adjacent foe (who is not Stunned)
  * - adds +1 to all the attackers’ Fighting rolls, up to a maximum of +4.
  * - Each ally adjacent to the defender cancels out one point of Gang Up bonus from an attacker adjacent to both.
  */
@@ -541,14 +542,10 @@ function calculate_gangUp(attacker, target) {
     attacker.document.disposition === 1 ||
     attacker.document.disposition === -1
   ) {
-    let item_range = SettingsUtils.getWorldSetting("meleeDistance") + 1;
-    let allies_within_range_of_target;
-    let allies_with_formation_fighter;
-    let enemies_within_range_of_target;
-    let enemies_within_range_both_attacker_target;
+    const item_range = SettingsUtils.getWorldSetting("meleeDistance") + 1;
     // disposition -1 means NPC (hostile) is attacking PCs (friendly)
     // disposition 1 means PC (friendly) is attacking NPC (hostile)
-    allies_within_range_of_target = canvas.tokens.placeables.filter(
+    const allies_within_range_of_target = canvas.tokens.placeables.filter(
       (t) =>
         t.id !== attacker.id &&
         t.document.disposition === attacker.document.disposition &&
@@ -556,7 +553,7 @@ function calculate_gangUp(attacker, target) {
         withinRange(target, t, item_range) &&
         combatant_gives_gangup(t.combatant, t.actor),
     );
-    enemies_within_range_of_target = canvas.tokens.placeables.filter(
+    const enemies_within_range_of_target = canvas.tokens.placeables.filter(
       (t) =>
         t.id !== target.id &&
         t.document.disposition === attacker.document.disposition * -1 &&
@@ -564,7 +561,7 @@ function calculate_gangUp(attacker, target) {
         combatant_gives_gangup(t.combatant, t.actor),
     );
     //alliedWithinRangeOfTargetAndAttacker intersection with attacker and target
-    enemies_within_range_both_attacker_target =
+    const enemies_within_range_both_attacker_target =
       enemies_within_range_of_target.filter(
         (t) =>
           t.document.disposition === attacker.document.disposition * -1 &&
@@ -574,7 +571,7 @@ function calculate_gangUp(attacker, target) {
     const formation_fighter_name = game.i18n
       .localize("BRSW.EdgeName-FormationFighter")
       .toLowerCase();
-    allies_with_formation_fighter = allies_within_range_of_target.filter((t) =>
+    const allies_with_formation_fighter = allies_within_range_of_target.filter((t) =>
       // no need to check for all the things that allies_within_range_of_target
       // is already filtered for
       t.actor?.items.find((item) => {
@@ -603,11 +600,11 @@ function calculate_gangUp(attacker, target) {
     .toLowerCase();
   const block_name = game.i18n.localize("BRSW.EdgeName-Block").toLowerCase();
   let findBlock = true;
-  let blockEffects = target.actor.appliedEffects.filter((e) =>
+  const blockEffects = target.actor.appliedEffects.filter((e) =>
     e.name.toLowerCase().includes(block_name),
   );
-  for (let effect of blockEffects) {
-    for (let change of effect.changes) {
+  for (const effect of blockEffects) {
+    for (const change of effect.changes) {
       if (change.key === "brsw-ac.gangup-reduction") {
         findBlock = false;
       }
@@ -637,9 +634,9 @@ function calculate_gangUp(attacker, target) {
  */
 function gang_up_reduction(target) {
   let reduction = 0;
-  for (let effect of target.appliedEffects) {
+  for (const effect of target.appliedEffects) {
     if (!effect.disabled) {
-      for (let change of effect.changes) {
+      for (const change of effect.changes) {
         if (change.key === "brsw-ac.gangup-reduction") {
           reduction += parseInt(change.value) || 0;
         }
@@ -655,9 +652,9 @@ function gang_up_reduction(target) {
  */
 function gang_up_addition(attacker) {
   let addition = 0;
-  for (let effect of attacker.appliedEffects) {
+  for (const effect of attacker.appliedEffects) {
     if (!effect.disabled) {
-      for (let change of effect.changes) {
+      for (const change of effect.changes) {
         if (change.key === "brsw-ac.gangup-addition") {
           addition += parseInt(change.value) ? change.value : 0;
         }
