@@ -26,6 +26,7 @@ words = [
     "unstun",
     "vehicle_actor",
     "vehicle_actor_id",
+    "gangup",
 ]
 flag_words = []
 ignore_paths = []
