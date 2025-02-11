@@ -6,9 +6,11 @@ words = [
     "behaviour",
     "betterrolls",
     "brsw",
+    "bugfix",
     "dmg",
     "dsn",
     "fas",
+    "gangup",
     "globals",
     "hotbar",
     "modifers",
@@ -26,7 +28,7 @@ words = [
     "unstun",
     "vehicle_actor",
     "vehicle_actor_id",
-    "gangup",
+    "weblate",
 ]
 flag_words = []
 ignore_paths = []
