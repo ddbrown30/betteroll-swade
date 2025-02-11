@@ -1,3 +1,14 @@
+# Version 4.11 aka No power points is probably the interesting part
+* Cards: Changed the resist rolls label to make clear what that they are resist rolls
+* Translations: German translation updated in Weblate (Razortide)
+* Templates: Make impossible to duplicate templates when you press the button multiple times (Dan Brown)
+* Cards: Now all kind of cards that have a damage or a skill will show the action dialog (Dan Brown)
+* Templates: Allow gear items to use templates (Dan Brown)
+* Bugfix: Adapt cone template to changes in the system (Dan Brown)
+* Powers: Add support for no power points, now if this optional rule is activated the negative should be calculated automatically.
+* Bugfix: Make actions work in the community NPC sheet
+* Drag and drop: Make the area that is targeted when drag and dropping an attack smaller to make accidentally selecting multiple targets harder.
+
 # Version 4.10 aka It was a ride, thank you SUCC
 * Refactoring: SUCC is removed as a dependency. Everything should be compatible with it and compatibility with SUCC remains a goal. But it is not mandatory any more.
 * Hooks: Added a hook when rolling damage so other modules (specially animation ones). (Dan Brown)
@@ -9,7 +20,7 @@
 # Version 4.8 aka Rushed compatibility
 * Bugfix: Check that range is a string to avoid a crash (Dan Brown)
 * Bugfix: Fix range calculation for spells with new system calculation
-* Feature: Taking advantage of the above, warn when a spell is cast over range. 
+* Feature: Taking advantage of the above, warn when a spell is cast over range.
 
 # Version 4.7 aka little small things.
 * Defaults: Change default ROF to 1 (only for new worlds)
@@ -26,7 +37,7 @@
 * Bugfix: Better identifying the token associated with a card (can resolve some previously hard to debug problems) (Dan Brown)
 * Translations: Added base support for Russian translations.
 
-# Version 4.5 
+# Version 4.5
 * Actions: Added `actor_has_skill` selector (David-a-rivera)
 * Cards: Added BRCard parameter to BRSW-CardRendered hook (David-a-rivera)
 * Bugfix: Fix an error in tnOverride (David-a-rivera)
@@ -52,7 +63,7 @@
 # Version 4.1 aka v12 expected bug-fixing
 * Compatibility: Remove lots of warnings and old uses of data (should fix some bugs also).
 * Bug: Solve an icon misalignment in the vehicle sheet.
-* Bugfix: Make modifiers with dice value work again (there can be some places left where it doesn't). 
+* Bugfix: Make modifiers with dice value work again (there can be some places left where it doesn't).
 
 # Version 4.0 aka Welcome v12
 * Compatibility: v12 Compatible
@@ -122,7 +133,7 @@
 * Bugfix: PP remaining card should now correctly obey the BR2 settings.
 
 
-# Version 3.68 aka Popout 
+# Version 3.68 aka Popout
 Note, this version has only had been tested with Swade 3.2. Upgrade to 3.3 at your own risk.
 * Actions: Make item_description_includes look also in notes and category
 * Cards: Added a client setting to popup better rolls cards automatically (Ideas and things that work DDBrown, modification that give problems myself)
