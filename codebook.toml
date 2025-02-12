@@ -21,6 +21,7 @@ words = [
     "popouts",
     "preloaded",
     "rerolls",
+    "succ",
     "swade",
     "swd",
     "undead",
@@ -29,6 +30,19 @@ words = [
     "vehicle_actor",
     "vehicle_actor_id",
     "weblate",
+    "kämpfen",
+    "pelear",
+    "lutar",
+    "combattere",
+    "disparar",
+    "tir",
+    "atirar",
+    "sparare",
+    "athletik",
+    "atletismo",
+    "athletisme",
+    "athlétisme",
+    "atletica",
 ]
 flag_words = []
 ignore_paths = []
