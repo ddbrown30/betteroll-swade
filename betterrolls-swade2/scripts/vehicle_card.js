@@ -1,6 +1,5 @@
 // Functions for cards representing vehicles
 /* globals Token, game, ui, fromUuid, fromUuidSync */
-// noinspection JSCheckFunctionSignatures
 
 import { get_action_from_click } from "./cards_common.js";
 import { trait_from_string } from "./item_card.js";
@@ -37,7 +36,7 @@ async function vehicle_click_listener(ev, target) {
     return;
   }
 
-  let skill = trait_from_string(driver_actor, skill_id);
+  const skill = trait_from_string(driver_actor, skill_id);
   if (!skill) {
     ui.notifications.warn(
       game.i18n.localize("BRSW.VehicleCharacterSkillMissingError"),
@@ -46,7 +45,7 @@ async function vehicle_click_listener(ev, target) {
   }
 
   // Show card
-  let br_card = await game.brsw.create_skill_card(driver_actor, skill.id, {
+  const br_card = await game.brsw.create_skill_card(driver_actor, skill.id, {
     vehicle: target,
   });
   if (action.includes("dialog")) {
@@ -62,9 +61,13 @@ async function vehicle_click_listener(ev, target) {
  * @param html Html code
  */
 export function activate_vehicle_listeners(app, html) {
-  let target = app.token || app.object;
-  const skill_labels = html.find("button[id='maneuverCheck']");
-  skill_labels.bindFirst("click", async (ev) => {
+  const target = app.token || app.object;
+  // App V2 passes raw html, forcing it to jquery to avoid needing two functions
+  const html_jquery = $(html);
+  const maneuver_check_button =
+    html_jquery.find("button[id='maneuverCheck'], button[data-action='maneuverCheck']");
+  console.log(maneuver_check_button);
+  maneuver_check_button.bindFirst("click", async (ev) => {
     await vehicle_click_listener(ev, target);
   });
 }

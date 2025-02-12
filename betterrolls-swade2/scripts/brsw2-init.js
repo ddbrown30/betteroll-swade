@@ -355,8 +355,10 @@ Hooks.once("diceSoNiceReady", () => {
   });
 });
 
-Hooks.on("renderSwadeVehicleSheet", (app, html, _) => {
-  activate_vehicle_listeners(app, html);
+["renderSwadeVehicleSheet", "renderSwadeVehicleSheetV2"].forEach((name) => {
+  Hooks.on(name, (app, html, _) => {
+    activate_vehicle_listeners(app, html);
+  });
 });
 
 // Settings
