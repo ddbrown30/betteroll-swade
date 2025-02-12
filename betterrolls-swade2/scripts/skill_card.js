@@ -1,6 +1,5 @@
 // Functions for cards representing skills
 /* globals TokenDocument, Token, game, CONST, canvas, console, Ray, succ, fromUuid, ui, $ */
-// noinspection JSCheckFunctionSignatures
 
 import {
   BRSW_CONST,
@@ -18,7 +17,6 @@ import { SettingsUtils } from "./utils.js";
 import { BrCommonCard } from "./BrCommonCard.js";
 import { TraitModifier } from "./modifiers.js";
 
-// noinspection SpellCheckingInspection
 export const FIGHTING_SKILLS = [
   "fighting",
   "kämpfen",
@@ -437,40 +435,8 @@ export async function get_tn_from_token(
   }
   // Size modifiers
   if (origin_token && target_token) {
-    const origin_scale_mod = sizeToScale(
-      origin_token?.actor?.system?.stats?.size || 1,
-    );
-    const target_scale_mod = sizeToScale(
-      target_token?.actor?.system?.size || // Vehicles
-        target_token?.actor?.system?.stats?.size ||
-        1,
-    ); // actor or default
-    if (origin_scale_mod !== target_scale_mod) {
-      const scale_mod = target_scale_mod - origin_scale_mod;
-      tn.modifiers.push(
-        new TraitModifier(game.i18n.localize("BRSW.Scale"), scale_mod),
-      );
-      // If the scale mod is negative, check if the attacking actor has the swat ability
-      if (scale_mod < 0 && origin_token) {
-        const swat = origin_token.actor.items.find((item) => {
-          return (
-            item.type === "ability" &&
-            item.name
-              .toLowerCase()
-              .includes(game.i18n.localize("BRSW.Swat").toLowerCase())
-          );
-        });
-        if (swat) {
-          // The swat ability ignores up to 4 points of scale penalties
-          const swat_mod = scale_mod < -4 ? 4 : scale_mod * -1;
-          tn.modifiers.push(
-            new TraitModifier(game.i18n.localize("BRSW.Swat"), swat_mod),
-          );
-        }
-      }
-    }
+    getScaleModifier(origin_token, target_token, tn);
   }
-  // noinspection JSUnresolvedVariable
   if (
     target_token.actor.system.status.isVulnerable ||
     target_token.actor.system.status.isStunned
@@ -483,6 +449,45 @@ export async function get_tn_from_token(
     );
   }
   return tn;
+}
+
+/**
+ * Get the scale modifier
+ **/
+
+function getScaleModifier(origin_token, target_token, tn) {
+  const origin_scale_mod = sizeToScale(
+    origin_token?.actor?.system?.stats?.size || 1,
+  );
+  const target_scale_mod = sizeToScale(
+    target_token?.actor?.system?.size || // Vehicles
+      target_token?.actor?.system?.stats?.size ||
+      1,
+  ); // actor or default
+  if (origin_scale_mod !== target_scale_mod) {
+    const scale_mod = target_scale_mod - origin_scale_mod;
+    tn.modifiers.push(
+      new TraitModifier(game.i18n.localize("BRSW.Scale"), scale_mod),
+    );
+    // If the scale mod is negative, check if the attacking actor has the swat ability
+    if (scale_mod < 0 && origin_token) {
+      const swat = origin_token.actor.items.find((item) => {
+        return (
+          item.type === "ability" &&
+          item.name
+            .toLowerCase()
+            .includes(game.i18n.localize("BRSW.Swat").toLowerCase())
+        );
+      });
+      if (swat) {
+        // The swat ability ignores up to 4 points of scale penalties
+        const swat_mod = scale_mod < -4 ? 4 : scale_mod * -1;
+        tn.modifiers.push(
+          new TraitModifier(game.i18n.localize("BRSW.Swat"), swat_mod),
+        );
+      }
+    }
+  }
 }
 
 /**
@@ -571,12 +576,13 @@ function calculate_gangUp(attacker, target) {
     const formation_fighter_name = game.i18n
       .localize("BRSW.EdgeName-FormationFighter")
       .toLowerCase();
-    const allies_with_formation_fighter = allies_within_range_of_target.filter((t) =>
-      // no need to check for all the things that allies_within_range_of_target
-      // is already filtered for
-      t.actor?.items.find((item) => {
-        return item.name.toLowerCase().includes(formation_fighter_name);
-      }),
+    const allies_with_formation_fighter = allies_within_range_of_target.filter(
+      (t) =>
+        // no need to check for all the things that allies_within_range_of_target
+        // is already filtered for
+        t.actor?.items.find((item) => {
+          return item.name.toLowerCase().includes(formation_fighter_name);
+        }),
     );
     enemies =
       allies_within_range_of_target.length +
