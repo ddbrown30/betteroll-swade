@@ -66,7 +66,6 @@ export function activate_vehicle_listeners(app, html) {
   const html_jquery = $(html);
   const maneuver_check_button =
     html_jquery.find("button[id='maneuverCheck'], button[data-action='maneuverCheck']");
-  console.log(maneuver_check_button);
   maneuver_check_button.bindFirst("click", async (ev) => {
     await vehicle_click_listener(ev, target);
   });
