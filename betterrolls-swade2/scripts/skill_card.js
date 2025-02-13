@@ -330,6 +330,9 @@ export function calculate_distance(
   tn,
   skill,
 ) {
+  if (item.system.isVehicular && origin_token.actor.type !== "vehicle") {
+    return false;
+  }
   const grid_unit = canvas.grid.distance;
   let use_parry_as_tn = false;
   const use_grid_calc = SettingsUtils.getWorldSetting("range_calc_grid");
