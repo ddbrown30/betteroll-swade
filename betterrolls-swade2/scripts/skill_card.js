@@ -435,7 +435,9 @@ export async function get_tn_from_token(
   }
   // Size modifiers
   if (origin_token && target_token) {
-    getScaleModifier(origin_token, target_token, tn);
+    if (!(item.system.isVehicular && origin_token.actor.type !== "vehicle")) {
+      getScaleModifier(origin_token, target_token, tn);
+    }
   }
   if (
     target_token.actor.system.status.isVulnerable ||
