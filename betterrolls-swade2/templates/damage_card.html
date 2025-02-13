@@ -1,11 +1,11 @@
 {{>"modules/betterrolls-swade2/templates/common_card_header.html"}}
 <hr>
-<div class="twbr-flex twbr-justify-between">
+<div class="twbr:flex twbr:justify-between">
     <div>{{{ text }}}</div>
-    <button class="brsw-form brsw-row-button brsw-undo-damage twbr-inline twbr-mt-2 twbr-py-0.5
-            twbr-px-0.5 focus:twbr-outline-none twbr-bg-white twbr-rounded-lg twbr-border
-            twbr-border-solid focus:twbr-ring-4 focus:twbr-ring-gray-700 twbr-text-gray-800
-            twbr-border-gray-600 hover:twbr-text-white hover:twbr-bg-gray-700"
+    <button class="brsw-form brsw-row-button brsw-undo-damage twbr:inline twbr:mt-2 twbr:py-0.5
+            twbr:px-0.5 twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg twbr:border
+            twbr:border-solid twbr:focus:ring-4 twbr:focus:ring-gray-700 twbr:text-gray-800
+            twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700"
             title="{{ localize "BRSW.UndoDamage" }}">
         <i class="fas fa-undo"></i>
     </button>
@@ -17,10 +17,10 @@
     {{# if soak_possible }}
         <hr>
         <div class="brsw-button-row brsw-form">
-            <button class="brsw-soak-button twbr-py-0.5 twbr-px-5 focus:twbr-outline-none
-                    twbr-bg-white twbr-rounded-lg twbr-border twbr-border-solid focus:twbr-ring-4
-                    focus:twbr-ring-gray-700 twbr-text-gray-800 twbr-border-gray-600
-                    hover:twbr-text-white hover:twbr-bg-gray-700">
+            <button class="brsw-soak-button twbr:py-0.5 twbr:px-5 twbr:focus:outline-hidden
+                    twbr:bg-white twbr:rounded-lg twbr:border twbr:border-solid twbr:focus:ring-4
+                    twbr:focus:ring-gray-700 twbr:text-gray-800 twbr:border-gray-600
+                    twbr:hover:text-white twbr:hover:bg-gray-700">
                 <img src="{{{ benny_image }}}" class="brsw-button-image brws-soak-benny" alt="Cost bennie"> {{ localize 'BRSW.SoakRoll' }}
             </button>
         </div>
@@ -29,19 +29,19 @@
 {{# if show_incapacitation }}
     <hr>
     <div class="brsw-button-row brsw-form">
-        <button class="brsw-show-incapacitation twbr-py-0.5 twbr-px-5 focus:twbr-outline-none
-                twbr-bg-white twbr-rounded-lg twbr-border twbr-border-solid focus:twbr-ring-4
-                focus:twbr-ring-gray-700 twbr-text-gray-800 twbr-border-gray-600
-                hover:twbr-text-white hover:twbr-bg-gray-700">
+        <button class="brsw-show-incapacitation twbr:py-0.5 twbr:px-5 twbr:focus:outline-hidden
+                twbr:bg-white twbr:rounded-lg twbr:border twbr:border-solid twbr:focus:ring-4
+                twbr:focus:ring-gray-700 twbr:text-gray-800 twbr:border-gray-600
+                twbr:hover:text-white twbr:hover:bg-gray-700">
             {{ localize "BRSW.IncapacitationCard" }}
         </button>
     </div>
     <hr>
     <div class="brsw-button-row brsw-form">
-        <button class="brsw-mark-defeated twbr-py-0.5 twbr-px-5 focus:twbr-outline-none
-                twbr-bg-white twbr-rounded-lg twbr-border twbr-border-solid focus:twbr-ring-4
-                focus:twbr-ring-gray-700 twbr-text-gray-800 twbr-border-gray-600
-                hover:twbr-text-white hover:twbr-bg-gray-700">
+        <button class="brsw-mark-defeated twbr:py-0.5 twbr:px-5 twbr:focus:outline-hidden
+                twbr:bg-white twbr:rounded-lg twbr:border twbr:border-solid twbr:focus:ring-4
+                twbr:focus:ring-gray-700 twbr:text-gray-800 twbr:border-gray-600
+                twbr:hover:text-white twbr:hover:bg-gray-700">
             {{ localize "BRSW.MarkDefeated" }}
         </button>
     </div>

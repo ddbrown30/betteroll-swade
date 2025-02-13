@@ -4,7 +4,7 @@
 export function setup_dialog() {
   let dialog_element = document.createElement("dialog");
   dialog_element.setAttribute("id", "br-card-dialog");
-  dialog_element.classList.add("twbr-bg-gray-700");
+  dialog_element.classList.add("twbr:bg-gray-700");
   document.body.insertAdjacentElement("beforeend", dialog_element);
   game.brsw.dialog = new BrCardDialog();
 }
@@ -57,11 +57,11 @@ class BrCardDialog {
         "span",
       )) {
         if (element !== event.currentTarget) {
-          element.classList.remove("twbr-bg-red-700");
+          element.classList.remove("twbr:bg-red-700");
         }
       }
     }
-    event.currentTarget.classList.toggle("twbr-bg-red-700");
+    event.currentTarget.classList.toggle("twbr:bg-red-700");
   }
 
   close_card() {
@@ -73,7 +73,7 @@ class BrCardDialog {
   async save_actions() {
     const enabled_actions = [];
     for (let button of document.querySelectorAll(
-      ".brsw-action-button.twbr-bg-red-700",
+      ".brsw-action-button.twbr:bg-red-700",
     )) {
       enabled_actions.push(button.dataset.actionId);
     }

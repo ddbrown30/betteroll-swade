@@ -447,12 +447,12 @@ export function activate_item_card_listeners(br_card, html) {
     );
   });
   html.find(".brsw-ammo-toggle").click((ev) => {
-    ev.currentTarget.classList.toggle("twbr-bg-red-700");
-    ev.currentTarget.classList.toggle("twbr-bg-gray-500");
+    ev.currentTarget.classList.toggle("twbr:bg-red-700");
+    ev.currentTarget.classList.toggle("twbr:bg-gray-500");
   });
   html.find(".brsw-pp-toggle").click((ev) => {
-    ev.currentTarget.classList.toggle("twbr-bg-red-700");
-    ev.currentTarget.classList.toggle("twbr-bg-gray-500");
+    ev.currentTarget.classList.toggle("twbr:bg-red-700");
+    ev.currentTarget.classList.toggle("twbr:bg-gray-500");
   });
   html.find(".brsw-macro-button").click((ev) => {
     const action =
@@ -978,7 +978,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
     br_message.item.system.autoReload
   ) {
     const dis_ammo_selected = html
-      ? html.find(".twbr-bg-red-700.brsw-ammo-toggle").length
+      ? html.find(".twbr:bg-red-700.brsw-ammo-toggle").length
       : SettingsUtils.getWorldSetting("default-ammo-management");
     if (dis_ammo_selected || macros) {
       br_message.render_data.used_shots =
@@ -990,7 +990,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
   }
   // Power points management
   const pp_selected = html
-    ? html.find(".twbr-bg-red-700.brsw-pp-toggle").length
+    ? html.find(".twbr:bg-red-700.brsw-pp-toggle").length
     : SettingsUtils.getWorldSetting("default-pp-management");
   let previous_pp = br_message.trait_roll.old_rolls.length
     ? br_message.render_data.used_pp
