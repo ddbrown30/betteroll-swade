@@ -11,7 +11,7 @@ export const BACKGROUND_EDGES = [
         selector_type: "actor_has_edge",
         selector_value: "BRSW.EdgeName-Alertness",
       },
-      { selector_type: "skill", selector_value: "Notice" },
+      { selector_type: "skill", selector_value: "BRSW.SkillName-Notice" },
     ],
     defaultChecked: "on",
     group: "BRSW.Edges",
