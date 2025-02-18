@@ -1,3 +1,11 @@
+# Version 4.12 aka Maybe the vehicles improvements will convince someone to try this....
+* Frameworks: The main update is that Tailwind, the CSS framework that BR uses is updated to version 4. The best outcome is that everything works as before, but there is a clear risk of something visually breaking.
+* Refactor: Scale calculations have been broken into smaller functions to improve readability and maintainability. Again, from the user side the best outcome is that everything works as before.
+* Vehicle Sheet: Support the new vehicle sheet
+* Vehicles: Now the scale and distance modifiers of non-vehicle actors, firing vehicular weapons are ignored.
+* Bugfix: Fixed translation error that makes Alertness break on non english languages.
+
+
 # Version 4.11 aka No power points is probably the interesting part
 * Cards: Changed the resist rolls label to make clear what that they are resist rolls
 * Translations: German translation updated in Weblate (Razortide)
