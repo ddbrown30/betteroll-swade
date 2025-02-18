@@ -33,7 +33,7 @@ export class TraitModifier {
   }
 
   get extra_class() {
-    return this.value < 0 ? " twbr-underline" : "";
+    return this.value < 0 ? " twbr:underline" : "";
   }
 }
 

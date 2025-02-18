@@ -2,9 +2,9 @@
     <div class="brsw-roll-row">
         <span class="brsw-small-font">{{ localize 'BRSW.OldRoll' }}</span>
         {{# each trait_roll.old_rolls}}
-                <span class="brsw-old-roll twbr-bg-gray-500 twbr-border twbr-border-solid
-                        twbr-border-gray-700 twbr-rounded twbr-shadow hover:twbr-ring-2
-                        hover:twbr-ring-offset-1 hover:twbr-cursor-pointer" data-index="{{@index}}">{{# each dice }}
+                <span class="brsw-old-roll twbr:bg-gray-500 twbr:border twbr:border-solid
+                        twbr:border-gray-700 twbr:rounded twbr:shadow twbr:hover:ring-2
+                        twbr:hover:ring-offset-1 twbr:hover:cursor-pointer" data-index="{{@index}}">{{# each dice }}
                     <span class="brsw-small-dice-image {{this.extra_class}}">
                         {{ this.final_total }}
                     </span>
@@ -12,33 +12,33 @@
         {{/each}}
     </div>
 {{/if}}
-<div class="twbr-my-2 twbr-block twbr-p-1 twbr-bg-gray-500 twbr-border twbr-border-solid twbr-border-gray-700
-        twbr-rounded twbr-shadow hover:twbr-ring-2 hover:twbr-ring-offset-1 hover:twbr-cursor-pointer
-        twbr-leading-6 brsw-collapse-button" data-collapse="brsw-roll-detail">
-    <div class="twbr-flex twbr-justify-between twbr-align-middle">
+<div class="twbr:my-2 twbr:block twbr:p-1 twbr:bg-gray-500 twbr:border twbr:border-solid twbr:border-gray-700
+        twbr:rounded twbr:shadow twbr:hover:ring-2 twbr:hover:ring-offset-1 twbr:hover:cursor-pointer
+        twbr:leading-6 brsw-collapse-button" data-collapse="brsw-roll-detail">
+    <div class="twbr:flex twbr:justify-between twbr:align-middle">
         <span>
             {{#each trait_roll.current_roll.dice }}
-                <a class="twbr-mr-2">
-                    <span class="{{this.extra_class}} twbr-text-xl twbr-font-bold twbr-inline-block"  title="{{this.result_text}}">
+                <a class="twbr:mr-2">
+                    <span class="{{this.extra_class}} twbr:text-xl twbr:font-bold twbr:inline-block"  title="{{this.result_text}}">
                         {{ this.final_total }} <i class="{{ this.result_icon }}"></i>
                     </span>
                 </a>
             {{/each}}
         </span>
         {{# if show_rerolls }}<span>
-            <button class="brsw-row-button brsw-roll-button brsw-form twbr-py-0.5 twbr-px-1 twbr-font-medium
-                    focus:twbr-outline-none twbr-bg-white twbr-rounded-lg twbr-border twbr-border-solid
-                    focus:twbr-z-10 focus:twbr-ring-4 focus:twbr-ring-gray-700 twbr-text-gray-800
-                    twbr-border-gray-600 hover:twbr-text-white hover:twbr-bg-gray-700"
+            <button class="brsw-row-button brsw-roll-button brsw-form twbr:py-0.5 twbr:px-1 twbr:font-medium
+                    twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg twbr:border twbr:border-solid
+                    twbr:focus:z-10 twbr:focus:ring-4 twbr:focus:ring-gray-700 twbr:text-gray-800
+                    twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700"
                     title="{{ localize "BRSW.Free_reroll" }}">
                 <i class="fas fa-redo-alt"></i>
             </button>
             {{#if bennie_avaliable}}
                 <button class="brsw-trait-reroll brsw-row-button brsw-roll-button roll-bennie-button brsw-form
-                        twbr-py-0.5 twbr-px-1 twbr-font-medium focus:twbr-outline-none twbr-bg-white
-                        twbr-rounded-lg twbr-border twbr-border-solid focus:twbr-z-10 focus:twbr-ring-4
-                        focus:twbr-ring-gray-700 twbr-text-gray-800 twbr-border-gray-600
-                        hover:twbr-text-white hover:twbr-bg-gray-700"
+                        twbr:py-0.5 twbr:px-1 twbr:font-medium twbr:focus:outline-hidden twbr:bg-white
+                        twbr:rounded-lg twbr:border twbr:border-solid twbr:focus:z-10 twbr:focus:ring-4
+                        twbr:focus:ring-gray-700 twbr:text-gray-800 twbr:border-gray-600
+                        twbr:hover:text-white twbr:hover:bg-gray-700"
                         title="{{ localize 'BRSW.Roll_and_bennie' }}">
                     <img src="{{{ benny_image }}}" class="brsw-button-image" alt="Bennie re-roll">
                 </button>
@@ -53,19 +53,19 @@
         </span>
     </div>
     {{#each trait_roll.current_roll.dice as |current_dice|}}
-        <div class="brsw-roll-detail-row twbr-text-white {{ this.extra_class }} brsw-override-die
-                hover:twbr-ring-2 hover:twbr-ring-offset-1 hover:twbr-cursor-pointer twbr-bg-gray-600
-                twbr-border twbr-border-solid twbr-border-gray-700 twbr-rounded twbr-shadow" data-die-index="{{@index}}">
+        <div class="brsw-roll-detail-row twbr:text-white {{ this.extra_class }} brsw-override-die
+                twbr:hover:ring-2 twbr:hover:ring-offset-1 twbr:hover:cursor-pointer twbr:bg-gray-600
+                twbr:border twbr:border-solid twbr:border-gray-700 twbr:rounded twbr:shadow" data-die-index="{{@index}}">
             <span>{{ this.label }}</span>
-            <span class="twbr-text-black">{{#each this.unexploded }}
+            <span class="twbr:text-black">{{#each this.unexploded }}
                 <span class="brsw-d{{current_dice.sides}} brsw-dice-image">{{ this }}</span>
             {{/each}}</span>
         </div>
     {{/each}}
     {{#each trait_roll.modifiers}}
-        <div class="brsw-roll-detail-row twbr-text-white {{ this.extra_class }} hover:twbr-ring-2
-                hover:twbr-ring-offset-1 hover:twbr-cursor-pointer twbr-bg-gray-600 twbr-border
-                twbr-border-solid twbr-border-gray-700 twbr-rounded twbr-shadow brsw-edit-modifier"
+        <div class="brsw-roll-detail-row twbr:text-white {{ this.extra_class }} twbr:hover:ring-2
+                twbr:hover:ring-offset-1 twbr:hover:cursor-pointer twbr:bg-gray-600 twbr:border
+                twbr:border-solid twbr:border-gray-700 twbr:rounded twbr:shadow brsw-edit-modifier"
                 data-index="{{@index}}" data-label="{{this.name}}" data-value="{{this.value}}">
             <span>{{ this.name }}</span>
             <span>

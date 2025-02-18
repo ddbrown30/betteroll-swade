@@ -2,9 +2,9 @@
 /* global game, console, renderTemplate */
 
 export function setup_dialog() {
-  let dialog_element = document.createElement("dialog");
+  const dialog_element = document.createElement("dialog");
   dialog_element.setAttribute("id", "br-card-dialog");
-  dialog_element.classList.add("twbr-bg-gray-700");
+  dialog_element.classList.add("twbr:bg-gray-700");
   document.body.insertAdjacentElement("beforeend", dialog_element);
   game.brsw.dialog = new BrCardDialog();
 }
@@ -35,12 +35,12 @@ class BrCardDialog {
   }
 
   bind_events() {
-    for (let button of document.querySelectorAll(
+    for (const button of document.querySelectorAll(
       "#br-card-dialog .brsw-cancel",
     )) {
       button.addEventListener("click", this.close_card.bind(this));
     }
-    for (let button of document.querySelectorAll(".brsw-action-button")) {
+    for (const button of document.querySelectorAll(".brsw-action-button")) {
       button.addEventListener("click", this.action_button);
     }
     document
@@ -53,15 +53,15 @@ class BrCardDialog {
 
   action_button(event) {
     if (event.currentTarget.parentElement.dataset.singleChoice) {
-      for (let element of event.currentTarget.parentElement.getElementsByTagName(
+      for (const element of event.currentTarget.parentElement.getElementsByTagName(
         "span",
       )) {
         if (element !== event.currentTarget) {
-          element.classList.remove("twbr-bg-red-700");
+          element.classList.remove("twbr:bg-red-700");
         }
       }
     }
-    event.currentTarget.classList.toggle("twbr-bg-red-700");
+    event.currentTarget.classList.toggle("twbr:bg-red-700");
   }
 
   close_card() {
@@ -72,8 +72,8 @@ class BrCardDialog {
 
   async save_actions() {
     const enabled_actions = [];
-    for (let button of document.querySelectorAll(
-      ".brsw-action-button.twbr-bg-red-700",
+    for (const button of document.querySelectorAll(
+      ".brsw-action-button.twbr\\:bg-red-700",
     )) {
       enabled_actions.push(button.dataset.actionId);
     }
