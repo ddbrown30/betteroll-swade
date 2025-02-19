@@ -27,11 +27,11 @@ export async function create_damage_card(
   damage_text,
   heavy_damage,
 ) {
-  let token = canvas.tokens.get(token_id);
-  let { actor } = token;
-  let user = get_owner(actor);
+  const token = canvas.tokens.get(token_id);
+  const { actor } = token;
+  const user = get_owner(actor);
   // noinspection JSUnresolvedVariable
-  let undo_values = {
+  const undo_values = {
     wounds: actor.system.wounds.value,
     shaken: actor.system.status.isShaken,
   };
@@ -52,7 +52,7 @@ export async function create_damage_card(
     ) > -1 &&
       heavy_damage === "true");
   show_injury = show_injury && can_soak && actor.system.wounds.max > 1;
-  let br_message = await create_common_card(
+  const br_message = await create_common_card(
     token,
     {
       header: {
@@ -119,9 +119,9 @@ async function apply_damage(token_or_token_id, wounds, soaked = 0) {
       ? token_or_token_id
       : canvas.tokens.get(token_or_token_id);
   // We take the starting situation
-  let initial_wounds = token.actor.system.wounds.value;
+  const initial_wounds = token.actor.system.wounds.value;
   // noinspection JSUnresolvedVariable
-  let initial_shaken = token.actor.system.status.isShaken;
+  const initial_shaken = token.actor.system.status.isShaken;
   // We test for double shaken
   let damage_wounds = wounds;
   let final_shaken = true; // Any damage also shakes the token
@@ -277,7 +277,7 @@ async function roll_soak(br_card, use_bennie) {
         Math.max(0, br_card.render_data.undo_values.wounds - ignored_wounds),
     );
   }
-  let soak_modifiers = [
+  const soak_modifiers = [
     {
       name: game.i18n.localize("BRSW.RemoveWounds"),
       value: undo_wound_modifier,
@@ -299,15 +299,15 @@ async function roll_soak(br_card, use_bennie) {
     });
   }
   // Active effects
-  let soak_active_effects = br_card.actor.appliedEffects.filter((e) =>
+  const soak_active_effects = br_card.actor.appliedEffects.filter((e) =>
     e.changes.find(
       (ch) =>
         ch.key === "brsw.soak-modifier" ||
         ch.key === "system.attributes.vigor.soakBonus",
     ),
   );
-  for (let effect of soak_active_effects) {
-    let change =
+  for (const effect of soak_active_effects) {
+    const change =
       effect.changes.find((ch) => ch.key === "brsw.soak-modifier") ||
       effect.changes.find(
         (ch) => ch.key === "system.attributes.vigor.soakBonus",
@@ -331,8 +331,8 @@ async function roll_soak(br_card, use_bennie) {
     { modifiers: soak_modifiers },
   );
   let result = 0;
-  for (let roll of br_card.trait_roll.rolls) {
-    for (let die of roll.dice) {
+  for (const roll of br_card.trait_roll.rolls) {
+    for (const die of roll.dice) {
       if (die.result !== null) {
         result = Math.max(die.final_total, result);
       }
