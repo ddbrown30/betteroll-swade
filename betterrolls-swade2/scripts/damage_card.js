@@ -111,9 +111,8 @@ export function get_owner(actor) {
  */
 async function apply_damage(token_or_token_id, wounds, soaked = 0) {
   if (wounds < 0) {
-    return;
+    return ("", false);
   }
-  let incapacitated;
   const token =
     token_or_token_id instanceof Token
       ? token_or_token_id
@@ -165,10 +164,10 @@ async function apply_damage(token_or_token_id, wounds, soaked = 0) {
   }
   // Final damage
   let final_wounds = initial_wounds + damage_wounds;
-  incapacitated = final_wounds > token.actor.system.wounds.max;
+  const incapacitated = final_wounds > token.actor.system.wounds.max;
   const downed_condition = token.actor.isWildcard ? "incapacitated" : "dead";
   if (incapacitated) {
-    await token.actor.toggleStatusEffect(downed_condition, { active: true });
+    await token.actor.toggleStatusEffect(downed_condition, { active: true, overlay: true });
   } else {
     await token.actor.toggleStatusEffect(downed_condition, { active: false });
   }
