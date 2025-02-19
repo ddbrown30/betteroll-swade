@@ -154,8 +154,8 @@ async function create_item_card(origin, item_id, { actions_stored = {} } = {}) {
     }</p>${description}`;
   }
   let possible_default_dmg_action;
-  let ammon_enabled = parseInt(item.system.shots) || item.system.ammo;
-  let power_points =
+  const ammon_enabled = parseInt(item.system.shots) || item.system.ammo;
+  const power_points =
     !isNaN(parseFloat(item.system.pp)) || item.type === "power";
   const subtract_select = ammon_enabled
     ? SettingsUtils.getWorldSetting("default-ammo-management")
@@ -164,7 +164,7 @@ async function create_item_card(origin, item_id, { actions_stored = {} } = {}) {
     ? SettingsUtils.getWorldSetting("default-pp-management")
     : false;
   if (!damage && item.system.actions) {
-    for (let action in item.system.actions.additional) {
+    for (const action in item.system.actions.additional) {
       const current_action = item.system.actions.additional[action];
       if (current_action.type === "damage" && current_action.override) {
         damage = true;
@@ -175,7 +175,7 @@ async function create_item_card(origin, item_id, { actions_stored = {} } = {}) {
   if (!damage && possible_default_dmg_action) {
     damage = possible_default_dmg_action;
   }
-  let br_message = await create_common_card(
+  const br_message = await create_common_card(
     origin,
     {
       header: { type: "Item", title: item.name, img: item.img },
@@ -228,7 +228,7 @@ function create_item_card_from_id(
 ) {
   let origin;
   if (canvas && token_id) {
-    let token = canvas.tokens.get(token_id);
+    const token = canvas.tokens.get(token_id);
     if (token) {
       origin = token;
     }
@@ -271,7 +271,7 @@ async function item_click_listener(ev, target) {
     ev.currentTarget.parentElement.parentElement.parentElement.parentElement
       .dataset.itemId;
   // Show card
-  let br_card = await create_item_card(target, item_id);
+  const br_card = await create_item_card(target, item_id);
   if (action.includes("dialog")) {
     game.brsw.dialog.show_card(br_card);
   } else if (action.includes("trait")) {
@@ -304,7 +304,7 @@ function drag_start_handle(ev) {
  * @param html Html code
  */
 export function activate_item_listeners(app, html) {
-  let target = app.token || app.object;
+  const target = app.token || app.object;
   const item_images = html.find(
     ".item-image, .item-img, .name.item-show, span.item>.item-control.item-edit," +
       " .gear-card .card-header>.item-name, .damage-roll, .item-name>h4," +
@@ -316,7 +316,7 @@ export function activate_item_listeners(app, html) {
   item_images.bindFirst("click", async (ev) => {
     await item_click_listener(ev, target);
   });
-  let item_li = html.find(
+  const item_li = html.find(
     ".gear-card.item, .item.flexrow, .power.item, .weapon.item, .item>.item-show",
   );
   item_li.attr("draggable", "true");
@@ -330,7 +330,7 @@ export function activate_item_listeners(app, html) {
  * @param {BrCommonCard} br_card
  */
 function preview_template(ev, br_card) {
-  let templateData = {
+  const templateData = {
     user: game.user.id,
     distance: 0,
     direction: 0,
@@ -484,7 +484,7 @@ async function roll_resist(trait, br_card, trait_mod) {
     ui.notifications.warn(game.i18n.localize("BRSW.NoTokenSelectedError"));
     return;
   }
-  for (let token of canvas.tokens.controlled) {
+  for (const token of canvas.tokens.controlled) {
     const trait_lower = trait.toLowerCase();
     let new_card;
     if (ATTRIBUTES.includes(trait_lower)) {
@@ -560,7 +560,7 @@ export function get_item_trait(item, actor) {
   }
   // Now check for a skill in additional actions.
   if (item.system.actions) {
-    for (let action in item.system.actions.additional) {
+    for (const action in item.system.actions.additional) {
       if (
         item.system.actions.additional[action].type === "trait" &&
         item.system.actions.additional[action].name
@@ -578,7 +578,7 @@ export function get_item_trait(item, actor) {
       item.type.toLowerCase(),
     )
   ) {
-    return;
+    return "";
   }
   // Now check if there is something in the Arcane field
   if (item.system.arcane) {
@@ -627,7 +627,7 @@ export function trait_from_string(actor, trait_name) {
   });
   if (!skill) {
     // Time to check for an attribute
-    for (let attribute of ATTRIBUTES) {
+    for (const attribute of ATTRIBUTES) {
       const translation = game.i18n.localize(
         ATTRIBUTES_TRANSLATION_KEYS[attribute],
       );
@@ -667,7 +667,7 @@ function check_skill_in_actor(actor, possible_skills) {
 async function displayRemainingCard(content) {
   const show_card = SettingsUtils.getWorldSetting("remaining_card_behaviour");
   if (show_card !== "none") {
-    let chat_data = { content: content };
+    const chat_data = { content: content };
     if (show_card === "master_and_gm") {
       chat_data.whisper = [ChatMessage.getWhisperRecipients("GM")[0]];
     }
@@ -696,7 +696,7 @@ export async function discount_pp(br_card, pp_override, old_pp, pp_modifier) {
     return 0;
   }
   let success = false;
-  for (let roll of br_card.trait_roll.current_roll.dice) {
+  for (const roll of br_card.trait_roll.current_roll.dice) {
     if (roll.result !== null && roll.result >= 0) {
       success = true;
     }
@@ -739,7 +739,7 @@ export async function discount_pp(br_card, pp_override, old_pp, pp_modifier) {
     content = `<p class="brsw-fumble-row">${message_text}</p> ${content}`;
     ui.notifications.warn(message_text);
   }
-  let data = {};
+  const data = {};
   if (arcaneDevice === true) {
     const updates = [
       {
@@ -783,7 +783,7 @@ export async function run_macros(
   br_card_param,
 ) {
   if (macros) {
-    for (let macro_name of macros) {
+    for (const macro_name of macros) {
       const real_macro = await find_macro(macro_name);
       if (real_macro) {
         const actor = actor_param;
@@ -841,9 +841,9 @@ async function find_macro(macro_name_or_id) {
   }
   if (!macro) {
     // Search compendiums
-    for (let compendium of game.packs.contents) {
+    for (const compendium of game.packs.contents) {
       if (compendium.documentClass.documentName === "Macro") {
-        let possible_macro =
+        const possible_macro =
           compendium.index.getName(macro_name_or_id) ||
           compendium.index.get(macro_name_or_id);
         if (possible_macro) {
@@ -866,10 +866,10 @@ async function find_macro(macro_name_or_id) {
  * @return {Promise<void>}
  */
 export async function roll_item(br_message, html, expend_bennie, roll_damage) {
-  let macros = [];
+  const macros = [];
   let shots_override; // Override the number of shots used
   let shots_modifier = 0; // Modifier to the number of shots
-  let extra_data = { modifiers: [] };
+  const extra_data = { modifiers: [] };
   if (expend_bennie) {
     await spend_bennie(br_message.actor);
   }
@@ -878,16 +878,16 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
     extra_data.rof = 1;
   }
   // Actions
-  for (let action of br_message.get_selected_actions()) {
+  for (const action of br_message.get_selected_actions()) {
     if (action.code.skillOverride) {
-      let trait = trait_from_string(
+      const trait = trait_from_string(
         br_message.actor,
         action.code.skillOverride,
       );
       br_message.skill_id = trait.id;
     }
     if (action.code.shotsUsed || action.code.resourcesUsed) {
-      let shots_used = action.code.shotsUsed || action.code.resourcesUsed;
+      const shots_used = action.code.shotsUsed || action.code.resourcesUsed;
       let first_char = "";
       try {
         first_char = shots_used.charAt(0);
@@ -904,7 +904,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
     }
     process_common_actions(action.code, extra_data, macros, br_message.actor);
   }
-  for (let action of get_enabled_gm_actions()) {
+  for (const action of get_enabled_gm_actions()) {
     process_common_actions(action, extra_data, macros, br_message.actor);
   }
   // Check for minimum strength
@@ -960,7 +960,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
     br_message.item.type === "weapon" &&
     br_message.actor.system.stats.globalMods.attack
   ) {
-    for (let modifier of br_message.actor.system.stats.globalMods.attack) {
+    for (const modifier of br_message.actor.system.stats.globalMods.attack) {
       extra_data.modifiers.push(
         new TraitModifier(modifier.label, modifier.value),
       );
@@ -992,7 +992,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
   const pp_selected = html
     ? html.find(".twbr:bg-red-700.brsw-pp-toggle").length
     : SettingsUtils.getWorldSetting("default-pp-management");
-  let previous_pp = br_message.trait_roll.old_rolls.length
+  const previous_pp = br_message.trait_roll.old_rolls.length
     ? br_message.render_data.used_pp
     : 0;
   if (
@@ -1042,7 +1042,7 @@ function get_target_defense(
       }
     });
   }
-  let defense_values = {
+  const defense_values = {
     toughness: 4,
     armor: 0,
     name: game.i18n.localize("BRSW.Default"),
@@ -1081,7 +1081,7 @@ function adjust_dmg_str(damage_roll, roll_formula, str_die_size) {
     new DamageModifier(game.i18n.localize("BRSW.NotEnoughStrength"), 0),
   );
   let new_roll_formula = "";
-  for (let piece of roll_formula.split("d")) {
+  for (const piece of roll_formula.split("d")) {
     const piece_value = parseInt(piece);
     let new_piece = piece;
     if (piece_value && piece_value > str_die_size) {
@@ -1104,18 +1104,18 @@ async function roll_dmg_target(
 ) {
   const br_card = new BrCommonCard(message);
   const { actor, item } = br_card;
-  let current_damage_roll = JSON.parse(JSON.stringify(damage_roll));
+  const current_damage_roll = JSON.parse(JSON.stringify(damage_roll));
   // @zk-sn: If strength is 1, make @str not explode: fix for #211 (Str 1 can't be rolled)
-  let shortcuts = actor.getRollData();
+  const shortcuts = actor.getRollData();
   if (shortcuts.str === "1d1x[Strength]") {
     shortcuts.str = "1d1[Strength]";
   }
   if (!damage_formulas.explodes) {
-    for (let key of ["sma", "spi", "str", "agi", "vig"]) {
+    for (const key of ["sma", "spi", "str", "agi", "vig"]) {
       shortcuts[key] = shortcuts[key].replace("x", "");
     }
   }
-  let roll = new Roll(
+  const roll = new Roll(
     damage_formulas.damage + damage_formulas.raise,
     shortcuts,
   );
@@ -1152,15 +1152,15 @@ async function roll_dmg_target(
     target_id: defense_values.token_id || 0,
   });
   let last_string_term = "";
-  for (let term of roll.terms) {
+  for (const term of roll.terms) {
     if (term.hasOwnProperty("_faces")) {
-      let new_die = {
+      const new_die = {
         faces: term._faces,
         results: [],
         extra_class: "",
         label: game.i18n.localize("SWADE.Dmg") + ` (d${term._faces})`,
       };
-      for (let result of term.results) {
+      for (const result of term.results) {
         new_die.results.push(result.result);
         if (result.result >= term._faces) {
           new_die.extra_class = " brsw-blue-text";
@@ -1173,7 +1173,7 @@ async function roll_dmg_target(
       current_damage_roll.brswroll.dice.push(new_die);
     } else {
       if (term.number) {
-        let modifier_value = parseInt(last_string_term + term.number);
+        const modifier_value = parseInt(last_string_term + term.number);
         if (modifier_value) {
           const new_mod = new DamageModifier(
             game.i18n.localize("SWADE.Dmg") + ` (${modifier_value})`,
@@ -1199,7 +1199,7 @@ async function roll_dmg_target(
     if (message.whisper.length > 0) {
       users = message.whisper;
     }
-    for (let modifier of damage_roll.brswroll.modifiers) {
+    for (const modifier of damage_roll.brswroll.modifiers) {
       if (modifier.dice) {
         // noinspection ES6MissingAwait
         game.dice3d.showForRoll(
@@ -1211,9 +1211,9 @@ async function roll_dmg_target(
         );
       }
     }
-    let damage_theme = SettingsUtils.getUserSetting("damageDieTheme");
+    const damage_theme = SettingsUtils.getUserSetting("damageDieTheme");
     if (damage_theme !== "None") {
-      for (let die of roll.dice) {
+      for (const die of roll.dice) {
         die.options.colorset = damage_theme;
       }
     }
@@ -1271,7 +1271,7 @@ function calc_min_str_penalty(item, actor, damage_formulas, damage_roll) {
  * @param damage_roll
  */
 function joker_modifiers(br_card, damage_roll) {
-  let token_id = br_card.token?.id;
+  const token_id = br_card.token?.id;
   if (token_id && has_joker(token_id)) {
     damage_roll.brswroll.modifiers.push(
       new DamageModifier(
@@ -1289,12 +1289,12 @@ async function get_damage_mods_from_actions(
   macros,
   expend_bennie,
 ) {
-  for (let action of br_card.get_selected_actions()) {
+  for (const action of br_card.get_selected_actions()) {
     if (action.code.isHeavyWeapon) {
       damage_formulas.heavy_weapon = true;
     }
     if (action.code.dmgMod) {
-      let action_name = action.code.name.includes("BRSW.")
+      const action_name = action.code.name.includes("BRSW.")
         ? game.i18n.localize(action.code.name)
         : action.code.name;
       const new_modifier = new DamageModifier(action_name, action.code.dmgMod);
@@ -1361,7 +1361,7 @@ export async function roll_dmg(
   const { render_data, actor, item } = br_card;
   const raise_die_size = item.system.bonusDamageDie || 6;
   const number_raise_dice = item.system.bonusDamageDice || 1;
-  let damage_formulas = {
+  const damage_formulas = {
     damage: item.system.damage,
     raise: `+${number_raise_dice}d${raise_die_size}x`,
     ap: parseInt(item.system.ap),
@@ -1370,18 +1370,18 @@ export async function roll_dmg(
     heavy_weapon: false,
     location: "torso",
   };
-  let macros = [];
+  const macros = [];
   if (expend_bennie) {
     await spend_bennie(actor);
   }
   // Calculate modifiers
-  let options = get_roll_options(default_options);
+  const options = get_roll_options(default_options);
   // Shotgun
   if (damage_formulas.damage === "1-3d6" && item.type === "weapon") {
     // Bet that this is a shotgun
     damage_formulas.damage = "3d6";
   }
-  let damage_roll = { label: "---", brswroll: new BRWSRoll(), raise: raise };
+  const damage_roll = { label: "---", brswroll: new BRWSRoll(), raise: raise };
   get_chat_dmg_modifiers(options, damage_roll);
   joker_modifiers(br_card, damage_roll);
   // Item properties tab
@@ -1434,11 +1434,11 @@ export async function roll_dmg(
     damage_formulas.raise = "";
   }
   let total_modifiers = 0;
-  for (let modifier of damage_roll.brswroll.modifiers) {
+  for (const modifier of damage_roll.brswroll.modifiers) {
     total_modifiers += modifier.value;
   }
   let first_roll = true;
-  for (let target of targets) {
+  for (const target of targets) {
     if (target || first_roll) {
       render_data.damage_rolls.push(
         await roll_dmg_target(
@@ -1465,7 +1465,7 @@ export async function roll_dmg(
  */
 async function get_dmg_targets(token_id, br_card) {
   if (token_id) {
-    let token = canvas.tokens.get(token_id);
+    const token = canvas.tokens.get(token_id);
     if (token) {
       return [token];
     }
@@ -1487,16 +1487,16 @@ async function get_dmg_targets(token_id, br_card) {
  * @param {int} index
  */
 async function add_damage_dice(br_card, index) {
-  let render_data = br_card.message.getFlag(
+  const render_data = br_card.message.getFlag(
     "betterrolls-swade2",
     "render_data",
   );
-  let damage_rolls = render_data.damage_rolls[index].brswroll;
-  let roll = new Roll("1d6x");
+  const damage_rolls = render_data.damage_rolls[index].brswroll;
+  const roll = new Roll("1d6x");
   await roll.evaluate();
   damage_rolls.rolls[0].result += roll.total;
   roll.terms.forEach((term) => {
-    let new_die = {
+    const new_die = {
       faces: term.faces,
       results: [],
       extra_class: "",
@@ -1513,7 +1513,7 @@ async function add_damage_dice(br_card, index) {
   render_data.damage_rolls[index].damage_result =
     await calculate_damage_results(damage_rolls.rolls);
   if (game.dice3d) {
-    let damage_theme = SettingsUtils.getUserSetting("damageDieTheme");
+    const damage_theme = SettingsUtils.getUserSetting("damageDieTheme");
     if (damage_theme !== "None") {
       roll.dice.forEach((die) => {
         die.options.colorset = damage_theme;
@@ -1530,7 +1530,7 @@ async function add_damage_dice(br_card, index) {
   await update_message(br_card, render_data);
 }
 
-async function show_fixed_damage_dialog(event) {
+function show_fixed_damage_dialog(event) {
   // noinspection AnonymousFunctionJS
   simple_form(
     game.i18n.localize("BRSW.EditModifier"),
@@ -1555,11 +1555,11 @@ async function add_fixed_damage(event, form_results) {
     return;
   }
   const { index } = event.currentTarget.dataset;
-  let render_data = event.data.message.getFlag(
+  const render_data = event.data.message.getFlag(
     "betterrolls-swade2",
     "render_data",
   );
-  let damage_rolls = render_data.damage_rolls[index].brswroll;
+  const damage_rolls = render_data.damage_rolls[index].brswroll;
   damage_rolls.modifiers.push({ value: modifier, name: form_results.Label });
   damage_rolls.rolls[0].result += modifier;
   render_data.damage_rolls[index].damage_result =
@@ -1573,11 +1573,11 @@ async function add_fixed_damage(event, form_results) {
  * @param {number} index
  */
 async function half_damage(br_card, index) {
-  let render_data = br_card.message.getFlag(
+  const render_data = br_card.message.getFlag(
     "betterrolls-swade2",
     "render_data",
   );
-  let damage_rolls = render_data.damage_rolls[index].brswroll;
+  const damage_rolls = render_data.damage_rolls[index].brswroll;
   const half_damage = -Math.round(damage_rolls.rolls[0].result / 2);
   damage_rolls.modifiers.push({
     value: half_damage,
@@ -1598,7 +1598,7 @@ async function half_damage(br_card, index) {
 async function edit_toughness(br_card, index) {
   const { render_data, actor } = br_card;
   const defense_values = get_target_defense(actor);
-  let damage_rolls = render_data.damage_rolls[index].brswroll.rolls;
+  const damage_rolls = render_data.damage_rolls[index].brswroll.rolls;
   damage_rolls[0].tn = defense_values.toughness;
   damage_rolls[0].armor = defense_values.armor;
   damage_rolls[0].target_id = defense_values.token_id || 0;
@@ -1662,7 +1662,7 @@ function modify_power_points(number, mode, actor, item) {
     const data_key = otherArcane
       ? `system.powerPoints.${item.system.arcane}.value`
       : "system.powerPoints.general.value";
-    let data = {};
+    const data = {};
     data[data_key] = newPP;
     actor.update(data);
   }
@@ -1699,7 +1699,7 @@ function modify_power_points(number, mode, actor, item) {
  * @param {function} actor.update
  * @param {Item} item
  */
-async function manual_pp(actor, item) {
+function manual_pp(actor, item) {
   const amount_pp = game.i18n.localize("BRSW.AmountPP");
   new Dialog({
     title: game.i18n.localize("BRSW.PPManagement"),
@@ -1747,7 +1747,7 @@ async function manual_pp(actor, item) {
           //Button 4: Soul Drain (increases data.fatigue.value by 1 and increases the data.powerPoints.value by 5 but does not increase it above the number given in data.powerPoints.max)
           const fv = actor.system.fatigue.value;
           const fm = actor.system.fatigue.max;
-          let newFV = fv + 1;
+          const newFV = fv + 1;
           if (item.system.additionalStats?.devicePP) {
             ui.notifications.notify(
               "You cannot use Soul Drain to recharge Arcane Devices.",
@@ -1788,16 +1788,16 @@ function get_template_from_item(item) {
     stream: "stream",
   };
   if (["weapon", "power", "action", "gear"].indexOf(item.type) < 0) {
-    return;
+    return [];
   }
-  let templates_found = [];
-  for (let template_key in item.system.templates) {
+  const templates_found = [];
+  for (const template_key in item.system.templates) {
     if (item.system.templates[template_key] === true) {
       templates_found.push(SYSTEM_KEYS[template_key]);
     }
   }
-  for (let template_key in TEMPLATE_KEYS) {
-    for (let key_text of TEMPLATE_KEYS[template_key]) {
+  for (const template_key in TEMPLATE_KEYS) {
+    for (const key_text of TEMPLATE_KEYS[template_key]) {
       let translated_key_text = key_text;
       if (key_text.slice(0, 4) === "BRSW") {
         translated_key_text = game.i18n.localize(key_text);
@@ -1806,7 +1806,7 @@ function get_template_from_item(item) {
         (item.system?.description
           ?.toLowerCase() // jshint ignore:line
           .includes(translated_key_text) ||
-          (typeof item.system?.range == "string" &&
+          (typeof item.system?.range === "string" &&
             item.system?.range?.toLowerCase().includes(translated_key_text))) && // jshint ignore:line
         !templates_found.includes(template_key)
       ) {
@@ -1847,8 +1847,7 @@ async function execute_macro(action, br_card) {
     return null;
   }
   //The System uses an item actor if macroActor is set to 'self' or the first selected tokens actor if not.
-  let targetActor,
-    targetToken = null;
+  let targetActor, targetToken;
   if (action.macroActor === "self") {
     targetActor = br_card.actor;
     targetToken = br_card.token;
