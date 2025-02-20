@@ -46,9 +46,11 @@ class BrCardDialog {
     document
       .getElementById("brsw-save-button")
       .addEventListener("click", this.save_actions.bind(this));
-    document
-      .getElementById("brsw-dialog-roll")
-      .addEventListener("click", this.roll_button.bind(this));
+    const roll_button = document.getElementById("brsw-dialog-roll");
+    if (roll_button) {
+      // Roll button is only present when the card has not been rolled
+      roll_button.addEventListener("click", this.roll_button.bind(this));
+    }
   }
 
   action_button(event) {
