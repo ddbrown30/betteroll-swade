@@ -16,7 +16,7 @@ import { are_bennies_available, trait_to_string } from "./cards_common.js";
  * @param render_object
  */
 function store_render_flag(flags, render_object) {
-  for (let property of ["actor", "skill"]) {
+  for (const property of ["actor", "skill"]) {
     delete render_object[property];
   }
   // Get sure thar there is a diff so update socket gets fired.
@@ -93,9 +93,9 @@ export class BrCommonCard {
   }
 
   show_popup() {
-    let top =
+    const top =
       cascade_starting_left + game.brsw.cascade_count * cascade_left_increment;
-    let left =
+    const left =
       cascade_starting_top + game.brsw.cascade_count * cascade_top_increment;
     game.brsw.cascade_count =
       game.brsw.cascade_count + 1 < cascade_max_cascades
@@ -109,7 +109,7 @@ export class BrCommonCard {
   }
 
   close_popout() {
-    for (let app of Object.values(this.message.apps)) {
+    for (const app of Object.values(this.message.apps)) {
       if (app.constructor.name === "ChatPopout") {
         app.close();
       }
@@ -162,7 +162,7 @@ export class BrCommonCard {
       "damage",
       "popup_shown",
     ];
-    for (let field of FIELDS) {
+    for (const field of FIELDS) {
       this[field] = data[field];
     }
     this.trait_roll.load(data.trait_roll);
@@ -262,7 +262,7 @@ export class BrCommonCard {
   }
 
   get sorted_action_groups() {
-    let groups_array = Object.values(this.action_groups);
+    const groups_array = Object.values(this.action_groups);
     return groups_array.sort((a, b) => {
       return a.name > b.name ? 1 : -1;
     });
@@ -292,7 +292,7 @@ export class BrCommonCard {
       return;
     }
     const additional_actions = this.item.system?.actions?.additional;
-    for (let action in additional_actions) {
+    for (const action in additional_actions) {
       if (additional_actions[action].type === "macro") {
         this.macro_buttons.push({ key: action, ...additional_actions[action] });
       }
@@ -320,7 +320,7 @@ export class BrCommonCard {
         }
         return a.code.id > b.code.id ? 1 : -1;
       });
-      for (let action of this.action_groups[group].actions) {
+      for (const action of this.action_groups[group].actions) {
         if (stored_selections.hasOwnProperty(action.code.id)) {
           action.selected = stored_selections[action.code.id];
         }
@@ -337,9 +337,9 @@ export class BrCommonCard {
         global_action.button_name.slice(0, 5) === "BRSW."
           ? game.i18n.localize(global_action.button_name)
           : global_action.button_name;
-      let group_name = global_action.group || "BRSW.NoGroup";
-      let group_name_id = group_name.split(".").join("");
-      let group_single = global_action.hasOwnProperty("group_single");
+      const group_name = global_action.group || "BRSW.NoGroup";
+      const group_name_id = group_name.split(".").join("");
+      const group_single = global_action.hasOwnProperty("group_single");
       if (global_action.hasOwnProperty("extra_text")) {
         this.extra_text += global_action.extra_text;
       }
@@ -352,7 +352,7 @@ export class BrCommonCard {
           single_choice: group_single,
         };
       }
-      let new_action = new brAction(name, global_action);
+      const new_action = new brAction(name, global_action);
       if (global_action.hasOwnProperty("defaultChecked")) {
         new_action.selected = true;
       }
@@ -361,11 +361,11 @@ export class BrCommonCard {
   }
 
   populate_item_actions() {
-    let item_actions = [];
-    for (let action in this.item.system?.actions?.additional) {
+    const item_actions = [];
+    for (const action in this.item.system?.actions?.additional) {
       const current_action = this.item.system.actions.additional[action];
       if (current_action.type !== "macro" && current_action.type !== "resist") {
-        let br_action = new brAction(
+        const br_action = new brAction(
           current_action.name,
           current_action,
           "item",
@@ -413,9 +413,9 @@ export class BrCommonCard {
   }
 
   populate_active_effect_actions_from_array(effectArray, type = "skillMod") {
-    let effectActions = [];
-    for (let effect of effectArray) {
-      let code = { name: effect.label, id: broofa() };
+    const effectActions = [];
+    for (const effect of effectArray) {
+      const code = { name: effect.label, id: broofa() };
       code[type] = effect.value;
       const br_action = new brAction(effect.label, code, "active_effect");
       br_action.selected = !effect.ignore;
@@ -443,7 +443,7 @@ export class BrCommonCard {
     if (!this.item || !this.item.system.actions) {
       return;
     }
-    for (let action in this.item.system.actions.additional) {
+    for (const action in this.item.system.actions.additional) {
       const current_action = this.item.system.actions.additional[action];
       if (current_action.type === "resist") {
         this.resist_buttons.push({
@@ -495,8 +495,8 @@ export class BrCommonCard {
   }
 
   set_active_actions(actions) {
-    for (let group in this.action_groups) {
-      for (let action of this.action_groups[group].actions) {
+    for (const group in this.action_groups) {
+      for (const action of this.action_groups[group].actions) {
         action.selected = actions.includes(action.code.id);
       }
     }
@@ -632,7 +632,7 @@ export class BrCommonCard {
       this.populate_macro_buttons();
     }
     this.get_trait();
-    let new_content = await renderTemplate(
+    const new_content = await renderTemplate(
       this.render_data.template,
       this.get_data_render(),
     );
@@ -675,8 +675,8 @@ export class BrCommonCard {
    * Returns an action from an id
    */
   get_action_from_id(action_id) {
-    for (let group in this.action_groups) {
-      for (let action of this.action_groups[group].actions) {
+    for (const group in this.action_groups) {
+      for (const action of this.action_groups[group].actions) {
         if (action.code.name === action_id) {
           return action;
         }
@@ -705,9 +705,9 @@ export class BrCommonCard {
    * Returns the actions currently selected in the card
    */
   get_selected_actions() {
-    let selected_actions = [];
-    for (let group in this.action_groups) {
-      for (let action of this.action_groups[group].actions) {
+    const selected_actions = [];
+    for (const group in this.action_groups) {
+      for (const action of this.action_groups[group].actions) {
         if (action.selected) {
           selected_actions.push(action);
         }
@@ -720,7 +720,7 @@ export class BrCommonCard {
    * Creates the Foundry message object
    */
   async create_foundry_message(new_content) {
-    let chatData = this.create_basic_chat_data();
+    const chatData = this.create_basic_chat_data();
     if (new_content) {
       chatData.content = new_content;
     }
@@ -732,8 +732,8 @@ export class BrCommonCard {
    * @return {Object} An object suitable to create a ChatMessage
    */
   create_basic_chat_data() {
-    let whisper_data = getWhisperData();
-    let chatData = {
+    const whisper_data = getWhisperData();
+    const chatData = {
       user: this.actor._idx,
       content: "<p>Default content, likely an error in Better Rolls</p>",
       speaker: {
