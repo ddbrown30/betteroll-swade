@@ -1,3 +1,8 @@
+# Version 4.13 aka I said that there were to be bugs...
+* Bugfix: Use a overlay icon for defeated tokens
+* Bugfix: Scape a tailwind4 classes in jquery finds when deducting ammo or power points
+* Bugfix: Don't try to bind the roll button in the actions dialog if it is not available
+
 # Version 4.12 aka Maybe the vehicles improvements will convince someone to try this....
 * Frameworks: The main update is that Tailwind, the CSS framework that BR uses is updated to version 4. The best outcome is that everything works as before, but there is a clear risk of something visually breaking.
 * Refactor: Scale calculations have been broken into smaller functions to improve readability and maintainability. Again, from the user side the best outcome is that everything works as before.
