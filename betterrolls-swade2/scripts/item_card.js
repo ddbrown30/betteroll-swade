@@ -990,7 +990,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
   }
   // Power points management
   const pp_selected = html
-    ? html.find(".twbr:bg-red-700.brsw-pp-toggle").length
+    ? html.find(".twbr\\:bg-red-700.brsw-pp-toggle").length
     : SettingsUtils.getWorldSetting("default-pp-management");
   const previous_pp = br_message.trait_roll.old_rolls.length
     ? br_message.render_data.used_pp
