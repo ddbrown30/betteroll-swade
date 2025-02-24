@@ -438,7 +438,7 @@ export async function get_tn_from_token(
   }
   // Size modifiers
   if (origin_token && target_token) {
-    if (!(item.system.isVehicular && origin_token.actor.type !== "vehicle")) {
+    if (!(item.system?.isVehicular && origin_token.actor.type !== "vehicle")) {
       getScaleModifier(origin_token, target_token, tn);
     }
   }
