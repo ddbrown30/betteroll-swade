@@ -1341,6 +1341,22 @@ async function get_damage_mods_from_actions(
 }
 
 /**
+* Gets any damage from any action
+* @param {BrCommonCard} br_card
+*/
+function get_any_damage_from_actions(br_card) {
+  let damage = "1";
+  for (const group in br_card.action_groups) {
+    for (const action of br_card.action_groups[group].actions) {
+      if (action.code.dmgOverride) {
+        damage = action.code.dmgOverride;
+      }
+    }
+  }
+  return damage;
+}
+
+/**
  * Rolls damage dor an item
  * @param {BrCommonCard} br_card
  * @param html
@@ -1407,7 +1423,7 @@ export async function roll_dmg(
   );
   if (!damage_formulas.damage) {
     // Damage is empty and damage action has not been selected...
-    damage_formulas.damage = "1";
+    damage_formulas.damage = get_any_damage_from_actions(br_card);
   }
   //Conviction
   const conviction_modifier = await check_and_roll_conviction(actor);
