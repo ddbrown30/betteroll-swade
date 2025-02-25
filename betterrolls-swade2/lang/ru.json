@@ -66,5 +66,7 @@
     "BRSW.EdgeName-Sweep": "Круговой удар",
     "BRSW.EdgeName-TongueTied": "Косноязычие",
     "BRSW.EdgeName-VeryAttractive": "Привлекательность+",
-    "BRSW.Edges": "Черты"
+    "BRSW.Edges": "Черты",
+    "BRSW.SkillName-UnskilledAttempt": "Неумелая попытка",
+    "BRSW.SkillName-untrained": "Неумелая попытка"
 }
