@@ -1,3 +1,9 @@
+# Version 4.14 aka Searching elusive bugs
+* Bugfix (maybe): Try to avoid a bug reported on discord about an undefined variable after some unknown actions (Yeah, I know)
+* Cards: If there is no damage on a card, and some action has damage use that instead of 1.
+* Translations: Updated russian translations from the Weblate team.
+
+
 # Version 4.13 aka I said that there were to be bugs...
 * Bugfix: Use a overlay icon for defeated tokens
 * Bugfix: Scape a tailwind4 classes in jquery finds when deducting ammo or power points
