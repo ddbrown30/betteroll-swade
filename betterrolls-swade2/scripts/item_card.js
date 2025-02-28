@@ -574,7 +574,7 @@ export function get_item_trait(item, actor) {
   }
   // Some types of items don't have an associated skill
   if (
-    ["armor", "shield", "gear", "edge", "hindrance"].includes(
+    ["armor", "shield", "gear", "edge", "hindrance", "ability"].includes(
       item.type.toLowerCase(),
     )
   ) {
@@ -1803,7 +1803,7 @@ function get_template_from_item(item) {
     small: "sbt",
     stream: "stream",
   };
-  if (["weapon", "power", "action", "gear"].indexOf(item.type) < 0) {
+  if (["weapon", "power", "action", "gear", "shield"].indexOf(item.type) < 0) {
     return [];
   }
   const templates_found = [];
