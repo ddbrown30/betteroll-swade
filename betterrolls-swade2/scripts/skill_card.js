@@ -413,11 +413,9 @@ export async function get_tn_from_token(
   };
   let use_parry_as_tn = true;
   if (is_skill_fighting(skill)) {
-    const gangup_bonus = calculate_gangUp(origin_token, target_token);
-    if (gangup_bonus) {
-      tn.modifiers.push(
-        new TraitModifier(game.i18n.localize("BRSW.Gangup"), gangup_bonus),
-      );
+    const gangup = calculate_gangUp(origin_token, target_token);
+    if (gangup.bonus) {
+      tn.modifiers.push(new TraitModifier(gangup.name, gangup.bonus));
     }
   } else if (item && item.system.range) {
     use_parry_as_tn = calculate_distance(
@@ -533,8 +531,9 @@ function sizeToScale(size) {
  */
 function calculate_gangUp(attacker, target) {
   if (SettingsUtils.getWorldSetting("disable-gang-up")) {
-    return 0;
+    return { name: "NoGangup", bonus: 0 };
   }
+  let gangup_name = game.i18n.localize("BRSW.Gangup");
   if (!attacker || !target) {
     console.warn(
       "BetterRolls 2: Trying to calculate gangup with no token",
@@ -589,6 +588,9 @@ function calculate_gangUp(attacker, target) {
           return item.name.toLowerCase().includes(formation_fighter_name);
         }),
     );
+    if (allies_with_formation_fighter.length > 0) {
+      gangup_name += `, ${game.i18n.localize("BRSW.EdgeName-FormationFighter")}`;
+    }
     enemies =
       allies_within_range_of_target.length +
       allies_with_formation_fighter.length;
@@ -604,7 +606,13 @@ function calculate_gangUp(attacker, target) {
     allies = enemies_within_range_both_attacker_target.length;
   }
   const reduction = gang_up_reduction(target.actor);
+  if (reduction) {
+    gangup_name += `, ${game.i18n.localize("BRSW.ReducedBy")}: ${reduction}`;
+  }
   const addition = gang_up_addition(attacker.actor);
+  if (addition) {
+    gangup_name += `, ${game.i18n.localize("BRSW.IncreasedBy")}: ${addition}`;
+  }
   let modifier = Math.max(0, enemies - allies - reduction + addition);
   const improved_block_name = game.i18n
     .localize("BRSW.EdgeName-ImprovedBlock")
@@ -627,6 +635,7 @@ function calculate_gangUp(attacker, target) {
         return item.name.toLowerCase().includes(improved_block_name);
       })
     ) {
+      gangup_name += ', ${game.i18n.localize("BRSW.EdgeName-ImprovedBlock")}';
       modifier = Math.max(0, modifier - 2);
     } else if (
       target.actor.items.find((item) => {
@@ -634,9 +643,10 @@ function calculate_gangUp(attacker, target) {
       })
     ) {
       modifier = Math.max(0, modifier - 1);
+      gangup_name += ', ${game.i18n.localize("BRSW.EdgeName-Block")}';
     }
   }
-  return Math.min(4, modifier);
+  return { name: gangup_name, bonus: Math.min(4, modifier) };
 }
 
 /**
