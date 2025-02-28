@@ -31,7 +31,7 @@
   "BRSW.AttackOptionDesperate": "Attack options [Desperate]",
   "BRSW.Attribute": "Attribute",
   "BRSW.Auto-status-cards": "Show status removal cards",
-  "BRSW.Auto-status-cardsHint": "Show the cards to remove status (currently only shaken) at the start of the combat (World)",
+  "BRSW.Auto-status-cardsHint": "Show the cards to remove status at the start of the combat (World)",
   "BRSW.BackBennieHint": "Path to the image to be shown on the Benny back (blank uses the same as front) (World)",
   "BRSW.BackBennieName": "Custom Benny back image",
   "BRSW.Battered": "Battered",
