@@ -355,7 +355,7 @@ function preview_template(ev, br_card) {
   if (canvas.grid.distance % 5 === 0) {
     templateData.distance *= 5;
   }
-  CONFIG.MeasuredTemplate.objectClass.fromPreset(type);
+  CONFIG.MeasuredTemplate.objectClass.fromPreset(type, br_card.item);
   Hooks.call(
     "BRSW-BeforePreviewingTemplate",
     CONFIG.SWADE.activeMeasuredTemplatePreview,
