@@ -52,7 +52,7 @@ export async function create_damage_card(
     ) > -1 &&
       heavy_damage === "true");
   show_injury = show_injury && can_soak && actor.system.wounds.max > 1;
-  const br_message = await create_common_card(
+  const br_message = create_common_card(
     token,
     {
       header: {

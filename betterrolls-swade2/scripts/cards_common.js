@@ -90,7 +90,7 @@ export function create_common_card(origin, render_data, template) {
         ? render_data.description
         : null;
   }
-  let br_message = new BrCommonCard(undefined);
+  const br_message = new BrCommonCard(undefined);
   br_message.actor_id = actor.id;
   if (actor !== origin) {
     br_message.token_id = origin.id;
@@ -172,7 +172,7 @@ function save_macro(br_card) {
   let { page } = ui.hotbar;
   // Starting from the current hotbar page, find the first empty slot
   do {
-    let macros = game.user.getHotbarMacros(page);
+    const macros = game.user.getHotbarMacros(page);
     for (const macro of macros) {
       if (macro.macro === undefined || macro.macro === null) {
         macro_slot = macro.slot;
@@ -397,11 +397,11 @@ function create_macro_command_from_card(br_card) {
  * @param html
  */
 export function manage_collapsables(html) {
-  let collapse_buttons = html.find(".brsw-collapse-button");
+  const collapse_buttons = html.find(".brsw-collapse-button");
   collapse_buttons.click(async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    let clicked = $(e.currentTarget);
+    const clicked = $(e.currentTarget);
     const data_collapse = clicked.attr("data-collapse");
     const collapsable_span = html.find("." + data_collapse);
     collapsable_span.toggleClass("brsw-collapsed");
@@ -429,7 +429,7 @@ export async function manage_selectable_click(ev, message) {
     return manage_html_selectables(ev);
   }
   const br_card = new BrCommonCard(message);
-  let action = br_card.get_action_from_id(ev.currentTarget.dataset.action_id);
+  const action = br_card.get_action_from_id(ev.currentTarget.dataset.action_id);
   action.selected = !action.selected;
   await br_card.render();
   await br_card.save();
@@ -492,10 +492,10 @@ export function get_action_from_click(event) {
  * @param old_options - Options used as default
  */
 export function get_roll_options(old_options) {
-  let modifiers = old_options?.additionalMods || [];
-  let dmg_modifiers = old_options?.dmgMods || [];
-  let tn = old_options?.tn || 4;
-  let tn_reason = old_options?.tn_reason || game.i18n.localize("BRSW.Default");
+  const modifiers = old_options?.additionalMods || [];
+  const dmg_modifiers = old_options?.dmgMods || [];
+  const tn = old_options?.tn || 4;
+  const tn_reason = old_options?.tn_reason || game.i18n.localize("BRSW.Default");
   let rof = old_options?.rof || 1;
   // We only check for modifiers when there are no old ones.
   if (!old_options?.hasOwnProperty("additionalMods")) {
@@ -513,7 +513,7 @@ export function get_roll_options(old_options) {
       }
     });
     const dice_tray_input = $("input.dice-tray__input");
-    let tray_modifier = parseInt(dice_tray_input.val());
+    const tray_modifier = parseInt(dice_tray_input.val());
     if (tray_modifier) {
       modifiers.push(tray_modifier);
       dice_tray_input.val("0");
@@ -534,7 +534,7 @@ export function get_roll_options(old_options) {
  */
 export function trait_to_string(trait) {
   let string = `d${trait.die.sides}`;
-  let modifier = parseInt(trait.die.modifier);
+  const modifier = parseInt(trait.die.modifier);
   if (modifier) {
     string = string + (modifier > 0 ? "+" : "") + modifier;
   }
@@ -556,7 +556,7 @@ export async function detect_fumble(has_wild_die, num_fumble_results, dice) {
         //The option to auto-check for fumbles on extras is disabled, so we can return false
         return false;
       }
-      let test_fumble_roll = new Roll("1d6");
+      const test_fumble_roll = new Roll("1d6");
       await test_fumble_roll.roll();
       await test_fumble_roll.toMessage({
         flavor: game.i18n.localize("BRSW.Testing_fumbles"),
@@ -644,7 +644,7 @@ export async function check_and_roll_conviction(actor) {
     game.settings.get("swade", "enableConviction") &&
     foundry.utils.getProperty(actor.system, "details.conviction.active")
   ) {
-    let conviction_roll = new Roll("1d6x");
+    const conviction_roll = new Roll("1d6x");
     await conviction_roll.roll();
     // noinspection JSIgnoredPromiseFromCall
     conviction_roll.toMessage({
@@ -734,7 +734,7 @@ async function get_new_roll_options(
   trait_dice,
   roll_options,
 ) {
-  let extra_options = {};
+  const extra_options = {};
   let objetive = get_targeted_token();
   if (!objetive) {
     canvas.tokens.controlled.forEach((token) => {
@@ -768,7 +768,7 @@ async function get_new_roll_options(
   if (extra_data.hasOwnProperty("rof")) {
     extra_options.rof = extra_data.rof;
   }
-  let options = get_roll_options(extra_options);
+  const options = get_roll_options(extra_options);
   roll_options.rof = options.rof || 1;
   // Trait modifier
   if (parseInt(trait_dice.die.modifier)) {
@@ -781,7 +781,7 @@ async function get_new_roll_options(
   get_actor_own_modifiers(br_card.actor, roll_options);
   // Armor min str
   if (br_card.skill?.system.attribute === "agility") {
-    let armor_penalty = get_actor_armor_minimum_strength(br_card.actor);
+    const armor_penalty = get_actor_armor_minimum_strength(br_card.actor);
     if (armor_penalty) {
       roll_options.modifiers.push(armor_penalty);
     }
@@ -829,7 +829,7 @@ async function get_new_roll_options(
   }
   // Vehicle
   if (br_card.vehicle_actor) {
-    let vehicle = br_card.vehicle_actor;
+    const vehicle = br_card.vehicle_actor;
     let handling = vehicle.system.handling;
     handling -= Math.max(
       vehicle.system.wounds.value - vehicle.system.wounds.ignored,
@@ -887,7 +887,7 @@ async function show_3d_dice(br_card, roll) {
   }
   const { blind } = br_card.message;
   // Dice buried in modifiers.
-  for (let modifier of br_card.trait_roll.modifiers) {
+  for (const modifier of br_card.trait_roll.modifiers) {
     if (modifier.dice && modifier.dice instanceof Roll) {
       // noinspection ES6MissingAwait
       game.dice3d.showForRoll(modifier.dice, game.user, true, users, blind);
@@ -968,8 +968,8 @@ function create_roll_string(trait_dice, rof) {
  * @param extra_data - Extra data to add to render options
  */
 export async function roll_trait(br_card, trait_dice, dice_label, extra_data) {
-  let { actor } = br_card;
-  let roll_options = { modifiers: [], rof: undefined };
+  const { actor } = br_card;
+  const roll_options = { modifiers: [], rof: undefined };
   if (!br_card.trait_roll.is_rolled) {
     await get_new_roll_options(br_card, extra_data, trait_dice, roll_options);
   } else {
@@ -997,7 +997,7 @@ export async function roll_trait(br_card, trait_dice, dice_label, extra_data) {
     br_card.trait_roll.tn = extra_data.tn;
     br_card.trait_roll.tn_reason = extra_data.tn_reason;
   }
-  let roll = new Roll(roll_string);
+  const roll = new Roll(roll_string);
   await roll.evaluate();
   await br_card.trait_roll.add_roll(roll);
   if (game.dice3d) {
@@ -1058,8 +1058,8 @@ async function override_die_result(br_card, die_index, new_value) {
     return action.code.hasOwnProperty("runSkillMacro");
   });
   if (macro_actions) {
-    let macros = [];
-    for (let macro of macro_actions) {
+    const macros = [];
+    for (const macro of macro_actions) {
       macros.push(macro.code.runSkillMacro);
     }
     await run_macros(macros, br_card.actor, br_card.item, br_card);
@@ -1073,8 +1073,8 @@ async function override_die_result(br_card, die_index, new_value) {
  */
 async function add_modifier(br_card, modifier) {
   if (modifier.value) {
-    let name = modifier.label || game.i18n.localize("BRSW.ManuallyAdded");
-    let new_mod = new TraitModifier(name, modifier.value);
+    const name = modifier.label || game.i18n.localize("BRSW.ManuallyAdded");
+    const new_mod = new TraitModifier(name, modifier.value);
     await new_mod.evaluate();
     if (game.dice3d && new_mod.dice) {
       let users = null;
@@ -1121,7 +1121,7 @@ async function delete_modifier(br_card, index) {
 async function edit_modifier(br_card, index, new_modifier) {
   // noinspection JSCheckFunctionSignatures
   // Add float modifier support
-  let mod_value = parseFloat(new_modifier.value);
+  const mod_value = parseFloat(new_modifier.value);
   if (mod_value) {
     br_card.trait_roll.modifiers[index].label = new_modifier.label;
     br_card.trait_roll.modifiers[index].value = mod_value;
@@ -1186,7 +1186,7 @@ async function get_tn_from_target(br_card, index, selected) {
         });
       }
     }
-    let tn = { modifiers: [] };
+    const tn = { modifiers: [] };
     calculate_distance(origin_token, objetive, br_card.item, tn, br_card.skill);
     br_card.trait_roll.delete_range_modifiers();
     br_card.trait_roll.modifiers = br_card.trait_roll.modifiers.concat(
@@ -1223,12 +1223,12 @@ export function has_joker(token_id) {
  * @param event - javascript event for click
  */
 async function duplicate_message(message, event) {
-  let data = duplicate(message);
+  const data = duplicate(message);
   // Remove rolls
   data.timestamp = new Date().getTime();
   delete data._id;
-  let new_message = await ChatMessage.create(data);
-  let br_card = new BrCommonCard(new_message);
+  const new_message = await ChatMessage.create(data);
+  const br_card = new BrCommonCard(new_message);
   br_card.trait_roll = new TraitRoll();
   br_card.render_data.damage_rolls = [];
   await br_card.render();
@@ -1262,7 +1262,7 @@ export function process_common_actions(action, extra_data, macros, actor) {
     : action_name;
   // noinspection JSUnresolvedVariable
   if (action.skillMod) {
-    let modifier = new TraitModifier(action_name, action.skillMod);
+    const modifier = new TraitModifier(action_name, action.skillMod);
     modifier.evaluate();
     if (extra_data.modifiers) {
       extra_data.modifiers.push(modifier);
@@ -1338,8 +1338,8 @@ function get_actor_armor_minimum_strength(actor) {
       item.system.equipStatus >= 2
     );
   });
-  for (let armor of min_str_armors) {
-    let penalty = process_minimum_str_modifiers(
+  for (const armor of min_str_armors) {
+    const penalty = process_minimum_str_modifiers(
       armor,
       actor,
       "BRSW.NotEnoughStrengthArmor",
