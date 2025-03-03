@@ -518,5 +518,6 @@
   "BRSW.NoPP": "No Power Points",
   "BRSW.ReducedBy": "Reduced by",
   "BRSW.IncreasedBy": "Increased by",
+  "BRSW.APModifier": "AP Mod.",
   "I18N.MAINTAINERS": ["Javier Rivera"]
 }

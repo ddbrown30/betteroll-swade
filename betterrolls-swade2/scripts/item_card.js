@@ -1341,9 +1341,9 @@ async function get_damage_mods_from_actions(
 }
 
 /**
-* Gets any damage from any action
-* @param {BrCommonCard} br_card
-*/
+ * Gets any damage from any action
+ * @param {BrCommonCard} br_card
+ */
 function get_any_damage_from_actions(br_card) {
   let damage = "1";
   for (const group in br_card.action_groups) {
@@ -1430,14 +1430,7 @@ export async function roll_dmg(
   if (conviction_modifier) {
     damage_roll.brswroll.modifiers.push(conviction_modifier);
   }
-  // System reroll mod
-  if (expend_bennie && actor.system.stats.globalMods.bennyDamage.length) {
-    for (const modifier of actor.system.stats.globalMods.bennyDamage) {
-      damage_roll.brswroll.modifiers.push(
-        new DamageModifier(modifier.label, modifier.value),
-      );
-    }
-  }
+  get_global_modifiers(expend_bennie, actor, damage_roll);
   // Roll
   if (damage_formulas.explodes) {
     damage_formulas.damage = makeExplotable(damage_formulas.damage);
@@ -1472,6 +1465,25 @@ export async function roll_dmg(
   // Run macros
   await run_macros(macros, actor, item, br_card);
   Hooks.call("BRSW-RollDamage", br_card, html);
+}
+
+function get_global_modifiers(expend_bennie, actor, damage_roll) {
+  if (expend_bennie && actor.system.stats.globalMods.bennyDamage.length) {
+    for (const modifier of actor.system.stats.globalMods.bennyDamage) {
+      damage_roll.brswroll.modifiers.push(
+        new DamageModifier(modifier.label, modifier.value),
+      );
+    }
+  }
+  for (const modifier of actor.system.stats.globalMods.ap) {
+    damage_roll.ap += modifier.value;
+    damage_roll.brswroll.modifiers.push(
+      new DamageModifier(
+        `${game.i18n.localize("BRSW.APModifier")}: ${modifier.label}`,
+        0,
+      ),
+    );
+  }
 }
 
 /**
