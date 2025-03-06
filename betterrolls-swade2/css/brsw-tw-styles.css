@@ -1,4 +1,4 @@
-/*! tailwindcss v4.0.9 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.0.11 | MIT License | https://tailwindcss.com */
 @layer theme, base, components, utilities;
 @layer theme {
   :root, :host {
@@ -31,7 +31,6 @@
     --twbr-font-weight-semibold: 600;
     --twbr-font-weight-bold: 700;
     --twbr-radius-lg: 0.5rem;
-    --twbr-radius-xl: 0.75rem;
     --twbr-default-transition-duration: 150ms;
     --twbr-default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -162,7 +161,7 @@
   }
   .twbr\:space-y-2 {
     :where(& > :not(:last-child)) {
-      --tw-space-y-reverse: 0;
+      --tw-space-y-reverse: 0 !important;
       margin-block-start: calc(calc(var(--twbr-spacing) * 2) * var(--tw-space-y-reverse)) !important;
       margin-block-end: calc(calc(var(--twbr-spacing) * 2) * calc(1 - var(--tw-space-y-reverse))) !important;
     }
@@ -186,10 +185,6 @@
     border-top-left-radius: 0.25rem !important;
     border-top-right-radius: 0.25rem !important;
   }
-  .twbr\:rounded-t-xl {
-    border-top-left-radius: var(--twbr-radius-xl) !important;
-    border-top-right-radius: var(--twbr-radius-xl) !important;
-  }
   .twbr\:border {
     border-style: var(--tw-border-style) !important;
     border-width: 1px !important;
@@ -207,11 +202,11 @@
     border-bottom-width: 0px !important;
   }
   .twbr\:border-none {
-    --tw-border-style: none;
+    --tw-border-style: none !important;
     border-style: none !important;
   }
   .twbr\:border-solid {
-    --tw-border-style: solid;
+    --tw-border-style: solid !important;
     border-style: solid !important;
   }
   .twbr\:border-gray-200 {
@@ -321,23 +316,23 @@
     line-height: var(--tw-leading, var(--twbr-text-xs--line-height)) !important;
   }
   .twbr\:leading-6 {
-    --tw-leading: calc(var(--twbr-spacing) * 6);
+    --tw-leading: calc(var(--twbr-spacing) * 6) !important;
     line-height: calc(var(--twbr-spacing) * 6) !important;
   }
   .twbr\:leading-8 {
-    --tw-leading: calc(var(--twbr-spacing) * 8);
+    --tw-leading: calc(var(--twbr-spacing) * 8) !important;
     line-height: calc(var(--twbr-spacing) * 8) !important;
   }
   .twbr\:font-bold {
-    --tw-font-weight: var(--twbr-font-weight-bold);
+    --tw-font-weight: var(--twbr-font-weight-bold) !important;
     font-weight: var(--twbr-font-weight-bold) !important;
   }
   .twbr\:font-medium {
-    --tw-font-weight: var(--twbr-font-weight-medium);
+    --tw-font-weight: var(--twbr-font-weight-medium) !important;
     font-weight: var(--twbr-font-weight-medium) !important;
   }
   .twbr\:font-semibold {
-    --tw-font-weight: var(--twbr-font-weight-semibold);
+    --tw-font-weight: var(--twbr-font-weight-semibold) !important;
     font-weight: var(--twbr-font-weight-semibold) !important;
   }
   .twbr\:text-black {
@@ -368,11 +363,11 @@
     opacity: 0% !important;
   }
   .twbr\:shadow {
-    --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+    --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1)) !important;
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow) !important;
   }
   .twbr\:shadow-sm {
-    --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+    --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1)) !important;
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow) !important;
   }
   .twbr\:transition-opacity {
@@ -411,7 +406,7 @@
   .twbr\:group-hover\:duration-500 {
     &:is(:where(.twbr\:group):hover *) {
       @media (hover: hover) {
-        --tw-duration: 500ms;
+        --tw-duration: 500ms !important;
         transition-duration: 500ms !important;
       }
     }
@@ -461,7 +456,7 @@
   .twbr\:hover\:ring-2 {
     &:hover {
       @media (hover: hover) {
-        --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentColor);
+        --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentColor) !important;
         box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow) !important;
       }
     }
@@ -469,15 +464,15 @@
   .twbr\:hover\:ring-offset-1 {
     &:hover {
       @media (hover: hover) {
-        --tw-ring-offset-width: 1px;
-        --tw-ring-offset-shadow: var(--tw-ring-inset,) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+        --tw-ring-offset-width: 1px !important;
+        --tw-ring-offset-shadow: var(--tw-ring-inset,) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color) !important;
       }
     }
   }
   .twbr\:hover\:invert {
     &:hover {
       @media (hover: hover) {
-        --tw-invert: invert(100%);
+        --tw-invert: invert(100%) !important;
         filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,) !important;
       }
     }
@@ -489,22 +484,23 @@
   }
   .twbr\:focus\:ring-4 {
     &:focus {
-      --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentColor);
+      --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentColor) !important;
       box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow) !important;
     }
   }
   .twbr\:focus\:ring-gray-700 {
     &:focus {
-      --tw-ring-color: var(--twbr-color-gray-700);
+      --tw-ring-color: var(--twbr-color-gray-700) !important;
     }
   }
   .twbr\:focus\:ring-red-900 {
     &:focus {
-      --tw-ring-color: var(--twbr-color-red-900);
+      --tw-ring-color: var(--twbr-color-red-900) !important;
     }
   }
   .twbr\:focus\:outline-hidden {
     &:focus {
+      --tw-outline-style: none !important;
       outline-style: none !important;
       @media (forced-colors: active) {
         outline: 2px solid transparent !important;

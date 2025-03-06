@@ -1,3 +1,13 @@
+# Version 4.15
+* Bugfix: Fixed text in settings.
+* Cards: When there is a gangup reduction in play, show a modifier with 0 value to inform abour it.
+* Translations: More Russian updates from Weblate.
+* Best practices: Prefer const to let in variables that are not reassigned.
+* Cards: Added support for AP global mods.
+* Cards: Added support for templates in shields and added some abilities to no skill list (Dan Brown).
+* Macros: Pass the item as a variable to macros to enhance compatibility with base system (Dan Brown).
+
+
 # Version 4.14 aka Searching elusive bugs
 * Bugfix (maybe): Try to avoid a bug reported on discord about an undefined variable after some unknown actions (Yeah, I know)
 * Cards: If there is no damage on a card, and some action has damage use that instead of 1.
