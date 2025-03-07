@@ -605,7 +605,7 @@ export function get_item_trait(item, actor) {
       check_skill_in_actor(actor, UNTRAINED_SKILLS) ||
       check_skill_in_actor(
         actor,
-        game.i18n.localize("BRSW.SkillName-untrained"),
+        [game.i18n.localize("BRSW.SkillName-untrained")],
       );
   }
   return skill;
