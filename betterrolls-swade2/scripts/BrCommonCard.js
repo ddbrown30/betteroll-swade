@@ -733,12 +733,16 @@ export class BrCommonCard {
    */
   create_basic_chat_data() {
     const whisper_data = getWhisperData();
+    //Get the actual token if we have one.
+    //This is different than this.token since that will fallback to grabbing the first token for the base actor rather than this specific actor
+    let token = canvas.tokens.get(this.actor.token?.id);
     const chatData = {
-      user: this.actor._idx,
+      user: game.user.id,
       content: "<p>Default content, likely an error in Better Rolls</p>",
       speaker: {
-        actor: this.actor._idx,
-        token: this.token?.id,
+        actor: this.actor._id,
+        scene: token?.scene.id,
+        token: token?.id,
         alias: this.actor.name,
       },
       blind: whisper_data.blind,
