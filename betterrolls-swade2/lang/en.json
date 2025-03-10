@@ -132,6 +132,8 @@
   "BRSW.expand-results_hint": "See the result details by default (you can still click on them to hide). (World)",
   "BRSW.expand-rolls": "Expand roll result details",
   "BRSW.expand-rolls_hint": "Enable this options to make the roll result details expanded, by default they are collapsed. (World)",
+  "BRSW.expand-descriptions": "Expand item description details",
+  "BRSW.expand-descriptions_hint": "Enable this options to make the item descriptions expanded, by default they are collapsed. (World)",
   "BRSW.ExpendedAmmo": "<p>{ammo_spent} shot has been expended from {item_name}. There are {final_ammo} shots remaining.</p>",
   "BRSW.ExpendedPoints": "<p>{pp} power points have been expended by {name}. {final_pp} remaining.</p>",
   "BRSW.ExpendPP": "Expend PP",

@@ -624,6 +624,14 @@ function register_settings_version2() {
     type: Boolean,
     config: true,
   });
+  SettingsUtils.registerBR2UserSetting("expand-descriptions", {
+    name: game.i18n.localize("BRSW.expand-descriptions"),
+    hint: game.i18n.localize("BRSW.expand-descriptions_hint"),
+    default: false,
+    scope: "world",
+    type: Boolean,
+    config: true,
+  });
   SettingsUtils.registerBR2UserSetting("collapse-chat-window", {
     name: game.i18n.localize("BRSW.collapse-chat-window"),
     hint: game.i18n.localize("BRSW.collapse-chat-window_hint"),

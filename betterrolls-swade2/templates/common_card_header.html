@@ -47,7 +47,7 @@
         {{/if}}
     </div>
 </div>
-<div class="brsw-description brsw-collapsed">{{{ description }}}</div>
+<div class="brsw-description {{# if collapse_descriptions }}brsw-collapsed{{/if}}">{{{ description }}}</div>
 <div style="border-bottom:2px groove #fff"></div>
 {{# if warning }}
 <div class="twbr:m-1 twbr:p-1 twbr:pl-4 twbr:pr-4 twbr:text-sm twbr:text-red-400
