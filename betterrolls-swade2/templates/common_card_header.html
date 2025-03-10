@@ -1,4 +1,4 @@
-<div id="brc-{{ id }}" class="twbr:flex twbr:flex-row twbr:mb-1 twbr:justify-between" style="border-bottom:2px groove #fff">
+<div id="brc-{{ id }}" class="twbr:flex twbr:flex-row twbr:mb-1 twbr:justify-between">
     <div>
         <img class="brws-actor-img twbr:w-8 twbr:h-8 twbr:min-w-8 twbr:rounded twbr:hover:ring-2
             twbr:hover:ring-offset-1 twbr:hover:cursor-pointer" src="{{{actor.img}}}"
@@ -13,8 +13,8 @@
     {{/if}}
     <div class="twbr:grow twbr:text-center twbr:align-middle twbr:text-lg twbr:relative
             twbr:overflow-clip twbr:hover:overflow-visible">
-        <span class="twbr:group brsw-header" style="border-bottom: 1px solid var(--color-underline-header);">
-            <a>{{header.title}}</a><i class="brsw-repeat-card fas fa-redo twbr:hover:ring-2
+        <span class="twbr:group" style="border-bottom: 1px solid var(--color-underline-header);">
+            <a class="brsw-collapse-button" data-collapse="brsw-description">{{header.title}}</a><i class="brsw-repeat-card fas fa-redo twbr:hover:ring-2
             twbr:hover:ring-offset-1 twbr:hover:cursor-pointer"></i>
             {{#unless vehicle_actor}}<i class="brsw-owner-trusted-only brsw-save-macro fa fa-save twbr:hover:ring-2
             twbr:hover:ring-offset-1 twbr:hover:cursor-pointer"></i>{{/unless}}
@@ -28,7 +28,6 @@
                 {{{ tooltip }}}
             </div>
             {{/if}}
-            <div class='card-content' style='display: none'>{{{ description }}}</div>
         </span>
     </div>
     <div class="twbr:flex">
@@ -48,6 +47,8 @@
         {{/if}}
     </div>
 </div>
+<div class="brsw-description brsw-collapsed">{{{ description }}}</div>
+<div style="border-bottom:2px groove #fff"></div>
 {{# if warning }}
 <div class="twbr:m-1 twbr:p-1 twbr:pl-4 twbr:pr-4 twbr:text-sm twbr:text-red-400
             twbr:rounded-lg twbr:bg-gray-800">

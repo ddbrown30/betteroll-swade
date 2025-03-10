@@ -240,7 +240,8 @@ export function activate_common_listeners(br_card, html) {
   html_jquery
     .find(".brws-selectable")
     .click((ev) => manage_selectable_click(ev, br_card.message));
-  manage_collapsables(html_jquery);
+  // Collapsibles
+  manage_collapsables(html_jquery, br_card.message);
   // Old rolls
   html_jquery.find(".brsw-old-roll").click(async (ev) => {
     await old_roll_clicked(ev, br_card);
@@ -347,20 +348,6 @@ export function activate_common_listeners(br_card, html) {
   html_jquery.find(".brsw-popout-button").click(() => {
     br_card.show_popup();
   });
-  // Add the logic for the description toggle
-  html_jquery.on('click', '.brsw-header', (event) => {
-    // Local function to trigger the popout to resize as we expand/collapse the description
-    let update_popout = function() {
-      for (const app of Object.values(br_card.message.apps)) {
-        if (app.constructor.name === "ChatPopout") {
-          app.setPosition();
-        }
-      }
-    }
-    $(event.currentTarget).parent()
-      .find('.card-content')
-      .slideToggle({duration: 200, done: update_popout, progress: update_popout});
-  });
 }
 
 function create_macro_command_from_card(br_card) {
@@ -411,7 +398,7 @@ function create_macro_command_from_card(br_card) {
  * Manage collapsable fields
  * @param html
  */
-export function manage_collapsables(html) {
+export function manage_collapsables(html, message) {
   const collapse_buttons = html.find(".brsw-collapse-button");
   collapse_buttons.click(async (e) => {
     e.preventDefault();
@@ -428,6 +415,12 @@ export function manage_collapsables(html) {
       const button = clicked.find(".fas.fa-caret-right");
       button.removeClass("fa-caret-right");
       button.addClass("fa-caret-down");
+    }
+    //Call setPosition on any popouts so that they resize to fit the new content
+    for (const app of Object.values(message.apps)) {
+      if (app.constructor.name === "ChatPopout") {
+        app.setPosition();
+      }
     }
   });
 }
