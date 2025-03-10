@@ -84,7 +84,7 @@ export function create_common_card(origin, render_data, template) {
     actor = origin;
   }
   if (render_data.tooltip) {
-    render_data.tooltip = // Limit description size.
+    render_data.tooltip = // Limit tooltip size.
       render_data.tooltip.length <
       SettingsUtils.getWorldSetting("max_tooltip_length")
         ? render_data.tooltip
@@ -205,19 +205,6 @@ function save_macro(br_card) {
  * @param {HTMLElement} html - html of the card
  */
 export function activate_common_listeners(br_card, html) {
-  
-  $(html).on('click', '.brsw-header', (event) => {
-    let updatePopout = function() {
-      for (const app of Object.values(br_card.message.apps)) {
-        if (app.constructor.name === "ChatPopout") {
-          app.setPosition();
-        }
-      }
-    }
-    $(event.currentTarget).parent()
-      .find('.card-content')
-      .slideToggle({duration: 200, done: updatePopout, progress: updatePopout});
-  });
 
   const html_jquery = $(html); // Get sure html is a Jquery element.
   // The message will be rendered at creation and each time a flag is added
@@ -359,6 +346,20 @@ export function activate_common_listeners(br_card, html) {
   // Popout card
   html_jquery.find(".brsw-popout-button").click(() => {
     br_card.show_popup();
+  });
+  // Add the logic for the description toggle
+  html_jquery.on('click', '.brsw-header', (event) => {
+    // Local function to trigger the popout to resize as we expand/collapse the description
+    let update_popout = function() {
+      for (const app of Object.values(br_card.message.apps)) {
+        if (app.constructor.name === "ChatPopout") {
+          app.setPosition();
+        }
+      }
+    }
+    $(event.currentTarget).parent()
+      .find('.card-content')
+      .slideToggle({duration: 200, done: update_popout, progress: update_popout});
   });
 }
 
