@@ -81,6 +81,10 @@
     display: flex;
 }
 
+.brsw-header-img {
+    max-width: unset;
+}
+
 /* Styles for the critical failure card */
 
 .brsw-fumble-row {

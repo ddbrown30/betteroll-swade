@@ -83,11 +83,11 @@ export function create_common_card(origin, render_data, template) {
   } else {
     actor = origin;
   }
-  if (render_data.description) {
-    render_data.description = // Limit description size.
-      render_data.description.length <
+  if (render_data.tooltip) {
+    render_data.tooltip = // Limit description size.
+      render_data.tooltip.length <
       SettingsUtils.getWorldSetting("max_tooltip_length")
-        ? render_data.description
+        ? render_data.tooltip
         : null;
   }
   const br_message = new BrCommonCard(undefined);
@@ -205,6 +205,20 @@ function save_macro(br_card) {
  * @param {HTMLElement} html - html of the card
  */
 export function activate_common_listeners(br_card, html) {
+  
+  $(html).on('click', '.brsw-header', (event) => {
+    let updatePopout = function() {
+      for (const app of Object.values(br_card.message.apps)) {
+        if (app.constructor.name === "ChatPopout") {
+          app.setPosition();
+        }
+      }
+    }
+    $(event.currentTarget).parent()
+      .find('.card-content')
+      .slideToggle({duration: 200, done: updatePopout, progress: updatePopout});
+  });
+
   const html_jquery = $(html); // Get sure html is a Jquery element.
   // The message will be rendered at creation and each time a flag is added
   // Actor will be undefined if this is called before flags are set

@@ -1,61 +1,62 @@
-<div id="brc-{{ id }}" class="twbr:flex twbr:flex-row twbr:mb-1 twbr:justify-between">
+<div id="brc-{{ id }}" class="twbr:flex twbr:flex-row twbr:mb-1 twbr:justify-between" style="border-bottom:2px groove #fff">
     <div>
         <img class="brws-actor-img twbr:w-8 twbr:h-8 twbr:min-w-8 twbr:rounded twbr:hover:ring-2
             twbr:hover:ring-offset-1 twbr:hover:cursor-pointer" src="{{{actor.img}}}"
             alt="Actor portrait">
     </div>
     {{#if vehicle_actor}}
-        <div class="twbr:ml-1">
-            <img class="brws-vehicle-img twbr:w-8 twbr:h-8 twbr:min-w-8 twbr:rounded twbr:hover:ring-2
+    <div class="twbr:ml-1">
+        <img class="brws-vehicle-img twbr:w-8 twbr:h-8 twbr:min-w-8 twbr:rounded twbr:hover:ring-2
                 twbr:hover:ring-offset-1 twbr:hover:cursor-pointer" src="{{{vehicle_actor.img}}}"
                 alt="Vehicle portrait">
-            </div>
+    </div>
     {{/if}}
     <div class="twbr:grow twbr:text-center twbr:align-middle twbr:text-lg twbr:relative
             twbr:overflow-clip twbr:hover:overflow-visible">
-        <span class="twbr:group">
-            {{header.title}}<i class="brsw-repeat-card fas fa-redo twbr:hover:ring-2
+        <span class="twbr:group brsw-header" style="border-bottom: 1px solid var(--color-underline-header);">
+            <a>{{header.title}}</a><i class="brsw-repeat-card fas fa-redo twbr:hover:ring-2
             twbr:hover:ring-offset-1 twbr:hover:cursor-pointer"></i>
             {{#unless vehicle_actor}}<i class="brsw-owner-trusted-only brsw-save-macro fa fa-save twbr:hover:ring-2
             twbr:hover:ring-offset-1 twbr:hover:cursor-pointer"></i>{{/unless}}
-            {{# if description}}
+            {{# if tooltip}}
                 <div id="tooltip-description" role="tooltip"
                      class="twbr:w-56 twbr:opacity-0 twbr:h-0 twbr:absolute twbr:transition-opacity
                       twbr:group-hover:visible twbr:group-hover:delay-1000 twbr:group-hover:duration-500
                       twbr:group-hover:opacity-100 twbr:group-hover:h-auto twbr:px-3 twbr:py-2
                       twbr:text-sm twbr:font-medium twbr:text-white twbr:bg-gray-900 twbr:rounded-lg
                       twbr:shadow-sm twbr:z-10">
-                    {{{ description }}}
-                </div>
+                {{{ tooltip }}}
+            </div>
             {{/if}}
+            <div class='card-content' style='display: none'>{{{ description }}}</div>
         </span>
     </div>
     <div class="twbr:flex">
         {{# if header.img }}
-            <img class="brsw-header-img twbr:w-8 twbr:h-8 twbr:rounded twbr:hover:ring-2
+        <img class="brsw-header-img twbr:w-8 twbr:h-8 twbr:rounded twbr:hover:ring-2
                     twbr:hover:ring-offset-1 twbr:hover:cursor-pointer" src="{{{header.img}}}"
                 alt="Item image">
         {{/if}}
         {{# if show_popup_button }}
-            <button class="brsw-popout-button twbr:font-medium twbr:ml-1 twbr:w-8 twbr:h-8 twbr:min-w-8 twbr:align-top
+        <button class="brsw-popout-button twbr:font-medium twbr:ml-1 twbr:w-8 twbr:h-8 twbr:min-w-8 twbr:align-top
                     twbr:focus:outline-hidden twbr:bg-white twbr:rounded twbr:border twbr:border-solid
                     twbr:focus:z-10 twbr:focus:ring-4 twbr:focus:ring-gray-700 twbr:text-gray-800
                     twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700"
                     title="{{ localize "BRSW.PopoutCard" }}">
-                <i class="fas fa-share-from-square"></i>
-            </button>
+            <i class="fas fa-share-from-square"></i>
+        </button>
         {{/if}}
     </div>
 </div>
 {{# if warning }}
-    <div class="twbr:m-1 twbr:p-1 twbr:pl-4 twbr:pr-4 twbr:text-sm twbr:text-red-400
+<div class="twbr:m-1 twbr:p-1 twbr:pl-4 twbr:pr-4 twbr:text-sm twbr:text-red-400
             twbr:rounded-lg twbr:bg-gray-800">
-        {{{ warning }}}
-    </div>
+    {{{ warning }}}
+</div>
 {{/if}}
 {{# if extra_text }}
-    <div class="twbr:m-1 twbr:p-1 twbr:pl-4 twbr:pr-4 twbr:text-sm twbr:text-gray-300
+<div class="twbr:m-1 twbr:p-1 twbr:pl-4 twbr:pr-4 twbr:text-sm twbr:text-gray-300
             twbr:rounded-lg twbr:bg-gray-800">
-        {{{extra_text}}}
-    </div>
+    {{{extra_text}}}
+</div>
 {{/if}}
