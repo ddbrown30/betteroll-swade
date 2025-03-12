@@ -735,13 +735,9 @@ export class BrCommonCard {
   create_basic_chat_data() {
     const whisper_data = getWhisperData();
     const chatData = {
-      user: this.actor._idx,
+      user: game.user.id,
       content: "<p>Default content, likely an error in Better Rolls</p>",
-      speaker: {
-        actor: this.actor._idx,
-        token: this.token?.id,
-        alias: this.actor.name,
-      },
+      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
       blind: whisper_data.blind,
       flags: { core: { canPopout: true } },
     };
