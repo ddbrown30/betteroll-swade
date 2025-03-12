@@ -140,18 +140,15 @@ async function create_item_card(origin, item_id, { actions_stored = {} } = {}) {
     notes = item.system.notes;
   }
   let { description, damage } = item.system;
-  description =
-    description.length <= SettingsUtils.getWorldSetting("max_tooltip_length")
-      ? description
-      : "";
+  let tooltip = "";
   if (item.type === "weapon") {
-    description = `<p>${game.i18n.localize("BRSW.Dmg")}: ${
+    tooltip = `<p>${game.i18n.localize("BRSW.Dmg")}: ${
       item.system.damage
     } ${game.i18n.localize("BRSW.ApShort")}: ${
       item.system.ap
     } ${game.i18n.localize("BRSW.Shots")}: ${item.system.currentShots}/${
       item.system.shots
-    }</p>${description}`;
+    }</p>${tooltip}`;
   }
   let possible_default_dmg_action;
   const ammon_enabled = parseInt(item.system.shots) || item.system.ammo;
@@ -188,6 +185,7 @@ async function create_item_card(origin, item_id, { actions_stored = {} } = {}) {
       powerpoints: power_points,
       used_shots: 0,
       description: description,
+      tooltip: tooltip,
       swade_templates: get_template_from_item(item),
     },
     "modules/betterrolls-swade2/templates/item_card.html",

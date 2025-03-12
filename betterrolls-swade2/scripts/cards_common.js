@@ -83,11 +83,11 @@ export function create_common_card(origin, render_data, template) {
   } else {
     actor = origin;
   }
-  if (render_data.description) {
-    render_data.description = // Limit description size.
-      render_data.description.length <
+  if (render_data.tooltip) {
+    render_data.tooltip = // Limit tooltip size.
+      render_data.tooltip.length <
       SettingsUtils.getWorldSetting("max_tooltip_length")
-        ? render_data.description
+        ? render_data.tooltip
         : null;
   }
   const br_message = new BrCommonCard(undefined);
@@ -205,6 +205,7 @@ function save_macro(br_card) {
  * @param {HTMLElement} html - html of the card
  */
 export function activate_common_listeners(br_card, html) {
+
   const html_jquery = $(html); // Get sure html is a Jquery element.
   // The message will be rendered at creation and each time a flag is added
   // Actor will be undefined if this is called before flags are set
@@ -239,7 +240,8 @@ export function activate_common_listeners(br_card, html) {
   html_jquery
     .find(".brws-selectable")
     .click((ev) => manage_selectable_click(ev, br_card.message));
-  manage_collapsables(html_jquery);
+  // Collapsibles
+  manage_collapsables(html_jquery, br_card.message);
   // Old rolls
   html_jquery.find(".brsw-old-roll").click(async (ev) => {
     await old_roll_clicked(ev, br_card);
@@ -396,7 +398,7 @@ function create_macro_command_from_card(br_card) {
  * Manage collapsable fields
  * @param html
  */
-export function manage_collapsables(html) {
+export function manage_collapsables(html, message) {
   const collapse_buttons = html.find(".brsw-collapse-button");
   collapse_buttons.click(async (e) => {
     e.preventDefault();
@@ -413,6 +415,12 @@ export function manage_collapsables(html) {
       const button = clicked.find(".fas.fa-caret-right");
       button.removeClass("fa-caret-right");
       button.addClass("fa-caret-down");
+    }
+    //Call setPosition on any popouts so that they resize to fit the new content
+    for (const app of Object.values(message.apps)) {
+      if (app.constructor.name === "ChatPopout") {
+        app.setPosition();
+      }
     }
   });
 }

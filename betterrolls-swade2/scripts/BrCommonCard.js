@@ -551,6 +551,7 @@ export class BrCommonCard {
     render_data.collapse_results =
       !SettingsUtils.getUserSetting("expand-results");
     render_data.collapse_rolls = !SettingsUtils.getUserSetting("expand-rolls");
+    render_data.collapse_descriptions = !SettingsUtils.getUserSetting("expand-descriptions");
     if (template) {
       render_data.template = template;
     }
