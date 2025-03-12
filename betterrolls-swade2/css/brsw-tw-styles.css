@@ -1,4 +1,4 @@
-/*! tailwindcss v4.0.11 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.0.13 | MIT License | https://tailwindcss.com */
 @layer theme, base, components, utilities;
 @layer theme {
   :root, :host {
@@ -11,6 +11,7 @@
     --twbr-color-slate-400: oklch(0.704 0.04 256.788);
     --twbr-color-gray-200: oklch(0.928 0.006 264.531);
     --twbr-color-gray-300: oklch(0.872 0.01 258.338);
+    --twbr-color-gray-400: oklch(0.707 0.022 261.325);
     --twbr-color-gray-500: oklch(0.551 0.027 264.364);
     --twbr-color-gray-600: oklch(0.446 0.03 256.802);
     --twbr-color-gray-700: oklch(0.373 0.034 259.733);
@@ -31,6 +32,7 @@
     --twbr-font-weight-semibold: 600;
     --twbr-font-weight-bold: 700;
     --twbr-radius-lg: 0.5rem;
+    --twbr-radius-xl: 0.75rem;
     --twbr-default-transition-duration: 150ms;
     --twbr-default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -185,6 +187,10 @@
     border-top-left-radius: 0.25rem !important;
     border-top-right-radius: 0.25rem !important;
   }
+  .twbr\:rounded-t-xl {
+    border-top-left-radius: var(--twbr-radius-xl) !important;
+    border-top-right-radius: var(--twbr-radius-xl) !important;
+  }
   .twbr\:border {
     border-style: var(--tw-border-style) !important;
     border-width: 1px !important;
@@ -201,6 +207,10 @@
     border-bottom-style: var(--tw-border-style) !important;
     border-bottom-width: 0px !important;
   }
+  .twbr\:border-b-2 {
+    border-bottom-style: var(--tw-border-style) !important;
+    border-bottom-width: 2px !important;
+  }
   .twbr\:border-none {
     --tw-border-style: none !important;
     border-style: none !important;
@@ -211,6 +221,9 @@
   }
   .twbr\:border-gray-200 {
     border-color: var(--twbr-color-gray-200) !important;
+  }
+  .twbr\:border-gray-400 {
+    border-color: var(--twbr-color-gray-400) !important;
   }
   .twbr\:border-gray-600 {
     border-color: var(--twbr-color-gray-600) !important;

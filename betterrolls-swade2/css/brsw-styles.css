@@ -38,7 +38,6 @@
     line-height: 1.7;
 }
 
-
 .brws-selectable.brws-selected {
     border-color: red red rgb(255, 100, 0);
     border-style: solid;
@@ -50,7 +49,6 @@
     background: white;
     color: black;
 }
-
 
 .brws-selectable.brws-selected.brws-permanent-selected {
     background: red;
@@ -96,7 +94,7 @@
 
 /* Styles for the chat form */
 
-.brsw-chat-form{
+.brsw-chat-form {
     flex: 0;
 }
 
@@ -298,7 +296,7 @@
     border-bottom: 1px solid #ff0000;
 }
 
-.brsw-tab-content{
+.brsw-tab-content {
     margin-bottom: 1em;
 }
 
@@ -318,3 +316,7 @@
     visibility: visible;
 }
 
+/* Tailwind doesn't support Groove */
+.brsw-groove-border {
+    border-bottom-style: groove;
+}
