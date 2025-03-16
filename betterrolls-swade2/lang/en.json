@@ -494,6 +494,7 @@
   "BRSW.UseSystemInjuryTableHint": "Use the system injury table instead of BR2 provided one. Note that system table doesn't add active effects for the injuries, so you probably don't want to use it unless you want to use some custom table. (World).",
   "BRSW.VigorRoll": "Roll vigor",
   "BRSW.WildAttack": "Wild Attack (+2)",
+  "BRSW.WildAttackEffect": "Wild Attack",
   "BRSW.WorldGlobalMenu": "Configure global actions",
   "BRSW.WorldGlobalMenuHint": "Use this window to create global actions for this world. (World)",
   "BRSW.WorldGlobalMenuLabel": "World Global actions",
