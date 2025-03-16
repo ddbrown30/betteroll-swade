@@ -1003,19 +1003,7 @@ export async function roll_trait(br_card, trait_dice, dice_label, extra_data) {
   }
   if (extra_data.total_aiming_ignorable_penalties > 0 && extra_data.aiming_ignore_data.length > 0) {
     //We are aiming and we have penalties that we can ignore
-    //Loop over our aiming modifiers and adjust them to reflect the ignored penalties
-    extra_data.aiming_ignore_data = extra_data.aiming_ignore_data.sort((a, b) => a.ignore_mod - b.ignore_mod);
-    for (let ignore_data of extra_data.aiming_ignore_data) {
-      if (ignore_data.modifier.value >= extra_data.total_aiming_ignorable_penalties) {
-        //The default skill mod is more than we would ignore so just use that
-        continue;
-      }
-      ignore_data.modifier.value = Math.min(extra_data.total_aiming_ignorable_penalties, ignore_data.ignore_mod);
-      extra_data.total_aiming_ignorable_penalties -= ignore_data.modifier.value;
-      if (extra_data.total_aiming_ignorable_penalties == 0) {
-        break;
-      }
-    }
+    apply_aiming_ignore(extra_data);
   }
   br_card.trait_roll.modifiers = roll_options.modifiers;
   if (extra_data.tn) {
@@ -1426,5 +1414,26 @@ export function add_aiming_ignore_modifier(extra_data, modifier, ignore_mod) {
     extra_data.aiming_ignore_data.push(aiming_ignore_data);
   } else {
     extra_data.aiming_ignore_data = [aiming_ignore_data];
+  }
+}
+
+/**
+ * Adjust our action modifiers to reflect ignored penalties
+ * @param extra_data
+ */
+function apply_aiming_ignore(extra_data) {
+  //Sort the list so that the smaller mods are used first. This ensures we maximize the benefit
+  extra_data.aiming_ignore_data = extra_data.aiming_ignore_data.sort((a, b) => a.ignore_mod - b.ignore_mod);
+  //Loop over our aiming modifiers and adjust them to reflect the ignored penalties
+  for (let ignore_data of extra_data.aiming_ignore_data) {
+    if (ignore_data.modifier.value >= extra_data.total_aiming_ignorable_penalties) {
+      //The default skill mod is more than we would ignore so just use that
+      continue;
+    }
+    ignore_data.modifier.value = Math.min(extra_data.total_aiming_ignorable_penalties, ignore_data.ignore_mod);
+    extra_data.total_aiming_ignorable_penalties -= ignore_data.modifier.value;
+    if (extra_data.total_aiming_ignorable_penalties == 0) {
+      break;
+    }
   }
 }
