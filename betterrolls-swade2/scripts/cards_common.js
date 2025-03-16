@@ -763,6 +763,7 @@ async function get_new_roll_options(
         objetive,
         origin_token,
         br_card.item,
+        extra_data,
       );
       br_card.trait_roll.tn = target_data.value;
       br_card.trait_roll.tn_reason = target_data.reason;
@@ -999,6 +1000,22 @@ export async function roll_trait(br_card, trait_dice, dice_label, extra_data) {
     br_card.trait_roll.wild_die = true;
   } else {
     br_card.trait_roll.wild_die = false;
+  }
+  if (extra_data.total_aiming_ignorable_penalties > 0 && extra_data.aiming_ignore_data.length > 0) {
+    //We are aiming and we have penalties that we can ignore
+    //Loop over our aiming modifiers and adjust them to reflect the ignored penalties
+    extra_data.aiming_ignore_data = extra_data.aiming_ignore_data.sort((a, b) => a.ignore_mod - b.ignore_mod);
+    for (let ignore_data of extra_data.aiming_ignore_data) {
+      if (ignore_data.modifier.value >= extra_data.total_aiming_ignorable_penalties) {
+        //The default skill mod is more than we would ignore so just use that
+        continue;
+      }
+      ignore_data.modifier.value = Math.min(extra_data.total_aiming_ignorable_penalties, ignore_data.ignore_mod);
+      extra_data.total_aiming_ignorable_penalties -= ignore_data.modifier.value;
+      if (extra_data.total_aiming_ignorable_penalties == 0) {
+        break;
+      }
+    }
   }
   br_card.trait_roll.modifiers = roll_options.modifiers;
   if (extra_data.tn) {
@@ -1277,6 +1294,16 @@ export function process_common_actions(action, extra_data, macros, actor) {
     } else {
       extra_data.modifiers = [modifier];
     }
+    if (action.aimingIgnoreMod > 0) {
+      //This is an aiming type action which can ignore certain penalties
+      //Save some data about it so we can process it later
+      add_aiming_ignore_modifier(extra_data, modifier, action.aimingIgnoreMod);
+    } else if (action.aiming_ignores) {
+      //This is an action that can be ignored by aiming
+      //Save some data about it so we can process it later
+      extra_data.total_aiming_ignorable_penalties = extra_data.total_aiming_ignorable_penalties ?? 0;
+      extra_data.total_aiming_ignorable_penalties += Math.abs(modifier.value);
+    }
   }
   if (action.rerollSkillMod) {
     //Reroll
@@ -1383,4 +1410,21 @@ export function process_minimum_str_modifiers(item, actor, name) {
     );
   }
   return new_mod;
+}
+
+/**
+ * Added a penalty that can be ignored by aiming to the extra_data
+ * @param extra_data
+ * @param modifier
+ */
+export function add_aiming_ignore_modifier(extra_data, modifier, ignore_mod) {
+  let aiming_ignore_data = {
+    modifier: modifier,
+    ignore_mod: ignore_mod
+  };
+  if (extra_data.aiming_ignore_data) {
+    extra_data.aiming_ignore_data.push(aiming_ignore_data);
+  } else {
+    extra_data.aiming_ignore_data = [aiming_ignore_data];
+  }
 }

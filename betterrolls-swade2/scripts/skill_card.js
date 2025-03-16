@@ -264,6 +264,7 @@ function calculate_generic_distance_modifier(
   target_token,
   skill,
   tn,
+  extra_data,
 ) {
   const range = item.system.range.split("/");
   if (origin_token.document.elevation !== target_token.document.elevation) {
@@ -311,6 +312,9 @@ function calculate_generic_distance_modifier(
         -distance_penalty,
       ),
     );
+    //Range penalties can be ignored by aiming so add it to the total
+    extra_data.total_aiming_ignorable_penalties = extra_data.total_aiming_ignorable_penalties ?? 0;
+    extra_data.total_aiming_ignorable_penalties += distance_penalty;
   }
 }
 
@@ -329,6 +333,7 @@ export function calculate_distance(
   item,
   tn,
   skill,
+  extra_data,
 ) {
   if (item.system.isVehicular && origin_token.actor.type !== "vehicle") {
     return false;
@@ -362,6 +367,7 @@ export function calculate_distance(
         target_token,
         skill,
         tn,
+        extra_data,
       );
     }
   }
@@ -405,6 +411,7 @@ export async function get_tn_from_token(
   target_token,
   origin_token,
   item,
+  extra_data,
 ) {
   const tn = {
     reason: game.i18n.localize("BRSW.Default"),
@@ -424,6 +431,7 @@ export async function get_tn_from_token(
       item,
       tn,
       skill,
+      extra_data,
     );
   }
   if (use_parry_as_tn) {
@@ -437,7 +445,7 @@ export async function get_tn_from_token(
   // Size modifiers
   if (origin_token && target_token) {
     if (!(item?.system?.isVehicular && origin_token.actor.type !== "vehicle")) {
-      getScaleModifier(origin_token, target_token, tn);
+      getScaleModifier(origin_token, target_token, tn, extra_data);
     }
   }
   if (
@@ -458,7 +466,7 @@ export async function get_tn_from_token(
  * Get the scale modifier
  **/
 
-function getScaleModifier(origin_token, target_token, tn) {
+function getScaleModifier(origin_token, target_token, tn, extra_data) {
   const origin_scale_mod = sizeToScale(
     origin_token?.actor?.system?.stats?.size || 1,
   );
@@ -474,6 +482,7 @@ function getScaleModifier(origin_token, target_token, tn) {
     );
     // If the scale mod is negative, check if the attacking actor has the swat ability
     if (scale_mod < 0 && origin_token) {
+      let unignored_penalty = scale_mod * -1;
       const swat = origin_token.actor.items.find((item) => {
         return (
           item.type === "ability" &&
@@ -485,9 +494,15 @@ function getScaleModifier(origin_token, target_token, tn) {
       if (swat) {
         // The swat ability ignores up to 4 points of scale penalties
         const swat_mod = scale_mod < -4 ? 4 : scale_mod * -1;
+        unignored_penalty -= swat_mod;
         tn.modifiers.push(
           new TraitModifier(game.i18n.localize("BRSW.Swat"), swat_mod),
         );
+      }
+      if (unignored_penalty > 0) {
+        //Scale penalties can be ignored by aiming so add it to the total
+        extra_data.total_aiming_ignorable_penalties = extra_data.total_aiming_ignorable_penalties ?? 0;
+        extra_data.total_aiming_ignorable_penalties += unignored_penalty;
       }
     }
   }
