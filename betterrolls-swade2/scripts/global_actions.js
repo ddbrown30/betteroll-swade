@@ -158,7 +158,7 @@ export function get_actions(item, actor) {
  * @param item item been checked
  * @param actor actor been checked
  */
-function check_selector(type, value, item, actor) {
+export function check_selector(type, value, item, actor) {
   let selected = false;
   if (type === "skill") {
     if (item.type === "attribute") {
@@ -224,7 +224,7 @@ function check_selector(type, value, item, actor) {
   } else if (type === "actor_has_effect") {
     // noinspection AnonymousFunctionJS
     const effect = actor.appliedEffects.find((effect) =>
-      effect.name.toLowerCase().includes(value.toLowerCase()),
+      effect.name.toLowerCase().includes(game.i18n.localize(value).toLowerCase()),
     );
     selected = effect ? !effect.disabled : false;
   } else if (type === "actor_has_edge") {

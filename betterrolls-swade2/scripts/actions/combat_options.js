@@ -12,6 +12,10 @@ export const COMBAT_OPTIONS = [
     selector_value: "fighting",
     self_add_status: "vulnerable",
     group: "BRSW.AttackOption",
+    defaultChecked: {
+      selector_type: "actor_has_effect",
+      selector_value: "BRSW.WildAttackEffect",
+    },
   },
   {
     id: "DROP",

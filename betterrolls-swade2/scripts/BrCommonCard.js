@@ -5,7 +5,7 @@
 import { TraitRoll } from "./rolls.js";
 import { broofa, getWhisperData, SettingsUtils } from "./utils.js";
 import { get_item_trait, trait_from_string } from "./item_card.js";
-import { get_actions } from "./global_actions.js";
+import { get_actions, check_selector } from "./global_actions.js";
 import { brAction } from "./actions.js";
 import { are_bennies_available, trait_to_string } from "./cards_common.js";
 
@@ -354,7 +354,16 @@ export class BrCommonCard {
       }
       const new_action = new brAction(name, global_action);
       if (global_action.hasOwnProperty("defaultChecked")) {
-        new_action.selected = true;
+        if (global_action.defaultChecked == "on") {
+          new_action.selected = true;
+        } else if (global_action.defaultChecked.hasOwnProperty("selector_type")) {
+          new_action.selected = check_selector(
+            global_action.defaultChecked.selector_type,
+            global_action.defaultChecked.selector_value,
+            item,
+            this.actor,
+          );
+        }
       }
       this.action_groups[group_name_id].actions.push(new_action);
     }
