@@ -11,6 +11,7 @@
   "BRSW.AddD6Damage": "Add a d6 to damage",
   "BRSW.AddDamage": "Add fixed damage",
   "BRSW.AddModifier": "Add modifier",
+  "BRSW.Aiming": "Aiming",
   "BRSW.AllSoaked": "<p>but soaked all wounds, removing shaken</p>",
   "BRSW.Alt_click_action": "Alt click action",
   "BRSW.Alt_click_hint": "Select what happens when you click a name while pressing Alt (World)",

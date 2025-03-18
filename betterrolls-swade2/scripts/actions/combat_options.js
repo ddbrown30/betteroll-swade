@@ -2,6 +2,20 @@
 
 export const COMBAT_OPTIONS = [
   {
+    id: "AIM",
+    name: "BRSW.Aiming",
+    button_name: "BRSW.Aiming",
+    skillMod: 2,
+    aimingIgnoreMod: 4,
+    selector_type: "skill",
+    selector_value: "BRSW.Shooting",
+    group: "BRSW.AttackOption",
+    defaultChecked: {
+      selector_type: "actor_has_effect",
+      selector_value: "BRSW.Aiming",
+    },
+  },
+  {
     id: "WTK",
     name: "BRSW.WildAttack",
     button_name: "BRSW.WildAttack",
@@ -38,6 +52,7 @@ export const COMBAT_OPTIONS = [
     change_location: "arms",
     group: "BRSW.AttackOptionCalledShot",
     group_single: true,
+    aiming_ignores: true,
   },
   {
     id: "CS-HEAD",
@@ -51,6 +66,7 @@ export const COMBAT_OPTIONS = [
     change_location: "head",
     group: "BRSW.AttackOptionCalledShot",
     group_single: true,
+    aiming_ignores: true,
   },
   {
     id: "CS-LEG",
@@ -62,6 +78,7 @@ export const COMBAT_OPTIONS = [
     change_location: "legs",
     group: "BRSW.AttackOptionCalledShot",
     group_single: true,
+    aiming_ignores: true,
   },
   {
     id: "1-LightCover",
@@ -80,6 +97,7 @@ export const COMBAT_OPTIONS = [
     ],
     group: "BRSW.Cover",
     group_single: true,
+    aiming_ignores: true,
   },
   {
     id: "2-MediumCover",
@@ -98,6 +116,7 @@ export const COMBAT_OPTIONS = [
     ],
     group: "BRSW.Cover",
     group_single: true,
+    aiming_ignores: true,
   },
   {
     id: "3-HeavyCover",
@@ -116,6 +135,7 @@ export const COMBAT_OPTIONS = [
     ],
     group: "BRSW.Cover",
     group_single: true,
+    aiming_ignores: true,
   },
   {
     id: "4-NearTotalCover",
@@ -134,6 +154,7 @@ export const COMBAT_OPTIONS = [
     ],
     group: "BRSW.Cover",
     group_single: true,
+    aiming_ignores: true,
   },
 
   {

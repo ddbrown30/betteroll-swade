@@ -60,7 +60,8 @@ export const SYSTEM_GLOBAL_ACTION = [
     id: "MARKSMAN",
     name: "BRSW.EdgeName-Marksman",
     button_name: "BRSW.EdgeName-Marksman",
-    skillMod: "+1",
+    skillMod: 1,
+    aimingIgnoreMod: 2,
     and_selector: [
       {
         selector_type: "actor_has_edge",
