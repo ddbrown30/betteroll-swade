@@ -1001,7 +1001,7 @@ export async function roll_trait(br_card, trait_dice, dice_label, extra_data) {
   } else {
     br_card.trait_roll.wild_die = false;
   }
-  if (extra_data.total_aiming_ignorable_penalties > 0 && extra_data.aiming_ignore_data.length > 0) {
+  if (extra_data.total_aiming_ignorable_penalties > 0 && extra_data.aiming_ignore_data?.length > 0) {
     //We are aiming and we have penalties that we can ignore
     apply_aiming_ignore(extra_data);
   }
