@@ -1,3 +1,12 @@
+# Version 4.16
+* Bugfix: Fixed a bug when searching for unskilled translations (Wrasal)
+* Bugfix: Better handling of untrained skills (Wrasal)
+* Cards: Change item description from a tooltip to an expandable section (Dan Brown)
+* Cards: Rework how the card gets the speaker to better align with base Foundry (Dan Brown)
+* Actions: Added support for aiming (Dan Brown)
+* Bugfix: Don't break when targeting a vehicle without operator.
+* Refactor: Remove lots of uneeded async code and use more const where possible.
+
 # Version 4.15
 * Bugfix: Fixed text in settings.
 * Cards: When there is a gangup reduction in play, show a modifier with 0 value to inform abour it.
