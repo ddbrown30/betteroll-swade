@@ -385,7 +385,7 @@ async function get_vehicle_tn(tn, target_token) {
   let operator_skill;
   const target_operator_id = target_token.actor.system.driver.id;
   const target_operator = await fromUuid(target_operator_id);
-  const operatorItems = target_operator.items;
+  const operatorItems = target_operator ? target_operator.items : [];
   const maneuveringSkill = target_token.actor.system.driver.skill;
   for (const value of operatorItems) {
     if (value.name === maneuveringSkill) {
