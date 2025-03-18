@@ -161,6 +161,7 @@ export function get_actor_from_ids(token_id, actor_id) {
   if (actor_id) {
     return game.actors.get(actor_id);
   }
+  return null;
 }
 
 /**
@@ -205,7 +206,6 @@ function save_macro(br_card) {
  * @param {HTMLElement} html - html of the card
  */
 export function activate_common_listeners(br_card, html) {
-
   const html_jquery = $(html); // Get sure html is a Jquery element.
   // The message will be rendered at creation and each time a flag is added
   // Actor will be undefined if this is called before flags are set
@@ -233,7 +233,7 @@ export function activate_common_listeners(br_card, html) {
       });
     });
   }
-  html_jquery.find(".brsw-selected-actions").on("click", async () => {
+  html_jquery.find(".brsw-selected-actions").on("click", () => {
     game.brsw.dialog.show_card(br_card);
   });
   // Selectable modifiers
@@ -312,7 +312,7 @@ export function activate_common_listeners(br_card, html) {
     await delete_modifier(br_card, parseInt(ev.currentTarget.dataset.index));
   });
   // Edit TNs
-  html_jquery.find(".brsw-edit-tn").click(async (ev) => {
+  html_jquery.find(".brsw-edit-tn").click((ev) => {
     const old_tn = ev.currentTarget.dataset.value;
     const tn_trans = game.i18n.localize("BRSW.TN");
     simple_form(
@@ -400,7 +400,7 @@ function create_macro_command_from_card(br_card) {
  */
 export function manage_collapsables(html, message) {
   const collapse_buttons = html.find(".brsw-collapse-button");
-  collapse_buttons.click(async (e) => {
+  collapse_buttons.click((e) => {
     e.preventDefault();
     e.stopPropagation();
     const clicked = $(e.currentTarget);
@@ -441,6 +441,7 @@ export async function manage_selectable_click(ev, message) {
   action.selected = !action.selected;
   await br_card.render();
   await br_card.save();
+  return null;
 }
 
 /**
@@ -503,7 +504,8 @@ export function get_roll_options(old_options) {
   const modifiers = old_options?.additionalMods || [];
   const dmg_modifiers = old_options?.dmgMods || [];
   const tn = old_options?.tn || 4;
-  const tn_reason = old_options?.tn_reason || game.i18n.localize("BRSW.Default");
+  const tn_reason =
+    old_options?.tn_reason || game.i18n.localize("BRSW.Default");
   let rof = old_options?.rof || 1;
   // We only check for modifiers when there are no old ones.
   if (!old_options?.hasOwnProperty("additionalMods")) {
@@ -550,12 +552,12 @@ export function trait_to_string(trait) {
 }
 
 export async function detect_fumble(has_wild_die, num_fumble_results, dice) {
-  if (num_fumble_results == 0) {
+  if (num_fumble_results === 0) {
     //No dice came up as a 1 so it's not possible to fumble
     return false;
   }
   if (!has_wild_die) {
-    if (dice.length == 1) {
+    if (dice.length === 1) {
       //The extra is only rolling a single trait die and it came up as 1
       //In this case, we need to roll an extra d6 to confirm if it's a fumble
       if (
@@ -575,7 +577,7 @@ export async function detect_fumble(has_wild_die, num_fumble_results, dice) {
   } else {
     //This roll does have a wild die so we need to check if it came up as a 1
     const wild_die = dice.find((d) => d.wild_die);
-    if (wild_die.raw_total != 1) {
+    if (wild_die.raw_total !== 1) {
       //It's not possible to fumble unless the wild die is a 1
       return false;
     }
@@ -591,7 +593,7 @@ export async function detect_fumble(has_wild_die, num_fumble_results, dice) {
  * Calculates the results of a roll
  * @param {[]} rolls A rolls list see BSWRoll doc
  */
-export async function calculate_damage_results(rolls) {
+export function calculate_damage_results(rolls) {
   let result = 0;
   for (const [index, roll] of rolls.entries()) {
     result = roll.result - roll.tn;
@@ -845,7 +847,7 @@ async function get_new_roll_options(
       0,
     );
     handling = Math.max(handling, -4); //Handling cannot be lower than -4
-    if (handling != 0) {
+    if (handling !== 0) {
       roll_options.modifiers.push(new TraitModifier("Handling", handling));
     }
   }
@@ -1001,7 +1003,10 @@ export async function roll_trait(br_card, trait_dice, dice_label, extra_data) {
   } else {
     br_card.trait_roll.wild_die = false;
   }
-  if (extra_data.total_aiming_ignorable_penalties > 0 && extra_data.aiming_ignore_data?.length > 0) {
+  if (
+    extra_data.total_aiming_ignorable_penalties > 0 &&
+    extra_data.aiming_ignore_data?.length > 0
+  ) {
     //We are aiming and we have penalties that we can ignore
     apply_aiming_ignore(extra_data);
   }
@@ -1289,7 +1294,8 @@ export function process_common_actions(action, extra_data, macros, actor) {
     } else if (action.aiming_ignores) {
       //This is an action that can be ignored by aiming
       //Save some data about it so we can process it later
-      extra_data.total_aiming_ignorable_penalties = extra_data.total_aiming_ignorable_penalties ?? 0;
+      extra_data.total_aiming_ignorable_penalties =
+        extra_data.total_aiming_ignorable_penalties ?? 0;
       extra_data.total_aiming_ignorable_penalties += Math.abs(modifier.value);
     }
   }
@@ -1371,6 +1377,7 @@ function get_actor_armor_minimum_strength(actor) {
       return penalty;
     }
   }
+  return 0;
 }
 
 /**
@@ -1406,9 +1413,9 @@ export function process_minimum_str_modifiers(item, actor, name) {
  * @param modifier
  */
 export function add_aiming_ignore_modifier(extra_data, modifier, ignore_mod) {
-  let aiming_ignore_data = {
+  const aiming_ignore_data = {
     modifier: modifier,
-    ignore_mod: ignore_mod
+    ignore_mod: ignore_mod,
   };
   if (extra_data.aiming_ignore_data) {
     extra_data.aiming_ignore_data.push(aiming_ignore_data);
@@ -1423,16 +1430,23 @@ export function add_aiming_ignore_modifier(extra_data, modifier, ignore_mod) {
  */
 function apply_aiming_ignore(extra_data) {
   //Sort the list so that the smaller mods are used first. This ensures we maximize the benefit
-  extra_data.aiming_ignore_data = extra_data.aiming_ignore_data.sort((a, b) => a.ignore_mod - b.ignore_mod);
+  extra_data.aiming_ignore_data = extra_data.aiming_ignore_data.sort(
+    (a, b) => a.ignore_mod - b.ignore_mod,
+  );
   //Loop over our aiming modifiers and adjust them to reflect the ignored penalties
-  for (let ignore_data of extra_data.aiming_ignore_data) {
-    if (ignore_data.modifier.value >= extra_data.total_aiming_ignorable_penalties) {
+  for (const ignore_data of extra_data.aiming_ignore_data) {
+    if (
+      ignore_data.modifier.value >= extra_data.total_aiming_ignorable_penalties
+    ) {
       //The default skill mod is more than we would ignore so just use that
       continue;
     }
-    ignore_data.modifier.value = Math.min(extra_data.total_aiming_ignorable_penalties, ignore_data.ignore_mod);
+    ignore_data.modifier.value = Math.min(
+      extra_data.total_aiming_ignorable_penalties,
+      ignore_data.ignore_mod,
+    );
     extra_data.total_aiming_ignorable_penalties -= ignore_data.modifier.value;
-    if (extra_data.total_aiming_ignorable_penalties == 0) {
+    if (extra_data.total_aiming_ignorable_penalties === 0) {
       break;
     }
   }
