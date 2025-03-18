@@ -599,12 +599,7 @@ export function get_item_trait(item, actor) {
     }
   }
   if (skill === undefined) {
-    skill =
-      check_skill_in_actor(actor, UNTRAINED_SKILLS) ||
-      check_skill_in_actor(
-        actor,
-        [game.i18n.localize("BRSW.SkillName-untrained")],
-      );
+    skill = check_skill_in_actor(actor, [...UNTRAINED_SKILLS, game.i18n.localize("BRSW.SkillName-untrained").toLowerCase()]);
   }
   return skill;
 }
@@ -637,7 +632,7 @@ export function trait_from_string(actor, trait_name) {
   }
   if (!skill) {
     // No skill was found, we try to find untrained
-    skill = check_skill_in_actor(actor, UNTRAINED_SKILLS);
+    skill = check_skill_in_actor(actor, [...UNTRAINED_SKILLS, game.i18n.localize("BRSW.SkillName-untrained").toLowerCase()]);
   }
   return skill;
 }
