@@ -139,17 +139,8 @@ async function create_item_card(origin, item_id, { actions_stored = {} } = {}) {
   if (item.system.notes && item.system.notes.length < 50) {
     notes = item.system.notes;
   }
-  let { description, damage } = item.system;
-  let tooltip = "";
-  if (item.type === "weapon") {
-    tooltip = `<p>${game.i18n.localize("BRSW.Dmg")}: ${
-      item.system.damage
-    } ${game.i18n.localize("BRSW.ApShort")}: ${
-      item.system.ap
-    } ${game.i18n.localize("BRSW.Shots")}: ${item.system.currentShots}/${
-      item.system.shots
-    }</p>${tooltip}`;
-  }
+  const description = item.system.description;
+  let damage = item.system.damage;
   let possible_default_dmg_action;
   const ammon_enabled = parseInt(item.system.shots) || item.system.ammo;
   const power_points =
@@ -157,22 +148,13 @@ async function create_item_card(origin, item_id, { actions_stored = {} } = {}) {
   const subtract_select = ammon_enabled
     ? SettingsUtils.getWorldSetting("default-ammo-management")
     : false;
-  const subtract_pp_select = power_points
-    ? SettingsUtils.getWorldSetting("default-pp-management")
-    : false;
   if (!damage && item.system.actions) {
-    for (const action in item.system.actions.additional) {
-      const current_action = item.system.actions.additional[action];
-      if (current_action.type === "damage" && current_action.override) {
-        damage = true;
-        break;
-      }
-    }
+    damage = check_for_actions_with_damage(item);
   }
   if (!damage && possible_default_dmg_action) {
     damage = possible_default_dmg_action;
   }
-  const br_message = await create_common_card(
+  const br_message = create_common_card(
     origin,
     {
       header: { type: "Item", title: item.name, img: item.img },
@@ -180,12 +162,14 @@ async function create_item_card(origin, item_id, { actions_stored = {} } = {}) {
       trait_id: trait ? trait.id || trait : false,
       ammo: ammon_enabled,
       subtract_selected: subtract_select,
-      subtract_pp: subtract_pp_select,
+      subtract_pp: power_points
+        ? SettingsUtils.getWorldSetting("default-pp-management")
+        : false,
       damage_rolls: [],
       powerpoints: power_points,
       used_shots: 0,
       description: description,
-      tooltip: tooltip,
+      tooltip: create_item_card_tooltip(item),
       swade_templates: get_template_from_item(item),
     },
     "modules/betterrolls-swade2/templates/item_card.html",
@@ -195,7 +179,32 @@ async function create_item_card(origin, item_id, { actions_stored = {} } = {}) {
   br_message.item_id = item_id;
   await br_message.render(actions_stored);
   await br_message.save();
-  // For the moment, assume that no roll is made if there is no skill. Hopefully, in the future, there'll be a better way.
+  call_create_item_card_hooks(item, br_message);
+  // eslint-disable-next-line consistent-return
+  return br_message;
+}
+
+function check_for_actions_with_damage(item) {
+  for (const action in item.system.actions.additional) {
+    const current_action = item.system.actions.additional[action];
+    if (current_action.type === "damage" && current_action.override) {
+      return true;
+      break;
+    }
+  }
+  return false;
+}
+
+function create_item_card_tooltip(item) {
+  let tooltip = "";
+  if (item.type === "weapon") {
+    tooltip = `<p>${game.i18n.localize("BRSW.Dmg")}: ${item.system.damage} ${game.i18n.localize("BRSW.ApShort")}: ${item.system.ap} ${game.i18n.localize("BRSW.Shots")}: ${item.system.currentShots}/${item.system.shots}</p>${tooltip}`;
+  }
+  return tooltip;
+}
+
+function call_create_item_card_hooks(item, br_message) {
+  // For the moment, assume that no roll is made if there is no skill. Hopefully, in the future, there will be a better way.
   if (
     (item.type === "gear" && item.system.actions.trait === "") ||
     item.system.actions?.trait.toLowerCase() === "none" ||
@@ -203,7 +212,6 @@ async function create_item_card(origin, item_id, { actions_stored = {} } = {}) {
   ) {
     Hooks.call("BRSW-CreateItemCardNoRoll", br_message);
   }
-  return br_message;
 }
 
 /**
