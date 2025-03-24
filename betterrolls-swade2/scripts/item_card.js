@@ -599,7 +599,10 @@ export function get_item_trait(item, actor) {
     }
   }
   if (skill === undefined) {
-    skill = check_skill_in_actor(actor, [...UNTRAINED_SKILLS, game.i18n.localize("BRSW.SkillName-untrained").toLowerCase()]);
+    skill = check_skill_in_actor(actor, [
+      ...UNTRAINED_SKILLS,
+      game.i18n.localize("BRSW.SkillName-untrained").toLowerCase(),
+    ]);
   }
   return skill;
 }
@@ -632,7 +635,10 @@ export function trait_from_string(actor, trait_name) {
   }
   if (!skill) {
     // No skill was found, we try to find untrained
-    skill = check_skill_in_actor(actor, [...UNTRAINED_SKILLS, game.i18n.localize("BRSW.SkillName-untrained").toLowerCase()]);
+    skill = check_skill_in_actor(actor, [
+      ...UNTRAINED_SKILLS,
+      game.i18n.localize("BRSW.SkillName-untrained").toLowerCase(),
+    ]);
   }
   return skill;
 }
@@ -1423,7 +1429,7 @@ export async function roll_dmg(
   if (conviction_modifier) {
     damage_roll.brswroll.modifiers.push(conviction_modifier);
   }
-  get_global_modifiers(expend_bennie, actor, damage_roll);
+  get_global_modifiers(expend_bennie, actor, damage_roll, damage_formulas);
   // Roll
   if (damage_formulas.explodes) {
     damage_formulas.damage = makeExplotable(damage_formulas.damage);
@@ -1460,7 +1466,12 @@ export async function roll_dmg(
   Hooks.call("BRSW-RollDamage", br_card, html);
 }
 
-function get_global_modifiers(expend_bennie, actor, damage_roll) {
+function get_global_modifiers(
+  expend_bennie,
+  actor,
+  damage_roll,
+  damage_formulas,
+) {
   if (expend_bennie && actor.system.stats.globalMods.bennyDamage.length) {
     for (const modifier of actor.system.stats.globalMods.bennyDamage) {
       damage_roll.brswroll.modifiers.push(
@@ -1469,7 +1480,7 @@ function get_global_modifiers(expend_bennie, actor, damage_roll) {
     }
   }
   for (const modifier of actor.system.stats.globalMods.ap) {
-    damage_roll.ap += modifier.value;
+    damage_formulas.ap += modifier.value;
     damage_roll.brswroll.modifiers.push(
       new DamageModifier(
         `${game.i18n.localize("BRSW.APModifier")}: ${modifier.label}`,
