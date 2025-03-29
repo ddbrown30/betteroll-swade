@@ -417,9 +417,11 @@ export function manage_collapsables(html, message) {
       button.addClass("fa-caret-down");
     }
     //Call setPosition on any popouts so that they resize to fit the new content
-    for (const app of Object.values(message.apps)) {
-      if (app.constructor.name === "ChatPopout") {
-        app.setPosition();
+    if (message) {
+      for (const app of Object.values(message.apps)) {
+        if (app.constructor.name === "ChatPopout") {
+          app.setPosition();
+        }
       }
     }
   });
