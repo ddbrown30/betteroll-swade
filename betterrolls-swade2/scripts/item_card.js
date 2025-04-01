@@ -270,12 +270,7 @@ async function item_click_listener(ev, target) {
   ev.preventDefault();
   ev.stopPropagation();
   // First term for PC, second one for NPCs
-  const item_id =
-    ev.currentTarget.parentElement.dataset.itemId ||
-    ev.currentTarget.parentElement.parentElement.dataset.itemId ||
-    ev.currentTarget.parentElement.parentElement.parentElement.dataset.itemId ||
-    ev.currentTarget.parentElement.parentElement.parentElement.parentElement
-      .dataset.itemId;
+  const item_id = ev.currentTarget.closest("[data-item-id]").dataset.itemId;
   // Show card
   const br_card = await create_item_card(target, item_id);
   if (action.includes("dialog")) {
