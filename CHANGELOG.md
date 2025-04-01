@@ -1,3 +1,8 @@
+# Version 4.17
+* Bugfix: Global AP modifier is working (this time for real)
+* Bugfix: Fixed an error when collapsing modifiers (Dan Brown)
+* 
+
 # Version 4.16
 * Bugfix: Fixed a bug when searching for unskilled translations (Wrasal)
 * Bugfix: Better handling of untrained skills (Wrasal)

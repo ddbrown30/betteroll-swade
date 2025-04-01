@@ -8,22 +8,42 @@ import { SettingsUtils } from "./utils.js";
  * @param ev
  */
 export function manage_selectable_gm(ev) {
-  const initial_status = !ev.currentTarget.classList.contains("brws-selected");
-  const value = parseInt(ev.currentTarget.dataset.value);
   ev.currentTarget.classList.toggle("brws-permanent-selected");
   ev.currentTarget.classList.toggle("brws-selected");
-  const value_list = SettingsUtils.getSetting("gm_modifiers");
-  const indice = value_list.indexOf(value);
-  if (indice >= 0 && !initial_status) {
-    value_list.splice(indice, 1);
-  } else if (indice === -1 && initial_status) {
-    value_list.push(value);
+  const is_selected = ev.currentTarget.classList.contains("brws-selected");
+
+  //Handle value modifiers
+  const value = parseInt(ev.currentTarget.dataset.value);
+  if (value != NaN) {
+    let value_list = SettingsUtils.getSetting("gm_modifiers");
+    value_list = value_list.filter((v) => v != null); //Clear out null entries to clean up old, bad data
+    let indice = value_list.indexOf(value);
+    if (indice >= 0 && !is_selected) {
+      //We were selected and now we're not. Remove us from the list
+      value_list.splice(indice, 1);
+    } else if (indice === -1 && is_selected) {
+      //We weren't selected and now we are. Add us to the list
+      value_list.push(value);
+    }
+    // noinspection JSIgnoredPromiseFromCall
+    SettingsUtils.setSetting("gm_modifiers", value_list);
   }
-  // noinspection JSIgnoredPromiseFromCall
-  SettingsUtils.setSetting("gm_modifiers", value_list);
-  const gm_actions = SettingsUtils.getSetting("gm_actions");
-  const selected_actions = [];
-  for (const element of document.querySelectorAll(
+
+  //Handle GM actions
+  let gm_actions = SettingsUtils.getSetting("gm_actions");
+  let action = gm_actions.find((a) => a.name == ev.currentTarget.dataset.actionName);
+  if (action.group_single) {
+    let group_actions = gm_actions.filter((a) => a.group == action.group && action.name != a.name);
+    for (let group_action of group_actions) {
+      let element = document.querySelector(`[data-action-name="${group_action.name}"]`);
+      if (element) {
+        element.classList.remove("brws-permanent-selected");
+        element.classList.remove("brws-selected");
+      }
+    }
+  }
+  let selected_actions = [];
+  for (let element of document.querySelectorAll(
     "#brsw-gm-actions .brws-permanent-selected",
   )) {
     selected_actions.push(element.dataset.actionName);
