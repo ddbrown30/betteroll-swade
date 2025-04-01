@@ -12,8 +12,8 @@ export function manage_selectable_gm(ev) {
   const value = parseInt(ev.currentTarget.dataset.value);
   ev.currentTarget.classList.toggle("brws-permanent-selected");
   ev.currentTarget.classList.toggle("brws-selected");
-  let value_list = SettingsUtils.getSetting("gm_modifiers");
-  let indice = value_list.indexOf(value);
+  const value_list = SettingsUtils.getSetting("gm_modifiers");
+  const indice = value_list.indexOf(value);
   if (indice >= 0 && !initial_status) {
     value_list.splice(indice, 1);
   } else if (indice === -1 && initial_status) {
@@ -21,14 +21,14 @@ export function manage_selectable_gm(ev) {
   }
   // noinspection JSIgnoredPromiseFromCall
   SettingsUtils.setSetting("gm_modifiers", value_list);
-  let gm_actions = SettingsUtils.getSetting("gm_actions");
-  let selected_actions = [];
-  for (let element of document.querySelectorAll(
+  const gm_actions = SettingsUtils.getSetting("gm_actions");
+  const selected_actions = [];
+  for (const element of document.querySelectorAll(
     "#brsw-gm-actions .brws-permanent-selected",
   )) {
     selected_actions.push(element.dataset.actionName);
   }
-  for (let gm_action of gm_actions) {
+  for (const gm_action of gm_actions) {
     gm_action.enable = selected_actions.includes(gm_action.name);
   }
   // noinspection JSIgnoredPromiseFromCall
@@ -49,7 +49,7 @@ export function register_gm_modifiers_settings() {
 export function recover_html_from_gm_modifiers() {
   if (game.user.isGM) {
     const gm_modifiers_array = SettingsUtils.getSetting("gm_modifiers");
-    for (let modifier of [-4, -2, -1, 1, 2, 4]) {
+    for (const modifier of [-4, -2, -1, 1, 2, 4]) {
       let class_str = "brsw-clickable brws-selectable";
       if (gm_modifiers_array.includes(modifier)) {
         class_str += " brws-selected brws-permanent-selected";
@@ -65,7 +65,7 @@ export function recover_html_from_gm_modifiers() {
 export function get_gm_modifiers() {
   const gm_modifiers_array = SettingsUtils.getSetting("gm_modifiers");
   let total_modifier = 0;
-  for (let modifier of gm_modifiers_array) {
+  for (const modifier of gm_modifiers_array) {
     total_modifier += modifier;
   }
   return total_modifier;
