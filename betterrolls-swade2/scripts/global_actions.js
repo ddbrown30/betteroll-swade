@@ -160,26 +160,31 @@ export function get_actions(item, actor) {
  */
 export function check_selector(type, value, item, actor) {
   let selected = false;
-  if (type === "skill") {
+  if (type === "skill" || type === "skill_linked_attribute") {
     if (item.type === "attribute") {
       selected = false;
     } else {
       const skill = item.type === "skill" ? item : get_item_trait(item, actor);
       if (skill) {
-        if (value.slice(0, 5) === "BRSW.") {
-          selected = skill.name
-            .toLowerCase()
-            .includes(game.i18n.localize(value).toLowerCase());
-        } else {
-          selected =
-            skill.name.toLowerCase().includes(value.toLowerCase()) ||
-            skill.name
+        if (type === "skill") {
+          if (value.slice(0, 5) === "BRSW.") {
+            selected = skill.name
               .toLowerCase()
-              .includes(
-                game.i18n
-                  .localize("BRSW.SkillName-" + value.toLowerCase())
-                  .toLowerCase(),
-              );
+              .includes(game.i18n.localize(value).toLowerCase());
+          } else {
+            selected =
+              skill.name.toLowerCase().includes(value.toLowerCase()) ||
+              skill.name
+                .toLowerCase()
+                .includes(
+                  game.i18n
+                    .localize("BRSW.SkillName-" + value.toLowerCase())
+                    .toLowerCase(),
+                );
+          }
+        } else {
+          value = game.i18n.localize(value);
+          selected = skill.system.attribute.toLowerCase().includes(value.toLowerCase())
         }
       }
     }
