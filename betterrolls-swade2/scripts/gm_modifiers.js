@@ -32,7 +32,7 @@ export function manage_selectable_gm(ev) {
   //Handle GM actions
   let gm_actions = SettingsUtils.getSetting("gm_actions");
   let action = gm_actions.find((a) => a.name == ev.currentTarget.dataset.actionName);
-  if (action.group_single) {
+  if (action?.group_single) {
     let group_actions = gm_actions.filter((a) => a.group == action.group && action.name != a.name);
     for (let group_action of group_actions) {
       let element = document.querySelector(`[data-action-name="${group_action.name}"]`);
