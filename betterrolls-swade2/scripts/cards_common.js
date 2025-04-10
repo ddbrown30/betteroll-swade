@@ -331,8 +331,8 @@ export function activate_common_listeners(br_card, html) {
       br_card,
       parseInt(index),
       ev.currentTarget.classList.contains("brsw-selected-tn"),
-    ).catch(() => {
-      console.error("ERROR getting_tn_from_target");
+    ).catch((e) => {
+      console.error("ERROR getting_tn_from_target. Error:" + e);
     });
   });
   // Repeat card
@@ -1191,6 +1191,7 @@ async function get_tn_from_target(br_card, index, selected) {
     target_token = get_targeted_token();
   }
   if (target_token) {
+    const extra_data = { modifiers: [] };
     const origin_token = br_card.token;
     const target = await get_tn_from_token(
       br_card.skill,
@@ -1198,6 +1199,7 @@ async function get_tn_from_target(br_card, index, selected) {
       origin_token,
       br_card.actor,
       br_card.item,
+      extra_data,
     );
     if (target.value) {
       await edit_tn(br_card, target.value, target.reason).catch(() => {
@@ -1205,18 +1207,18 @@ async function get_tn_from_target(br_card, index, selected) {
       });
     }
     const tn = { modifiers: [] };
-    calculate_distance(origin_token, target_token, br_card.item, tn, br_card.skill);
+    calculate_distance(origin_token, target_token, br_card.item, tn, br_card.skill, extra_data);
     br_card.trait_roll.delete_range_modifiers();
     br_card.trait_roll.modifiers = br_card.trait_roll.modifiers.concat(
       tn.modifiers,
     );
-    br_card.trait_roll
-      .recalculate_trait_results()
-      .then(await br_card.render())
-      .then(await br_card.save())
-      .catch((e) => {
-        console.error("Can't save card after editing TN. Error: " + e);
-      });
+    try {
+      await br_card.trait_roll.recalculate_trait_results();
+      await br_card.render();
+      await br_card.save();
+    } catch (err) {
+      console.error("Can't save card after editing TN. Error: " + err);
+    }
   }
 }
 
