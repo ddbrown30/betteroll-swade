@@ -410,6 +410,7 @@ export async function get_tn_from_token(
   skill,
   target_token,
   origin_token,
+  origin_actor,
   item,
   extra_data,
 ) {
@@ -418,21 +419,24 @@ export async function get_tn_from_token(
     value: 4,
     modifiers: [],
   };
-  let use_parry_as_tn = true;
-  if (is_skill_fighting(skill)) {
-    const gangup = calculate_gangUp(origin_token, target_token);
-    if (gangup.bonus) {
-      tn.modifiers.push(new TraitModifier(gangup.name, gangup.bonus));
+  const is_fighting = is_skill_fighting(skill);
+  let use_parry_as_tn = is_fighting;
+  if (origin_token) {
+    if (is_fighting) {
+      const gangup = calculate_gangUp(origin_token, target_token);
+      if (gangup.bonus) {
+        tn.modifiers.push(new TraitModifier(gangup.name, gangup.bonus));
+      }
+    } else if (item && item.system.range) {
+      use_parry_as_tn = calculate_distance(
+        origin_token,
+        target_token,
+        item,
+        tn,
+        skill,
+        extra_data,
+      );
     }
-  } else if (item && item.system.range) {
-    use_parry_as_tn = calculate_distance(
-      origin_token,
-      target_token,
-      item,
-      tn,
-      skill,
-      extra_data,
-    );
   }
   if (use_parry_as_tn) {
     if (target_token.actor.type !== "vehicle") {
@@ -443,9 +447,9 @@ export async function get_tn_from_token(
     }
   }
   // Size modifiers
-  if (origin_token && target_token) {
-    if (!(item?.system?.isVehicular && origin_token.actor.type !== "vehicle")) {
-      getScaleModifier(origin_token, target_token, tn, extra_data);
+  if (origin_actor && target_token) {
+    if (!(item?.system?.isVehicular && origin_actor.type !== "vehicle")) {
+      getScaleModifier(origin_actor, target_token.actor, tn, extra_data);
     }
   }
   if (
@@ -466,13 +470,13 @@ export async function get_tn_from_token(
  * Get the scale modifier
  **/
 
-function getScaleModifier(origin_token, target_token, tn, extra_data) {
+function getScaleModifier(origin_actor, target_actor, tn, extra_data) {
   const origin_scale_mod = sizeToScale(
-    origin_token?.actor?.system?.stats?.size || 1,
+    origin_actor?.system?.stats?.size || 1,
   );
   const target_scale_mod = sizeToScale(
-    target_token?.actor?.system?.size || // Vehicles
-      target_token?.actor?.system?.stats?.size ||
+    target_actor?.system?.size || // Vehicles
+    target_actor?.system?.stats?.size ||
       1,
   ); // actor or default
   if (origin_scale_mod !== target_scale_mod) {
@@ -481,9 +485,9 @@ function getScaleModifier(origin_token, target_token, tn, extra_data) {
       new TraitModifier(game.i18n.localize("BRSW.Scale"), scale_mod),
     );
     // If the scale mod is negative, check if the attacking actor has the swat ability
-    if (scale_mod < 0 && origin_token) {
+    if (scale_mod < 0 && origin_actor) {
       let unignored_penalty = scale_mod * -1;
-      const swat = origin_token.actor.items.find((item) => {
+      const swat = origin_actor.items.find((item) => {
         return (
           item.type === "ability" &&
           item.name

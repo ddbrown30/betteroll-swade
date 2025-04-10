@@ -747,32 +747,31 @@ async function get_new_roll_options(
   roll_options,
 ) {
   const extra_options = {};
-  let objetive = get_targeted_token();
-  if (!objetive) {
+  let target_token = get_targeted_token();
+  if (!target_token) {
     canvas.tokens.controlled.forEach((token) => {
       // noinspection JSUnresolvedVariable
       if (
         token.actor !== br_card.actor &&
         token.actor !== br_card.vehicle_actor
       ) {
-        objetive = token;
+        target_token = token;
       }
     });
   }
-  if (objetive && br_card.skill) {
+  if (target_token && br_card.skill) {
     const origin_token = br_card.token;
-    if (origin_token) {
-      const target_data = await get_tn_from_token(
-        br_card.skill,
-        objetive,
-        origin_token,
-        br_card.item,
-        extra_data,
-      );
-      br_card.trait_roll.tn = target_data.value;
-      br_card.trait_roll.tn_reason = target_data.reason;
-      extra_options.target_modifiers = target_data.modifiers;
-    }
+    const target_data = await get_tn_from_token(
+      br_card.skill,
+      target_token,
+      origin_token,
+      br_card.actor,
+      br_card.item,
+      extra_data,
+    );
+    br_card.trait_roll.tn = target_data.value;
+    br_card.trait_roll.tn_reason = target_data.reason;
+    extra_options.target_modifiers = target_data.modifiers;
   }
   if (extra_data.hasOwnProperty("tn")) {
     extra_options.tn = extra_data.tn;
@@ -1180,44 +1179,43 @@ async function edit_tn(br_card, new_tn, reason) {
  * @param {boolean} selected - True to select targeted, false for selected
  */
 async function get_tn_from_target(br_card, index, selected) {
-  let objetive;
+  let target_token;
   if (selected) {
     canvas.tokens.controlled.forEach((token) => {
       // noinspection JSUnresolvedVariable
       if (token.actor !== br_card.actor) {
-        objetive = token;
+        target_token = token;
       }
     });
   } else {
-    objetive = get_targeted_token();
+    target_token = get_targeted_token();
   }
-  if (objetive && br_card.item.system.range) {
+  if (target_token) {
     const origin_token = br_card.token;
-    if (origin_token) {
-      const target = await get_tn_from_token(
-        br_card.skill,
-        objetive,
-        origin_token,
-        br_card.item,
-      );
-      if (target.value) {
-        edit_tn(br_card, target.value, target.reason).catch(() => {
-          console.error("Error editing TN");
-        });
-      }
+    const target = await get_tn_from_token(
+      br_card.skill,
+      target_token,
+      origin_token,
+      br_card.actor,
+      br_card.item,
+    );
+    if (target.value) {
+      await edit_tn(br_card, target.value, target.reason).catch(() => {
+        console.error("Error editing TN");
+      });
     }
     const tn = { modifiers: [] };
-    calculate_distance(origin_token, objetive, br_card.item, tn, br_card.skill);
+    calculate_distance(origin_token, target_token, br_card.item, tn, br_card.skill);
     br_card.trait_roll.delete_range_modifiers();
     br_card.trait_roll.modifiers = br_card.trait_roll.modifiers.concat(
       tn.modifiers,
     );
     br_card.trait_roll
       .recalculate_trait_results()
-      .then(br_card.render)
-      .then(br_card.save)
-      .catch(() => {
-        console.error("Can't save card after editing TN");
+      .then(await br_card.render())
+      .then(await br_card.save())
+      .catch((e) => {
+        console.error("Can't save card after editing TN. Error: " + e);
       });
   }
 }
