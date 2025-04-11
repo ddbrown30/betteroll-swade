@@ -14,10 +14,10 @@ export function manage_selectable_gm(ev) {
 
   //Handle value modifiers
   const value = parseInt(ev.currentTarget.dataset.value);
-  if (value !== NaN) {
+  if (value != NaN) {
     let value_list = SettingsUtils.getSetting("gm_modifiers");
-    value_list = value_list.filter((v) => v !== null); //Clear out null entries to clean up old, bad data
-    const indice = value_list.indexOf(value);
+    value_list = value_list.filter((v) => v != null); //Clear out null entries to clean up old, bad data
+    let indice = value_list.indexOf(value);
     if (indice >= 0 && !is_selected) {
       //We were selected and now we're not. Remove us from the list
       value_list.splice(indice, 1);
@@ -30,25 +30,25 @@ export function manage_selectable_gm(ev) {
   }
 
   //Handle GM actions
-  const gm_actions = SettingsUtils.getSetting("gm_actions");
-  const action = gm_actions.find((a) => a.name === ev.currentTarget.dataset.actionName);
-  if (action.group_single) {
-    const group_actions = gm_actions.filter((a) => a.group === action.group && action.name !== a.name);
-    for (const group_action of group_actions) {
-      const element = document.querySelector(`[data-action-name="${group_action.name}"]`);
+  let gm_actions = SettingsUtils.getSetting("gm_actions");
+  let action = gm_actions.find((a) => a.name == ev.currentTarget.dataset.actionName);
+  if (action?.group_single) {
+    let group_actions = gm_actions.filter((a) => a.group == action.group && action.name != a.name);
+    for (let group_action of group_actions) {
+      let element = document.querySelector(`[data-action-name="${group_action.name}"]`);
       if (element) {
         element.classList.remove("brws-permanent-selected");
         element.classList.remove("brws-selected");
       }
     }
   }
-  const selected_actions = [];
-  for (const element of document.querySelectorAll(
+  let selected_actions = [];
+  for (let element of document.querySelectorAll(
     "#brsw-gm-actions .brws-permanent-selected",
   )) {
     selected_actions.push(element.dataset.actionName);
   }
-  for (const gm_action of gm_actions) {
+  for (let gm_action of gm_actions) {
     gm_action.enable = selected_actions.includes(gm_action.name);
   }
   // noinspection JSIgnoredPromiseFromCall
@@ -69,7 +69,7 @@ export function register_gm_modifiers_settings() {
 export function recover_html_from_gm_modifiers() {
   if (game.user.isGM) {
     const gm_modifiers_array = SettingsUtils.getSetting("gm_modifiers");
-    for (const modifier of [-4, -2, -1, 1, 2, 4]) {
+    for (let modifier of [-4, -2, -1, 1, 2, 4]) {
       let class_str = "brsw-clickable brws-selectable";
       if (gm_modifiers_array.includes(modifier)) {
         class_str += " brws-selected brws-permanent-selected";
@@ -85,7 +85,7 @@ export function recover_html_from_gm_modifiers() {
 export function get_gm_modifiers() {
   const gm_modifiers_array = SettingsUtils.getSetting("gm_modifiers");
   let total_modifier = 0;
-  for (const modifier of gm_modifiers_array) {
+  for (let modifier of gm_modifiers_array) {
     total_modifier += modifier;
   }
   return total_modifier;
