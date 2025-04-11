@@ -155,7 +155,7 @@ a `selector_value` for a simple selection. You can also use `and_selector` and g
 {
 "selector_type": "target_has_edge", "selector_value": "Dodge",
 "or_selector": [
-{"selector_type": "power", "selector_value": "Bolt"},
+{"selector_type": "item_name", "selector_value": "Bolt"},
 {"selector_type": "skill", "selector_value": "Shooting"}
 ]}
 ],
@@ -409,7 +409,7 @@ This is a non-exhaustive list of modifiers enabled by Edges a character has lear
             "selector_value": "Dodge",
             "or_selector": [
                 {
-                    "selector_type": "power",
+                    "selector_type": "item_name",
                     "selector_value": "Bolt"
                 },
                 {
