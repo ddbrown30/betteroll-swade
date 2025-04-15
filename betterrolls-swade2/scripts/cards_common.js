@@ -1212,13 +1212,9 @@ async function get_tn_from_target(br_card, index, selected) {
     br_card.trait_roll.modifiers = br_card.trait_roll.modifiers.concat(
       tn.modifiers,
     );
-    try {
-      await br_card.trait_roll.recalculate_trait_results();
-      await br_card.render();
-      await br_card.save();
-    } catch (err) {
-      console.error("Can't save card after editing TN. Error: " + err);
-    }
+    await br_card.trait_roll.recalculate_trait_results();
+    await br_card.render();
+    await br_card.save();
   }
 }
 
