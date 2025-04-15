@@ -393,5 +393,9 @@
     "BRSW.PowerModifiersBoostLowerStrong": "Fuerte (Sólo inferior)[+1PP]",
     "BRSW.PowerModifiersBurrowPower": "Poder [+1PP]",
     "BRSW.PowerModifiersBurstDamage": "Daño(+1d6)[+2PP]",
-    "BRSW.MarkDefeated": "Derrotado"
+    "BRSW.MarkDefeated": "Derrotado",
+    "BRSW.SpellOverRange": "Hechizo lanzado fuera del rango máximo",
+    "BRSW.PowerModifiersBurstPush": "Empujar [+1PP]",
+    "BRSW.PowerModifiersDamageFieldDamage": "Daño (2d6) [+2PP]",
+    "BRSW.Aiming": "Apuntar"
 }
