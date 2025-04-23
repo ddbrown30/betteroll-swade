@@ -254,6 +254,7 @@ export function expose_item_functions() {
   game.brsw.create_item_card = create_item_card;
   game.brsw.create_item_card_from_id = create_item_card_from_id;
   game.brsw.roll_item = roll_item;
+  game.brsw.create_damage_card = create_damage_card;
 }
 
 /**
