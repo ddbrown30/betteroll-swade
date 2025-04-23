@@ -210,6 +210,7 @@ async function undo_damage(message) {
       active: render_data.undo_values.shaken,
     });
     await actor.toggleStatusEffect("incapacitated", { active: false });
+    await actor.toggleStatusEffect("dead", { active: false });
   }
   await message.delete();
 }
