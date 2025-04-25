@@ -32,7 +32,7 @@
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Protection</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>Protección</term></tig></langSet>
                 <note from="translator">Power</note>
             </termEntry>
             <termEntry>
@@ -42,7 +42,7 @@
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Spirit</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>Espíritu</term></tig></langSet>
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Shape Change</term></tig></langSet>
@@ -78,12 +78,12 @@
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>fighting</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>lucha</term></tig></langSet>
                 <note from="translator">Skill</note>
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Intimidation</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>Intimidación</term></tig></langSet>
                 <note from="translator">Skill</note>
             </termEntry>
             <termEntry>
@@ -93,12 +93,12 @@
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Performance</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>Rendimiento</term></tig></langSet>
                 <note from="translator">Skill</note>
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Persuasion</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>Persuasión</term></tig></langSet>
                 <note from="translator">Skill</note>
             </termEntry>
             <termEntry>
@@ -108,7 +108,7 @@
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>research</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>investigar</term></tig></langSet>
                 <note from="translator">Skill</note>
             </termEntry>
             <termEntry>
@@ -152,7 +152,7 @@
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Actions</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>Acciones</term></tig></langSet>
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Armor Piercing</term></tig></langSet>
@@ -160,15 +160,17 @@
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>PP</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>PE</term></tig></langSet>
+                <note from="translator">Puntos de Energía</note>
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Power Points</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>Puntos de Energía</term></tig></langSet>
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>AP</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>PA</term></tig></langSet>
+                <note from="translator">Protección Arcana</note>
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Attribute</term></tig></langSet>
@@ -228,7 +230,7 @@
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Damage</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>Daño</term></tig></langSet>
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Rate of fire</term></tig></langSet>
@@ -248,7 +250,7 @@
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Ambidextrous</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>Ambidextro</term></tig></langSet>
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>assassin</term></tig></langSet>
@@ -288,7 +290,7 @@
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Famous</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>Famoso</term></tig></langSet>
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Combat Reflexes</term></tig></langSet>
@@ -308,7 +310,7 @@
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Fame</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>Fama</term></tig></langSet>
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Formation Fighter</term></tig></langSet>
@@ -332,7 +334,7 @@
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Improved Block</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>Bloque Mejorado</term></tig></langSet>
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Improved Double Shot</term></tig></langSet>
@@ -348,7 +350,7 @@
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Investigator</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>Investigador</term></tig></langSet>
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Iron Jaw</term></tig></langSet>
@@ -384,7 +386,7 @@
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Outsider</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>Lado Externo</term></tig></langSet>
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Tongue Tied</term></tig></langSet>
@@ -412,7 +414,7 @@
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Edges</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>Lados</term></tig></langSet>
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Gangup</term></tig></langSet>
@@ -480,7 +482,7 @@
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Arcane Protection</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>Protección Arcana</term></tig></langSet>
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Barrier</term></tig></langSet>
@@ -518,7 +520,7 @@
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Power</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>Energía</term></tig></langSet>
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Burst</term></tig></langSet>
@@ -530,7 +532,7 @@
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Damage Field</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>Campo de Daño</term></tig></langSet>
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Entangle</term></tig></langSet>
@@ -542,7 +544,7 @@
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Fatigue</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term/></tig></langSet>
+                <langSet xml:lang="es"><tig><term>Fatiga</term></tig></langSet>
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Glow/Shroud</term></tig></langSet>
@@ -558,11 +560,11 @@
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Toughness</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term></term></tig></langSet>
+                <langSet xml:lang="es"><tig><term/></tig></langSet>
             </termEntry>
             <termEntry>
                 <langSet xml:lang="en"><tig><term>Trademark Weapon</term></tig></langSet>
-                <langSet xml:lang="es"><tig><term></term></tig></langSet>
+                <langSet xml:lang="es"><tig><term/></tig></langSet>
                 <note from="translator">Edge</note>
             </termEntry>
         </body>
