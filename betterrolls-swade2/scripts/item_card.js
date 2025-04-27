@@ -1408,6 +1408,7 @@ export async function roll_dmg(
     const new_modifier = new DamageModifier(
       game.i18n.localize("BRSW.ItemPropertiesDmgMod"),
       item.system.actions.dmgMod,
+      br_card.actor?.getRollData()
     );
     await new_modifier.evaluate();
     damage_roll.brswroll.modifiers.push(new_modifier);
