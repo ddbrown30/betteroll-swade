@@ -7,14 +7,14 @@ export class TraitModifier {
    * @param {string} label
    * @param {String, Number} expression
    */
-  constructor(label, expression) {
+  constructor(label, expression, rollData) {
     this.name = label;
     this.value = 0;
     this.dice = null;
     if (isNaN(expression)) {
-      if (expression.indexOf("d") > 0) {
+      if (expression.indexOf("d") >= 0 || expression.indexOf("@") >= 0) {
         // This is a die expression
-        this.dice = new Roll(expression);
+        this.dice = new Roll(expression, rollData);
       } else {
         // sourcery skip: no-eval
         this.value = eval(expression); // jshint ignore:line
