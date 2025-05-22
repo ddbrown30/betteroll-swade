@@ -131,12 +131,14 @@ async function attribute_click_listener(ev, target) {
  * @param html Html code
  */
 export function activate_attribute_listeners(app, html) {
-  let target = app.token || app.object;
-  // We need a closure to hold data
-  const attribute_labels = html.find(".attribute-value");
-  attribute_labels.bindFirst("click", async (ev) => {
-    await attribute_click_listener(ev, target);
-  });
+  const target = app.token || app.object;
+  for (const attribute_label of html.find(".attribute-value")) {
+    const new_label = attribute_label.cloneNode(true);
+    attribute_label.parentNode.replaceChild(new_label, attribute_label);
+    new_label.addEventListener("click", async (ev) => {
+      await attribute_click_listener(ev, target);
+    });
+  }
 }
 
 /**

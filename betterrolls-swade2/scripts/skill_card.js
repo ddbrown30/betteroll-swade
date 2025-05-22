@@ -162,12 +162,15 @@ async function skill_click_listener(ev, target) {
  */
 export function activate_skill_listeners(app, html) {
   const target = app.token || app.object;
-  const skill_labels = html.find(
+  for (const skill_label of html.find(
     ".skill-label a, .skill.item>a, .skill-name, .skill-die",
-  );
-  skill_labels.bindFirst("click", async (ev) => {
-    await skill_click_listener(ev, target);
-  });
+  )){
+    const new_label = skill_label.cloneNode(true);
+    skill_label.parentNode.replaceChild(new_label, skill_label);
+    new_label.addEventListener("click", async (ev) => {
+      await skill_click_listener(ev, target);
+    });
+  }
 }
 
 /**
