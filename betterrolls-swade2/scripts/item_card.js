@@ -254,6 +254,7 @@ export function expose_item_functions() {
   game.brsw.create_item_card = create_item_card;
   game.brsw.create_item_card_from_id = create_item_card_from_id;
   game.brsw.roll_item = roll_item;
+  game.brsw.create_damage_card = create_damage_card;
 }
 
 /**
@@ -1299,7 +1300,7 @@ async function get_damage_mods_from_actions(
       const action_name = action.code.name.includes("BRSW.")
         ? game.i18n.localize(action.code.name)
         : action.code.name;
-      const new_modifier = new DamageModifier(action_name, action.code.dmgMod);
+      const new_modifier = new DamageModifier(action_name, action.code.dmgMod, br_card.actor?.getRollData());
       await new_modifier.evaluate();
       damage_roll.brswroll.modifiers.push(new_modifier);
     }
@@ -1327,7 +1328,7 @@ async function get_damage_mods_from_actions(
     }
     if (action.code.rerollDamageMod && expend_bennie) {
       damage_roll.brswroll.modifiers.push(
-        new DamageModifier(action.code.name, action.code.rerollDamageMod),
+        new DamageModifier(action.code.name, action.code.rerollDamageMod, br_card.actor?.getRollData()),
       );
     }
     if (action.code.multiplyDmgMod) {
@@ -1407,6 +1408,7 @@ export async function roll_dmg(
     const new_modifier = new DamageModifier(
       game.i18n.localize("BRSW.ItemPropertiesDmgMod"),
       item.system.actions.dmgMod,
+      br_card.actor?.getRollData()
     );
     await new_modifier.evaluate();
     damage_roll.brswroll.modifiers.push(new_modifier);
