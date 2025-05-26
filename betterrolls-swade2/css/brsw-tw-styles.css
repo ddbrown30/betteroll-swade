@@ -202,6 +202,10 @@
     border-style: var(--tw-border-style) !important;
     border-width: 0px !important;
   }
+  .twbr\:border-t-1 {
+    border-top-style: var(--tw-border-style) !important;
+    border-top-width: 1px !important;
+  }
   .twbr\:border-b {
     border-bottom-style: var(--tw-border-style) !important;
     border-bottom-width: 1px !important;
