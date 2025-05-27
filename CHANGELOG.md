@@ -1,3 +1,14 @@
+# Version 4.18 aka V13 first try
+* Refactoring: Various modifications trying to simplify DOM access.
+* Actions: Added skill_linked_attribute selector (Dan Brown)
+* Bugfix: Better support for cases where there are no tokens in a scene. (Dan Brown)
+* Translations: Update Spanish translations. (Weblate team)
+* API: Expose create_damage_card for API usage (Dan Brown)
+* Bugfix: Toggle off dead when undoing damage (Dan Brown)
+* Bugfix: Fixed bug in dmgMod actions (Dan Brown)
+* V13 compatibility: Avoid showing the system default roll when clicking on same places.
+* V13 compatibility: Adjust CSS for V13 compatibility.
+
 # Version 4.17
 * Bugfix: Global AP modifier is working (this time for real)
 * Bugfix: Fixed an error when collapsing modifiers (Dan Brown)
