@@ -65,6 +65,9 @@
   .twbr\:mt-0 {
     margin-top: calc(var(--twbr-spacing) * 0) !important;
   }
+  .twbr\:mt-1 {
+    margin-top: calc(var(--twbr-spacing) * 1) !important;
+  }
   .twbr\:mt-2 {
     margin-top: calc(var(--twbr-spacing) * 2) !important;
   }

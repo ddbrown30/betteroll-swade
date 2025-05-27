@@ -52,8 +52,17 @@
       "flags": {}
     }
   ],
-  "esmodules": ["scripts/brsw2-init.js"],
-  "styles": ["css/brsw-styles.css", "css/brsw-tw-styles.css"],
+  "esmodules": [
+    "scripts/brsw2-init.js"
+  ],
+  "styles": [
+    {
+      "src": "css/brsw-styles.css"
+    },
+    {
+      "src": "css/brsw-tw-styles.css"
+    }
+  ],
   "url": "https://github.com/javierriveracastro/betteroll-swade/tree/version_2",
   "manifest": "https://raw.githubusercontent.com/javierriveracastro/betteroll-swade/version_2/betterrolls-swade2/module.json",
   "download": "https://github.com/javierriveracastro/betteroll-swade/blob/version_2/betterrolls-swade2.zip?raw=true",
@@ -90,7 +99,7 @@
   },
   "compatibility": {
     "minimum": "12",
-    "verified": "12.331",
-    "maximum": "12"
+    "verified": "13.342",
+    "maximum": "13"
   }
 }
