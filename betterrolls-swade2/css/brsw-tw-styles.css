@@ -140,6 +140,9 @@
   .twbr\:w-full {
     width: 100% !important;
   }
+  .twbr\:max-w-1\/2 {
+    max-width: calc(1/2 * 100%) !important;
+  }
   .twbr\:min-w-8 {
     min-width: calc(var(--twbr-spacing) * 8) !important;
   }

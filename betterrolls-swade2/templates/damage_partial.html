@@ -1,9 +1,9 @@
 {{# each damage_rolls }}
-    <div class="brsw-roll-row">
-        <span class="brsw-clickable brsw-collapse-button" data-collapse="brsw-damage-detail{{@index}}">
+    <div class="brsw-roll-row twbr:flex twbr:justify-between">
+        <span class="brsw-clickable brsw-collapse-button twbr:max-w-1/2" data-collapse="brsw-damage-detail{{@index}}">
             <i class="fas fa-caret-right"></i>{{ this.label}} :
         </span>
-        <span>
+        <span class="twbr:flex">
             {{#each this.brswroll.rolls}}
                 <span class="brsw-damage-roll{{this.extra_class}}">{{ this.result }}</span>
                 {{# if this.ap }}<span class="brsw-ap-info" title="{{ localize "SWADE.APLong" }}">
@@ -21,10 +21,12 @@
                 </button>
             {{/if}}
         </span>
-        <span class="{{# if ../result_master_only}}brsw-master-only{{/if}}">
+        <span class="{{# if ../result_master_only}}brsw-master-only{{/if}} twbr:flex">
             {{#each this.brswroll.rolls}}
                 {{# if this.tn }}
-                    <span title="{{ this.result_text }}">{{{ this.result_icon }}}</span>
+                    <span title="{{ this.result_text }}" class="twbr:flex twbr:items-center twbr:p-1">
+                        {{{ this.result_icon }}}
+                    </span>
                 {{/if}}
                 {{# if ../damage_result }}
                     {{# if this.target_id }}
