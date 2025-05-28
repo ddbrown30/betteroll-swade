@@ -1,7 +1,7 @@
 <div class="twbr:z-50 twbr:overflow-y-auto twbr:max-h-full">
     <div class="twbr:flex twbr:items-start twbr:justify-between twbr:p-1 twbr:border-solid
             twbr:border-0 twbr:border-b twbr:border-gray-600">
-        <h2 class="twbr:text-xl twbr:font-semibold twbr:border-none twbr:ml-2">
+        <h2 class="twbr:text-xl twbr:font-semibold twbr:border-none twbr:ml-2 twbr:text-black">
             {{ BrCard.render_data.header.title }}
         </h2>
         <button type="button" class="twbr:rounded-lg twbr:text-sm twbr:w-8 twbr:h-8 twbr:ml-auto
@@ -19,7 +19,7 @@
             <div>
                 <div>
                     <h2 class="twbr:p-1 twbr:w-full twbr:font-medium twbr:bg-gray-600 twbr:text-white
-                            twbr:rounded-t twbr:border-none twbr:mb-0">
+                            twbr:rounded-t twbr:border-none twbr:mb-0 twbr:text-xl">
                         {{ this.name }} {{# if this.single_choice }} (Single choice){{/if}}
                     </h2>
                 </div>
@@ -46,7 +46,8 @@
                 class="twbr:py-0.5 twbr:px-5 twbr:mr-2 twbr:mb-2 twbr:font-medium
                     twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg twbr:border
                     twbr:border-solid twbr:focus:z-10 twbr:focus:ring-4 twbr:focus:ring-gray-700
-                    twbr:text-gray-800 twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700">
+                    twbr:text-gray-800 twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700
+                    twbr:w-full">
             Set
         </button>
         {{# unless BrCard.trait_roll.is_rolled }}
@@ -54,13 +55,15 @@
                     class="twbr:py-0.5 twbr:px-5 twbr:mr-2 twbr:mb-2 twbr:font-medium
                         twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg twbr:border
                         twbr:border-solid twbr:focus:z-10 twbr:focus:ring-4 twbr:focus:ring-gray-700
-                        twbr:text-gray-800 twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700">
+                        twbr:text-gray-800 twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700
+                        twbr:w-full">
                 <i class="fas fa-dice"></i> {{ localize 'BRSW.Roll' }}
             </button>{{/unless}}
         <button type="button"
                 class="brsw-cancel twbr:focus:outline-hidden twbr:focus:ring-4 twbr:font-medium
                         twbr:rounded-lg twbr:px-5 twbr:py-0.5 twbr:mr-2 twbr:mb-2 twbr:bg-red-600
-                        twbr:hover:bg-red-700 twbr:focus:ring-red-900 twbr:border twbr:border-solid">
+                        twbr:hover:bg-red-700 twbr:focus:ring-red-900 twbr:border twbr:border-solid
+                        twbr:w-full">
             <i class="fas fa-times"></i> Cancel
         </button>
     </div>
