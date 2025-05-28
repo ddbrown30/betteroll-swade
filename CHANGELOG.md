@@ -1,3 +1,7 @@
+# Version 4.19 aka V13, now hopefully correct
+* Bugfix: CSS in the action dialog corrected for V13
+* Bugfix: CSS in the damage section of the item rolls corrected.
+
 # Version 4.18 aka V13 first try
 * Refactoring: Various modifications trying to simplify DOM access.
 * Actions: Added skill_linked_attribute selector (Dan Brown)
