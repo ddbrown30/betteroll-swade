@@ -48,11 +48,11 @@ async function create_attribute_card(
     actor = origin;
   }
   const translated_name = game.i18n.localize(ATTRIBUTES_TRANSLATION_KEYS[name]);
-  let title =
+  const title =
     translated_name +
     " " +
     trait_to_string(actor.system.attributes[name.toLowerCase()]);
-  let br_message = await create_common_card(
+  const br_message = await create_common_card(
     origin,
     {
       header: { type: game.i18n.localize("BRSW.Attribute"), title: title },
@@ -162,12 +162,12 @@ export function activate_attribute_card_listeners(card, html) {
  * @param {boolean} expend_bennie True if we want to spend a bennie
  */
 export async function roll_attribute(br_card, expend_bennie) {
-  let extra_data = { modifiers: [] };
-  let macros = [];
-  for (let action of br_card.get_selected_actions()) {
+  const extra_data = { modifiers: [] };
+  const macros = [];
+  for (const action of br_card.get_selected_actions()) {
     process_common_actions(action.code, extra_data, macros, br_card.actor);
   }
-  for (let action of get_enabled_gm_actions()) {
+  for (const action of get_enabled_gm_actions()) {
     process_common_actions(action, extra_data, macros, br_card.actor);
   }
   if (expend_bennie) {

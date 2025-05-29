@@ -20,8 +20,10 @@ async function vehicle_click_listener(ev, target) {
   ev.stopPropagation();
 
   const vehicle_actor = target.actor ?? target;
-
-  const driver_actor = fromUuidSync(vehicle_actor.system.driver.id);
+  const uuid = ev.target.closest("[data-member-uuid]")?.dataset.memberUuid;
+  const driver_actor = vehicle_actor.system.crew.members.find(
+    (m) => m.uuid === uuid,
+  );
   if (!driver_actor) {
     return;
   }
@@ -36,7 +38,7 @@ async function vehicle_click_listener(ev, target) {
     return;
   }
 
-  const skill = trait_from_string(driver_actor, skill_id);
+  const skill = trait_from_string(driver_actor.actor, skill_id);
   if (!skill) {
     ui.notifications.warn(
       game.i18n.localize("BRSW.VehicleCharacterSkillMissingError"),
@@ -45,9 +47,13 @@ async function vehicle_click_listener(ev, target) {
   }
 
   // Show card
-  const br_card = await game.brsw.create_skill_card(driver_actor, skill.id, {
-    vehicle: target,
-  });
+  const br_card = await game.brsw.create_skill_card(
+    driver_actor.actor,
+    skill.id,
+    {
+      vehicle: target,
+    },
+  );
   if (action.includes("dialog")) {
     game.brsw.dialog.show_card(br_card);
   } else if (action.includes("trait")) {
@@ -63,10 +69,15 @@ async function vehicle_click_listener(ev, target) {
 export function activate_vehicle_listeners(app, html) {
   const target = app.token || app.object;
   // App V2 passes raw html, forcing it to jquery to avoid needing two functions
-  const html_jquery = $(html);
-  const maneuver_check_button =
-    html_jquery.find("button[id='maneuverCheck'], button[data-action='maneuverCheck']");
-  maneuver_check_button.bindFirst("click", async (ev) => {
+  const maneuver_check_button = html.querySelector(
+    "button[data-action='maneuverCheck']",
+  );
+  const new_button = maneuver_check_button.cloneNode(true);
+  maneuver_check_button.parentNode.replaceChild(
+    new_button,
+    maneuver_check_button,
+  );
+  new_button.addEventListener("click", async (ev) => {
     await vehicle_click_listener(ev, target);
   });
 }
