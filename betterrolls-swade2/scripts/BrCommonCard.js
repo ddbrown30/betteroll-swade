@@ -101,7 +101,7 @@ export class BrCommonCard {
       game.brsw.cascade_count + 1 < cascade_max_cascades
         ? game.brsw.cascade_count + 1
         : 0;
-    new ChatPopout(this.message, { top: top, left: left }).render(true);
+    new CONFIG.ChatMessage.popoutClass({ message: this.message, position: { top: top, left: left } }).render(true);
     this.popup_shown = true;
     this.save().catch(() => {
       console.error("Error saving card data after popup rendering");
