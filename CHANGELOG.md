@@ -1,3 +1,8 @@
+# Version 4.20 aka more V13 Adaptations
+* Bugfix: Changed the manifest to avoid installing on v12.
+* Bugfix: Maneuver checks on vehicle sheets are working again.
+* Bugfix: Card popup are working again (Dan Brown).
+
 # Version 4.19 aka V13, now hopefully correct
 * Bugfix: CSS in the action dialog corrected for V13
 * Bugfix: CSS in the damage section of the item rolls corrected.
