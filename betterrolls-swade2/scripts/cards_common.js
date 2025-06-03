@@ -30,6 +30,7 @@ import { TraitRoll } from "./rolls.js";
 import { BrCommonCard } from "./BrCommonCard.js";
 import { TraitModifier } from "./modifiers.js";
 import { SETTING_KEYS } from "./brsw2-config.js";
+import { ManualModifiersPopup } from "./manual_mods_popup.js";
 
 export const BRSW_CONST = {
   TYPE_ATTRIBUTE_CARD: 1,
@@ -200,6 +201,19 @@ function save_macro(br_card) {
 }
 
 /**
+ * Saves a card as a macro
+ * @param {BrCommonCard} br_card
+ */
+function toggle_mods_popup(element, br_card) {
+  if (game.brsw.manualModsPopup) {
+    game.brsw.manualModsPopup.close();
+  } else {
+    const rect = element.getBoundingClientRect();
+    new ManualModifiersPopup({ anchorPosition: { x: rect.x, y: rect.y }, br_card }).render(true);
+  }
+}
+
+/**
  * Connects the listener for all chat cards
  * @param {BrCommonCard} br_card
  * @param {HTMLElement} html - html of the card
@@ -339,6 +353,11 @@ export function activate_common_listeners(br_card, html) {
   html_jquery.find(".brsw-save-macro").click(() => {
     save_macro(br_card);
   });
+  // Open the manual mods popup
+  html_jquery.find(".brsw-manual-mods").click((event) => {
+    event.stopPropagation();
+    toggle_mods_popup(event.target, br_card);
+  });
   // Popout card
   html_jquery.find(".brsw-popout-button").click(() => {
     br_card.show_popup();
@@ -463,7 +482,7 @@ export function get_action_from_click(event) {
  *
  * @param old_options - Options used as default
  */
-export function get_roll_options(old_options) {
+export function get_roll_options(old_options, br_card) {
   const modifiers = old_options?.additionalMods || [];
   const dmg_modifiers = old_options?.dmgMods || [];
   const tn = old_options?.tn || 4;
@@ -472,15 +491,19 @@ export function get_roll_options(old_options) {
   let rof = old_options?.rof || 1;
   // We only check for modifiers when there are no old ones.
   if (!old_options?.hasOwnProperty("additionalMods")) {
-    $(".brsw-chat-form .brsw-selectable.brsw-selected").each((_, element) => {
-      if (element.dataset.type === "modifier") {
-        modifiers.push(element.dataset.value);
-      } else if (element.dataset.type === "dmg_modifier") {
-        dmg_modifiers.push(element.dataset.value);
-      } else if (element.dataset.type === "rof") {
-        rof = parseInt(element.dataset.value);
+    if (br_card.manual_mods) {
+      if (br_card.manual_mods.trait_mods?.length) {
+        const total = br_card.manual_mods.trait_mods.reduce((acc, val) => acc + parseInt(val), 0);
+        modifiers.push(total);
       }
-    });
+      if (br_card.manual_mods.dmg_modifiers?.length) {
+        const total = br_card.manual_mods.dmg_modifiers.reduce((acc, val) => acc + parseInt(val), 0);
+        dmg_modifiers.push(total);
+      }
+      if (br_card.manual_mods.rof) {
+        rof = parseInt(br_card.manual_mods.rof);
+      }
+    }
     const dice_tray_input = $("input.dice-tray__input");
     const tray_modifier = parseInt(dice_tray_input.val());
     if (tray_modifier) {
@@ -726,7 +749,7 @@ async function get_new_roll_options(
   if (extra_data.hasOwnProperty("rof")) {
     extra_options.rof = extra_data.rof;
   }
-  const options = get_roll_options(extra_options);
+  const options = get_roll_options(extra_options, br_card);
   roll_options.rof = options.rof || 1;
   // Trait modifier
   if (parseInt(trait_dice.die.modifier)) {

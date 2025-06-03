@@ -13,10 +13,6 @@
     margin-right: 3px;
 }
 
-.brsw-repeat-card {
-    font-size: 70%;
-}
-
 /* Styles for the card body */
 
 .brws-common-modifiers {
@@ -32,6 +28,18 @@
     white-space: nowrap;
     display: inline-block;
     line-height: 1.7;
+}
+
+.brsw-common-tools {
+    justify-content: center;
+    align-items: center;
+}
+
+.brsw-common-tool {
+    margin: .25rem;
+    height: 1.5rem;
+    width: 1.5rem;
+    padding-top: 2px;
 }
 
 .brsw-action {
@@ -82,12 +90,6 @@
     border-style: solid;
     border-radius: 5px;
     border-color: red;
-}
-
-/* Styles for the chat form */
-
-.brsw-chat-form {
-    flex: 0;
 }
 
 /* Styles for the roll partial */
@@ -288,10 +290,6 @@
     border-bottom: 1px solid #ff0000;
 }
 
-.brsw-tab-content {
-    margin-bottom: 1em;
-}
-
 .brsw-chat-button.vertical {
     position: absolute;
     inset: auto auto 135px calc(100% + 16px);
@@ -301,6 +299,13 @@
     position: absolute;
     background: var(--background);
     padding: 1rem;
+}
+
+.brsw-manual-popup {
+    position: absolute;
+    background: var(--background);
+    padding: 1rem;
+    z-index: 200;
 }
 
 #br-card-dialog {

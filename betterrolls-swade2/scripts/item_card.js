@@ -1387,7 +1387,7 @@ export async function roll_dmg(
     await spend_bennie(actor);
   }
   // Calculate modifiers
-  const options = get_roll_options(default_options);
+  const options = get_roll_options(default_options, br_card);
   // Shotgun
   if (damage_formulas.damage === "1-3d6" && item.type === "weapon") {
     // Bet that this is a shotgun

@@ -1,7 +1,7 @@
 // Scripts to manage gm selectors
 /* globals game */
 
-import { GmActionsPopup } from "./global_modifiers_popup.js";
+import { GmActionsPopup } from "./gm_actions_popup.js";
 import { SettingsUtils } from "./utils.js";
 
 /**
@@ -67,8 +67,8 @@ function moveChatButton() {
  * @param element The toggle button
  */
 async function toggleGlobalModsMenu(element) {
-  if (game.brsw.globalModsPopup) {
-    game.brsw.globalModsPopup.close();
+  if (game.brsw.gmActionsPopup) {
+    game.brsw.gmActionsPopup.close();
   } else {
     const rect = element.getBoundingClientRect();
     new GmActionsPopup({ anchorPosition: { x: rect.x, y: rect.y } }).render(true);

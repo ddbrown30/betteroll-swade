@@ -96,13 +96,6 @@ Hooks.on(`ready`, () => {
   loadTemplates(templatePaths).then(() => {
     console.info("Better Rolls templates preloaded");
   });
-  // Collapse the chat window if needed
-  if (SettingsUtils.getUserSetting("collapse-chat-window")) {
-    $(".brsw-chat-modifiers-window").addClass("brsw-collapsed");
-    $(".brsw-chat-form i")
-      .removeClass("fa-caret-down")
-      .addClass("fa-caret-right");
-  }
   // Add some jquery magic to allow binding our functions prior to systems
   $.fn.bindFirst = function (name, fn) {
     // bind as you normally would
@@ -600,12 +593,6 @@ function register_settings_version2() {
     scope: "world",
     type: Boolean,
     config: true,
-  });
-  SettingsUtils.registerBR2UserSetting("collapse-chat-window", {
-    name: game.i18n.localize("BRSW.collapse-chat-window"),
-    hint: game.i18n.localize("BRSW.collapse-chat-window_hint"),
-    default: false,
-    type: Boolean,
   });
   SettingsUtils.registerBR2UserSetting("auto_popout_chat", {
     name: "BRSW.PopoutChat",

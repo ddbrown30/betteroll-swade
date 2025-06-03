@@ -55,6 +55,7 @@ export class BrCommonCard {
     this.resist_buttons = [];
     this.trait_roll = new TraitRoll();
     this.popup_shown = false;
+    this.manual_mods = {};
     if (message) {
       const data = this.message.getFlag("betterrolls-swade2", "br_data");
       if (data) {
@@ -139,6 +140,7 @@ export class BrCommonCard {
       resist_buttons: this.resist_buttons,
       damage: this.damage,
       popup_shown: this.popup_shown,
+      manual_mods: this.manual_mods,
     };
   }
 
@@ -161,6 +163,7 @@ export class BrCommonCard {
       "resist_buttons",
       "damage",
       "popup_shown",
+      "manual_mods",
     ];
     for (const field of FIELDS) {
       this[field] = data[field];
@@ -674,6 +677,7 @@ export class BrCommonCard {
       SettingsUtils.getWorldSetting("no-action-message");
     data.has_feet_buttons = this.has_feet_buttons;
     data.skill_tooltip = this.skill_tooltip;
+    data.supports_manual_mods = !!(this.attribute_name || this.skill || this.damage);
     data.show_popup_button = SettingsUtils.getUserSetting("popout_chat_button");
     data.shots_pp_info = SettingsUtils.getWorldSetting("show_pp_shots_info")
       ? this.item_shots

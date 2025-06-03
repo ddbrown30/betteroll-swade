@@ -53,8 +53,6 @@
   "BRSW.ChatFormTittle": "Modifiers for Better Rolls",
   "BRSW.ChatModifiersMenu": "Chat modifiers name",
   "BRSW.ChatModifiersMenuHint": "Change the chat modifiers names (World)",
-  "BRSW.collapse-chat-window": "Collapse by default the modifier window.",
-  "BRSW.collapse-chat-window_hint": "Start with the window above the chat collapsed. (World)",
   "BRSW.CompatibilityHeadline": "Better Rolls Compatibility Warning",
   "BRSW.Cone": "cone template",
   "BRSW.Control_click_action": "Control click action",

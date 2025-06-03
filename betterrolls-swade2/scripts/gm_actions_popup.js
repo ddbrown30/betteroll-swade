@@ -1,6 +1,5 @@
 import { refresh_gm_actions } from "./global_actions.js";
 import { manage_selectable_gm } from "./gm_actions.js";
-import { SettingsUtils } from "./utils.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -9,7 +8,7 @@ const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
  */
 export class GmActionsPopup extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
-    id: "global-modifiers-popup",
+    id: "gm-actions-popup",
     tag: "form",
     classes: ["brsw-gm-popup", "application"],
     window: { frame: false, positioned: false },
@@ -17,13 +16,13 @@ export class GmActionsPopup extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static PARTS = {
     form: {
-      template: "modules/betterrolls-swade2/templates/options_form.hbs",
+      template: "modules/betterrolls-swade2/templates/gm_actions_popup.hbs",
     }
   };
 
   constructor(args) {
     super(args);
-    game.brsw.globalModsPopup = this;
+    game.brsw.gmActionsPopup = this;
     this.anchorPosition = args.anchorPosition;
   }
 
@@ -73,6 +72,6 @@ export class GmActionsPopup extends HandlebarsApplicationMixin(ApplicationV2) {
     options.animate ??= false;
     await super.close(options);
     document.removeEventListener("click", this.clickListener);
-    delete game.brsw.globalModsPopup;
+    delete game.brsw.gmActionsPopup;
   }
 }
