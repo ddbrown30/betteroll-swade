@@ -4,7 +4,6 @@
 
 import { get_item_trait } from "./item_card.js";
 import { SYSTEM_GLOBAL_ACTION } from "./actions/builtin-actions.js";
-import { manage_selectable_gm } from "./gm_modifiers.js";
 import { get_roll_options } from "./cards_common.js";
 import { SettingsUtils } from "./utils.js";
 
@@ -748,50 +747,9 @@ export function register_gm_actions_settings() {
   });
 }
 
-/**
- * Get the date needed to render the gm_actions
- */
-export function render_gm_actions() {
-  let actions_ordered = {};
-  let content = "";
+export async function refresh_gm_actions() {
   const old_actions = SettingsUtils.getSetting("gm_actions");
-  let new_actions = [];
-  for (let new_action of get_gm_actions()) {
-    const new_action_id = new_action.id;
-    const old_action = old_actions.find(
-      (action) => action.id === new_action_id,
-    );
-    if (old_action && old_action.enable) {
-      new_action.enable = true;
-    }
-    new_actions.push(new_action);
-  }
-  // noinspection JSIgnoredPromiseFromCall
-  SettingsUtils.setSetting("gm_actions", new_actions);
-  for (let action of new_actions) {
-    if (!actions_ordered.hasOwnProperty(action.group)) {
-      actions_ordered[action.group] = [];
-    }
-    actions_ordered[action.group].push(action);
-  }
-  for (let group in actions_ordered) {
-    const name =
-      group.slice(0, 4) === "BRSW" ? game.i18n.localize(group) : group;
-    content += `<div>${name}</div>`;
-    for (let action of actions_ordered[group]) {
-      const name =
-        action.button_name.slice(0, 4) === "BRSW"
-          ? game.i18n.localize(action.button_name)
-          : action.button_name;
-      const marked_selected = action.enable
-        ? "brws-selected brws-permanent-selected"
-        : "";
-      content += `<div data-action-name="${action.name}" class="brws-selectable brsw-clickable brsw-action brsw-added ${marked_selected}">${name}</div>`;
-    }
-    content += "</div>";
-  }
-  $("#brsw-gm-actions").append(content);
-  const new_tags = $("#brsw-gm-actions .brsw-added");
-  new_tags.click(manage_selectable_gm);
-  new_tags.removeClass("brsw-added");
+  let new_actions = get_gm_actions().map((n) => { n.enable = !!old_actions.find((o) => o?.id === n.id)?.enable; return n; });
+  await SettingsUtils.setSetting("gm_actions", new_actions);
+  return new_actions;
 }

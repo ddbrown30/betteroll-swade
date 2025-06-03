@@ -23,7 +23,7 @@
     margin-bottom: 5px;
 }
 
-.brws-selectable {
+.brsw-selectable {
     padding: 0 4px 0 4px;
     margin: 2px 0 2px 2px;
     border: 1px solid darkgray;
@@ -38,19 +38,11 @@
     line-height: 1.7;
 }
 
-.brws-selectable.brws-selected {
+.brsw-selectable.brsw-selected {
     border-color: red red rgb(255, 100, 0);
     border-style: solid;
     border-width: 1px;
     box-shadow: rgb(255, 100, 0) 0 0 10px;
-}
-
-.brws-selectable.brws-selected {
-    background: white;
-    color: black;
-}
-
-.brws-selectable.brws-selected.brws-permanent-selected {
     background: red;
     color: white;
 }
@@ -298,6 +290,17 @@
 
 .brsw-tab-content {
     margin-bottom: 1em;
+}
+
+.brsw-chat-button.vertical {
+    position: absolute;
+    inset: auto auto 135px calc(100% + 16px);
+}
+
+.brsw-gm-popup {
+    position: absolute;
+    background: var(--background);
+    padding: 1rem;
 }
 
 #br-card-dialog {

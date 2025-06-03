@@ -3,8 +3,6 @@
     Macro, CONFIG, foundry, Item, Dialog, ModuleManagement, $ */
 import {
   activate_common_listeners,
-  manage_selectable_click,
-  manage_collapsables,
   BRSW_CONST,
   get_action_from_click,
   expose_card_class,
@@ -32,7 +30,6 @@ import {
   register_gm_actions_settings,
   SystemGlobalConfiguration,
   WorldGlobalActions,
-  render_gm_actions,
   expose_global_actions_functions,
 } from "./global_actions.js";
 import {
@@ -41,12 +38,6 @@ import {
 } from "./incapacitation_card.js";
 import { OptionalRulesConfiguration } from "./optinal_rules.js";
 import { activate_remove_status_card_listeners } from "./remove_status_cards.js";
-import {
-  manage_selectable_gm,
-  register_gm_modifiers_settings,
-  recover_html_from_gm_modifiers,
-  manage_gm_tabs,
-} from "./gm_modifiers.js";
 import { create_unshaken_wrapper, create_unstun_wrapper } from "./combat.js";
 import {
   ModifierSettingsConfiguration,
@@ -61,6 +52,7 @@ import {
   WORLD_SETTINGS,
 } from "./brsw2-config.js";
 import { BrCommonCard } from "./BrCommonCard.js";
+import { setupChatButton } from "./gm_actions.js";
 
 // Init Hook
 Hooks.on(`init`, () => {
@@ -69,7 +61,6 @@ Hooks.on(`init`, () => {
   game.brsw.get_action_from_click = get_action_from_click;
   register_settings_version2();
   register_actions();
-  register_gm_modifiers_settings();
   register_gm_actions_settings();
 });
 
@@ -91,6 +82,7 @@ Hooks.on(`ready`, () => {
   expose_global_actions_functions();
   expose_card_class();
   incapacitation_card_hooks();
+  setupChatButton();
   // Load partials.
   const templatePaths = [
     "modules/betterrolls-swade2/templates/common_card_header.html",
@@ -127,10 +119,6 @@ Hooks.on(`ready`, () => {
       handlers.splice(0, 0, handler);
     });
   };
-  // Set GM modifiers
-  recover_html_from_gm_modifiers();
-  render_gm_actions();
-  manage_gm_tabs();
   // Add a hook to control combat flow.
   if (SettingsUtils.getWorldSetting("auto-status-cards")) {
     game.swade.effectCallbacks.set("shaken", create_unshaken_wrapper);
@@ -203,25 +191,6 @@ Hooks.on("renderChatMessage", (message, html) => {
     }
     Hooks.call("BRSW-CardRendered", card);
   }
-});
-
-// Hooks for the option form
-Hooks.on("renderSidebarTab", (_, html) => {
-  const place = html.find("#chat-controls");
-  renderTemplate("modules/betterrolls-swade2/templates/options_form.html", {
-    isGM: game.user.isGM,
-  }).then((content) => {
-    const jquery_content = $(content);
-    // Activate select-able control.
-    jquery_content
-      .find(".brsw-player-modifiers>.brws-selectable")
-      .click(manage_selectable_click);
-    jquery_content
-      .find(".brsw-gm-modifiers>.brws-selectable")
-      .click(manage_selectable_gm);
-    place.before(jquery_content);
-    manage_collapsables(jquery_content);
-  });
 });
 
 // Addon by JuanV, make attack target possible by drag and drop

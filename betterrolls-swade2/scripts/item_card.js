@@ -33,7 +33,7 @@ import {
 } from "./utils.js";
 import { create_damage_card } from "./damage_card.js";
 import { ATTRIBUTES_TRANSLATION_KEYS } from "./attribute_card.js";
-import { get_enabled_gm_actions, get_gm_modifiers } from "./gm_modifiers.js";
+import { get_enabled_gm_actions } from "./gm_actions.js";
 import { BrCommonCard } from "./BrCommonCard.js";
 import { DamageModifier, TraitModifier } from "./modifiers.js";
 import { brAction } from "./actions.js";
@@ -1236,13 +1236,6 @@ function get_chat_dmg_modifiers(options, damage_roll) {
       new DamageModifier("Better Rolls", mod),
     );
   });
-  // GM Modifiers
-  const gm_modifier = get_gm_modifiers();
-  if (gm_modifier) {
-    damage_roll.brswroll.modifiers.push(
-      new DamageModifier(game.i18n.localize("BRSW.GMModifier"), gm_modifier),
-    );
-  }
 }
 
 function calc_min_str_penalty(item, actor, damage_formulas, damage_roll) {
