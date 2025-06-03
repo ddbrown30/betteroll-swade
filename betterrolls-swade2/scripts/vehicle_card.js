@@ -68,7 +68,6 @@ function vehicle_weapon_clicked(ev) {
   ev.stopImmediatePropagation();
   ev.preventDefault();
   ev.stopPropagation();
-  console.log("Weapon clicked");
 }
 
 /**
