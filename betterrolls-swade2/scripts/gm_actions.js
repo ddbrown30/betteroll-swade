@@ -7,34 +7,34 @@ import { SettingsUtils } from "./utils.js";
 /**
  * Sets up the hooks for the chat button
  */
-export function setupChatButton() {
+export function setup_chat_button() {
   if (!game.user.isGM) return;
 
-  createChatButton();
+  create_chat_button();
 
   //These hooks are called in different cases of the sidebar changing
   //This will ensure that the chat button is in the correct position
   Hooks.on("renderChatLog", (chatlog, html, data, opt) => {
-    moveChatButton();
+    move_chat_button();
   });
   Hooks.on("closeChatLog", (chatlog, html, data, opt) => {
-    moveChatButton();
+    move_chat_button();
   });
   Hooks.on("activateChatLog", (chatlog) => {
-    moveChatButton();
+    move_chat_button();
   });
   Hooks.on("deactivateChatLog", (chatlog) => {
-    moveChatButton();
+    move_chat_button();
   });
   Hooks.on("collapseSidebar", (sidebar, expanded) => {
-    moveChatButton();
+    move_chat_button();
   });
 }
 
 /**
  * Creates and inits the button that opens the GM actions popup
  */
-function createChatButton() {
+function create_chat_button() {
   const privacyButtons = document.querySelector("#roll-privacy");
   const button = document.createElement("button");
   button.classList.add("brsw-chat-button", "ui-control", "icon", "fas", "fa-plus-minus");
@@ -43,14 +43,14 @@ function createChatButton() {
 
   button.addEventListener("click", (event) => {
     event.stopPropagation();
-    toggleGlobalModsMenu(event.target);
+    toggle_global_mods_menu(event.target);
   });
 
   //We insert it here just so it exists somewhere but it will be moved where it needs to be when moveChatButton is called
   privacyButtons.insertAdjacentElement("afterend", button);
 }
 
-function moveChatButton() {
+function move_chat_button() {
   const place = document.querySelector("#roll-privacy");
   const button = document.querySelector(".brsw-chat-button");
   if (place.classList.contains("vertical")) {
@@ -66,7 +66,7 @@ function moveChatButton() {
  * Open/close the GM actions popup
  * @param element The toggle button
  */
-async function toggleGlobalModsMenu(element) {
+async function toggle_global_mods_menu(element) {
   if (game.brsw.gmActionsPopup) {
     game.brsw.gmActionsPopup.close();
   } else {

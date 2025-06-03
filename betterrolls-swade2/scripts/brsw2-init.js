@@ -52,7 +52,7 @@ import {
   WORLD_SETTINGS,
 } from "./brsw2-config.js";
 import { BrCommonCard } from "./BrCommonCard.js";
-import { setupChatButton } from "./gm_actions.js";
+import { setup_chat_button } from "./gm_actions.js";
 
 // Init Hook
 Hooks.on(`init`, () => {
@@ -82,7 +82,7 @@ Hooks.on(`ready`, () => {
   expose_global_actions_functions();
   expose_card_class();
   incapacitation_card_hooks();
-  setupChatButton();
+  setup_chat_button();
   // Load partials.
   const templatePaths = [
     "modules/betterrolls-swade2/templates/common_card_header.html",

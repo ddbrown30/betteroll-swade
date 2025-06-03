@@ -1,5 +1,3 @@
-import { refresh_gm_actions } from "./global_actions.js";
-import { manage_selectable_gm } from "./gm_actions.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
