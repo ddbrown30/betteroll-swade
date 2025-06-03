@@ -62,13 +62,21 @@ async function vehicle_click_listener(ev, target) {
 }
 
 /**
+ * Fired from an event clicking a vehicle weapon
+ */
+function vehicle_weapon_clicked(ev) {
+  ev.stopImmediatePropagation();
+  ev.preventDefault();
+  ev.stopPropagation();
+}
+
+/**
  * Activates the listeners in the vehicle sheet
  * @param app Sheet app
  * @param html Html code
  */
 export function activate_vehicle_listeners(app, html) {
   const target = app.token || app.object;
-  // App V2 passes raw html, forcing it to jquery to avoid needing two functions
   const maneuver_check_button = html.querySelector(
     "button[data-action='maneuverCheck']",
   );
@@ -80,4 +88,12 @@ export function activate_vehicle_listeners(app, html) {
   new_button.addEventListener("click", async (ev) => {
     await vehicle_click_listener(ev, target);
   });
+  const weapon_labels = html.querySelectorAll("a[data-action='showItem']");
+  for (const label of weapon_labels) {
+    const new_label = label.cloneNode(true);
+    label.replaceWith(new_label);
+    new_label.addEventListener("click", (ev) => {
+      vehicle_weapon_clicked(ev, target);
+    });
+  }
 }
