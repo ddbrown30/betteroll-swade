@@ -9,6 +9,8 @@ import { SettingsUtils } from "./utils.js";
  */
 export function setup_chat_button() {
   if (!game.user.isGM) {
+    return;
+  }
 
   create_chat_button();
 
