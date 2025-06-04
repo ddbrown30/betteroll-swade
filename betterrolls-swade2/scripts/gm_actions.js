@@ -8,7 +8,7 @@ import { SettingsUtils } from "./utils.js";
  * Sets up the hooks for the chat button
  */
 export function setup_chat_button() {
-  if (!game.user.isGM) return;
+  if (!game.user.isGM) {
 
   create_chat_button();
 
