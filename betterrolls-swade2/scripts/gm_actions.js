@@ -39,7 +39,13 @@ export function setup_chat_button() {
 function create_chat_button() {
   const privacyButtons = document.querySelector("#roll-privacy");
   const button = document.createElement("button");
-  button.classList.add("brsw-chat-button", "ui-control", "icon", "fas", "fa-plus-minus");
+  button.classList.add(
+    "brsw-chat-button",
+    "ui-control",
+    "icon",
+    "fas",
+    "fa-plus-minus",
+  );
   button.classList.add("vertical");
   button.type = "button";
 
@@ -68,12 +74,14 @@ function move_chat_button() {
  * Open/close the GM actions popup
  * @param element The toggle button
  */
-async function toggle_global_mods_menu(element) {
+function toggle_global_mods_menu(element) {
   if (game.brsw.gmActionsPopup) {
     game.brsw.gmActionsPopup.close();
   } else {
     const rect = element.getBoundingClientRect();
-    new GmActionsPopup({ anchorPosition: { x: rect.x, y: rect.y } }).render(true);
+    new GmActionsPopup({ anchorPosition: { x: rect.x, y: rect.y } }).render(
+      true,
+    );
   }
 }
 
@@ -86,13 +94,19 @@ export function manage_selectable_gm(ev) {
   ev.currentTarget.classList.toggle("brsw-selected");
 
   //Next, if this action is group_single, deselect the other actions in its group
-  let gm_actions = SettingsUtils.getSetting("gm_actions");
-  let action = gm_actions.find((a) => a.name == ev.currentTarget.dataset.actionName);
+  const gm_actions = SettingsUtils.getSetting("gm_actions");
+  const action = gm_actions.find(
+    (a) => a.name === ev.currentTarget.dataset.actionName,
+  );
   if (action?.group_single) {
     //Grab the actions from the group other than the one we just selected
-    let group_actions = gm_actions.filter((a) => a.group == action.group && action.name != a.name);
-    for (let group_action of group_actions) {
-      let element = document.querySelector(`[data-action-name="${group_action.name}"]`);
+    const group_actions = gm_actions.filter(
+      (a) => a.group === action.group && action.name !== a.name,
+    );
+    for (const group_action of group_actions) {
+      const element = document.querySelector(
+        `[data-action-name="${group_action.name}"]`,
+      );
       if (element) {
         element.classList.remove("brsw-selected");
       }
@@ -100,12 +114,13 @@ export function manage_selectable_gm(ev) {
   }
 
   //Grab all the selected elements and enable them in the settings
-  let selected_actions = [];
-  for (let element of document.querySelectorAll(
-    "#brsw-gm-actions .brsw-selected")) {
+  const selected_actions = [];
+  for (const element of document.querySelectorAll(
+    "#brsw-gm-actions .brsw-selected",
+  )) {
     selected_actions.push(element.dataset.actionName);
   }
-  for (let gm_action of gm_actions) {
+  for (const gm_action of gm_actions) {
     gm_action.enable = selected_actions.includes(gm_action.name);
   }
   // noinspection JSIgnoredPromiseFromCall

@@ -1,6 +1,6 @@
-dictionaries = []
 words = [
     "abl",
+    "afterend",
     "athletik",
     "athletisme",
     "athlétisme",
@@ -87,7 +87,3 @@ words = [
     "élémentalisme",
     "étrange",
 ]
-flag_words = []
-ignore_paths = []
-ignore_patterns = []
-use_global = true
