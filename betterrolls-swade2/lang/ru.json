@@ -69,8 +69,6 @@
     "BRSW.Edges": "Черты",
     "BRSW.SkillName-UnskilledAttempt": "Неумелая попытка",
     "BRSW.SkillName-untrained": "Неумелая попытка",
-    "BRSW.collapse-chat-window": "По умолчанию свернуть окно модификаторов чата.",
-    "BRSW.collapse-chat-window_hint": "При запуске окно в модификаторов в чате будет свернуто. (Мир)",
     "BRSW.CompatibilityHeadline": "Предупреждение о совместимости Better Rolls",
     "BRSW.Cone": "шаблон конуса",
     "BRSW.Control_click_action": "Действие по клику с Ctrl",

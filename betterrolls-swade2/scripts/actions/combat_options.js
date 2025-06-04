@@ -158,12 +158,21 @@ export const COMBAT_OPTIONS = [
   },
 
   {
+    id: "UNSTABLEPLATFORM",
+    name: "BRSW.UnstablePlatform",
+    button_name: "BRSW.UnstablePlatform",
+    skillMod: "-2",
+    selector_type: "gm_action",
+    group: "BRSW.SituationalModifiers",
+  },
+
+  {
     id: "1LDimGm",
     name: "BRSW.IlluminationDim",
     button_name: "BRSW.IlluminationDim",
     skillMod: "-2",
     selector_type: "gm_action",
-    group: "BRSW.IlluminationGM",
+    group: "BRSW.Illumination",
     group_single: true,
   },
   {
@@ -172,7 +181,7 @@ export const COMBAT_OPTIONS = [
     button_name: "BRSW.IlluminationDark",
     skillMod: "-4",
     selector_type: "gm_action",
-    group: "BRSW.IlluminationGM",
+    group: "BRSW.Illumination",
     group_single: true,
   },
   {
@@ -181,7 +190,7 @@ export const COMBAT_OPTIONS = [
     button_name: "BRSW.IlluminationPitch",
     skillMod: "-6",
     selector_type: "gm_action",
-    group: "BRSW.IlluminationGM",
+    group: "BRSW.Illumination",
     group_single: true,
   },
   {

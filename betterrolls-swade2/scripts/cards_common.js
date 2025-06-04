@@ -26,11 +26,11 @@ import {
   create_unshaken_card,
   create_unstun_card,
 } from "./remove_status_cards.js";
-import { get_gm_modifiers } from "./gm_modifiers.js";
 import { TraitRoll } from "./rolls.js";
 import { BrCommonCard } from "./BrCommonCard.js";
 import { TraitModifier } from "./modifiers.js";
 import { SETTING_KEYS } from "./brsw2-config.js";
+import { ManualModifiersPopup } from "./manual_mods_popup.js";
 
 export const BRSW_CONST = {
   TYPE_ATTRIBUTE_CARD: 1,
@@ -201,6 +201,19 @@ function save_macro(br_card) {
 }
 
 /**
+ * Saves a card as a macro
+ * @param {BrCommonCard} br_card
+ */
+function toggle_mods_popup(element, br_card) {
+  if (game.brsw.manualModsPopup) {
+    game.brsw.manualModsPopup.close();
+  } else {
+    const rect = element.getBoundingClientRect();
+    new ManualModifiersPopup({ anchorPosition: { x: rect.x, y: rect.y }, br_card }).render(true);
+  }
+}
+
+/**
  * Connects the listener for all chat cards
  * @param {BrCommonCard} br_card
  * @param {HTMLElement} html - html of the card
@@ -236,10 +249,6 @@ export function activate_common_listeners(br_card, html) {
   html_jquery.find(".brsw-selected-actions").on("click", () => {
     game.brsw.dialog.show_card(br_card);
   });
-  // Selectable modifiers
-  html_jquery
-    .find(".brws-selectable")
-    .click((ev) => manage_selectable_click(ev, br_card.message));
   // Collapsibles
   manage_collapsables(html_jquery, br_card.message);
   // Old rolls
@@ -344,6 +353,11 @@ export function activate_common_listeners(br_card, html) {
   html_jquery.find(".brsw-save-macro").click(() => {
     save_macro(br_card);
   });
+  // Open the manual mods popup
+  html_jquery.find(".brsw-manual-mods").click((event) => {
+    event.stopPropagation();
+    toggle_mods_popup(event.target, br_card);
+  });
   // Popout card
   html_jquery.find(".brsw-popout-button").click(() => {
     br_card.show_popup();
@@ -428,40 +442,6 @@ export function manage_collapsables(html, message) {
 }
 
 /**
- * Mark and unmark selectable items
- * @param ev mouse click event
- * @param {ChatMessage} message - The message that contains the selectable item
- */
-export async function manage_selectable_click(ev, message) {
-  ev.preventDefault();
-  ev.stopPropagation();
-  if (!message || !ev.currentTarget.dataset.action_id) {
-    return manage_html_selectables(ev);
-  }
-  const br_card = new BrCommonCard(message);
-  const action = br_card.get_action_from_id(ev.currentTarget.dataset.action_id);
-  action.selected = !action.selected;
-  await br_card.render();
-  await br_card.save();
-  return null;
-}
-
-/**
- * Manage selectables not based on cards
- * @param ev
- */
-function manage_html_selectables(ev) {
-  if (ev.currentTarget.classList.contains("brws-permanent-selected")) {
-    ev.currentTarget.classList.remove("brws-permanent-selected");
-    ev.currentTarget.classList.remove("brws-selected");
-  } else if (ev.currentTarget.classList.contains("brws-selected")) {
-    ev.currentTarget.classList.add("brws-permanent-selected");
-  } else {
-    ev.currentTarget.classList.add("brws-selected");
-  }
-}
-
-/**
  * Controls the sheet status when the portrait in the header is clicked
  * @param {SwadeActor} actor - The actor's instance that created the chat card
  */
@@ -502,7 +482,7 @@ export function get_action_from_click(event) {
  *
  * @param old_options - Options used as default
  */
-export function get_roll_options(old_options) {
+export function get_roll_options(old_options, br_card) {
   const modifiers = old_options?.additionalMods || [];
   const dmg_modifiers = old_options?.dmgMods || [];
   const tn = old_options?.tn || 4;
@@ -511,19 +491,19 @@ export function get_roll_options(old_options) {
   let rof = old_options?.rof || 1;
   // We only check for modifiers when there are no old ones.
   if (!old_options?.hasOwnProperty("additionalMods")) {
-    $(".brsw-chat-form .brws-selectable.brws-selected").each((_, element) => {
-      if (element.dataset.type === "modifier") {
-        modifiers.push(element.dataset.value);
-      } else if (element.dataset.type === "dmg_modifier") {
-        dmg_modifiers.push(element.dataset.value);
-      } else if (element.dataset.type === "rof") {
-        rof = parseInt(element.dataset.value);
+    if (br_card.manual_mods) {
+      if (br_card.manual_mods.trait_mods?.length) {
+        const total = br_card.manual_mods.trait_mods.reduce((acc, val) => acc + parseInt(val), 0);
+        modifiers.push(total);
       }
-      // Unmark mod
-      if (!element.classList.contains("brws-permanent-selected")) {
-        element.classList.remove("brws-selected");
+      if (br_card.manual_mods.dmg_modifiers?.length) {
+        const total = br_card.manual_mods.dmg_modifiers.reduce((acc, val) => acc + parseInt(val), 0);
+        dmg_modifiers.push(total);
       }
-    });
+      if (br_card.manual_mods.rof) {
+        rof = parseInt(br_card.manual_mods.rof);
+      }
+    }
     const dice_tray_input = $("input.dice-tray__input");
     const tray_modifier = parseInt(dice_tray_input.val());
     if (tray_modifier) {
@@ -677,17 +657,6 @@ function get_below_chat_modifiers(options, roll_options) {
     roll_options.modifiers.push(new TraitModifier("Better Rolls", mod_value));
     roll_options.total_modifiers += mod_value;
   });
-  // Master Modifiers
-  const master_modifiers = get_gm_modifiers();
-  if (master_modifiers) {
-    roll_options.modifiers.push(
-      new TraitModifier(
-        game.i18n.localize("BRSW.GMModifier"),
-        master_modifiers,
-      ),
-    );
-    roll_options.total_modifiers += master_modifiers;
-  }
 }
 
 function get_actor_own_modifiers(actor, roll_options) {
@@ -780,7 +749,7 @@ async function get_new_roll_options(
   if (extra_data.hasOwnProperty("rof")) {
     extra_options.rof = extra_data.rof;
   }
-  const options = get_roll_options(extra_options);
+  const options = get_roll_options(extra_options, br_card);
   roll_options.rof = options.rof || 1;
   // Trait modifier
   if (parseInt(trait_dice.die.modifier)) {
