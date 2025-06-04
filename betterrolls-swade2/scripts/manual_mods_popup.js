@@ -94,6 +94,7 @@ export class ManualModifiersPopup extends HandlebarsApplicationMixin(Application
     }else if (type == "rof") {
       this.br_card.manual_mods.rof = element.classList.contains("brsw-selected") ? value : undefined;
     }
+    this.br_card.save();
   }
 
   async close(options={}) {
