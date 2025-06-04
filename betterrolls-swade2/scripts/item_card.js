@@ -398,9 +398,7 @@ export function activate_item_card_listeners(br_card, html) {
     item.reload();
   });
   html.find(".brsw-pp-manual").click(() => {
-    manual_pp(actor, item).catch(() => {
-      console.error("Error in manual PP management");
-    });
+    manual_pp(actor, item)
   });
   html.find(".brsw-apply-damage").click((ev) => {
     create_damage_card(
