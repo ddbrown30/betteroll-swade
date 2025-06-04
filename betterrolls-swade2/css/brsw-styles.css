@@ -320,11 +320,6 @@
 
 /* Tailwind hides all inputs with the collapse class */
 
-#sidebar-tabs .collapse {
-    visibility: visible;
-}
-
-/* Tailwind doesn't support Groove */
 .brsw-groove-border {
     border-bottom-style: groove;
 }
