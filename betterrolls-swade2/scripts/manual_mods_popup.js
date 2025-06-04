@@ -72,7 +72,7 @@ export class ManualModifiersPopup extends HandlebarsApplicationMixin(Application
 
   onModifierSelected(element) {
     element.classList.toggle("brsw-selected");
-    const type = element.dataset.type;
+    const {type} = element.dataset;
     const {value} = element.dataset;
     this.br_card.manual_mods ??= {};
     if (type == "modifier") {
