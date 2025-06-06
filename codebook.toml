@@ -1,6 +1,6 @@
-dictionaries = []
 words = [
     "abl",
+    "afterend",
     "athletik",
     "athletisme",
     "athlétisme",
@@ -13,11 +13,13 @@ words = [
     "behaviour",
     "betterrolls",
     "brsw",
+    "brswroll",
     "bugfix",
     "combattere",
     "desentrenada",
     "disparar",
     "dmg",
+    "dragstart",
     "druidenmagie",
     "druidisme",
     "dsn",
@@ -28,6 +30,7 @@ words = [
     "entrainé",
     "etrange",
     "fas",
+    "flexrow",
     "foi",
     "fokus",
     "gangup",
@@ -54,14 +57,17 @@ words = [
     "npc",
     "optinal",
     "pelear",
+    "placeable",
     "popout",
     "popouts",
     "powerpoints",
+    "ppv",
     "preloaded",
     "psionica",
     "psiónica",
     "rerolls",
     "rof",
+    "salieri",
     "sbt",
     "sha'ir",
     "solaire",
@@ -87,7 +93,3 @@ words = [
     "élémentalisme",
     "étrange",
 ]
-flag_words = []
-ignore_paths = []
-ignore_patterns = []
-use_global = true

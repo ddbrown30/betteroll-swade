@@ -398,9 +398,7 @@ export function activate_item_card_listeners(br_card, html) {
     item.reload();
   });
   html.find(".brsw-pp-manual").click(() => {
-    manual_pp(actor, item).catch(() => {
-      console.error("Error in manual PP management");
-    });
+    manual_pp(actor, item)
   });
   html.find(".brsw-apply-damage").click((ev) => {
     create_damage_card(
@@ -503,16 +501,16 @@ async function roll_resist(trait, br_card, trait_mod) {
     new_card.trait_roll.tn = get_trait_roll_difficulty(br_card);
     new_card.trait_roll.tn_reason = game.i18n.localize("BRSW.ResistingRoll");
     if (!isNaN(trait_mod)) {
-      const localiced_name = game.i18n.localize("BRSW.ResistingRoll");
-      const resist_action = new brAction(localiced_name, {
+      const localized_name = game.i18n.localize("BRSW.ResistingRoll");
+      const resist_action = new brAction(localized_name, {
         id: broofa(),
-        button_name: localiced_name,
+        button_name: localized_name,
         skillMod: trait_mod,
       });
       resist_action.selected = true;
       new_card.action_groups.resist_button = {
         defaultChecked: "on",
-        name: localiced_name,
+        name: localized_name,
         id: broofa(),
         single_choice: false,
         actions: [resist_action],
@@ -553,7 +551,7 @@ function get_trait_roll_difficulty(br_card) {
  * @param {Object} item.data
  * @param {Object} item.system.actions
  * @param {string} item.system.range
- * @param {SwadeActor} actor The owner of the iem
+ * @param {SwadeActor} actor The owner of the item
  */
 export function get_item_trait(item, actor) {
   // First, if the item has a skill in actions tab, we use it
@@ -839,7 +837,7 @@ async function find_macro(macro_name_or_id) {
   let macro =
     game.macros.getName(macro_name_or_id) || game.macros.get(macro_name_or_id);
   if (!macro) {
-    // Try Uuuid
+    // Try UUID
     macro = await fromUuid(macro_name_or_id);
   }
   if (!macro) {
@@ -1036,12 +1034,12 @@ function get_target_defense(
   target = undefined,
   location = "torso",
 ) {
-  let objetive = target || get_targeted_token();
-  if (!objetive) {
+  let objective = target || get_targeted_token();
+  if (!objective) {
     canvas.tokens.controlled.forEach((token) => {
       // noinspection JSUnresolvedVariable
       if (token.actor !== acting_actor) {
-        objetive = token;
+        objective = token;
       }
     });
   }
@@ -1050,22 +1048,22 @@ function get_target_defense(
     armor: 0,
     name: game.i18n.localize("BRSW.Default"),
   };
-  if (objetive && objetive.actor) {
-    if (objetive.actor.type !== "vehicle") {
-      defense_values.toughness = objetive.actor.system.stats.toughness.value;
+  if (objective && objective.actor) {
+    if (objective.actor.type !== "vehicle") {
+      defense_values.toughness = objective.actor.system.stats.toughness.value;
       defense_values.armor =
-        parseInt(objetive.actor.armorPerLocation[location]) ||
-        objetive.actor.system.stats.toughness.armor ||
+        parseInt(objective.actor.armorPerLocation[location]) ||
+        objective.actor.system.stats.toughness.armor ||
         0;
-      defense_values.name = objetive.name;
-      defense_values.token_id = objetive.id;
+      defense_values.name = objective.name;
+      defense_values.token_id = objective.id;
     } else {
       defense_values.toughness = parseInt(
-        objetive.actor.system.toughness.total,
+        objective.actor.system.toughness.total,
       );
-      defense_values.armor = parseInt(objetive.actor.system.toughness.armor);
-      defense_values.name = objetive.name;
-      defense_values.token_id = objetive.id;
+      defense_values.armor = parseInt(objective.actor.system.toughness.armor);
+      defense_values.name = objective.name;
+      defense_values.token_id = objective.id;
     }
   }
   return defense_values;
@@ -1541,7 +1539,7 @@ async function add_damage_dice(br_card, index) {
     damage_rolls.dice.push(new_die);
   });
   render_data.damage_rolls[index].damage_result =
-    await calculate_damage_results(damage_rolls.rolls);
+    calculate_damage_results(damage_rolls.rolls);
   if (game.dice3d) {
     const damage_theme = SettingsUtils.getUserSetting("damageDieTheme");
     if (damage_theme !== "None") {
@@ -1593,7 +1591,7 @@ async function add_fixed_damage(event, form_results) {
   damage_rolls.modifiers.push({ value: modifier, name: form_results.Label });
   damage_rolls.rolls[0].result += modifier;
   render_data.damage_rolls[index].damage_result =
-    await calculate_damage_results(damage_rolls.rolls);
+    calculate_damage_results(damage_rolls.rolls);
   await update_message(event.data.message, render_data);
 }
 
@@ -1615,7 +1613,7 @@ async function half_damage(br_card, index) {
   });
   damage_rolls.rolls[0].result += half_damage;
   render_data.damage_rolls[index].damage_result =
-    await calculate_damage_results(damage_rolls.rolls);
+    calculate_damage_results(damage_rolls.rolls);
   await update_message(br_card, render_data);
 }
 
@@ -1634,7 +1632,7 @@ async function edit_toughness(br_card, index) {
   damage_rolls[0].target_id = defense_values.token_id || 0;
   render_data.damage_rolls[index].label = defense_values.name;
   render_data.damage_rolls[index].damage_result =
-    await calculate_damage_results(damage_rolls);
+    calculate_damage_results(damage_rolls);
   // noinspection JSIgnoredPromiseFromCall
   await update_message(br_card, render_data);
 }
