@@ -81,7 +81,7 @@ export const SYSTEM_GLOBAL_ACTION = [
         selector_type: "actor_has_edge",
         selector_value: "BRSW.EdgeName-MrFixIt",
       },
-      { selector_type: "skill", selector_value: "Repair" },
+      { selector_type: "skill", selector_value: "BRSW.SkillName-Repair" },
     ],
     defaultChecked: "on",
     group: "BRSW.Edges",
@@ -327,7 +327,7 @@ export const SYSTEM_GLOBAL_ACTION = [
         selector_type: "actor_has_edge",
         selector_value: "BRSW.EdgeName-MartialArtist",
       },
-      { selector_type: "item_name", selector_value: "unarmed" },
+      { selector_type: "item_name", selector_value: "BRSW.Unarmed" },
       {
         not_selector: [
           {
@@ -350,7 +350,7 @@ export const SYSTEM_GLOBAL_ACTION = [
         selector_type: "actor_has_edge",
         selector_value: "BRSW.EdgeName-MartialWarrior",
       },
-      { selector_type: "item_name", selector_value: "unarmed" },
+      { selector_type: "item_name", selector_value: "BRSW.Unarmed" },
     ],
     defaultChecked: "on",
     group: "BRSW.Edges",
