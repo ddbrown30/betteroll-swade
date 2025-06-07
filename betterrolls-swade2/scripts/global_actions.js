@@ -6,6 +6,7 @@ import { get_item_trait } from "./item_card.js";
 import { SYSTEM_GLOBAL_ACTION } from "./actions/builtin-actions.js";
 import { get_roll_options } from "./cards_common.js";
 import { SettingsUtils } from "./utils.js";
+import { get_enabled_gm_actions } from "./gm_actions.js";
 
 // DMG override is still not implemented.
 /**
@@ -358,6 +359,9 @@ export function check_selector(type, value, item, actor) {
         selected = selected || effect ? !effect.disabled : false;
       }
     }
+  } else if (type === "gm_action_enabled") {
+    const gm_actions = get_enabled_gm_actions();
+    selected = !!gm_actions.find((a) => a.id == value);
   } else if (type === "faction") {
     const tokens = actor.getActiveTokens();
     if (
