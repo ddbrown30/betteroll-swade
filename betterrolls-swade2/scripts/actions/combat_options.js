@@ -158,7 +158,7 @@ export const COMBAT_OPTIONS = [
   },
 
   {
-    id: "UNSTABLEPLATFORM",
+    id: "UNSTABLEPLATFORMGM",
     name: "BRSW.UnstablePlatform",
     button_name: "BRSW.UnstablePlatform",
     skillMod: "-2",
@@ -197,28 +197,103 @@ export const COMBAT_OPTIONS = [
     id: "1LDim",
     name: "BRSW.IlluminationDim",
     button_name: "BRSW.IlluminationDim",
-    selector_type: "all",
+    not_selector: [
+      {
+        or_selector: [
+          {
+            selector_type: "actor_has_ability",
+            selector_value: "BRSW.AbilityName-Darkvision",
+          },
+          {
+            selector_type: "actor_has_ability",
+            selector_value: "BRSW.AbilityName-DarkVision",
+          },
+          {
+            selector_type: "actor_has_ability",
+            selector_value: "BRSW.AbilityName-LowLightVision",
+          },
+          {
+            selector_type: "actor_has_ability",
+            selector_value: "BRSW.AbilityName-NightVision",
+          },
+        ],
+      },
+    ],
     skillMod: "-2",
     group: "BRSW.Illumination",
     group_single: true,
+    defaultChecked: {
+      selector_type: "gm_action_enabled",
+      selector_value: "1LDimGm",
+    },
   },
   {
     id: "2LDark",
     name: "BRSW.IlluminationDark",
     button_name: "BRSW.IlluminationDark",
-    selector_type: "all",
+    not_selector: [
+      {
+        or_selector: [
+          {
+            selector_type: "actor_has_ability",
+            selector_value: "BRSW.AbilityName-Darkvision",
+          },
+          {
+            selector_type: "actor_has_ability",
+            selector_value: "BRSW.AbilityName-DarkVision",
+          },
+          {
+            selector_type: "actor_has_ability",
+            selector_value: "BRSW.AbilityName-LowLightVision",
+          },
+          {
+            selector_type: "actor_has_ability",
+            selector_value: "BRSW.AbilityName-NightVision",
+          },
+        ],
+      },
+    ],
     skillMod: "-4",
     group: "BRSW.Illumination",
     group_single: true,
+    defaultChecked: {
+      selector_type: "gm_action_enabled",
+      selector_value: "2LDarkGm",
+    },
   },
   {
     id: "3LPitch",
     name: "BRSW.IlluminationPitch",
     button_name: "BRSW.IlluminationPitch",
-    selector_type: "all",
+    not_selector: [
+      {
+        or_selector: [
+          {
+            selector_type: "actor_has_ability",
+            selector_value: "BRSW.AbilityName-Darkvision",
+          },
+          {
+            selector_type: "actor_has_ability",
+            selector_value: "BRSW.AbilityName-DarkVision",
+          },
+          {
+            selector_type: "actor_has_ability",
+            selector_value: "BRSW.AbilityName-LowLightVision",
+          },
+          {
+            selector_type: "actor_has_ability",
+            selector_value: "BRSW.AbilityName-NightVision",
+          },
+        ],
+      },
+    ],
     skillMod: "-6",
     group: "BRSW.Illumination",
     group_single: true,
+    defaultChecked: {
+      selector_type: "gm_action_enabled",
+      selector_value: "3LPitchGm",
+    },
   },
   {
     id: "UNSTABLEPLATFORM",
@@ -245,6 +320,10 @@ export const COMBAT_OPTIONS = [
       },
     ],
     group: "BRSW.SituationalModifiers",
+    defaultChecked: {
+      selector_type: "gm_action_enabled",
+      selector_value: "UNSTABLEPLATFORMGM",
+    },
   },
   {
     id: "TOUCHATTACK",
