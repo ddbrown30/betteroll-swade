@@ -42,7 +42,7 @@ async function create_attribute_card(
   { actions_stored = {} } = {},
 ) {
   let actor;
-  if (origin instanceof TokenDocument || origin instanceof Token) {
+  if (origin instanceof TokenDocument || origin instanceof foundry.canvas.placeables.Token) {
     actor = origin.actor;
   } else {
     actor = origin;
