@@ -78,7 +78,7 @@ export function expose_card_class() {
  */
 export function create_common_card(origin, render_data, template) {
   let actor;
-  if (origin instanceof TokenDocument || origin instanceof Token) {
+  if (origin instanceof TokenDocument || origin instanceof foundry.canvas.placeables.Token) {
     actor = origin.actor;
   } else {
     actor = origin;
@@ -1208,7 +1208,7 @@ export function has_joker(token_id) {
  * @param event - javascript event for click
  */
 async function duplicate_message(message, event) {
-  const data = duplicate(message);
+  const data = foundry.utils.duplicate(message);
   // Remove rolls
   data.timestamp = new Date().getTime();
   delete data._id;
