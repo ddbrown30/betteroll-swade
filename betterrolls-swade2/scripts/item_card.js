@@ -118,7 +118,10 @@ export async function create_item_card(
   { actions_stored = {} } = {},
 ) {
   let actor;
-  if (origin instanceof TokenDocument || origin instanceof foundry.canvas.placeables.Token) {
+  if (
+    origin instanceof TokenDocument ||
+    origin instanceof foundry.canvas.placeables.Token
+  ) {
     actor = origin.actor;
   } else {
     actor = origin;
@@ -269,8 +272,9 @@ export function expose_item_functions() {
  * Listens to click events on character sheets
  * @param ev javascript click event
  * @param {SwadeActor, Token} target token or actor from the char sheet
+ * @param {HTMLElement} currentTarget the element that was clicked
  */
-async function item_click_listener(ev, target) {
+async function item_click_listener(ev, target, currentTarget) {
   const action = get_action_from_click(ev);
   if (action === "system") {
     return;
@@ -288,7 +292,7 @@ async function item_click_listener(ev, target) {
     await roll_item(br_card, "", false, action.includes("damage"));
   }
   // Shortcut for rolling damage
-  if (ev.currentTarget.classList.contains("damage-roll")) {
+  if (currentTarget.classList.contains("damage-roll")) {
     await roll_dmg(br_card, $(br_card.message.content), false, false);
   }
 }
@@ -327,7 +331,7 @@ export function activate_item_listeners(app, html) {
     const new_image = item_image.cloneNode(true);
     item_image.parentNode.replaceChild(new_image, item_image);
     new_image.addEventListener("click", async (ev) => {
-      await item_click_listener(ev, target);
+      await item_click_listener(ev, target, ev.currentTarget);
     });
   }
   const item_li = html.find(
