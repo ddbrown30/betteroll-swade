@@ -52,9 +52,7 @@
       "flags": {}
     }
   ],
-  "esmodules": [
-    "scripts/brsw2-init.js"
-  ],
+  "esmodules": ["scripts/brsw2-init.js"],
   "styles": [
     {
       "src": "css/brsw-styles.css"
@@ -99,7 +97,7 @@
   },
   "compatibility": {
     "minimum": "13",
-    "verified": "13.342",
+    "verified": "13.344",
     "maximum": "13"
   }
 }
