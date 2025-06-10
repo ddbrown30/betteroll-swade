@@ -690,7 +690,7 @@ async function import_global_actions() {
   new Dialog(
     {
       title: `Import Data: ${this.name}`,
-      content: await foundry.applications.handlebars.renderTemplate("templates/apps/import-data.html", {
+      content: await foundry.applications.handlebars.renderTemplate("templates/apps/import-data.hbs", {
         hint1: "Select file to import",
       }),
       buttons: {
