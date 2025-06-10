@@ -27,7 +27,7 @@ class BrCardDialog {
   }
 
   async render() {
-    this.dialog_element.innerHTML = await renderTemplate(
+    this.dialog_element.innerHTML = await foundry.applications.handlebars.renderTemplate(
       "modules/betterrolls-swade2/templates/card_dialog.html",
       { BrCard: this.BrCard },
     );

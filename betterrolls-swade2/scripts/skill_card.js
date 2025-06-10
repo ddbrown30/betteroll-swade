@@ -61,7 +61,7 @@ async function create_skill_card(
   { actions_stored = {}, vehicle } = {},
 ) {
   let actor;
-  if (origin instanceof TokenDocument || origin instanceof Token) {
+  if (origin instanceof TokenDocument || origin instanceof foundry.canvas.placeables.Token) {
     actor = origin.actor;
   } else {
     actor = origin;
@@ -87,7 +87,7 @@ async function create_skill_card(
   br_message.skill_id = skill.id;
   if (vehicle) {
     br_message.vehicle_actor_id = vehicle.actor?.id || vehicle.id;
-    if (vehicle instanceof TokenDocument || vehicle instanceof Token) {
+    if (vehicle instanceof TokenDocument || vehicle instanceof foundry.canvas.placeables.Token) {
       br_message.vehicle_token_id = vehicle.id;
     }
   }

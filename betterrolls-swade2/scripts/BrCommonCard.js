@@ -645,11 +645,11 @@ export class BrCommonCard {
       this.populate_macro_buttons();
     }
     this.get_trait();
-    const new_content = await renderTemplate(
+    const new_content = await foundry.applications.handlebars.renderTemplate(
       this.render_data.template,
       this.get_data_render(),
     );
-    await TextEditor.enrichHTML(new_content);
+    await foundry.applications.ux.TextEditor.implementation.enrichHTML(new_content);
     if (this.message) {
       this.update_list.content = new_content;
     } else {

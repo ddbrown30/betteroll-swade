@@ -114,7 +114,7 @@ async function apply_damage(token_or_token_id, wounds, soaked = 0) {
     return ("", false);
   }
   const token =
-    token_or_token_id instanceof Token
+    token_or_token_id instanceof foundry.canvas.placeables.Token
       ? token_or_token_id
       : canvas.tokens.get(token_or_token_id);
   // We take the starting situation

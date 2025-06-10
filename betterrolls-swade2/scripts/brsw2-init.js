@@ -93,7 +93,7 @@ Hooks.on(`ready`, () => {
     "modules/betterrolls-swade2/templates/card_dialog.html",
     "modules/betterrolls-swade2/templates/setting_partial.html",
   ];
-  loadTemplates(templatePaths).then(() => {
+  foundry.applications.handlebars.loadTemplates(templatePaths).then(() => {
     console.info("Better Rolls templates preloaded");
   });
   // Add some jquery magic to allow binding our functions prior to systems
