@@ -118,7 +118,7 @@ export async function create_item_card(
   { actions_stored = {} } = {},
 ) {
   let actor;
-  if (origin instanceof TokenDocument || origin instanceof Token) {
+  if (origin instanceof TokenDocument || origin instanceof foundry.canvas.placeables.Token) {
     actor = origin.actor;
   } else {
     actor = origin;
@@ -323,9 +323,13 @@ export function activate_item_listeners(app, html) {
       " .item-control.item-edit, .item-control.item-show, .item.edge-hindrance>.item-show," +
       " .item>.item-show",
   );
-  item_images.bindFirst("click", async (ev) => {
-    await item_click_listener(ev, target);
-  });
+  for (const item_image of item_images) {
+    const new_image = item_image.cloneNode(true);
+    item_image.parentNode.replaceChild(new_image, item_image);
+    new_image.addEventListener("click", async (ev) => {
+      await item_click_listener(ev, target);
+    });
+  }
   const item_li = html.find(
     ".gear-card.item, .item.flexrow, .power.item, .weapon.item, .item>.item-show",
   );

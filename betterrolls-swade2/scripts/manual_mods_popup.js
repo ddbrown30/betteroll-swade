@@ -72,8 +72,7 @@ export class ManualModifiersPopup extends HandlebarsApplicationMixin(Application
 
   onModifierSelected(element) {
     element.classList.toggle("brsw-selected");
-    const {type} = element.dataset;
-    const {value} = element.dataset;
+    const { type, value } = element.dataset;
     this.br_card.manual_mods ??= {};
     if (type == "modifier") {
       this.br_card.manual_mods.trait_mods ??= [];
@@ -92,6 +91,11 @@ export class ManualModifiersPopup extends HandlebarsApplicationMixin(Application
         this.br_card.manual_mods.dmg_modifiers.push(value);
       }
     }else if (type == "rof") {
+      for (const rofEl of element.parentElement.querySelectorAll(`[data-type="rof"]`)) {
+        if (rofEl != element) {
+          rofEl.classList.remove("brsw-selected");
+        }
+      }
       this.br_card.manual_mods.rof = element.classList.contains("brsw-selected") ? value : undefined;
     }
     this.br_card.save();
