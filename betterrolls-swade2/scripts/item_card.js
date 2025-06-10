@@ -111,16 +111,24 @@ const ROF_BULLETS = { 1: 1, 2: 5, 3: 10, 4: 20, 5: 40, 6: 50 };
  *   and a boolean meaning if they need to set on or off
  * @return {Promise} A promise for the BrCommonCard object
  */
-async function create_item_card(origin, item_id, { actions_stored = {} } = {}) {
+// eslint-disable-next-line complexity
+export async function create_item_card(
+  origin,
+  item_id,
+  { actions_stored = {} } = {},
+) {
   let actor;
   if (origin instanceof TokenDocument || origin instanceof Token) {
     actor = origin.actor;
   } else {
     actor = origin;
   }
-  const item = actor.items.find((item) => {
+  let item = actor.items.find((item) => {
     return item.id === item_id;
   });
+  if (!item) {
+    item = await fromUuid(item_id);
+  }
   if (item.type === "consumable") {
     // Show the system card
     item.show();
@@ -398,7 +406,7 @@ export function activate_item_card_listeners(br_card, html) {
     item.reload();
   });
   html.find(".brsw-pp-manual").click(() => {
-    manual_pp(actor, item)
+    manual_pp(actor, item);
   });
   html.find(".brsw-apply-damage").click((ev) => {
     create_damage_card(
@@ -1291,7 +1299,11 @@ async function get_damage_mods_from_actions(
       const action_name = action.code.name.includes("BRSW.")
         ? game.i18n.localize(action.code.name)
         : action.code.name;
-      const new_modifier = new DamageModifier(action_name, action.code.dmgMod, br_card.actor?.getRollData());
+      const new_modifier = new DamageModifier(
+        action_name,
+        action.code.dmgMod,
+        br_card.actor?.getRollData(),
+      );
       await new_modifier.evaluate();
       damage_roll.brswroll.modifiers.push(new_modifier);
     }
@@ -1319,7 +1331,11 @@ async function get_damage_mods_from_actions(
     }
     if (action.code.rerollDamageMod && expend_bennie) {
       damage_roll.brswroll.modifiers.push(
-        new DamageModifier(action.code.name, action.code.rerollDamageMod, br_card.actor?.getRollData()),
+        new DamageModifier(
+          action.code.name,
+          action.code.rerollDamageMod,
+          br_card.actor?.getRollData(),
+        ),
       );
     }
     if (action.code.multiplyDmgMod) {
@@ -1399,7 +1415,7 @@ export async function roll_dmg(
     const new_modifier = new DamageModifier(
       game.i18n.localize("BRSW.ItemPropertiesDmgMod"),
       item.system.actions.dmgMod,
-      br_card.actor?.getRollData()
+      br_card.actor?.getRollData(),
     );
     await new_modifier.evaluate();
     damage_roll.brswroll.modifiers.push(new_modifier);
@@ -1538,8 +1554,9 @@ async function add_damage_dice(br_card, index) {
     });
     damage_rolls.dice.push(new_die);
   });
-  render_data.damage_rolls[index].damage_result =
-    calculate_damage_results(damage_rolls.rolls);
+  render_data.damage_rolls[index].damage_result = calculate_damage_results(
+    damage_rolls.rolls,
+  );
   if (game.dice3d) {
     const damage_theme = SettingsUtils.getUserSetting("damageDieTheme");
     if (damage_theme !== "None") {
@@ -1590,8 +1607,9 @@ async function add_fixed_damage(event, form_results) {
   const damage_rolls = render_data.damage_rolls[index].brswroll;
   damage_rolls.modifiers.push({ value: modifier, name: form_results.Label });
   damage_rolls.rolls[0].result += modifier;
-  render_data.damage_rolls[index].damage_result =
-    calculate_damage_results(damage_rolls.rolls);
+  render_data.damage_rolls[index].damage_result = calculate_damage_results(
+    damage_rolls.rolls,
+  );
   await update_message(event.data.message, render_data);
 }
 
@@ -1612,8 +1630,9 @@ async function half_damage(br_card, index) {
     name: game.i18n.localize("BRSW.HalfDamage"),
   });
   damage_rolls.rolls[0].result += half_damage;
-  render_data.damage_rolls[index].damage_result =
-    calculate_damage_results(damage_rolls.rolls);
+  render_data.damage_rolls[index].damage_result = calculate_damage_results(
+    damage_rolls.rolls,
+  );
   await update_message(br_card, render_data);
 }
 

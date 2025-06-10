@@ -102,7 +102,10 @@ export class BrCommonCard {
       game.brsw.cascade_count + 1 < cascade_max_cascades
         ? game.brsw.cascade_count + 1
         : 0;
-    new CONFIG.ChatMessage.popoutClass({ message: this.message, position: { top: top, left: left } }).render(true);
+    new CONFIG.ChatMessage.popoutClass({
+      message: this.message,
+      position: { top: top, left: left },
+    }).render(true);
     this.popup_shown = true;
     this.save().catch(() => {
       console.error("Error saving card data after popup rendering");
@@ -238,7 +241,11 @@ export class BrCommonCard {
   }
 
   get item() {
-    return this.actor.items.find((item) => item.id === this.item_id);
+    let item = this.actor.items.find((item) => item.id === this.item_id);
+    if (!item) {
+      item = fromUuidSync(this.item_id)
+    }
+    return item;
   }
 
   get skill() {
@@ -359,7 +366,9 @@ export class BrCommonCard {
       if (global_action.hasOwnProperty("defaultChecked")) {
         if (global_action.defaultChecked == "on") {
           new_action.selected = true;
-        } else if (global_action.defaultChecked.hasOwnProperty("selector_type")) {
+        } else if (
+          global_action.defaultChecked.hasOwnProperty("selector_type")
+        ) {
           new_action.selected = check_selector(
             global_action.defaultChecked.selector_type,
             global_action.defaultChecked.selector_value,
@@ -563,7 +572,9 @@ export class BrCommonCard {
     render_data.collapse_results =
       !SettingsUtils.getUserSetting("expand-results");
     render_data.collapse_rolls = !SettingsUtils.getUserSetting("expand-rolls");
-    render_data.collapse_descriptions = !SettingsUtils.getUserSetting("expand-descriptions");
+    render_data.collapse_descriptions = !SettingsUtils.getUserSetting(
+      "expand-descriptions",
+    );
     if (template) {
       render_data.template = template;
     }
@@ -677,7 +688,11 @@ export class BrCommonCard {
       SettingsUtils.getWorldSetting("no-action-message");
     data.has_feet_buttons = this.has_feet_buttons;
     data.skill_tooltip = this.skill_tooltip;
-    data.supports_manual_mods = !!(this.attribute_name || this.skill || this.damage);
+    data.supports_manual_mods = !!(
+      this.attribute_name ||
+      this.skill ||
+      this.damage
+    );
     data.show_popup_button = SettingsUtils.getUserSetting("popout_chat_button");
     data.shots_pp_info = SettingsUtils.getWorldSetting("show_pp_shots_info")
       ? this.item_shots

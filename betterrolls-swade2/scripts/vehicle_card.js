@@ -2,7 +2,7 @@
 /* globals Token, game, ui, fromUuid, fromUuidSync */
 
 import { get_action_from_click } from "./cards_common.js";
-import { trait_from_string } from "./item_card.js";
+import { trait_from_string, create_item_card } from "./item_card.js";
 import { roll_skill } from "./skill_card.js";
 
 /**
@@ -64,10 +64,14 @@ async function vehicle_click_listener(ev, target) {
 /**
  * Fired from an event clicking a vehicle weapon
  */
-function vehicle_weapon_clicked(ev) {
+function vehicle_weapon_clicked(ev, target) {
   ev.stopImmediatePropagation();
   ev.preventDefault();
   ev.stopPropagation();
+  const item_id = ev.currentTarget.parentElement.dataset.itemId;
+  const item = target.actor.items.get(item_id);
+  const gunner = target.actor.system.getCrewMemberForWeapon(item);
+  create_item_card(gunner, item.uuid);
 }
 
 /**
