@@ -1,3 +1,16 @@
+# Version 4.21 aka more v13 bug fixes and start of vehicle support
+* Chat mods: New master and generals mods to substitute old chat mods (Dan Brown)
+* Vehicle weapons: Initial support fo gunners. They can roll vehicle weapons, for now scale and range modifiers are disabled.
+* Bugfixes: Some CSS that's not used anymore was removed.
+* Bugfixes: Removed unneeded catch from functions that have been made sync (Dan Brown)
+* Translations: Make some hardcoded strings translatable.
+* Translations: Updated german translation (Razortide)
+* Bugfix: Fixed a bug that showed the system card when clicking on items (Dan Brown)
+* Bugfix: Fixed a couple of deprecations errors (Dan Brown)
+* Bugfix: Make that only one ROF modifier can be active at a time (Dan Brown)
+* Bugfix: Get the import actions working with v13 (Dan Brown)
+* Bugfix: Get damage buttons from the item tab working again.
+
 # Version 4.20 aka more V13 Adaptations
 * Bugfix: Changed the manifest to avoid installing on v12.
 * Bugfix: Maneuver checks on vehicle sheets are working again.
