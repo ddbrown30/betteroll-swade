@@ -263,7 +263,7 @@
     "BRSW.SomeSoaked": "<p>konnte aber {soaked} Wunde(n) wegstecken!</p>",
     "BRSW.SoulDrain": "Machtpunkte entziehen",
     "BRSW.SpiritRoll": "Willenskraftwurf",
-    "BRSW.StreamTemplate": "Schwallschablone",
+    "BRSW.StreamTemplate": "Strahlschablone",
     "BRSW.SubtractAmmo": "Munition abziehen",
     "BRSW.SubtractPP": "Machtpunkte ausgeben",
     "BRSW.Success": "Erfolg",
@@ -395,7 +395,7 @@
     "BRSW.PowerModifiersDamageFieldGreaterDamageField": "☆ Größeres Schadensfeld (3W6) [+4MP]",
     "BRSW.PowerModifiersDamageFieldMobile": "Mobil [+2MP]",
     "BRSW.PowerModifiersEntangle": "Machtmodifikatoren - Verstricken",
-    "BRSW.PowerModifiersEntangleAreaEffectLBTStream": "Flächeneffekt (GFS/Stream) [+3MP]",
+    "BRSW.PowerModifiersEntangleAreaEffectLBTStream": "Flächeneffekt (GFS/Strahl) [+3MP]",
     "BRSW.PowerModifiersEntangleAreaEffectMBT": "Flächeneffekt (MFS) [+2MP]",
     "BRSW.PowerModifiersEntangleDeadly": "☆ Tödlich (2W6) [+4MP]",
     "BRSW.PowerModifiersEntangleTough": "Zäh (Härte 10) [+1MP]",
@@ -522,5 +522,8 @@
     "BRSW.ShowPPShotsSetting": "Zeige Schuss oder Machtpunkte auf der Karte",
     "BRSW.ShowPPShotsSettingHint": "Dies fügt der Karte Informationen über Mächte oder Schüsse hinzu, wenn die Karte angezeigt wird",
     "BRSW.expand-descriptions_hint": "Aktiviere diese Option, um die Itembeschreibungen zu erweitern; standardmäßig sind sie eingeklappt. (Welt)",
-    "BRSW.AbilityName-NightVision": "Nachtsicht"
+    "BRSW.AbilityName-NightVision": "Nachtsicht",
+    "BRSW.Unarmed": "Unbewaffnet",
+    "BRSW.Swat": "Wegklatschen",
+    "BRSW.AbilityName-LowLightVision": "Restlichtsicht"
 }
