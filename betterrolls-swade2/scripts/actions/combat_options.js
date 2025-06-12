@@ -202,14 +202,6 @@ export const COMBAT_OPTIONS = [
         or_selector: [
           {
             selector_type: "actor_has_ability",
-            selector_value: "BRSW.AbilityName-Darkvision",
-          },
-          {
-            selector_type: "actor_has_ability",
-            selector_value: "BRSW.AbilityName-DarkVision",
-          },
-          {
-            selector_type: "actor_has_ability",
             selector_value: "BRSW.AbilityName-LowLightVision",
           },
           {
@@ -236,14 +228,6 @@ export const COMBAT_OPTIONS = [
         or_selector: [
           {
             selector_type: "actor_has_ability",
-            selector_value: "BRSW.AbilityName-Darkvision",
-          },
-          {
-            selector_type: "actor_has_ability",
-            selector_value: "BRSW.AbilityName-DarkVision",
-          },
-          {
-            selector_type: "actor_has_ability",
             selector_value: "BRSW.AbilityName-LowLightVision",
           },
           {
@@ -268,18 +252,6 @@ export const COMBAT_OPTIONS = [
     not_selector: [
       {
         or_selector: [
-          {
-            selector_type: "actor_has_ability",
-            selector_value: "BRSW.AbilityName-Darkvision",
-          },
-          {
-            selector_type: "actor_has_ability",
-            selector_value: "BRSW.AbilityName-DarkVision",
-          },
-          {
-            selector_type: "actor_has_ability",
-            selector_value: "BRSW.AbilityName-LowLightVision",
-          },
           {
             selector_type: "actor_has_ability",
             selector_value: "BRSW.AbilityName-NightVision",
