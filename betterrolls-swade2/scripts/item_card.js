@@ -34,7 +34,6 @@ import {
 } from "./utils.js";
 import { create_damage_card } from "./damage_card.js";
 import { ATTRIBUTES_TRANSLATION_KEYS } from "./attribute_card.js";
-import { get_enabled_gm_actions } from "./gm_actions.js";
 import { BrCommonCard } from "./BrCommonCard.js";
 import { DamageModifier, TraitModifier } from "./modifiers.js";
 import { brAction } from "./actions.js";
@@ -912,9 +911,6 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
       }
     }
     process_common_actions(action.code, extra_data, macros, br_message.actor);
-  }
-  for (const action of get_enabled_gm_actions()) {
-    process_common_actions(action, extra_data, macros, br_message.actor);
   }
   // Check for minimum strength
   if (

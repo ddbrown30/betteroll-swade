@@ -12,7 +12,6 @@ import {
   process_common_actions,
 } from "./cards_common.js";
 import { run_macros } from "./item_card.js";
-import { get_enabled_gm_actions } from "./gm_actions.js";
 import { SettingsUtils, measureDistance } from "./utils.js";
 import { BrCommonCard } from "./BrCommonCard.js";
 import { TraitModifier } from "./modifiers.js";
@@ -204,9 +203,6 @@ export async function roll_skill(br_card, expend_bennie) {
   // Actions
   for (const action of br_card.get_selected_actions()) {
     process_common_actions(action.code, extra_data, macros, br_card.actor);
-  }
-  for (const action of get_enabled_gm_actions()) {
-    process_common_actions(action, extra_data, macros, br_card.actor);
   }
   if (expend_bennie) {
     await spend_bennie(br_card.actor);
