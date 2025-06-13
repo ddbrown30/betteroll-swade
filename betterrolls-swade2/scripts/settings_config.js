@@ -1,5 +1,4 @@
 // An aplication to manage the settings
-/* global FormApplication, game, foundry, Dialog, $ */
 
 import { SettingsUtils } from "./utils.js";
 import {
@@ -10,48 +9,90 @@ import {
   WORLD_SETTINGS,
 } from "./brsw2-config.js";
 
-export class SettingsConfig extends FormApplication {
-  constructor() {
-    super();
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
+  static DEFAULT_OPTIONS = {
+    id: "brsw-settings-config",
+    tag: "form",
+    form: {
+      handler: SettingsConfig.formHandler,
+      submitOnChange: false,
+      closeOnSubmit: true
+    },
+    classes: ['standard-form', "sheet"],
+    window: {
+      title: "BRSW.Settings",
+      minimizable: false,
+      resizable: true,
+    },
+    position: { width: 800, height: 700 },
+    actions: {
+      restoreDefaults: function (event, button) { this.onRestoreDefaults(event); }
+    },
+  };
+
+  static PARTS = {
+    tabs: { template: 'templates/generic/tab-navigation.hbs' },
+    world: { template: "modules/betterrolls-swade2/templates/settings_config/world_tab.html" },
+    user: { template: "modules/betterrolls-swade2/templates/settings_config/user_tab.html" },
+    footer: { template: "modules/betterrolls-swade2/templates/settings_config/footer.html" }
+  };
+
+  static TABS = {
+    world: {
+      id: 'world',
+      group: 'primary',
+      label: 'BRSW.Settings.Tabs.World',
+    },
+    user: {
+      id: 'user',
+      group: 'primary',
+      label: 'BRSW.Settings.Tabs.User',
+    },
+  };
+
+  _getTabs() {
+    return Object.values(this.constructor.TABS).reduce(
+      (acc, v) => {
+        const isActive = this.tabGroups[v.group] === v.id;
+        acc[v.id] = {
+          ...v,
+          active: isActive,
+          cssClass: isActive ? 'active' : '',
+          tabCssClass: isActive ? 'tab scrollable active' : 'tab scrollable',
+        };
+        return acc;
+      },
+      {},
+    );
   }
 
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      id: "brsw-settings-config",
-      classes: ["sheet"],
-      template: "modules/betterrolls-swade2/templates/settings_config.html",
-      minimizable: false,
-      title: game.i18n.localize("BRSW.Settings"),
-      width: 800,
-      height: 700,
-      resizable: true,
-      tabs: [
-        {
-          navSelector: ".sheet-tabs",
-          contentSelector: ".content",
-          initial: "enable",
-        },
-      ],
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    return foundry.utils.mergeObject(context, {
+      tabs: this._getTabs(),
     });
   }
 
-  getData() {
-    const can_modify_world = game.user.hasPermission("SETTINGS_MODIFY");
-    const data = {
-      can_modify_world: can_modify_world,
-      world_settings: [],
-      user_settings: [],
-    };
-
-    for (let setting of Object.values(WORLD_SETTINGS)) {
-      data.world_settings.push(this.get_setting_data(setting));
+  async _preparePartContext(partId, context, _options) {
+    switch (partId) {
+      case 'world':
+        context.can_modify_world = game.user.hasPermission("SETTINGS_MODIFY");
+        context.world_settings = [];
+        for (let setting of Object.values(WORLD_SETTINGS)) {
+          context.world_settings.push(this.get_setting_data(setting));
+        }
+        break;
+      case 'user':
+        context.user_settings = [];
+        for (let setting of Object.values(USER_SETTINGS)) {
+          context.user_settings.push(this.get_setting_data(setting));
+        }
+        break;
+      case 'footer':
+        break;
     }
-
-    for (let setting of Object.values(USER_SETTINGS)) {
-      data.user_settings.push(this.get_setting_data(setting));
-    }
-
-    return data;
+    return context;
   }
 
   /**
@@ -73,23 +114,11 @@ export class SettingsConfig extends FormApplication {
     return s;
   }
 
-  /**
-   * Activate app listeners
-   * @param {*} html
-   */
-  activateListeners(html) {
-    const restoreDefaultsButton = html.find("button[name='restore-defaults']");
-    restoreDefaultsButton.on("click", async (event) =>
-      this.onRestoreDefaults(event),
-    );
-    super.activateListeners(html);
-  }
-
-  async _updateObject(event, formData) {
+  static async formHandler(event, form, formData) {
     const can_modify_world = game.user.hasPermission("SETTINGS_MODIFY");
     let requires_world_reload = false;
     let requires_client_reload = false;
-    for (let [k, v] of Object.entries(foundry.utils.flattenObject(formData))) {
+    for (let [k, v] of Object.entries(foundry.utils.expandObject(formData.object))) {
       if (
         can_modify_world &&
         WORLD_SETTINGS[k] &&
@@ -122,6 +151,8 @@ export class SettingsConfig extends FormApplication {
     if (requires_world_reload || requires_client_reload) {
       await this.constructor.reloadConfirm({ world: requires_world_reload });
     }
+
+    this.close();
   }
 
   /**
@@ -150,7 +181,7 @@ export class SettingsConfig extends FormApplication {
     event.preventDefault();
 
     let content;
-    const active_data_tab = $(this.form).find("a[class='item active']")[0]
+    const active_data_tab = this.element.querySelector(".tab.active")
       .attributes["data-tab"].nodeValue;
     switch (active_data_tab) {
       case "world":
@@ -162,28 +193,28 @@ export class SettingsConfig extends FormApplication {
         break;
     }
 
-    const confirmationDialog = new Dialog({
-      title: game.i18n.localize("BRSW.Settings.RestoreDefaultsTitle"),
+    new foundry.applications.api.DialogV2({
+      window: { title: "BRSW.Settings.RestoreDefaultsTitle" },
       content: content,
-      buttons: {
-        yes: {
+      buttons: [
+        {
           icon: `<i class="fas fa-check"></i>`,
           label: game.i18n.localize("BRSW.Yes"),
+          action: "yes",
           callback: () => {
             this.restoreDefaults(active_data_tab);
           },
         },
-        no: {
+        {
           icon: `<i class="fas fa-times"></i>`,
           label: game.i18n.localize("BRSW.No"),
+          action: "no",
           callback: () => {},
         },
-      },
+      ],
       default: "no",
       close: () => {},
-    });
-
-    confirmationDialog.render(true);
+    }).render(true);
   }
 
   async restoreDefaults(data_tab) {

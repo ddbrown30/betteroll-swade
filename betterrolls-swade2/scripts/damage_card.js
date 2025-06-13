@@ -11,7 +11,7 @@ import {
   create_incapacitation_card,
   create_injury_card,
 } from "./incapacitation_card.js";
-import { SettingsUtils } from "./utils.js";
+import { SettingsUtils, addEventListenerAll } from "./utils.js";
 import { BrCommonCard } from "./BrCommonCard.js";
 
 /**
@@ -222,10 +222,11 @@ async function undo_damage(message) {
  */
 export function activate_damage_card_listeners(message, html) {
   const br_card = new BrCommonCard(message);
-  html.find(".brsw-undo-damage").click(async () => {
+  html.querySelector(".brsw-undo-damage")?.addEventListener("click", async () => {
     await undo_damage(message);
   });
-  html.find(".brsw-soak-button, .brsw-roll-button").click((ev) => {
+  addEventListenerAll(html, ".brsw-soak-button, .brsw-roll-button", "click", (ev) => {
+    ev.stopPropagation();
     let spend_bennie = false;
     if (
       ev.currentTarget.classList.contains("roll-bennie-button") ||
@@ -236,19 +237,19 @@ export function activate_damage_card_listeners(message, html) {
     // noinspection JSIgnoredPromiseFromCall
     roll_soak(br_card, spend_bennie);
   });
-  html.find(".brsw-show-incapacitation").click(() => {
+  html.querySelector(".brsw-show-incapacitation")?.addEventListener("click", () => {
     // noinspection JSIgnoredPromiseFromCall
     br_card.close_popout(); //We assume we're done with the card at this point so close any popouts
     create_incapacitation_card(br_card.token_id).catch(() => {
       console.error("Error creating incapacitation card");
     });
   });
-  html.find(".brsw-mark-defeated").click(async () => {
+  html.querySelector(".brsw-mark-defeated")?.addEventListener("click", async () => {
     await br_card.actor.toggleStatusEffect("incapacitated", { active: false });
     await br_card.actor.toggleStatusEffect("bleeding-out", { active: false });
     await br_card.actor.toggleStatusEffect("dead", { active: true });
   });
-  html.find(".brsw-injury-button").click(() => {
+  html.querySelector(".brsw-injury-button")?.addEventListener("click", () => {
     // noinspection JSIgnoredPromiseFromCall
     create_injury_card(br_card.token_id, "gritty");
   });

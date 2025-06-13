@@ -5,8 +5,9 @@
 import { get_item_trait } from "./item_card.js";
 import { SYSTEM_GLOBAL_ACTION } from "./actions/builtin-actions.js";
 import { get_roll_options } from "./cards_common.js";
-import { SettingsUtils } from "./utils.js";
+import { SettingsUtils, measureDistance } from "./utils.js";
 import { get_enabled_gm_actions } from "./gm_actions.js";
+import { addEventListenerAll } from "./utils.js";
 
 // DMG override is still not implemented.
 /**
@@ -184,7 +185,7 @@ export function check_selector(type, value, item, actor) {
           }
         } else {
           value = game.i18n.localize(value);
-          selected = skill.system.attribute.toLowerCase().includes(value.toLowerCase())
+          selected = skill.system.attribute.toLowerCase().includes(value.toLowerCase());
         }
       }
     }
@@ -201,7 +202,7 @@ export function check_selector(type, value, item, actor) {
   } else if (type === "actor_has_skill") {
     const item = actor.items.find((item) => {
       return item.type === 'skill' &&
-        item.name.toLowerCase() === game.i18n.localize(value).toLowerCase()
+        item.name.toLowerCase() === game.i18n.localize(value).toLowerCase();
     });
     return !!item;
   } else if (type === "actor_has_item") {
@@ -398,14 +399,10 @@ export function check_selector(type, value, item, actor) {
   } else if (type === "range_less_than") {
     const tokens = actor.getActiveTokens();
     if (tokens && game.user.targets.size) {
-      let use_grid_calc = SettingsUtils.getWorldSetting("range_calc_grid");
-      selected =
-        parseInt(value) >=
-        canvas.grid.measureDistance(
-          tokens[0].center,
-          game.user.targets.first().center,
-          { gridSpaces: use_grid_calc },
-        );
+      let distance = measureDistance(
+        [tokens[0].center, game.user.targets.first().center]
+      );
+      selected = parseInt(value) >= distance;
     }
   } else if (type === "module_is_not_active") {
     const module = game.modules.get(value);
@@ -489,18 +486,49 @@ export class SystemGlobalConfiguration extends FormApplication {
 }
 
 // noinspection JSPrimitiveTypeWrapperUsage
-export class WorldGlobalActions extends FormApplication {
-  static get defaultOptions() {
-    let options = super.defaultOptions;
-    options.id = "brsw-world-actions";
-    options.template =
-      "/modules/betterrolls-swade2/templates/world_globals.html";
-    options.width = 800;
-    options.height = 700;
-    return options;
-  }
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2) {
+  static DEFAULT_OPTIONS = {
+    id: "brsw-world-actions",
+    tag: "form",
+    form: {
+      handler: WorldGlobalActions.formHandler,
+      submitOnChange: false,
+      closeOnSubmit: true
+    },
+    window: {
+      minimizable: false,
+      resizable: true,
+      contentClasses: ["brsw-world-actions"],
+    },
+    position: { width: 800, height: 700 },
+    actions: {
+      newAction: function (event, button) { this.add_action(event, this.element); },
+      export: function (event, button) { export_global_actions(); },
+      import: function (event, button) { import_global_actions(this); },
+      trash: function (event, button) {
+        const row = event.target.parentElement.parentElement;
+        row.remove();
+      },
+      accordion: function (event, button) {
+        const act_content = event.target.parentElement.nextElementSibling;
+        const is_collapsed = act_content.classList.contains("brsw-collapsed");
+        this.element.querySelectorAll(".brsw-edit-action").forEach((act) => {
+          act.classList.add("brsw-collapsed");
+        });
+        if (is_collapsed) {
+          act_content.classList.remove("brsw-collapsed");
+        }
+      }
+    },
+  };
 
-  getData(_) {
+  static PARTS = {
+    form: { template: "/modules/betterrolls-swade2/templates/world_globals.html" },
+  };
+
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
     let actions = SettingsUtils.getSetting("world_global_actions");
     if (actions && actions[0] instanceof Array) {
       actions = actions[0];
@@ -517,39 +545,20 @@ export class WorldGlobalActions extends FormApplication {
       return a.id <= b.id ? -1 : 1;
     });
     // noinspection JSValidateTypes
-    return { actions: formatted_actions };
+    return foundry.utils.mergeObject(context, { actions: formatted_actions });
   }
 
-  async _updateObject(_, formData) {
+  static async formHandler(event, form, formData) {
     let new_world_actions = [];
-    for (let action in formData) {
-      new_world_actions.push(JSON.parse(formData[action]));
+    for (let action in foundry.utils.expandObject(formData.object)) {
+      new_world_actions.push(JSON.parse(formData.object[action]));
     }
     await SettingsUtils.setSetting("world_global_actions", new_world_actions);
     register_actions();
   }
 
-  activateListeners(html) {
-    // noinspection JSUnresolvedFunction
-    html.find(".brsw-new-action").on("click", (ev) => {
-      this.add_action(ev, html);
-    });
-    // noinspection JSUnresolvedFunction
-    html.find(".fas.fa-trash").on("click", (ev) => {
-      const row = ev.currentTarget.parentElement.parentElement;
-      row.remove();
-    });
-    html.find(".brsw-accordion").on("click", (ev) => {
-      const acc_content = ev.currentTarget.nextElementSibling;
-      const is_collapsed = acc_content.classList.contains("brsw-collapsed");
-      html.find(".brsw-edit-action").each((_, acc) => {
-        acc.classList.add("brsw-collapsed");
-      });
-      if (is_collapsed) {
-        acc_content.classList.remove("brsw-collapsed");
-      }
-    });
-    html.find("textarea").on("keydown", (ev) => {
+  _onRender(context, options) {
+    addEventListenerAll(this.element, "textarea", "keydown", async (ev) => {
       if (ev.key === "Tab") {
         ev.preventDefault();
         const start = ev.currentTarget.selectionStart;
@@ -563,11 +572,7 @@ export class WorldGlobalActions extends FormApplication {
       }
     });
     // Activate JSON check on old actions
-    $(".brsw-action-json").on("blur", this.check_json);
-    // Export and import
-    $(".brsw-export-json").on("click", export_global_actions);
-    $(".brsw-import-json").on("click", import_global_actions);
-    super.activateListeners(html);
+    addEventListenerAll(this.element, ".brsw-action-json", "blur", this.check_json);
   }
 
   check_json(ev) {
@@ -634,15 +639,13 @@ export class WorldGlobalActions extends FormApplication {
         }
       }
     }
-    const action_title = $(text_area.parentElement.parentElement).find(
-      "button>span",
-    );
+    const action_title = text_area.parentElement.parentElement.querySelector("button>span");
     if (error) {
       // Inputs without a name are not passed to updateObject
-      action_title[0].innerHTML = error;
+      action_title.innerHTML = error;
       text_area.removeAttribute("name");
     } else {
-      action_title[0].innerHTML = action.name;
+      action_title.innerHTML = action.name;
       text_area.name = action.name;
     }
   }
@@ -655,21 +658,13 @@ export class WorldGlobalActions extends FormApplication {
       text_input.classList.add("brsw-collapsed");
     }
     // noinspection JSUnresolvedFunction
-    const action_list = html.find(".brsw-action-list");
-    let new_action = $(
-      '<h2 class=\'mb-0 border-none\'><button type="button" class="p-5 font-medium text-white border border-b-0 border-gray-200 {{# if @first }}rounded-t-xl{{/if}} bg-gray-600 focus:ring-4 focus:ring-gray-700 hover:text-white hover:bg-gray-700 gap-3"><span>New</span></button></h2>',
+    const action_list = html.querySelector(".brsw-action-list");
+    const new_span = document.createElement("span");
+    new_span.insertAdjacentHTML("beforeend", '<h2 class=\'mb-0 border-none\'><button type="button" class="p-5 font-medium border border-b-0 border-gray-200 {{# if @first }}rounded-t-xl{{/if}} bg-gray-600 focus:ring-4 focus:ring-gray-700 hover:text-white hover:bg-gray-700 gap-3"><span>New</span></button></h2>',
     );
-    let text_div = $(
-      "<div class='p-5 border border-b-0 border-gray-200 bg-gray-500'></div>",
-    );
-    let new_textarea = $(
-      "<textarea class='brsw-action-json bg-white' rows='9'></textarea>",
-    );
-    new_textarea.on("blur", this.check_json);
-    let new_span = $("<span></span>");
-    new_span.append(new_action);
-    text_div.append(new_textarea);
-    new_span.append(text_div);
+    new_span.insertAdjacentHTML("beforeend", "<div class='p-5 border border-b-0 border-gray-200 bg-gray-500'></div>");
+    new_span.insertAdjacentHTML("beforeend", "<textarea class='brsw-action-json' rows='9'></textarea>");
+    new_span.querySelector("textarea").addEventListener("blur", this.check_json);
     action_list.append(new_span);
   }
 }
@@ -678,48 +673,51 @@ export class WorldGlobalActions extends FormApplication {
  * Exports custom global actions to a JSON file.
  */
 function export_global_actions() {
-  let actions = SettingsUtils.getWorldSetting("world_global_actions");
-  saveDataToFile(JSON.stringify(actions), "json", "world_actions.json");
+  let actions = SettingsUtils.getSetting("world_global_actions");
+  foundry.utils.saveDataToFile(JSON.stringify(actions), "json", "world_actions.json");
 }
 
 /**
  * Import global actions from disk
  * @return {Promise<void>}
  */
-async function import_global_actions() {
-  new Dialog(
+async function import_global_actions(app) {
+  const content = document.createElement(`div`);
+  content.innerHTML = await foundry.applications.handlebars.renderTemplate("templates/apps/import-data.hbs", {
+    hint1: "Select file to import",
+  });
+  new foundry.applications.api.DialogV2(
     {
-      title: `Import Data: ${this.name}`,
-      content: await foundry.applications.handlebars.renderTemplate("templates/apps/import-data.hbs", {
-        hint1: "Select file to import",
-      }),
-      buttons: {
-        import: {
+      window: { title: "Import Data" },
+      position: { width: 400 },
+      content: content,
+      buttons: [
+        {
           icon: '<i class="fas fa-file-import"></i>',
           label: "Import",
-          callback: (html) => {
-            const form = html.find("form")[0];
+          action: "import",
+          callback: (event, target, dialog) => {
+            const form = dialog.element.querySelector("form");
             if (!form.data.files.length) {
               return ui.notifications.error("You did not upload a data file!");
             }
-            readTextFromFile(form.data.files[0]).then((json) => {
+            foundry.utils.readTextFromFile(form.data.files[0]).then((json) => {
               SettingsUtils.setSetting(
                 "world_global_actions",
                 JSON.parse(json),
               );
             });
+            app.render(true);
           },
         },
-        no: {
+        {
           icon: '<i class="fas fa-times"></i>',
           label: "Cancel",
+          action: "no",
         },
-      },
+      ],
       default: "import",
-    },
-    {
-      width: 400,
-    },
+    }
   ).render(true);
 }
 

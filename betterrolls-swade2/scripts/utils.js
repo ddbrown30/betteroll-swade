@@ -71,7 +71,7 @@ export function broofa() {
  *  is no id it will use label as an id, beware of spaces
  * @param {function} callback A callback function to pass the data
  */
-export function simple_form(title, fields, callback) {
+export async function simple_form(title, fields, callback) {
   let content = "<form>";
   for (let field of fields) {
     const field_id = field.id || field.label;
@@ -79,26 +79,28 @@ export function simple_form(title, fields, callback) {
             <input id='input_${field_id}' value='${field.default_value}'></div>`;
   }
   content += "</form>";
-  new Dialog({
-    title: title,
+  await foundry.applications.api.DialogV2.wait({
+    window: { title: title },
     content: content,
-    buttons: {
-      one: {
+    buttons: [
+      {
         label: "OK",
-        callback: (html) => {
+        action: "one",
+        callback: (event, target, dialog) => {
           let values = {};
           for (let field of fields) {
             const field_id = field.id || field.label;
-            values[field_id] = html.find(`#input_${field_id}`).val();
+            values[field_id] = dialog.element.querySelector(`#input_${field_id}`).value;
           }
           callback(values);
         },
       },
-      two: {
+      {
         label: "Cancel",
+        action: "two",
       },
-    },
-  }).render(true);
+    ],
+  });
 }
 
 /**
@@ -134,6 +136,18 @@ export async function set_or_update_condition(condition_id, actor) {
     ["duration.startRound"]: game.combat ? game.combat.round : 0,
     ["duration.startTurn"]: game.combat ? game.combat.turn : 0,
   });
+}
+
+export function addEventListenerAll(html, selector, type, listener) {
+  html.querySelectorAll(selector).forEach((e) => {
+    e.addEventListener(type, listener);
+  });
+}
+
+export function measureDistance(waypoints) {
+  let use_grid_calc = SettingsUtils.getWorldSetting("range_calc_grid");
+  let path = canvas.grid.measurePath(waypoints);
+  return use_grid_calc ? path.distance : path.euclidean;
 }
 
 export class SettingsUtils {

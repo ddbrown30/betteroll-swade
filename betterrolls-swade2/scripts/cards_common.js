@@ -4,6 +4,7 @@
 // noinspection JSUnusedAssignment
 
 import {
+  addEventListenerAll,
   get_targeted_token,
   set_or_update_condition,
   SettingsUtils,
@@ -219,44 +220,45 @@ function toggle_mods_popup(element, br_card) {
  * @param {HTMLElement} html - html of the card
  */
 export function activate_common_listeners(br_card, html) {
-  const html_jquery = $(html); // Get sure html is a Jquery element.
   // The message will be rendered at creation and each time a flag is added
   // Actor will be undefined if this is called before flags are set
   if (br_card.actor) {
-    html_jquery
-      .find(".brws-actor-img")
-      .addClass("bound")
-      .click(async () => {
+    const actor_img = html.querySelector(".brws-actor-img");
+    if (actor_img) {
+      actor_img.classList.add("bound");
+      actor_img.addEventListener("click", async (ev) => {
         await manage_sheet(br_card.actor);
       });
-    html_jquery
-      .find(".brws-vehicle-img")
-      .addClass("bound")
-      .click(async () => {
+    }
+    const vehicle_img = html.querySelector(".brws-vehicle-img");
+    if (vehicle_img) {
+      vehicle_img.classList.add("bound");
+      vehicle_img.addEventListener("click", async (ev) => {
         await manage_sheet(br_card.vehicle_actor);
       });
-    html_jquery.find(".br2-unshake-card").on("click", () => {
+    }
+    html.querySelector(".br2-unshake-card")?.addEventListener("click", async (ev) => {
       create_unshaken_card(br_card.message, undefined).catch(() => {
         console.error("BR2 unable to show unshaken card");
       });
     });
-    html_jquery.find(".br2-unstun-card").on("click", () => {
+    html.querySelector(".br2-unstun-card")?.addEventListener("click", async (ev) => {
       create_unstun_card(br_card.message, undefined).catch(() => {
         console.error("BR2 unable to show unstun card");
       });
     });
   }
-  html_jquery.find(".brsw-selected-actions").on("click", () => {
+  html.querySelector(".brsw-selected-actions")?.addEventListener("click", () => {
     game.brsw.dialog.show_card(br_card);
   });
   // Collapsibles
-  manage_collapsables(html_jquery, br_card.message);
+  manage_collapsables(html, br_card.message);
   // Old rolls
-  html_jquery.find(".brsw-old-roll").click(async (ev) => {
+  html.querySelector(".brsw-old-roll")?.addEventListener("click", async (ev) => {
     await old_roll_clicked(ev, br_card);
   });
   // Add modifiers
-  html_jquery.find(".brsw-add-modifier").click(() => {
+  html.querySelector(".brsw-add-modifier")?.addEventListener("click", () => {
     const label_mod = game.i18n.localize("BRSW.Modifier");
     simple_form(
       game.i18n.localize("BRSW.AddModifier"),
@@ -281,7 +283,7 @@ export function activate_common_listeners(br_card, html) {
     );
   });
   // Edit modifiers
-  html_jquery.find(".brsw-edit-modifier").click((ev) => {
+  html.querySelector(".brsw-edit-modifier")?.addEventListener("click", (ev) => {
     const label_mod = game.i18n.localize("BRSW.Modifier");
     const { value, label, index } = ev.currentTarget.dataset;
     simple_form(
@@ -300,7 +302,7 @@ export function activate_common_listeners(br_card, html) {
     );
   });
   // Edit die results
-  html_jquery.find(".brsw-override-die").click((ev) => {
+  html.querySelector(".brsw-override-die")?.addEventListener("click", (ev) => {
     // Retrieve additional data
     const die_index = Number(ev.currentTarget.dataset.dieIndex);
     // Show modal
@@ -316,12 +318,12 @@ export function activate_common_listeners(br_card, html) {
     );
   });
   // Delete modifiers
-  html_jquery.find(".brsw-delete-modifier").click(async (ev) => {
+  html.querySelector(".brsw-delete-modifier")?.addEventListener("click", async (ev) => {
     ev.stopPropagation();
     await delete_modifier(br_card, parseInt(ev.currentTarget.dataset.index));
   });
   // Edit TNs
-  html_jquery.find(".brsw-edit-tn").click((ev) => {
+  html.querySelector(".brsw-edit-tn")?.addEventListener("click", (ev) => {
     const old_tn = ev.currentTarget.dataset.value;
     const tn_trans = game.i18n.localize("BRSW.TN");
     simple_form(
@@ -333,7 +335,7 @@ export function activate_common_listeners(br_card, html) {
     );
   });
   // TNs from target
-  html_jquery.find(".brsw-target-tn, .brsw-selected-tn").click((ev) => {
+  html.querySelector(".brsw-target-tn, .brsw-selected-tn")?.addEventListener("click", (ev) => {
     ev.stopPropagation();
     const { index } = ev.currentTarget.dataset;
     get_tn_from_target(
@@ -345,21 +347,21 @@ export function activate_common_listeners(br_card, html) {
     });
   });
   // Repeat card
-  html_jquery.find(".brsw-repeat-card").click((ev) => {
+  html.querySelector(".brsw-repeat-card")?.addEventListener("click", (ev) => {
     // noinspection JSIgnoredPromiseFromCall
     duplicate_message(br_card.message, ev);
   });
   // Save a macro using the current settings
-  html_jquery.find(".brsw-save-macro").click(() => {
+  html.querySelector(".brsw-save-macro")?.addEventListener("click", () => {
     save_macro(br_card);
   });
   // Open the manual mods popup
-  html_jquery.find(".brsw-manual-mods").click((event) => {
+  html.querySelector(".brsw-manual-mods")?.addEventListener("click", (event) => {
     event.stopPropagation();
     toggle_mods_popup(event.target, br_card);
   });
   // Popout card
-  html_jquery.find(".brsw-popout-button").click(() => {
+  html.querySelector(".brsw-popout-button")?.addEventListener("click", () => {
     br_card.show_popup();
   });
 }
@@ -413,22 +415,24 @@ function create_macro_command_from_card(br_card) {
  * @param html
  */
 export function manage_collapsables(html, message) {
-  const collapse_buttons = html.find(".brsw-collapse-button");
-  collapse_buttons.click((e) => {
+  addEventListenerAll(html, ".brsw-collapse-button", "click", async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    const clicked = $(e.currentTarget);
-    const data_collapse = clicked.attr("data-collapse");
-    const collapsable_span = html.find("." + data_collapse);
-    collapsable_span.toggleClass("brsw-collapsed");
-    if (collapsable_span.hasClass("brsw-collapsed")) {
-      const button = clicked.find(".fas.fa-caret-down");
-      button.removeClass("fa-caret-down");
-      button.addClass("fa-caret-right");
+    const data_collapse = e.currentTarget.attributes["data-collapse"].nodeValue;
+    const collapsable_span = html.querySelector("." + data_collapse);
+    collapsable_span.classList.toggle("brsw-collapsed");
+    if (collapsable_span.classList.contains("brsw-collapsed")) {
+      const button = e.currentTarget.querySelector(".fas.fa-caret-down");
+      if (button) {
+        button.classList.remove("fa-caret-down");
+        button.classList.add("fa-caret-right");
+      }
     } else {
-      const button = clicked.find(".fas.fa-caret-right");
-      button.removeClass("fa-caret-right");
-      button.addClass("fa-caret-down");
+      const button = e.target.querySelector(".fas.fa-caret-right");
+      if (button) {
+        button.classList.remove("fa-caret-right");
+        button.classList.add("fa-caret-down");
+      }
     }
     //Call setPosition on any popouts so that they resize to fit the new content
     if (message) {
