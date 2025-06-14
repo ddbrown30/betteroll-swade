@@ -959,7 +959,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
     br_message.item.system.autoReload
   ) {
     const dis_ammo_selected = html
-      ? html.querySelector(".twbr\\:bg-red-700.brsw-ammo-toggle")
+      ? !!html.querySelector(".twbr\\:bg-red-700.brsw-ammo-toggle")
       : SettingsUtils.getWorldSetting("default-ammo-management");
     if (dis_ammo_selected || macros.length) {
       br_message.render_data.used_shots =
