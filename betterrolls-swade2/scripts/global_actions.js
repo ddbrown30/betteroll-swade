@@ -445,7 +445,6 @@ export class SystemGlobalConfiguration extends HandlebarsApplicationMixin(Applic
       title: "",
       minimizable: false,
       resizable: true,
-      contentClasses: ["brsw-modifier-names-content"],
     },
   };
 
