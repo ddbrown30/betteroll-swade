@@ -131,7 +131,7 @@ async function attribute_click_listener(ev, target) {
  */
 export function activate_attribute_listeners(app, html) {
   const target = app.token || app.object;
-  for (const attribute_label of html.find(".attribute-value")) {
+  for (const attribute_label of html.querySelectorAll(".attribute-value")) {
     const new_label = attribute_label.cloneNode(true);
     attribute_label.parentNode.replaceChild(new_label, attribute_label);
     new_label.addEventListener("click", async (ev) => {
@@ -146,7 +146,7 @@ export function activate_attribute_listeners(app, html) {
  * @param html Html produced
  */
 export function activate_attribute_card_listeners(card, html) {
-  html.find(".brsw-roll-button").click(async (ev) => {
+  html.querySelector(".brsw-roll-button").addEventListener("click", async (ev) => {
     await roll_attribute(
       card,
       ev.currentTarget.classList.contains("roll-bennie-button"),

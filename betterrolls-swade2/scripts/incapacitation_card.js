@@ -109,13 +109,13 @@ export function incapacitation_card_hooks() {
  * Checks if a benny has been expended and rolls in the incapacitation table.
  * @param ev
  */
-function roll_incapacitation_clicked(ev) {
+function roll_incapacitation_clicked(ev, br_card) {
   let spend_bennie = false;
   if (ev.currentTarget.classList.contains("roll-bennie-button")) {
     spend_bennie = true;
   }
   // noinspection JSIgnoredPromiseFromCall
-  roll_incapacitation(ev.data.br_card, spend_bennie);
+  roll_incapacitation(br_card, spend_bennie);
 }
 
 /**
@@ -125,10 +125,10 @@ function roll_incapacitation_clicked(ev) {
  */
 export function activate_incapacitation_card_listeners(message, html) {
   const br_card = new BrCommonCard(message);
-  html
-    .find(".brsw-vigor-button, .brsw-roll-button")
-    .bind("click", { br_card: br_card }, roll_incapacitation_clicked);
-  html.find(".brsw-injury-button").click((ev) => {
+  html.querySelector(".brsw-vigor-button, .brsw-roll-button")?.addEventListener("click", (ev) => {
+    roll_incapacitation_clicked(ev, br_card);
+  });
+  html.querySelector(".brsw-injury-button")?.addEventListener("click", (ev) => {
     // noinspection JSIgnoredPromiseFromCall
     br_card.close_popout(); //We assume we're done with the card at this point so close any popouts
     create_injury_card(

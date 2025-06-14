@@ -30,6 +30,7 @@ import {
   set_or_update_condition,
   simple_form,
   broofa,
+  addEventListenerAll,
 } from "./utils.js";
 import { create_damage_card } from "./damage_card.js";
 import { ATTRIBUTES_TRANSLATION_KEYS } from "./attribute_card.js";
@@ -282,7 +283,7 @@ async function item_click_listener(ev, target, currentTarget) {
   ev.preventDefault();
   ev.stopPropagation();
   // First term for PC, second one for NPCs
-  const item_id = ev.currentTarget.closest("[data-item-id]").dataset.itemId;
+  const item_id = ev.target.closest("[data-item-id]").dataset.itemId;
   // Show card
   const br_card = await create_item_card(target, item_id);
   if (action.includes("dialog")) {
@@ -291,24 +292,9 @@ async function item_click_listener(ev, target, currentTarget) {
     await roll_item(br_card, "", false, action.includes("damage"));
   }
   // Shortcut for rolling damage
-  if (currentTarget.classList.contains("damage-roll")) {
+  if (ev.target.classList.contains("damage-roll")) {
     await roll_dmg(br_card, $(br_card.message.content), false, false);
   }
-}
-
-/**
- * Overrides the default dragstart handle to allow itemIds in another part
- * of the tag chain
- * @param ev
- */
-function drag_start_handle(ev) {
-  if (!ev.currentTarget.dataset.itemId) {
-    ev.currentTarget.dataset.itemId =
-      ev.currentTarget.parentElement.dataset.itemId ||
-      ev.currentTarget.parentElement.parentElement.dataset.itemId ||
-      ev.currentTarget.parentElement.parentElement.parentElement.dataset.itemId;
-  }
-  ev.data.app._onDragStart(ev.originalEvent);
 }
 
 /**
@@ -318,7 +304,7 @@ function drag_start_handle(ev) {
  */
 export function activate_item_listeners(app, html) {
   const target = app.token || app.object;
-  const item_images = html.find(
+  const item_images = html.querySelectorAll(
     ".item-image, .item-img, .name.item-show, span.item>.item-control.item-edit," +
       " .gear-card .card-header>.item-name, .damage-roll, .item-name>h4," +
       " .power-header>.item-name, .card-button, .item-control.item-show," +
@@ -333,12 +319,6 @@ export function activate_item_listeners(app, html) {
       await item_click_listener(ev, target, ev.currentTarget);
     });
   }
-  const item_li = html.find(
-    ".gear-card.item, .item.flexrow, .power.item, .weapon.item, .item>.item-show",
-  );
-  item_li.attr("draggable", "true");
-  item_li.off("dragstart");
-  item_li.bind("dragstart", { app: app }, drag_start_handle);
 }
 
 /**
@@ -347,30 +327,9 @@ export function activate_item_listeners(app, html) {
  * @param {BrCommonCard} br_card
  */
 function preview_template(ev, br_card) {
-  const templateData = {
-    user: game.user.id,
-    distance: 0,
-    direction: 0,
-    x: 0,
-    y: 0,
-    fillColor: game.user.color,
-  };
   let type = ev.currentTarget.dataset.size;
   if (type === "cone") {
     type = "swcone";
-    templateData.t = "cone";
-    templateData.distance = 9;
-  } else if (type === "stream") {
-    templateData.t = "ray";
-    templateData.distance = 12;
-    templateData.width = 1;
-  } else {
-    templateData.t = "circle";
-    templateData.distance = type === "sbt" ? 1 : type === "mbt" ? 2 : 3;
-  }
-  // Adjust to grid distance
-  if (canvas.grid.distance % 5 === 0) {
-    templateData.distance *= 5;
   }
   CONFIG.MeasuredTemplate.objectClass.fromPreset(type, br_card.item);
   Hooks.call(
@@ -388,17 +347,18 @@ function preview_template(ev, br_card) {
  */
 export function activate_item_card_listeners(br_card, html) {
   const { actor, item } = br_card;
-  html.find(".brsw-header-img").click((_) => {
+  html.querySelector(".brsw-header-img")?.addEventListener("click", (_) => {
     item.sheet.render(true);
   });
-  html.find(".brsw-roll-button").click(async (ev) => {
+  addEventListenerAll(html, ".brsw-roll-button", "click", async (ev) => {
+    ev.stopPropagation();
     await roll_item(
       br_card,
       html,
       ev.currentTarget.classList.contains("roll-bennie-button"),
     );
   });
-  html.find(".brsw-damage-button, .brsw-damage-bennie-button").click((ev) => {
+  addEventListenerAll(html, ".brsw-damage-button, .brsw-damage-bennie-button", "click", (ev) => {
     // noinspection JSIgnoredPromiseFromCall
     roll_dmg(
       br_card,
@@ -409,13 +369,21 @@ export function activate_item_card_listeners(br_card, html) {
       ev.currentTarget.dataset.token,
     );
   });
-  html.find(".brsw-ammo-manual").click(() => {
-    item.reload();
+  html.querySelector(".brsw-ammo-manual")?.addEventListener("click", async (ev) => {
+    await item.reload();
+    //Update the ammo text of the card we just clicked on.
+    //This won't affect change the popout or vice versa,
+    //but doing that would require an update to the chat message which would refresh the render which is disruptive
+    ev.target.querySelector(".brsw-shots-pp").innerText = br_card.item_shots;
   });
-  html.find(".brsw-pp-manual").click(() => {
-    manual_pp(actor, item);
+  html.querySelector(".brsw-pp-manual")?.addEventListener("click", async (ev) => {
+    await manual_pp(actor, item);
+    //Update the pp text of the card we just clicked on.
+    //This won't affect change the popout or vice versa,
+    //but doing that would require an update to the chat message which would refresh the render which is disruptive
+    ev.target.parentElement.querySelector(".brsw-shots-pp").innerText = br_card.item_shots;
   });
-  html.find(".brsw-apply-damage").click((ev) => {
+  addEventListenerAll(html, ".brsw-apply-damage", "click", (ev) => {
     create_damage_card(
       ev.currentTarget.dataset.token,
       ev.currentTarget.dataset.damage,
@@ -423,25 +391,25 @@ export function activate_item_card_listeners(br_card, html) {
       ev.currentTarget.dataset.heavyDamage,
     ).then();
   });
-  html.find(".brsw-target-tough").click((ev) => {
+  addEventListenerAll(html, ".brsw-target-tough", "click", (ev) => {
     // noinspection JSIgnoredPromiseFromCall
     edit_toughness(br_card, ev.currentTarget.dataset.index);
   });
-  html.find(".brsw-add-damage-d6").click((ev) => {
+  addEventListenerAll(html, ".brsw-add-damage-d6", "click", (ev) => {
     // noinspection JSIgnoredPromiseFromCall
     add_damage_dice(br_card, ev.currentTarget.dataset.index);
   });
-  html.find(".brsw-half-damage").click((ev) => {
+  addEventListenerAll(html, ".brsw-half-damage", "click", (ev) => {
     // noinspection JSIgnoredPromiseFromCall
     half_damage(br_card, ev.currentTarget.dataset.index);
   });
-  html
-    .find(".brsw-add-damage-number")
-    .bind("click", { message: br_card.message }, show_fixed_damage_dialog);
-  html.find(".brsw-template-button").on("click", (ev) => {
+  addEventListenerAll(html, ".brsw-add-damage-number", "click", (ev) => {
+    show_fixed_damage_dialog(ev, br_card.message);
+  });
+  addEventListenerAll(html, ".brsw-template-button", "click", (ev) => {
     preview_template(ev, br_card);
   });
-  html.find("#roll-damage").on("dragstart", (ev) => {
+  html.querySelector("#roll-damage")?.addEventListener("dragstart", (ev) => {
     ev.originalEvent.dataTransfer.setData(
       "text/plain",
       JSON.stringify({
@@ -451,7 +419,7 @@ export function activate_item_card_listeners(br_card, html) {
       }),
     );
   });
-  html.find("#roll-raise-damage").on("dragstart", (ev) => {
+  html.querySelector("#roll-raise-damage")?.addEventListener("dragstart", (ev) => {
     ev.originalEvent.dataTransfer.setData(
       "text/plain",
       JSON.stringify({
@@ -461,22 +429,22 @@ export function activate_item_card_listeners(br_card, html) {
       }),
     );
   });
-  html.find(".brsw-ammo-toggle").click((ev) => {
+  html.querySelector(".brsw-ammo-toggle")?.addEventListener("click", (ev) => {
     ev.currentTarget.classList.toggle("twbr:bg-red-700");
     ev.currentTarget.classList.toggle("twbr:bg-gray-500");
   });
-  html.find(".brsw-pp-toggle").click((ev) => {
+  html.querySelector(".brsw-pp-toggle")?.addEventListener("click", (ev) => {
     ev.currentTarget.classList.toggle("twbr:bg-red-700");
     ev.currentTarget.classList.toggle("twbr:bg-gray-500");
   });
-  html.find(".brsw-macro-button").click((ev) => {
+  html.querySelector(".brsw-macro-button")?.addEventListener("click", (ev) => {
     const action =
       br_card.item.system.actions.additional[ev.currentTarget.dataset.macro];
     execute_macro(action, br_card).catch((err) => {
       console.error("Error in macro", err);
     });
   });
-  html.find(".brsw-resist-button").click((ev) => {
+  html.querySelector(".brsw-resist-button")?.addEventListener("click", (ev) => {
     roll_resist(
       ev.currentTarget.dataset.trait,
       br_card,
@@ -991,9 +959,9 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
     br_message.item.system.autoReload
   ) {
     const dis_ammo_selected = html
-      ? html.find(".twbr\\:bg-red-700.brsw-ammo-toggle").length
+      ? !!html.querySelector(".twbr\\:bg-red-700.brsw-ammo-toggle")
       : SettingsUtils.getWorldSetting("default-ammo-management");
-    if (dis_ammo_selected || macros) {
+    if (dis_ammo_selected || macros.length) {
       br_message.render_data.used_shots =
         shots_override || ROF_BULLETS[br_message.trait_roll.rof || 1];
       if (dis_ammo_selected && br_message.trait_roll.rolls.length === 1) {
@@ -1003,7 +971,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
   }
   // Power points management
   const pp_selected = html
-    ? html.find(".twbr\\:bg-red-700.brsw-pp-toggle").length
+    ? html.querySelector(".twbr\\:bg-red-700.brsw-pp-toggle")
     : SettingsUtils.getWorldSetting("default-pp-management");
   const previous_pp = br_message.trait_roll.old_rolls.length
     ? br_message.render_data.used_pp
@@ -1011,7 +979,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
   if (
     (!isNaN(parseInt(br_message.item.system.pp)) ||
       br_message.item.type === "power") &&
-    pp_selected
+      pp_selected
   ) {
     br_message.render_data.used_pp = await discount_pp(
       br_message,
@@ -1579,8 +1547,9 @@ async function add_damage_dice(br_card, index) {
   await update_message(br_card, render_data);
 }
 
-function show_fixed_damage_dialog(event) {
+function show_fixed_damage_dialog(event, message) {
   // noinspection AnonymousFunctionJS
+  const target = event.currentTarget;
   simple_form(
     game.i18n.localize("BRSW.EditModifier"),
     [
@@ -1588,7 +1557,7 @@ function show_fixed_damage_dialog(event) {
       { label: "Value", default_value: 0 },
     ],
     (values) => {
-      add_fixed_damage(event, values);
+      add_fixed_damage(target, message, values);
     },
   );
 }
@@ -1598,13 +1567,13 @@ function show_fixed_damage_dialog(event) {
  * @param event
  * @param form_results
  */
-async function add_fixed_damage(event, form_results) {
+async function add_fixed_damage(target, message, form_results) {
   const modifier = parseInt(form_results.Value);
   if (!modifier) {
     return;
   }
-  const { index } = event.currentTarget.dataset;
-  const render_data = event.data.message.getFlag(
+  const { index } = target.dataset;
+  const render_data = message.getFlag(
     "betterrolls-swade2",
     "render_data",
   );
@@ -1614,7 +1583,7 @@ async function add_fixed_damage(event, form_results) {
   render_data.damage_rolls[index].damage_result = calculate_damage_results(
     damage_rolls.rolls,
   );
-  await update_message(event.data.message, render_data);
+  await update_message(message, render_data);
 }
 
 /**
@@ -1750,38 +1719,41 @@ function modify_power_points(number, mode, actor, item) {
  * @param {function} actor.update
  * @param {Item} item
  */
-function manual_pp(actor, item) {
+async function manual_pp(actor, item) {
   const amount_pp = game.i18n.localize("BRSW.AmountPP");
-  new Dialog({
-    title: game.i18n.localize("BRSW.PPManagement"),
+  await foundry.applications.api.DialogV2.wait({
+    window: { title: "BRSW.PPManagement" },
     content: `<form> <div class="form-group">
-            <label for="num">${amount_pp}: </label>
+            <label for="num" style="flex:unset">${amount_pp}: </label>
              <input id="brsw2-num" name="num" type="number" min="0" value="5">
               </div> </form><script>$("#brsw2-num").focus()</script>`,
     default: "one",
-    buttons: {
-      one: {
+    buttons: [
+      {
         label: game.i18n.localize("BRSW.ExpendPP"),
-        callback: (html) =>
+        action: "one",
+        callback: (event, target, dialog) =>
           modify_power_points(
-            Number(html.find("#brsw2-num")[0].value),
+            Number(dialog.element.querySelector("#brsw2-num").value),
             "spend",
             actor,
             item,
           ),
       },
-      two: {
+      {
         label: game.i18n.localize("BRSW.RechargePP"),
-        callback: (html) =>
+        action: "two",
+        callback: (event, target, dialog) =>
           modify_power_points(
-            -Number(html.find("#brsw2-num")[0].value),
+            -Number(dialog.element.querySelector("#brsw2-num").value),
             "reload",
             actor,
             item,
           ),
       },
-      three: {
+      {
         label: game.i18n.localize("BRSW.PPBennieRecharge"),
+        action: "three",
         callback: () => {
           //Button 3: Benny Recharge (spends a benny and increases the data.powerPoints.value by 5 but does not increase it above the number given in data.powerPoints.max)
           if (actor.system.bennies.value < 1) {
@@ -1792,8 +1764,9 @@ function manual_pp(actor, item) {
           actor.spendBenny();
         },
       },
-      four: {
+      {
         label: game.i18n.localize("BRSW.SoulDrain"),
+        action: "four",
         callback: () => {
           //Button 4: Soul Drain (increases data.fatigue.value by 1 and increases the data.powerPoints.value by 5 but does not increase it above the number given in data.powerPoints.max)
           const fv = actor.system.fatigue.value;
@@ -1815,8 +1788,8 @@ function manual_pp(actor, item) {
           modify_power_points(-5, "soul_drain", actor, item);
         },
       },
-    },
-  }).render(true);
+    ],
+  });
 }
 
 /**
@@ -1825,18 +1798,42 @@ function manual_pp(actor, item) {
  */
 function get_template_from_item(item) {
   const TEMPLATE_KEYS = {
-    cone: ["BRSW.Cone", "cone"],
-    sbt: ["BRSW.SmallTemplate", "sbt", "small blast"],
-    mbt: ["BRSW.MediumTemplate", "mbt", "medium blast"],
-    lbt: ["BRSW.LargeTemplate", "lbt", "large blast"],
-    stream: ["BRSW.StreamTemplate", "stream"],
-  };
-  const SYSTEM_KEYS = {
-    cone: "cone",
-    large: "lbt",
-    medium: "mbt",
-    small: "sbt",
-    stream: "stream",
+    scone: {
+      key: "scone",
+      key_text: ["BRSW.SmallCone", "small cone"],
+      type: "swscone",
+      label: "BRSW.SmallConeShort"
+    },
+    cone: {
+      key: "cone",
+      key_text: ["BRSW.Cone", "cone"],
+      type: "swcone",
+      label: "BRSW.ConeShort"
+    },
+    small: {
+      key: "small",
+      key_text: ["BRSW.SmallTemplate", "sbt", "small blast"],
+      type: "sbt",
+      label: "BRSW.SmallTemplateShort"
+    },
+    medium: {
+      key: "medium",
+      key_text: ["BRSW.MediumTemplate", "mbt", "medium blast"],
+      type: "mbt",
+      label: "BRSW.MediumTemplateShort"
+    },
+    large: {
+      key: "large",
+      key_text: ["BRSW.LargeTemplate", "lbt", "large blast"],
+      type: "lbt",
+      label: "BRSW.LargeTemplateShort"
+    },
+    stream: {
+      key: "stream",
+      key_text: ["BRSW.StreamTemplate", "stream"],
+      type: "stream",
+      label: "BRSW.StreamTemplateShort"
+    },
   };
   if (["weapon", "power", "action", "gear", "shield"].indexOf(item.type) < 0) {
     return [];
@@ -1844,25 +1841,29 @@ function get_template_from_item(item) {
   const templates_found = [];
   for (const template_key in item.system.templates) {
     if (item.system.templates[template_key] === true) {
-      templates_found.push(SYSTEM_KEYS[template_key]);
+      const template = TEMPLATE_KEYS[template_key];
+      templates_found.push(template);
     }
   }
-  for (const template_key in TEMPLATE_KEYS) {
-    for (const key_text of TEMPLATE_KEYS[template_key]) {
-      let translated_key_text = key_text;
-      if (key_text.slice(0, 4) === "BRSW") {
-        translated_key_text = game.i18n.localize(key_text);
-      }
-      if (
-        (item.system?.description
-          ?.toLowerCase() // jshint ignore:line
-          .includes(translated_key_text) ||
-          (typeof item.system?.range === "string" &&
-            item.system?.range?.toLowerCase().includes(translated_key_text))) && // jshint ignore:line
-        !templates_found.includes(template_key)
-      ) {
-        templates_found.push(template_key);
+  for (const [template_key, template_value] of Object.entries(TEMPLATE_KEYS)) {
+    for (const key_text of template_value.key_text) {
+      const translated_key_text = game.i18n.localize(key_text);
+      if (templates_found.find((t) => t.key == template_key)) {
         break;
+      }
+      if (item.system?.description?.toLowerCase().includes(translated_key_text)) {
+        templates_found.push(template_value);
+        break;
+      } else if (typeof item.system?.range === "string") {
+        const range = item.system.range.toLowerCase();
+        if (range.includes(translated_key_text)) {
+          if (template_key == "cone" && templates_found.find((t) => t.key == "scone")) {
+            //If we have the small cone, don't add a normal cone
+            break;
+          }
+          templates_found.push(template_value);
+          break;
+        }
       }
     }
   }

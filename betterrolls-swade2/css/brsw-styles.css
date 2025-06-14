@@ -46,6 +46,26 @@
     line-height: 1.7;
 }
 
+.brsw-action-json {
+    width: 100%;
+    min-height: 50px;
+    border: 1px solid var(--color-border-dark);
+    border-radius: 3px;
+}
+
+.brsw-new-action {
+    width: 100%;
+}
+
+.brsw-action-button-group {
+    display: flex;
+}
+
+.brsw-world-actions button {
+    width: 100%;
+    flex: 3;
+}
+
 .brsw-selectable.brsw-selected {
     border-color: red red rgb(255, 100, 0);
     border-style: solid;

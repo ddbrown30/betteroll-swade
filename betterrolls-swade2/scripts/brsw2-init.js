@@ -150,7 +150,7 @@ function activateCardListeners(card, html, message) {
   }
 }
 
-Hooks.on("renderChatMessage", (message, html) => {
+Hooks.on("renderChatMessageHTML", (message, html, options) => {
   const br_card = message.getFlag("betterrolls-swade2", "br_data");
   if (br_card) {
     // This chat card is one of ours
@@ -158,15 +158,15 @@ Hooks.on("renderChatMessage", (message, html) => {
     activateCardListeners(card, html, message);
     // Hide forms to non-master, non owner
     if (!message.isOwner) {
-      html.find(".brsw-form").addClass("brsw-collapsed");
+      html.querySelector(".brsw-form").classList.add("brsw-collapsed");
     }
     // Hide master only sections
     if (!game.user.isGM) {
-      html.find(".brsw-master-only").remove();
+      html.querySelector(".brsw-master-only").remove();
     }
     // Hide save macro button from non-owner, non-trusted players
     if (!message.isOwner && !game.user.isTrusted) {
-      html.find(".brsw-owner-trusted-only").remove();
+      html.querySelector(".brsw-owner-trusted-only").remove();
     }
     if (Object.keys(message.apps).length < 1) {
       // Don't create popout when rendering popouts.
@@ -174,12 +174,12 @@ Hooks.on("renderChatMessage", (message, html) => {
     }
     // Scroll the chat to the bottom if this is the last message
     if (game.messages.contents[game.messages.contents.length - 1] === message) {
-      const chat_bar = $("#chat-log");
-      if (
-        chat_bar.length &&
-        chat_bar[0].scrollHeight - chat_bar.height() * 2 < chat_bar[0].scrollTop
-      ) {
-        chat_bar[0].scrollTop = chat_bar[0].scrollHeight;
+      const chat_bar = document.querySelector(".chat-log");
+      if (chat_bar) {
+        const rect = chat_bar.getBoundingClientRect();
+        if (chat_bar.scrollHeight - rect.height * 2 < chat_bar.scrollTop) {
+          chat_bar.scrollTop = chat_bar.scrollHeight;
+        }
       }
     }
     Hooks.call("BRSW-CardRendered", card);
@@ -191,13 +191,13 @@ Hooks.on("dropCanvasData", (canvas, item) => {
   if (item.type === "Item" || item.type === "target_click") {
     const grid_size = canvas.scene.grid.size;
     const square_size = grid_size * 0.3;
-    const number_marked = canvas.tokens.targetObjects({
+    canvas.tokens.targetObjects({
       x: item.x - square_size / 2,
       y: item.y - square_size / 2,
       height: square_size,
       width: square_size,
     });
-    if (number_marked) {
+    if (game.user.targets.size) {
       if (item.type === "Item") {
         Item.implementation.fromDropData(item).then((item) => {
           let token_id;
@@ -311,9 +311,9 @@ Hooks.once("diceSoNiceReady", () => {
 
 ["SwadeCharacterSheet", "SwadeNPCSheet", "CharacterSheet"].forEach((name) => {
   Hooks.on("render" + name, (app, html, _) => {
-    activate_attribute_listeners(app, html);
-    activate_skill_listeners(app, html);
-    activate_item_listeners(app, html);
+    activate_attribute_listeners(app, html[0]);
+    activate_skill_listeners(app, html[0]);
+    activate_item_listeners(app, html[0]);
   });
 });
 

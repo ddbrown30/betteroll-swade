@@ -12,7 +12,7 @@ import {
   process_common_actions,
 } from "./cards_common.js";
 import { run_macros } from "./item_card.js";
-import { SettingsUtils } from "./utils.js";
+import { SettingsUtils, measureDistance } from "./utils.js";
 import { BrCommonCard } from "./BrCommonCard.js";
 import { TraitModifier } from "./modifiers.js";
 
@@ -161,7 +161,7 @@ async function skill_click_listener(ev, target) {
  */
 export function activate_skill_listeners(app, html) {
   const target = app.token || app.object;
-  for (const skill_label of html.find(
+  for (const skill_label of html.querySelectorAll(
     ".skill-label a, .skill.item>a, .skill-name, .skill-die",
   )){
     const new_label = skill_label.cloneNode(true);
@@ -178,13 +178,13 @@ export function activate_skill_listeners(app, html) {
  * @param html Html produced
  */
 export function activate_skill_card_listeners(br_card, html) {
-  html.find(".brsw-roll-button").click(async (ev) => {
+  html.querySelector(".brsw-roll-button").addEventListener("click", async (ev) => {
     await roll_skill(
       br_card,
       ev.currentTarget.classList.contains("roll-bennie-button"),
     );
   });
-  html.find(".brsw-header-img").click((_) => {
+  html.querySelector(".brsw-header-img").addEventListener("click", (_) => {
     const { render_data, actor } = br_card;
     const item = actor.items.get(render_data.trait_id);
     item.sheet.render(true);
@@ -339,11 +339,9 @@ export function calculate_distance(
   }
   const grid_unit = canvas.grid.distance;
   let use_parry_as_tn = false;
-  const use_grid_calc = SettingsUtils.getWorldSetting("range_calc_grid");
-  let distance = canvas.grid.measureDistance(
-    origin_token.center,
-    target_token.center,
-    { gridSpaces: use_grid_calc },
+  let distance = measureDistance(
+    [origin_token.center,
+    target_token.center]
   );
   if (
     distance / grid_unit < SettingsUtils.getWorldSetting("meleeDistance") + 1 &&
@@ -709,7 +707,7 @@ function withinRange(origin, target, range) {
     return false;
   }
   const grid_unit = canvas.grid.distance;
-  let distance = canvas.grid.measureDistance(origin, target);
+  let distance = measureDistance([origin, target]);
   distance /= grid_unit;
   return range > distance;
 }
