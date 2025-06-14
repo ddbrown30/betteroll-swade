@@ -99,7 +99,7 @@ export function activate_remove_status_card_listeners(
 ) {
   const roll_function =
     card_type === BRSW_CONST.TYPE_UNSHAKE_CARD ? roll_unshaken : roll_unstun;
-  html.querySelector(".brsw-spirit-button, .brsw-roll-button").addEventListener("click", (ev) => {
+  html.querySelector(".brsw-spirit-button, .brsw-roll-button")?.addEventListener("click", (ev) => {
     let spend_bennie = false;
     if (
       ev.currentTarget.classList.contains("roll-bennie-button") ||

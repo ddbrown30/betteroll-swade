@@ -178,7 +178,7 @@ export function activate_skill_listeners(app, html) {
  * @param html Html produced
  */
 export function activate_skill_card_listeners(br_card, html) {
-  html.querySelector(".brsw-roll-button").addEventListener("click", async (ev) => {
+  html.querySelector(".brsw-roll-button")?.addEventListener("click", async (ev) => {
     await roll_skill(
       br_card,
       ev.currentTarget.classList.contains("roll-bennie-button"),
