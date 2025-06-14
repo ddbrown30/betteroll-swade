@@ -2,14 +2,14 @@
     <div id="brsw-tab-player-mods">
         {{#if trait}}
             <div class="brsw-common-modifiers brsw-player-modifiers">
-                <span id="brsw-mods-Trait-label">{{ localize "BRSW.TraitModifier" }}:</span>
+                <span id="brsw-mods-Trait-label">{{ localize chat_modifiers_names.Trait }}:</span>
                 {{#each trait_mods}}
                     <span class="brsw-selectable brsw-clickable{{#if enabled}} brsw-selected{{/if}}" data-type="modifier" data-value="{{value}}">{{value}}</span>
                 {{/each}}
             </div>
 
             <div class="brsw-common-modifiers brsw-player-modifiers">
-                <span id="brsw-mods-ROF-label">{{ localize "BRSW.Number_trait_dice" }}:</span>
+                <span id="brsw-mods-ROF-label">{{ localize chat_modifiers_names.ROF }}:</span>
                 {{#each trait_dice}}
                     <span class="brsw-selectable brsw-clickable{{#if enabled}} brsw-selected{{/if}}" data-type="rof" data-value="{{value}}">{{value}}</span>
                 {{/each}}
@@ -17,7 +17,7 @@
         {{/if}}
         {{#if damage}}
             <div class="brsw-common-modifiers brsw-player-modifiers">
-                <span id="brsw-mods-Damage-label">{{ localize "BRSW.DmgModifier" }}:</span>
+                <span id="brsw-mods-Damage-label">{{ localize chat_modifiers_names.Damage }}:</span>
                 {{#each damage_mods}}
                     <span class="brsw-selectable brsw-clickable{{#if enabled}} brsw-selected{{/if}}" data-type="dmg_modifier" data-value="{{value}}">{{value}}</span>
                 {{/each}}
