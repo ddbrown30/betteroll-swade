@@ -1,6 +1,6 @@
 // Init scripts for version 2
 /* globals Hooks, console, game, loadTemplates, Token, renderTemplate,
-    Macro, CONFIG, foundry, Item, Dialog, ModuleManagement, $ */
+    Macro, CONFIG, foundry, Item, ModuleManagement, $ */
 import {
   activate_common_listeners,
   BRSW_CONST,
@@ -41,7 +41,6 @@ import { activate_remove_status_card_listeners } from "./remove_status_cards.js"
 import { create_unshaken_wrapper, create_unstun_wrapper } from "./combat.js";
 import {
   ModifierSettingsConfiguration,
-  changeNames,
 } from "./chat_modifers_names.js";
 import { setup_dialog } from "./card-dialog.js";
 import { SettingsUtils } from "./utils.js";
@@ -117,7 +116,6 @@ Hooks.on(`ready`, () => {
     game.swade.effectCallbacks.set("shaken", create_unshaken_wrapper);
     game.swade.effectCallbacks.set("stunned", create_unstun_wrapper);
   }
-  changeNames(); // Change the names of the modifiers
   compatibility_warnings();
   setup_dialog();
   // Remove the first hook from the hotbarDrop, hoping it is the system's
@@ -637,19 +635,22 @@ function register_dsn_settings() {
 //Compatibility warnings:
 function compatibility_warnings() {
   if (game.modules.get("swade-tools")?.active) {
-    new Dialog({
-      title: game.i18n.localize("BRSW.CompatibilityHeadline"),
+    new foundry.applications.api.DialogV2({
+      window: { title: "BRSW.CompatibilityHeadline" },
+      position: { width: 400 },
       content: `<p>${game.i18n.localize(
         "BRSW.SwadeToolsCompatibilityWarning",
       )}</p>`,
-      buttons: {
-        one: {
-          label: '<i class="fas fa-check"></i>',
+      buttons: [
+        {
+          label: "",
+          icon: "fas fa-check",
+          action: "one",
           callback: (_) => {
             new ModuleManagement().render(true);
           },
         },
-      },
+      ],
     }).render(true);
   }
 }
