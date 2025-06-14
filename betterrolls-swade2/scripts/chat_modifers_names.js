@@ -1,4 +1,4 @@
-/* globals FormApplication, game */
+/* globals game */
 
 import { SettingsUtils } from "./utils.js";
 
@@ -29,9 +29,8 @@ export class ModifierSettingsConfiguration extends HandlebarsApplicationMixin(Ap
   };
 
   async _prepareContext(options) {
-    const context = await super._prepareContext(options);
     let chat_modifiers_names = SettingsUtils.getSetting("chat_modifiers_names");
-    return foundry.utils.mergeObject(context, { names: chat_modifiers_names });
+    return { names: chat_modifiers_names };
   }
 
   static async formHandler(event, form, formData) {

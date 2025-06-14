@@ -68,10 +68,8 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   async _prepareContext(options) {
-    const context = await super._prepareContext(options);
-    return foundry.utils.mergeObject(context, {
-      tabs: this._getTabs(),
-    });
+    await super._prepareContext(options);
+    return { tabs: this._getTabs() };
   }
 
   async _preparePartContext(partId, context, _options) {
