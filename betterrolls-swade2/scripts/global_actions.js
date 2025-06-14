@@ -487,7 +487,7 @@ export class SystemGlobalConfiguration extends HandlebarsApplicationMixin(Applic
   static async formHandler(event, form, formData) {
     let disabled_actions = [];
     for (let id in formData.object) {
-      if (!formData[id]) {
+      if (!formData.object[id]) {
         disabled_actions.push(id);
       }
     }
