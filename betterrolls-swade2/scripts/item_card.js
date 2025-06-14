@@ -298,21 +298,6 @@ async function item_click_listener(ev, target, currentTarget) {
 }
 
 /**
- * Overrides the default dragstart handle to allow itemIds in another part
- * of the tag chain
- * @param ev
- */
-function drag_start_handle(ev) {
-  if (!ev.currentTarget.dataset.itemId) {
-    ev.currentTarget.dataset.itemId =
-      ev.currentTarget.parentElement.dataset.itemId ||
-      ev.currentTarget.parentElement.parentElement.dataset.itemId ||
-      ev.currentTarget.parentElement.parentElement.parentElement.dataset.itemId;
-  }
-  ev.data.app._onDragStart(ev.originalEvent);
-}
-
-/**
  * Activates the listeners in the character sheet in items
  * @param app Sheet app
  * @param html Html code
@@ -332,15 +317,6 @@ export function activate_item_listeners(app, html) {
     item_image.parentNode.replaceChild(new_image, item_image);
     new_image.addEventListener("click", async (ev) => {
       await item_click_listener(ev, target, ev.currentTarget);
-    });
-  }
-  const item_lis = html.querySelectorAll(
-    ".gear-card.item, .item.flexrow, .power.item, .weapon.item, .item>.item-show",
-  );
-  for (const item_li of item_lis) {
-    item_li.draggable = true;
-    item_li.addEventListener("dragstart", async (ev) => {
-      drag_start_handle(ev);
     });
   }
 }

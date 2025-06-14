@@ -191,13 +191,13 @@ Hooks.on("dropCanvasData", (canvas, item) => {
   if (item.type === "Item" || item.type === "target_click") {
     const grid_size = canvas.scene.grid.size;
     const square_size = grid_size * 0.3;
-    const number_marked = canvas.tokens.targetObjects({
+    canvas.tokens.targetObjects({
       x: item.x - square_size / 2,
       y: item.y - square_size / 2,
       height: square_size,
       width: square_size,
     });
-    if (number_marked) {
+    if (game.user.targets.size) {
       if (item.type === "Item") {
         Item.implementation.fromDropData(item).then((item) => {
           let token_id;
