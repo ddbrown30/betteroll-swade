@@ -304,6 +304,10 @@
     width: 100%;
 }
 
+.brsw-optional-rules-content button {
+    width: 100%;
+}
+
 /* Chat tabs */
 .brsw-chat-tab {
     margin-right: 6px;

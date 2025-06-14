@@ -36,7 +36,7 @@ import {
   activate_incapacitation_card_listeners,
   incapacitation_card_hooks,
 } from "./incapacitation_card.js";
-import { OptionalRulesConfiguration } from "./optinal_rules.js";
+import { OptionalRulesConfiguration } from "./optional_rules.js";
 import { activate_remove_status_card_listeners } from "./remove_status_cards.js";
 import { create_unshaken_wrapper, create_unstun_wrapper } from "./combat.js";
 import {
