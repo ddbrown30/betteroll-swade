@@ -146,7 +146,7 @@ export function activate_attribute_listeners(app, html) {
  * @param html Html produced
  */
 export function activate_attribute_card_listeners(card, html) {
-  html.querySelector(".brsw-roll-button").addEventListener("click", async (ev) => {
+  html.querySelector(".brsw-roll-button")?.addEventListener("click", async (ev) => {
     await roll_attribute(
       card,
       ev.currentTarget.classList.contains("roll-bennie-button"),
