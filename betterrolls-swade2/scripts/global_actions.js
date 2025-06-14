@@ -1,4 +1,4 @@
-/* globals game, FormApplication, console, Dialog, saveDataToFile, ui,
+/* globals game, FormApplication, console, saveDataToFile, ui,
   readTextFromFile, renderTemplate, foundry, canvas, $ */
 /* jshint -W089 */
 
@@ -693,7 +693,7 @@ async function import_global_actions(app) {
       content: content,
       buttons: [
         {
-          icon: '<i class="fas fa-file-import"></i>',
+          icon: "fas fa-file-import",
           label: "Import",
           action: "import",
           callback: (event, target, dialog) => {
@@ -711,7 +711,7 @@ async function import_global_actions(app) {
           },
         },
         {
-          icon: '<i class="fas fa-times"></i>',
+          icon: "fas fa-times",
           label: "Cancel",
           action: "no",
         },
