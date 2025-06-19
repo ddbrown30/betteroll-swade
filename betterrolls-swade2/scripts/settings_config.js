@@ -21,7 +21,7 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
     },
     classes: ['standard-form', "sheet"],
     window: {
-      title: "BRSW.Settings",
+      title: "BRSW.Settings.Title",
       minimizable: false,
       resizable: true,
     },
@@ -68,10 +68,8 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   async _prepareContext(options) {
-    const context = await super._prepareContext(options);
-    return foundry.utils.mergeObject(context, {
-      tabs: this._getTabs(),
-    });
+    await super._prepareContext(options);
+    return { tabs: this._getTabs() };
   }
 
   async _preparePartContext(partId, context, _options) {
@@ -160,8 +158,9 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {object} options - The reload options.
    */
   static async reloadConfirm({ world = false } = {}) {
-    const reload = await Dialog.confirm({
-      title: game.i18n.localize("SETTINGS.ReloadPromptTitle"),
+    const reload = await foundry.applications.api.DialogV2.confirm({
+      window: { title: "SETTINGS.ReloadPromptTitle" },
+      position: { width: 400 },
       content: `<p>${game.i18n.localize("SETTINGS.ReloadPromptBody")}</p>`,
     });
     if (!reload) {

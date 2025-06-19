@@ -1,4 +1,4 @@
-/* globals game, FormApplication, console, Dialog, saveDataToFile, ui,
+/* globals game, console, saveDataToFile, ui,
   readTextFromFile, renderTemplate, foundry, canvas, $ */
 /* jshint -W089 */
 
@@ -8,6 +8,8 @@ import { get_roll_options } from "./cards_common.js";
 import { SettingsUtils, measureDistance } from "./utils.js";
 import { get_enabled_gm_actions } from "./gm_actions.js";
 import { addEventListenerAll } from "./utils.js";
+
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 // DMG override is still not implemented.
 /**
@@ -429,18 +431,29 @@ function check_document_value(document, value) {
 /**
  * The global action selection window
  */
-export class SystemGlobalConfiguration extends FormApplication {
-  static get defaultOptions() {
-    let options = super.defaultOptions;
-    options.id = "brsw-global-actions";
-    options.template =
-      "/modules/betterrolls-swade2/templates/system_globals.html";
-    options.height = 700;
-    options.resizable = true;
-    return options;
-  }
+export class SystemGlobalConfiguration extends HandlebarsApplicationMixin(ApplicationV2) {
+  static DEFAULT_OPTIONS = {
+    id: "brsw-global-actions",
+    tag: "form",
+    form: {
+      handler: SystemGlobalConfiguration.formHandler,
+      submitOnChange: false,
+      closeOnSubmit: true
+    },
+    classes: ['standard-form'],
+    window: {
+      title: "",
+      minimizable: false,
+      resizable: true,
+    },
+  };
 
-  getData(_) {
+  static PARTS = {
+    form: { template: "/modules/betterrolls-swade2/templates/system_globals/form.hbs" },
+    footer: { template: "/modules/betterrolls-swade2/templates/system_globals/footer.hbs" },
+  };
+
+  async _prepareContext(options) {
     let groups = {};
     let disable_actions = SettingsUtils.getSetting("system_action_disabled");
     if (disable_actions && disable_actions[0] instanceof Array) {
@@ -456,28 +469,25 @@ export class SystemGlobalConfiguration extends FormApplication {
         enabled: !disable_actions.includes(action.id),
       });
     }
-    // noinspection JSValidateTypes
     return { groups: groups };
   }
 
-  activateListeners(html) {
-    html.find(".brsw-section-title").click((ev) => {
-      // noinspection JSCheckFunctionSignatures
-      const checks = $(ev.currentTarget)
-        .parents("table")
-        .find("input[type=checkbox]");
+  _onRender(context, options) {
+    addEventListenerAll(this.element, ".brsw-section-title", "click", async (ev) => {
+      const checks = ev.currentTarget.closest("table").querySelectorAll("input[type=checkbox]");
       if (checks.length) {
-        const new_status = !$(checks[0]).prop("checked");
-        checks.prop("checked", new_status);
+        const new_value = !checks[0].checked;
+        checks.forEach((check) => {
+          check.checked = new_value;
+        });
       }
     });
-    return super.activateListeners(html);
   }
 
-  async _updateObject(_, formData) {
+  static async formHandler(event, form, formData) {
     let disabled_actions = [];
-    for (let id in formData) {
-      if (!formData[id]) {
+    for (let id in formData.object) {
+      if (!formData.object[id]) {
         disabled_actions.push(id);
       }
     }
@@ -486,7 +496,6 @@ export class SystemGlobalConfiguration extends FormApplication {
 }
 
 // noinspection JSPrimitiveTypeWrapperUsage
-const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
     id: "brsw-world-actions",
@@ -528,7 +537,6 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
   };
 
   async _prepareContext(options) {
-    const context = await super._prepareContext(options);
     let actions = SettingsUtils.getSetting("world_global_actions");
     if (actions && actions[0] instanceof Array) {
       actions = actions[0];
@@ -545,7 +553,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
       return a.id <= b.id ? -1 : 1;
     });
     // noinspection JSValidateTypes
-    return foundry.utils.mergeObject(context, { actions: formatted_actions });
+    return { actions: formatted_actions };
   }
 
   static async formHandler(event, form, formData) {
@@ -693,7 +701,7 @@ async function import_global_actions(app) {
       content: content,
       buttons: [
         {
-          icon: '<i class="fas fa-file-import"></i>',
+          icon: "fas fa-file-import",
           label: "Import",
           action: "import",
           callback: (event, target, dialog) => {
@@ -711,7 +719,7 @@ async function import_global_actions(app) {
           },
         },
         {
-          icon: '<i class="fas fa-times"></i>',
+          icon: "fas fa-times",
           label: "Cancel",
           action: "no",
         },

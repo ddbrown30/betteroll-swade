@@ -295,6 +295,19 @@
     width: 10%;
 }
 
+.brsw-modifier-names-content .form-fields {
+    flex: 1;
+    margin: 0.5em auto;
+}
+
+.brsw-modifier-names-content button {
+    width: 100%;
+}
+
+.brsw-optional-rules-content button {
+    width: 100%;
+}
+
 /* Chat tabs */
 .brsw-chat-tab {
     margin-right: 6px;

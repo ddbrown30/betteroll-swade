@@ -1,7 +1,7 @@
 import * as BRSW2_CONFIG from "./brsw2-config.js";
 
 // Utility functions that can be used out of the module
-/* globals ChatMessage, game, Dialog, console, foundry, ClientSetting, CONFIG */
+/* globals ChatMessage, game, console, foundry, ClientSetting, CONFIG */
 
 export function getWhisperData() {
   let rollMode, whisper, blind;

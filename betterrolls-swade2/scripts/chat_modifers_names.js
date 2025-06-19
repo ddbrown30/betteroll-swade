@@ -1,38 +1,39 @@
-/* globals FormApplication, game */
+/* globals game */
 
 import { SettingsUtils } from "./utils.js";
 
 /**
  * Settings configuration for modifier names
  */
-export class ModifierSettingsConfiguration extends FormApplication {
-  static get defaultOptions() {
-    let options = super.defaultOptions;
-    options.id = "brsw-modifier-names";
-    options.template =
-      "/modules/betterrolls-swade2/templates/modifier_names_settings.html";
-    return options;
-  }
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+export class ModifierSettingsConfiguration extends HandlebarsApplicationMixin(ApplicationV2) {
+  static DEFAULT_OPTIONS = {
+    id: "brsw-modifier-names",
+    tag: "form",
+    form: {
+      handler: ModifierSettingsConfiguration.formHandler,
+      submitOnChange: false,
+      closeOnSubmit: true
+    },
+    classes: ['standard-form'],
+    window: {
+      title: "",
+      minimizable: false,
+      resizable: true,
+      contentClasses: ["brsw-modifier-names-content"],
+    },
+  };
 
-  getData(_) {
+  static PARTS = {
+    form: { template: "/modules/betterrolls-swade2/templates/modifier_names_settings.html" },
+  };
+
+  async _prepareContext(options) {
     let chat_modifiers_names = SettingsUtils.getSetting("chat_modifiers_names");
-    // noinspection JSValidateTypes
     return { names: chat_modifiers_names };
   }
 
-  async _updateObject(_, formData) {
-    await SettingsUtils.setSetting("chat_modifiers_names", formData);
-  }
-}
-
-export function changeNames() {
-  const new_names = SettingsUtils.getSetting("chat_modifiers_names");
-  for (let prefix of ["GM", "Trait", "Damage", "ROF"]) {
-    if (new_names[prefix]) {
-      const element = document.getElementById(`brsw-mods-${prefix}-label`);
-      if (element) {
-        element.innerHTML = new_names[prefix];
-      }
-    }
+  static async formHandler(event, form, formData) {
+    await SettingsUtils.setSetting("chat_modifiers_names", formData.object);
   }
 }

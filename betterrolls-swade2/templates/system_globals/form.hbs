@@ -1,0 +1,21 @@
+<div class="scrollable">
+    <h2>{{ localize "BRSW.SystemGlobalMenu" }}</h2>
+    {{#each groups}}
+        <table>
+            <tr>
+                <th class="brsw-check-cell"></th>
+                <th>
+                    <h3 class="brsw-section-title brsw-clickable">{{ localize name }}</h3>
+                </th>
+            </tr>
+            {{#each actions}}
+                <tr>
+                    <td>
+                        <input type="checkbox" name="{{{ id }}}" {{#if enabled}}checked="checked"{{/if}}>
+                    </td>
+                    <td>{{ name }}</td>
+                </tr>
+            {{/each}}
+        </table>
+    {{/each}}
+</div>
