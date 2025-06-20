@@ -68,9 +68,10 @@ function vehicle_weapon_clicked(ev, target) {
   ev.stopImmediatePropagation();
   ev.preventDefault();
   ev.stopPropagation();
+  const actor = target.actor ?? target;
   const item_id = ev.currentTarget.parentElement.dataset.itemId;
-  const item = target.actor.items.get(item_id);
-  const gunner = target.actor.system.getCrewMemberForWeapon(item);
+  const item = actor.items.get(item_id);
+  const gunner = actor.system.getCrewMemberForWeapon(item);
   create_item_card(gunner, item.uuid);
 }
 
@@ -80,7 +81,9 @@ function vehicle_weapon_clicked(ev, target) {
  * @param html Html code
  */
 export function activate_vehicle_listeners(app, html) {
-  const target = app.token || app.object;
+  console.log(app);
+  const target = app.token || app.options.document;
+  console.log(target);
   const maneuver_check_button = html.querySelector(
     "button[data-action='maneuverCheck']",
   );
