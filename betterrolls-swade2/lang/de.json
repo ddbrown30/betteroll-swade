@@ -365,7 +365,7 @@
     "BRSW.EdgeName-ImprovedFrenzy": "Blitzschneller Angriff",
     "BRSW.OverExtremeRange": "Über extremer Reichweite",
     "BRSW.PowerModifiersBarrierImmaterial": "Immateriell [+0PP]",
-    "BRSW.PowerModifiersBeastFriendBeastarium": "☆ Bestiarium [+1PP]",
+    "BRSW.PowerModifiersBeastFriendBeastarium": "☆ Bestiarium [+1MP]",
     "BRSW.PowerModifiersBlastAreaEffectSBT": "Flächeneffekt (KFS) [+0MP]",
     "BRSW.PowerModifiersBoltRateOfFire": "☆ Feuerrate [+2MP]",
     "BRSW.PowerModifiersConfusion": "Machtmodifikatoren - Verwirrung",
@@ -524,5 +524,12 @@
     "BRSW.AbilityName-NightVision": "Nachtsicht",
     "BRSW.Unarmed": "Unbewaffnet",
     "BRSW.Swat": "Wegklatschen",
-    "BRSW.AbilityName-LowLightVision": "Restlichtsicht"
+    "BRSW.AbilityName-LowLightVision": "Restlichtsicht",
+    "BRSW.LargeTemplateShort": "GFS",
+    "BRSW.SmallCone": "Kleine Kegelschablone",
+    "BRSW.SmallConeShort": "Kl. Kegel",
+    "BRSW.StreamTemplateShort": "Strahl",
+    "BRSW.MediumTemplateShort": "MFS",
+    "BRSW.SmallTemplateShort": "KFS",
+    "BRSW.ConeShort": "Kegel"
 }
