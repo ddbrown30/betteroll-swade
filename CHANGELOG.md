@@ -1,3 +1,15 @@
+# Version 4.22 aka So many bugs squashed...
+* Translations: Updated german translations. (Razortide)
+* Bugfix: Fixed the illumination selector (Dan Brown)
+* Bugfix: Master actions are not applied twice (Dan Brown)
+* Bugfix: Dropping items in tokens works again in v13 (Dan Brown)
+* Bugfix: Fixed an error with maneuver rolls when there is no operator (Dan Brown)
+* Refactoring: Update remaining apps to Appv2 (Dan Brown)
+* Bugfix: Fixed some icons (Dan Brown)
+* Bugfix: Avoid breaking when using weapons from a vehicle with no token
+
+
+
 # Version 4.21 aka more v13 bug fixes and start of vehicle support
 * Chat mods: New master and generals mods to substitute old chat mods (Dan Brown)
 * Vehicle weapons: Initial support fo gunners. They can roll vehicle weapons, for now scale and range modifiers are disabled.
