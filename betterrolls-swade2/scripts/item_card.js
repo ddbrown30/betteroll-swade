@@ -374,7 +374,7 @@ export function activate_item_card_listeners(br_card, html) {
     //Update the ammo text of the card we just clicked on.
     //This won't affect change the popout or vice versa,
     //but doing that would require an update to the chat message which would refresh the render which is disruptive
-    ev.target.querySelector(".brsw-shots-pp").innerText = br_card.item_shots;
+    ev.target.parentElement.querySelector(".brsw-shots-pp").innerText = br_card.item_shots;
   });
   html.querySelector(".brsw-pp-manual")?.addEventListener("click", async (ev) => {
     await manual_pp(actor, item);
