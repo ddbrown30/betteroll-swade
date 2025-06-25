@@ -1,3 +1,6 @@
+# Version 4.23 aka you knew it, more bugs
+* Bugfix: Fixes the problem with the ammo reload (Dan Brown).
+
 # Version 4.22 aka So many bugs squashed...
 * Translations: Updated german translations. (Razortide)
 * Bugfix: Fixed the illumination selector (Dan Brown)
