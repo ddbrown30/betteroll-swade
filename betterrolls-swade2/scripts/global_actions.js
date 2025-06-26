@@ -533,7 +533,8 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
   };
 
   static PARTS = {
-    form: { template: "/modules/betterrolls-swade2/templates/world_globals.html" },
+    form: { template: "/modules/betterrolls-swade2/templates/world_globals/form.hbs" },
+    footer: { template: "/modules/betterrolls-swade2/templates/world_globals/footer.hbs" },
   };
 
   async _prepareContext(options) {
@@ -558,8 +559,11 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
 
   static async formHandler(event, form, formData) {
     let new_world_actions = [];
-    for (let action in foundry.utils.expandObject(formData.object)) {
-      new_world_actions.push(JSON.parse(formData.object[action]));
+    for (let action in formData.object) {
+      const actions = formData.object[action] instanceof Array ? formData.object[action] : [formData.object[action]];
+      for (let action of actions) {
+        new_world_actions.push(JSON.parse(action));
+      }
     }
     await SettingsUtils.setSetting("world_global_actions", new_world_actions);
     register_actions();
@@ -654,7 +658,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
       text_area.removeAttribute("name");
     } else {
       action_title.innerHTML = action.name;
-      text_area.name = action.name;
+      text_area.name = action.id;
     }
   }
 

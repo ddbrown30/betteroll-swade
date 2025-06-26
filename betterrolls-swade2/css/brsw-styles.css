@@ -57,8 +57,13 @@
     width: 100%;
 }
 
+.brsw-world-actions footer {
+    margin-top: auto;
+}
+
 .brsw-action-button-group {
     display: flex;
+    gap: 0.25rem;
 }
 
 .brsw-world-actions button {
