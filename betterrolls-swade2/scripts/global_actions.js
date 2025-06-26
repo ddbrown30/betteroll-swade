@@ -559,8 +559,8 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
 
   static async formHandler(event, form, formData) {
     let new_world_actions = [];
-    for (let action in formData.object) {
-      const actions = formData.object[action] instanceof Array ? formData.object[action] : [formData.object[action]];
+    for (let form_action in formData.object) {
+      const actions = formData.object[form_action] instanceof Array ? formData.object[form_action] : [formData.object[form_action]];
       for (let action of actions) {
         new_world_actions.push(JSON.parse(action));
       }
