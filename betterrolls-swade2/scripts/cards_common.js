@@ -79,7 +79,10 @@ export function expose_card_class() {
  */
 export function create_common_card(origin, render_data, template) {
   let actor;
-  if (origin instanceof TokenDocument || origin instanceof foundry.canvas.placeables.Token) {
+  if (
+    origin instanceof TokenDocument ||
+    origin instanceof foundry.canvas.placeables.Token
+  ) {
     actor = origin.actor;
   } else {
     actor = origin;
@@ -210,7 +213,10 @@ function toggle_mods_popup(element, br_card) {
     game.brsw.manualModsPopup.close();
   } else {
     const rect = element.getBoundingClientRect();
-    new ManualModifiersPopup({ anchorPosition: { x: rect.x, y: rect.y }, br_card }).render(true);
+    new ManualModifiersPopup({
+      anchorPosition: { x: rect.x, y: rect.y },
+      br_card,
+    }).render(true);
   }
 }
 
@@ -237,26 +243,35 @@ export function activate_common_listeners(br_card, html) {
         await manage_sheet(br_card.vehicle_actor);
       });
     }
-    html.querySelector(".br2-unshake-card")?.addEventListener("click", async (ev) => {
-      create_unshaken_card(br_card.message, undefined).catch(() => {
-        console.error("BR2 unable to show unshaken card");
+    html
+      .querySelector(".br2-unshake-card")
+      ?.addEventListener("click", async (ev) => {
+        create_unshaken_card(br_card.message, undefined).catch(() => {
+          console.error("BR2 unable to show unshaken card");
+        });
       });
-    });
-    html.querySelector(".br2-unstun-card")?.addEventListener("click", async (ev) => {
-      create_unstun_card(br_card.message, undefined).catch(() => {
-        console.error("BR2 unable to show unstun card");
+    html
+      .querySelector(".br2-unstun-card")
+      ?.addEventListener("click", async (ev) => {
+        create_unstun_card(br_card.message, undefined).catch(() => {
+          console.error("BR2 unable to show unstun card");
+        });
       });
-    });
   }
-  html.querySelector(".brsw-selected-actions")?.addEventListener("click", () => {
-    game.brsw.dialog.show_card(br_card);
-  });
+  html
+    .querySelector(".brsw-selected-actions")
+    ?.addEventListener("click", () => {
+      game.brsw.dialog.show_card(br_card);
+    });
   // Collapsibles
   manage_collapsables(html, br_card.message);
   // Old rolls
-  html.querySelector(".brsw-old-roll")?.addEventListener("click", async (ev) => {
-    await old_roll_clicked(ev, br_card);
-  });
+  const old_rolls = html.querySelectorAll(".brsw-old-roll");
+  for (const old_roll of old_rolls) {
+    old_roll.addEventListener("click", async (ev) => {
+      await old_roll_clicked(ev, br_card);
+    });
+  }
   // Add modifiers
   html.querySelector(".brsw-add-modifier")?.addEventListener("click", () => {
     const label_mod = game.i18n.localize("BRSW.Modifier");
@@ -318,10 +333,12 @@ export function activate_common_listeners(br_card, html) {
     );
   });
   // Delete modifiers
-  html.querySelector(".brsw-delete-modifier")?.addEventListener("click", async (ev) => {
-    ev.stopPropagation();
-    await delete_modifier(br_card, parseInt(ev.currentTarget.dataset.index));
-  });
+  html
+    .querySelector(".brsw-delete-modifier")
+    ?.addEventListener("click", async (ev) => {
+      ev.stopPropagation();
+      await delete_modifier(br_card, parseInt(ev.currentTarget.dataset.index));
+    });
   // Edit TNs
   html.querySelector(".brsw-edit-tn")?.addEventListener("click", (ev) => {
     const old_tn = ev.currentTarget.dataset.value;
@@ -335,17 +352,19 @@ export function activate_common_listeners(br_card, html) {
     );
   });
   // TNs from target
-  html.querySelector(".brsw-target-tn, .brsw-selected-tn")?.addEventListener("click", (ev) => {
-    ev.stopPropagation();
-    const { index } = ev.currentTarget.dataset;
-    get_tn_from_target(
-      br_card,
-      parseInt(index),
-      ev.currentTarget.classList.contains("brsw-selected-tn"),
-    ).catch((e) => {
-      console.error("ERROR getting_tn_from_target. Error:" + e);
+  html
+    .querySelector(".brsw-target-tn, .brsw-selected-tn")
+    ?.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+      const { index } = ev.currentTarget.dataset;
+      get_tn_from_target(
+        br_card,
+        parseInt(index),
+        ev.currentTarget.classList.contains("brsw-selected-tn"),
+      ).catch((e) => {
+        console.error("ERROR getting_tn_from_target. Error:" + e);
+      });
     });
-  });
   // Repeat card
   html.querySelector(".brsw-repeat-card")?.addEventListener("click", (ev) => {
     // noinspection JSIgnoredPromiseFromCall
@@ -356,10 +375,12 @@ export function activate_common_listeners(br_card, html) {
     save_macro(br_card);
   });
   // Open the manual mods popup
-  html.querySelector(".brsw-manual-mods")?.addEventListener("click", (event) => {
-    event.stopPropagation();
-    toggle_mods_popup(event.target, br_card);
-  });
+  html
+    .querySelector(".brsw-manual-mods")
+    ?.addEventListener("click", (event) => {
+      event.stopPropagation();
+      toggle_mods_popup(event.target, br_card);
+    });
   // Popout card
   html.querySelector(".brsw-popout-button")?.addEventListener("click", () => {
     br_card.show_popup();
@@ -497,11 +518,17 @@ export function get_roll_options(old_options, br_card) {
   if (!old_options?.hasOwnProperty("additionalMods")) {
     if (br_card.manual_mods) {
       if (br_card.manual_mods.trait_mods?.length) {
-        const total = br_card.manual_mods.trait_mods.reduce((acc, val) => acc + parseInt(val), 0);
+        const total = br_card.manual_mods.trait_mods.reduce(
+          (acc, val) => acc + parseInt(val),
+          0,
+        );
         modifiers.push(total);
       }
       if (br_card.manual_mods.dmg_modifiers?.length) {
-        const total = br_card.manual_mods.dmg_modifiers.reduce((acc, val) => acc + parseInt(val), 0);
+        const total = br_card.manual_mods.dmg_modifiers.reduce(
+          (acc, val) => acc + parseInt(val),
+          0,
+        );
         dmg_modifiers.push(total);
       }
       if (br_card.manual_mods.rof) {
@@ -1180,7 +1207,14 @@ async function get_tn_from_target(br_card, index, selected) {
       });
     }
     const tn = { modifiers: [] };
-    calculate_distance(origin_token, target_token, br_card.item, tn, br_card.skill, extra_data);
+    calculate_distance(
+      origin_token,
+      target_token,
+      br_card.item,
+      tn,
+      br_card.skill,
+      extra_data,
+    );
     br_card.trait_roll.delete_range_modifiers();
     br_card.trait_roll.modifiers = br_card.trait_roll.modifiers.concat(
       tn.modifiers,
