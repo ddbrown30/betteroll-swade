@@ -263,7 +263,7 @@ export function activate_common_listeners(br_card, html) {
     ?.addEventListener("click", () => {
       game.brsw.dialog.show_card(br_card);
     });
-  // Collapsibles
+  // Collapsible
   manage_collapsables(html, br_card.message);
   // Old rolls
   const old_rolls = html.querySelectorAll(".brsw-old-roll");
@@ -432,7 +432,7 @@ function create_macro_command_from_card(br_card) {
 }
 
 /**
- * Manage collapsable fields
+ * Manage collapsible fields
  * @param html
  */
 export function manage_collapsables(html, message) {
@@ -604,7 +604,7 @@ export async function detect_fumble(has_wild_die, num_fumble_results, dice) {
 
 /**
  * Calculates the results of a roll
- * @param {[]} rolls A rolls list see BSWRoll doc
+ * @param {[]} rolls A rolls list.
  */
 export function calculate_damage_results(rolls) {
   let result = 0;
@@ -855,7 +855,7 @@ async function get_new_roll_options(
 }
 
 /**
- * Get the options for a reroll
+ * Get the options for a re-roll
  * @param {BrCommonCard} br_card - The card to get the options from
  * @param {Object} extra_data
  */
