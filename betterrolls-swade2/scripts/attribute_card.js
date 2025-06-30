@@ -41,7 +41,10 @@ async function create_attribute_card(
   { actions_stored = {} } = {},
 ) {
   let actor;
-  if (origin instanceof TokenDocument || origin instanceof foundry.canvas.placeables.Token) {
+  if (
+    origin instanceof TokenDocument ||
+    origin instanceof foundry.canvas.placeables.Token
+  ) {
     actor = origin.actor;
   } else {
     actor = origin;
@@ -146,12 +149,15 @@ export function activate_attribute_listeners(app, html) {
  * @param html Html produced
  */
 export function activate_attribute_card_listeners(card, html) {
-  html.querySelector(".brsw-roll-button")?.addEventListener("click", async (ev) => {
-    await roll_attribute(
-      card,
-      ev.currentTarget.classList.contains("roll-bennie-button"),
-    );
-  });
+  const roll_buttons = html.querySelectorAll(".brsw-roll-button");
+  for (const roll_button of roll_buttons) {
+    roll_button.addEventListener("click", async (ev) => {
+      await roll_attribute(
+        card,
+        ev.currentTarget.classList.contains("roll-bennie-button"),
+      );
+    });
+  }
 }
 
 /**
