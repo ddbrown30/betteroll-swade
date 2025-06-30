@@ -54,7 +54,7 @@ async function create_attribute_card(
     translated_name +
     " " +
     trait_to_string(actor.system.attributes[name.toLowerCase()]);
-  const br_message = await create_common_card(
+  const br_message = create_common_card(
     origin,
     {
       header: { type: game.i18n.localize("BRSW.Attribute"), title: title },
@@ -80,7 +80,7 @@ async function create_attribute_card(
  * @param {string} name Name of the attribute to roll, like 'vigor'
  * @param {object} actions_stored An object with action ids as properties
  *   and a boolean meaning if they need to set on or off
- * @return {Promise} a promise fot the ChatMessage object
+ * @return {Promise} a promise for the ChatMessage object
  */
 function create_attribute_card_from_id(
   token_id,
