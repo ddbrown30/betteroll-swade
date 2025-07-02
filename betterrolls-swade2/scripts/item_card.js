@@ -71,6 +71,7 @@ const ARCANE_SKILLS = [
   "heahmagie",
   "hrimmagie",
   "gesangsmagie",
+  "psionics",
   "psiónica",
   "psionica",
   "fe",
@@ -358,31 +359,42 @@ export function activate_item_card_listeners(br_card, html) {
       ev.currentTarget.classList.contains("roll-bennie-button"),
     );
   });
-  addEventListenerAll(html, ".brsw-damage-button, .brsw-damage-bennie-button", "click", (ev) => {
-    // noinspection JSIgnoredPromiseFromCall
-    roll_dmg(
-      br_card,
-      html,
-      ev.currentTarget.classList.contains("brsw-damage-bennie-button"),
-      {},
-      ev.currentTarget.id.includes("raise"),
-      ev.currentTarget.dataset.token,
-    );
-  });
-  html.querySelector(".brsw-ammo-manual")?.addEventListener("click", async (ev) => {
-    await item.reload();
-    //Update the ammo text of the card we just clicked on.
-    //This won't affect change the popout or vice versa,
-    //but doing that would require an update to the chat message which would refresh the render which is disruptive
-    ev.target.parentElement.querySelector(".brsw-shots-pp").innerText = br_card.item_shots;
-  });
-  html.querySelector(".brsw-pp-manual")?.addEventListener("click", async (ev) => {
-    await manual_pp(actor, item);
-    //Update the pp text of the card we just clicked on.
-    //This won't affect change the popout or vice versa,
-    //but doing that would require an update to the chat message which would refresh the render which is disruptive
-    ev.target.parentElement.querySelector(".brsw-shots-pp").innerText = br_card.item_shots;
-  });
+  addEventListenerAll(
+    html,
+    ".brsw-damage-button, .brsw-damage-bennie-button",
+    "click",
+    (ev) => {
+      // noinspection JSIgnoredPromiseFromCall
+      roll_dmg(
+        br_card,
+        html,
+        ev.currentTarget.classList.contains("brsw-damage-bennie-button"),
+        {},
+        ev.currentTarget.id.includes("raise"),
+        ev.currentTarget.dataset.token,
+      );
+    },
+  );
+  html
+    .querySelector(".brsw-ammo-manual")
+    ?.addEventListener("click", async (ev) => {
+      await item.reload();
+      //Update the ammo text of the card we just clicked on.
+      //This won't affect change the popout or vice versa,
+      //but doing that would require an update to the chat message which would refresh the render which is disruptive
+      ev.target.parentElement.querySelector(".brsw-shots-pp").innerText =
+        br_card.item_shots;
+    });
+  html
+    .querySelector(".brsw-pp-manual")
+    ?.addEventListener("click", async (ev) => {
+      await manual_pp(actor, item);
+      //Update the pp text of the card we just clicked on.
+      //This won't affect change the popout or vice versa,
+      //but doing that would require an update to the chat message which would refresh the render which is disruptive
+      ev.target.parentElement.querySelector(".brsw-shots-pp").innerText =
+        br_card.item_shots;
+    });
   addEventListenerAll(html, ".brsw-apply-damage", "click", (ev) => {
     create_damage_card(
       ev.currentTarget.dataset.token,
@@ -419,16 +431,18 @@ export function activate_item_card_listeners(br_card, html) {
       }),
     );
   });
-  html.querySelector("#roll-raise-damage")?.addEventListener("dragstart", (ev) => {
-    ev.originalEvent.dataTransfer.setData(
-      "text/plain",
-      JSON.stringify({
-        type: "target_click",
-        tag_id: "roll-raise-damage",
-        message_id: br_card.message.id,
-      }),
-    );
-  });
+  html
+    .querySelector("#roll-raise-damage")
+    ?.addEventListener("dragstart", (ev) => {
+      ev.originalEvent.dataTransfer.setData(
+        "text/plain",
+        JSON.stringify({
+          type: "target_click",
+          tag_id: "roll-raise-damage",
+          message_id: br_card.message.id,
+        }),
+      );
+    });
   html.querySelector(".brsw-ammo-toggle")?.addEventListener("click", (ev) => {
     ev.currentTarget.classList.toggle("twbr:bg-red-700");
     ev.currentTarget.classList.toggle("twbr:bg-gray-500");
@@ -979,7 +993,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
   if (
     (!isNaN(parseInt(br_message.item.system.pp)) ||
       br_message.item.type === "power") &&
-      pp_selected
+    pp_selected
   ) {
     br_message.render_data.used_pp = await discount_pp(
       br_message,
@@ -1573,10 +1587,7 @@ async function add_fixed_damage(target, message, form_results) {
     return;
   }
   const { index } = target.dataset;
-  const render_data = message.getFlag(
-    "betterrolls-swade2",
-    "render_data",
-  );
+  const render_data = message.getFlag("betterrolls-swade2", "render_data");
   const damage_rolls = render_data.damage_rolls[index].brswroll;
   damage_rolls.modifiers.push({ value: modifier, name: form_results.Label });
   damage_rolls.rolls[0].result += modifier;
@@ -1802,37 +1813,37 @@ function get_template_from_item(item) {
       key: "scone",
       key_text: ["BRSW.SmallCone", "small cone"],
       type: "swscone",
-      label: "BRSW.SmallConeShort"
+      label: "BRSW.SmallConeShort",
     },
     cone: {
       key: "cone",
       key_text: ["BRSW.Cone", "cone"],
       type: "swcone",
-      label: "BRSW.ConeShort"
+      label: "BRSW.ConeShort",
     },
     small: {
       key: "small",
       key_text: ["BRSW.SmallTemplate", "sbt", "small blast"],
       type: "sbt",
-      label: "BRSW.SmallTemplateShort"
+      label: "BRSW.SmallTemplateShort",
     },
     medium: {
       key: "medium",
       key_text: ["BRSW.MediumTemplate", "mbt", "medium blast"],
       type: "mbt",
-      label: "BRSW.MediumTemplateShort"
+      label: "BRSW.MediumTemplateShort",
     },
     large: {
       key: "large",
       key_text: ["BRSW.LargeTemplate", "lbt", "large blast"],
       type: "lbt",
-      label: "BRSW.LargeTemplateShort"
+      label: "BRSW.LargeTemplateShort",
     },
     stream: {
       key: "stream",
       key_text: ["BRSW.StreamTemplate", "stream"],
       type: "stream",
-      label: "BRSW.StreamTemplateShort"
+      label: "BRSW.StreamTemplateShort",
     },
   };
   if (["weapon", "power", "action", "gear", "shield"].indexOf(item.type) < 0) {
@@ -1851,13 +1862,18 @@ function get_template_from_item(item) {
       if (templates_found.find((t) => t.key == template_key)) {
         break;
       }
-      if (item.system?.description?.toLowerCase().includes(translated_key_text)) {
+      if (
+        item.system?.description?.toLowerCase().includes(translated_key_text)
+      ) {
         templates_found.push(template_value);
         break;
       } else if (typeof item.system?.range === "string") {
         const range = item.system.range.toLowerCase();
         if (range.includes(translated_key_text)) {
-          if (template_key == "cone" && templates_found.find((t) => t.key == "scone")) {
+          if (
+            template_key == "cone" &&
+            templates_found.find((t) => t.key == "scone")
+          ) {
             //If we have the small cone, don't add a normal cone
             break;
           }
