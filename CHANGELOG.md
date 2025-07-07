@@ -1,3 +1,10 @@
+# Version 4.24
+* Bugfix: Scrolling in world actions menu is working again (Dan Brown).
+* Bugfix: Get the reroll using a bennie button working again.
+* Bugfix: Get the old roll buttons back to work.
+* Actions: Add psionics to the fallback arcana skills (the skill that is rolled when no one is configured in the power)
+
+
 # Version 4.23 aka you knew it, more bugs
 * Bugfix: Fixes the problem with the ammo reload (Dan Brown).
 
