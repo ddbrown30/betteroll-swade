@@ -560,11 +560,11 @@ export function get_item_trait(item, actor) {
     for (const action in item.system.actions.additional) {
       if (
         item.system.actions.additional[action].type === "trait" &&
-        item.system.actions.additional[action].name
+        item.system.actions.additional[action].override  // name => override (use override if we really want to check for action trait name)
       ) {
         return trait_from_string(
           actor,
-          item.system.actions.additional[action].name,
+          item.system.actions.additional[action].override,  // name => override  (use override if we really want to check for action trait name)
         );
       }
     }
@@ -589,12 +589,21 @@ export function get_item_trait(item, actor) {
     if (parseInt(item.system.range) > 0) {
       // noinspection JSUnresolvedVariable
       if (item.system.damage.includes("str")) {
-        skill = check_skill_in_actor(actor, THROWING_SKILLS);
+        skill = check_skill_in_actor(actor, [
+      ...THROWING_SKILLS,
+      game.i18n.localize("BRSW.SkillName-Athletics").toLowerCase(), // add localization
+    ]);
       } else {
-        skill = check_skill_in_actor(actor, SHOOTING_SKILLS);
+        skill = check_skill_in_actor(actor, [
+      ...SHOOTING_SKILLS,
+      game.i18n.localize("BRSW.SkillName-Shooting").toLowerCase(), // add localization
+    ]);
       }
     } else {
-      skill = check_skill_in_actor(actor, FIGHTING_SKILLS);
+      skill = check_skill_in_actor(actor, [
+      ...FIGHTING_SKILLS,
+      game.i18n.localize("BRSW.SkillName-fighting").toLowerCase(), // bag add localization
+    ]);
     }
   }
   if (skill === undefined) {
@@ -1215,7 +1224,7 @@ async function roll_dmg_target(
     // noinspection ES6MissingAwait
     await game.dice3d.showForRoll(roll, game.user, true, users, message.blind);
   }
-  current_damage_roll.damage_result = await calculate_damage_results(
+  current_damage_roll.damage_result = calculate_damage_results(
     current_damage_roll.brswroll.rolls,
   );
   return current_damage_roll;
