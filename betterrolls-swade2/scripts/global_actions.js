@@ -5,9 +5,8 @@
 import { get_item_trait } from "./item_card.js";
 import { SYSTEM_GLOBAL_ACTION } from "./actions/builtin-actions.js";
 import { get_roll_options } from "./cards_common.js";
-import { SettingsUtils, measureDistance } from "./utils.js";
+import { SettingsUtils, measureDistance, addEventListenerAll } from "./utils.js";
 import { get_enabled_gm_actions } from "./gm_actions.js";
-import { addEventListenerAll } from "./utils.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
