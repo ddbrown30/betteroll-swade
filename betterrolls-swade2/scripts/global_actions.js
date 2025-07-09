@@ -5,7 +5,11 @@
 import { get_item_trait } from "./item_card.js";
 import { SYSTEM_GLOBAL_ACTION } from "./actions/builtin-actions.js";
 import { get_roll_options } from "./cards_common.js";
-import { SettingsUtils, measureDistance, addEventListenerAll } from "./utils.js";
+import {
+  SettingsUtils,
+  measureDistance,
+  addEventListenerAll,
+} from "./utils.js";
 import { get_enabled_gm_actions } from "./gm_actions.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -23,7 +27,9 @@ export function register_actions() {
   for (const world_action of world_actions) {
     if (world_action.replaceExisting) {
       //The action will replace any existing actions in the default list. Filter them out and assign the array
-      game.brsw.GLOBAL_ACTIONS = game.brsw.GLOBAL_ACTIONS.filter(a => a.id !== world_action.id);
+      game.brsw.GLOBAL_ACTIONS = game.brsw.GLOBAL_ACTIONS.filter(
+        (a) => a.id !== world_action.id,
+      );
     }
   }
   game.brsw.GLOBAL_ACTIONS = game.brsw.GLOBAL_ACTIONS.concat(world_actions);
@@ -160,6 +166,7 @@ export function get_actions(item, actor) {
  * @param item item been checked
  * @param actor actor been checked
  */
+// eslint-disable-next-line complexity
 export function check_selector(type, value, item, actor) {
   let selected = false;
   if (type === "skill" || type === "skill_linked_attribute") {
@@ -186,7 +193,9 @@ export function check_selector(type, value, item, actor) {
           }
         } else {
           value = game.i18n.localize(value);
-          selected = skill.system.attribute.toLowerCase().includes(value.toLowerCase());
+          selected = skill.system.attribute
+            .toLowerCase()
+            .includes(value.toLowerCase());
         }
       }
     }
@@ -202,8 +211,10 @@ export function check_selector(type, value, item, actor) {
     selected = actor.name.toLowerCase().includes(value.toLowerCase());
   } else if (type === "actor_has_skill") {
     const item = actor.items.find((item) => {
-      return item.type === 'skill' &&
-        item.name.toLowerCase() === game.i18n.localize(value).toLowerCase();
+      return (
+        item.type === "skill" &&
+        item.name.toLowerCase() === game.i18n.localize(value).toLowerCase()
+      );
     });
     return !!item;
   } else if (type === "actor_has_item") {
@@ -231,7 +242,9 @@ export function check_selector(type, value, item, actor) {
   } else if (type === "actor_has_effect") {
     // noinspection AnonymousFunctionJS
     const effect = actor.appliedEffects.find((effect) =>
-      effect.name.toLowerCase().includes(game.i18n.localize(value).toLowerCase()),
+      effect.name
+        .toLowerCase()
+        .includes(game.i18n.localize(value).toLowerCase()),
     );
     selected = effect ? !effect.disabled : false;
   } else if (type === "actor_has_edge") {
@@ -395,14 +408,20 @@ export function check_selector(type, value, item, actor) {
     selected = check_document_value(actor, value);
   } else if (type === "item_value") {
     selected = check_document_value(item, value);
+  } else if (type === "target_value") {
+    const targeted_token = game.user.targets.first()
+    if (targeted_token) {
+      selected = check_document_value(targeted_token.actor, value);
+    } 
   } else if (type === "item_has_damage") {
     selected = !!item?.system?.damage;
   } else if (type === "range_less_than") {
     const tokens = actor.getActiveTokens();
     if (tokens && game.user.targets.size) {
-      const distance = measureDistance(
-        [tokens[0].center, game.user.targets.first().center]
-      );
+      const distance = measureDistance([
+        tokens[0].center,
+        game.user.targets.first().center,
+      ]);
       selected = parseInt(value) >= distance;
     }
   } else if (type === "module_is_not_active") {
@@ -430,16 +449,18 @@ function check_document_value(document, value) {
 /**
  * The global action selection window
  */
-export class SystemGlobalConfiguration extends HandlebarsApplicationMixin(ApplicationV2) {
+export class SystemGlobalConfiguration extends HandlebarsApplicationMixin(
+  ApplicationV2,
+) {
   static DEFAULT_OPTIONS = {
     id: "brsw-global-actions",
     tag: "form",
     form: {
       handler: SystemGlobalConfiguration.formHandler,
       submitOnChange: false,
-      closeOnSubmit: true
+      closeOnSubmit: true,
     },
-    classes: ['standard-form'],
+    classes: ["standard-form"],
     window: {
       title: "",
       minimizable: false,
@@ -448,8 +469,13 @@ export class SystemGlobalConfiguration extends HandlebarsApplicationMixin(Applic
   };
 
   static PARTS = {
-    form: { template: "/modules/betterrolls-swade2/templates/system_globals/form.hbs" },
-    footer: { template: "/modules/betterrolls-swade2/templates/system_globals/footer.hbs" },
+    form: {
+      template: "/modules/betterrolls-swade2/templates/system_globals/form.hbs",
+    },
+    footer: {
+      template:
+        "/modules/betterrolls-swade2/templates/system_globals/footer.hbs",
+    },
   };
 
   async _prepareContext(options) {
@@ -472,15 +498,22 @@ export class SystemGlobalConfiguration extends HandlebarsApplicationMixin(Applic
   }
 
   _onRender(context, options) {
-    addEventListenerAll(this.element, ".brsw-section-title", "click", async (ev) => {
-      const checks = ev.currentTarget.closest("table").querySelectorAll("input[type=checkbox]");
-      if (checks.length) {
-        const new_value = !checks[0].checked;
-        checks.forEach((check) => {
-          check.checked = new_value;
-        });
-      }
-    });
+    addEventListenerAll(
+      this.element,
+      ".brsw-section-title",
+      "click",
+      async (ev) => {
+        const checks = ev.currentTarget
+          .closest("table")
+          .querySelectorAll("input[type=checkbox]");
+        if (checks.length) {
+          const new_value = !checks[0].checked;
+          checks.forEach((check) => {
+            check.checked = new_value;
+          });
+        }
+      },
+    );
   }
 
   static async formHandler(event, form, formData) {
@@ -495,14 +528,16 @@ export class SystemGlobalConfiguration extends HandlebarsApplicationMixin(Applic
 }
 
 // noinspection JSPrimitiveTypeWrapperUsage
-export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2) {
+export class WorldGlobalActions extends HandlebarsApplicationMixin(
+  ApplicationV2,
+) {
   static DEFAULT_OPTIONS = {
     id: "brsw-world-actions",
     tag: "form",
     form: {
       handler: WorldGlobalActions.formHandler,
       submitOnChange: false,
-      closeOnSubmit: true
+      closeOnSubmit: true,
     },
     window: {
       minimizable: false,
@@ -511,9 +546,15 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
     },
     position: { width: 800, height: 700 },
     actions: {
-      newAction: function (event, button) { this.add_action(event, this.element); },
-      export: function (event, button) { export_global_actions(); },
-      import: function (event, button) { import_global_actions(this); },
+      newAction: function (event, button) {
+        this.add_action(event, this.element);
+      },
+      export: function (event, button) {
+        export_global_actions();
+      },
+      import: function (event, button) {
+        import_global_actions(this);
+      },
       trash: function (event, button) {
         const row = event.target.parentElement.parentElement;
         row.remove();
@@ -527,13 +568,18 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
         if (is_collapsed) {
           act_content.classList.remove("brsw-collapsed");
         }
-      }
+      },
     },
   };
 
   static PARTS = {
-    form: { template: "/modules/betterrolls-swade2/templates/world_globals/form.hbs" },
-    footer: { template: "/modules/betterrolls-swade2/templates/world_globals/footer.hbs" },
+    form: {
+      template: "/modules/betterrolls-swade2/templates/world_globals/form.hbs",
+    },
+    footer: {
+      template:
+        "/modules/betterrolls-swade2/templates/world_globals/footer.hbs",
+    },
   };
 
   async _prepareContext(options) {
@@ -559,7 +605,10 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
   static async formHandler(event, form, formData) {
     const new_world_actions = [];
     for (const form_action in formData.object) {
-      const actions = formData.object[form_action] instanceof Array ? formData.object[form_action] : [formData.object[form_action]];
+      const actions =
+        formData.object[form_action] instanceof Array
+          ? formData.object[form_action]
+          : [formData.object[form_action]];
       for (const action of actions) {
         new_world_actions.push(JSON.parse(action));
       }
@@ -583,7 +632,12 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
       }
     });
     // Activate JSON check on old actions
-    addEventListenerAll(this.element, ".brsw-action-json", "blur", this.check_json);
+    addEventListenerAll(
+      this.element,
+      ".brsw-action-json",
+      "blur",
+      this.check_json,
+    );
   }
 
   check_json(ev) {
@@ -650,7 +704,8 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
         }
       }
     }
-    const action_title = text_area.parentElement.parentElement.querySelector("button>span");
+    const action_title =
+      text_area.parentElement.parentElement.querySelector("button>span");
     if (error) {
       // Inputs without a name are not passed to updateObject
       action_title.innerHTML = error;
@@ -671,11 +726,21 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
     // noinspection JSUnresolvedFunction
     const action_list = html.querySelector(".brsw-action-list");
     const new_span = document.createElement("span");
-    new_span.insertAdjacentHTML("beforeend", '<h2 class=\'mb-0 border-none\'><button type="button" class="p-5 font-medium border border-b-0 border-gray-200 {{# if @first }}rounded-t-xl{{/if}} bg-gray-600 focus:ring-4 focus:ring-gray-700 hover:text-white hover:bg-gray-700 gap-3"><span>New</span></button></h2>',
+    new_span.insertAdjacentHTML(
+      "beforeend",
+      '<h2 class=\'mb-0 border-none\'><button type="button" class="p-5 font-medium border border-b-0 border-gray-200 {{# if @first }}rounded-t-xl{{/if}} bg-gray-600 focus:ring-4 focus:ring-gray-700 hover:text-white hover:bg-gray-700 gap-3"><span>New</span></button></h2>',
     );
-    new_span.insertAdjacentHTML("beforeend", "<div class='p-5 border border-b-0 border-gray-200 bg-gray-500'></div>");
-    new_span.insertAdjacentHTML("beforeend", "<textarea class='brsw-action-json' rows='9'></textarea>");
-    new_span.querySelector("textarea").addEventListener("blur", this.check_json);
+    new_span.insertAdjacentHTML(
+      "beforeend",
+      "<div class='p-5 border border-b-0 border-gray-200 bg-gray-500'></div>",
+    );
+    new_span.insertAdjacentHTML(
+      "beforeend",
+      "<textarea class='brsw-action-json' rows='9'></textarea>",
+    );
+    new_span
+      .querySelector("textarea")
+      .addEventListener("blur", this.check_json);
     action_list.append(new_span);
   }
 }
@@ -685,7 +750,11 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
  */
 function export_global_actions() {
   const actions = SettingsUtils.getSetting("world_global_actions");
-  foundry.utils.saveDataToFile(JSON.stringify(actions), "json", "world_actions.json");
+  foundry.utils.saveDataToFile(
+    JSON.stringify(actions),
+    "json",
+    "world_actions.json",
+  );
 }
 
 /**
@@ -694,42 +763,40 @@ function export_global_actions() {
  */
 async function import_global_actions(app) {
   const content = document.createElement(`div`);
-  content.innerHTML = await foundry.applications.handlebars.renderTemplate("templates/apps/import-data.hbs", {
-    hint1: "Select file to import",
-  });
-  new foundry.applications.api.DialogV2(
+  content.innerHTML = await foundry.applications.handlebars.renderTemplate(
+    "templates/apps/import-data.hbs",
     {
-      window: { title: "Import Data" },
-      position: { width: 400 },
-      content: content,
-      buttons: [
-        {
-          icon: "fas fa-file-import",
-          label: "Import",
-          action: "import",
-          callback: (event, target, dialog) => {
-            const form = dialog.element.querySelector("form");
-            if (!form.data.files.length) {
-              return ui.notifications.error("You did not upload a data file!");
-            }
-            foundry.utils.readTextFromFile(form.data.files[0]).then((json) => {
-              SettingsUtils.setSetting(
-                "world_global_actions",
-                JSON.parse(json),
-              );
-            });
-            app.render(true);
-          },
+      hint1: "Select file to import",
+    },
+  );
+  new foundry.applications.api.DialogV2({
+    window: { title: "Import Data" },
+    position: { width: 400 },
+    content: content,
+    buttons: [
+      {
+        icon: "fas fa-file-import",
+        label: "Import",
+        action: "import",
+        callback: (event, target, dialog) => {
+          const form = dialog.element.querySelector("form");
+          if (!form.data.files.length) {
+            return ui.notifications.error("You did not upload a data file!");
+          }
+          foundry.utils.readTextFromFile(form.data.files[0]).then((json) => {
+            SettingsUtils.setSetting("world_global_actions", JSON.parse(json));
+          });
+          app.render(true);
         },
-        {
-          icon: "fas fa-times",
-          label: "Cancel",
-          action: "no",
-        },
-      ],
-      default: "import",
-    }
-  ).render(true);
+      },
+      {
+        icon: "fas fa-times",
+        label: "Cancel",
+        action: "no",
+      },
+    ],
+    default: "import",
+  }).render(true);
 }
 
 /**
@@ -762,7 +829,10 @@ export function register_gm_actions_settings() {
 
 export async function refresh_gm_actions() {
   const old_actions = SettingsUtils.getSetting("gm_actions");
-  const new_actions = get_gm_actions().map((n) => { n.enable = !!old_actions.find((o) => o?.id === n.id)?.enable; return n; });
+  const new_actions = get_gm_actions().map((n) => {
+    n.enable = !!old_actions.find((o) => o?.id === n.id)?.enable;
+    return n;
+  });
   await SettingsUtils.setSetting("gm_actions", new_actions);
   return new_actions;
 }

@@ -121,6 +121,7 @@ a `selector_value` for a simple selection. You can also use `and_selector` and g
 * `actor_value`: This expects a selector composed of `"path=value"`. Where path is a dot path of actor data (
   like `system.advances.value`) and value a value (like 4). This coerces the values using javascript `==`.
 * `item_value`: The same selector as above but for items instead of actors.
+* `target_value`: Again the same way of working but it checks the first target actor.
 * `item_has_damage`: This will show the action if the item has a damage value. The value is ignored.
 * `actor_has_skill`: This will show the action if the actor has a skill with the same name as the value. For example, `actor_has_skill: "Acrobatics"` would show the action if the actor has a skill named "Acrobatics".
 * `actor_has_item`: This will show the action if the actor has an item with the same name as the value.
