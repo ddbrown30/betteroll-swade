@@ -70,7 +70,7 @@ export function expose_global_actions_functions() {
  */
 function process_and_selector(action, item, actor) {
   let selected = true;
-  for (let selection_option of action.and_selector) {
+  for (const selection_option of action.and_selector) {
     if (!process_action(selection_option, item, actor)) {
       selected = false;
       break;
@@ -88,7 +88,7 @@ function process_and_selector(action, item, actor) {
  */
 function process_or_selector(action, item, actor) {
   let selected = false;
-  for (let selection_option of action.or_selector) {
+  for (const selection_option of action.or_selector) {
     if (process_action(selection_option, item, actor)) {
       selected = true;
       break;
@@ -133,12 +133,12 @@ function process_action(action, item, actor) {
  * @param {SwadeActor} actor
  */
 export function get_actions(item, actor) {
-  let actions_avaliable = [];
+  const actions_avaliable = [];
   let disabled_actions = SettingsUtils.getSetting("system_action_disabled");
   if (disabled_actions && disabled_actions[0] instanceof Array) {
     disabled_actions = disabled_actions[0];
   }
-  for (let action of game.brsw.GLOBAL_ACTIONS) {
+  for (const action of game.brsw.GLOBAL_ACTIONS) {
     if (
       !disabled_actions.includes(action.id) &&
       process_action(action, item, actor)
@@ -301,7 +301,7 @@ export function check_selector(type, value, item, actor) {
     const edge_name = value.includes("BRSW.EdgeName-")
       ? game.i18n.localize(value)
       : value;
-    for (let targeted_token of game.user.targets) {
+    for (const targeted_token of game.user.targets) {
       const edge = targeted_token.actor?.items.find((item) => {
         return (
           item.type === "edge" &&
@@ -314,7 +314,7 @@ export function check_selector(type, value, item, actor) {
     const hindrance_name = value.includes("BRSW.EdgeName-")
       ? game.i18n.localize(value)
       : value;
-    for (let targeted_token of game.user.targets) {
+    for (const targeted_token of game.user.targets) {
       const hindrance = targeted_token.actor?.items.find((item) => {
         return (
           item.type === "hindrance" &&
@@ -328,7 +328,7 @@ export function check_selector(type, value, item, actor) {
       ? game.i18n.localize(value)
       : value;
     // noinspection AnonymousFunctionJS
-    for (let targeted_token of game.user.targets) {
+    for (const targeted_token of game.user.targets) {
       const hindrance = targeted_token.actor?.items.find((item) => {
         return (
           item.type === "hindrance" &&
@@ -342,7 +342,7 @@ export function check_selector(type, value, item, actor) {
     const ability_name = value.includes("BRSW.EdgeName-")
       ? game.i18n.localize(value)
       : value;
-    for (let targeted_token of game.user.targets) {
+    for (const targeted_token of game.user.targets) {
       const ability = targeted_token.actor?.items.find((item) => {
         return (
           item.type === "ability" &&
@@ -400,7 +400,7 @@ export function check_selector(type, value, item, actor) {
   } else if (type === "range_less_than") {
     const tokens = actor.getActiveTokens();
     if (tokens && game.user.targets.size) {
-      let distance = measureDistance(
+      const distance = measureDistance(
         [tokens[0].center, game.user.targets.first().center]
       );
       selected = parseInt(value) >= distance;
@@ -420,8 +420,8 @@ export function check_selector(type, value, item, actor) {
  * @param {string} value
  */
 function check_document_value(document, value) {
-  let [path, result] = value.split("=");
-  let data = foundry.utils.getProperty(document, path);
+  const [path, result] = value.split("=");
+  const data = foundry.utils.getProperty(document, path);
   // noinspection EqualityComparisonWithCoercionJS
   return data == result;
 }
@@ -453,12 +453,12 @@ export class SystemGlobalConfiguration extends HandlebarsApplicationMixin(Applic
   };
 
   async _prepareContext(options) {
-    let groups = {};
+    const groups = {};
     let disable_actions = SettingsUtils.getSetting("system_action_disabled");
     if (disable_actions && disable_actions[0] instanceof Array) {
       disable_actions = disable_actions[0];
     }
-    for (let action of SYSTEM_GLOBAL_ACTION) {
+    for (const action of SYSTEM_GLOBAL_ACTION) {
       if (!groups.hasOwnProperty(action.group)) {
         groups[action.group] = { name: action.group, actions: [] };
       }
@@ -484,8 +484,8 @@ export class SystemGlobalConfiguration extends HandlebarsApplicationMixin(Applic
   }
 
   static async formHandler(event, form, formData) {
-    let disabled_actions = [];
-    for (let id in formData.object) {
+    const disabled_actions = [];
+    for (const id in formData.object) {
       if (!formData.object[id]) {
         disabled_actions.push(id);
       }
@@ -541,8 +541,8 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
     if (actions && actions[0] instanceof Array) {
       actions = actions[0];
     }
-    let formatted_actions = [];
-    for (let action of actions) {
+    const formatted_actions = [];
+    for (const action of actions) {
       formatted_actions.push({
         name: action.name,
         id: action.id,
@@ -557,10 +557,10 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
   }
 
   static async formHandler(event, form, formData) {
-    let new_world_actions = [];
-    for (let form_action in formData.object) {
+    const new_world_actions = [];
+    for (const form_action in formData.object) {
       const actions = formData.object[form_action] instanceof Array ? formData.object[form_action] : [formData.object[form_action]];
-      for (let action of actions) {
+      for (const action of actions) {
         new_world_actions.push(JSON.parse(action));
       }
     }
@@ -599,7 +599,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
     }
     if (!error) {
       // Need to have an id, name
-      for (let requisite of ["id", "name"]) {
+      for (const requisite of ["id", "name"]) {
         if (!action.hasOwnProperty(requisite)) {
           error = game.i18n.localize("BRSW.MissingJSON") + requisite;
         }
@@ -644,7 +644,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
         "disable_if_module_present",
         "replaceExisting",
       ];
-      for (let key in action) {
+      for (const key in action) {
         if (SUPPORTED_KEYS.indexOf(key) < 0) {
           error = game.i18n.localize("BRSW.UnknownActionKey") + key;
         }
@@ -663,7 +663,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
 
   add_action(ev, html) {
     ev.preventDefault();
-    for (let text_input of document.getElementsByClassName(
+    for (const text_input of document.getElementsByClassName(
       "brsw-edit-action",
     )) {
       text_input.classList.add("brsw-collapsed");
@@ -684,7 +684,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
  * Exports custom global actions to a JSON file.
  */
 function export_global_actions() {
-  let actions = SettingsUtils.getSetting("world_global_actions");
+  const actions = SettingsUtils.getSetting("world_global_actions");
   foundry.utils.saveDataToFile(JSON.stringify(actions), "json", "world_actions.json");
 }
 
@@ -736,9 +736,9 @@ async function import_global_actions(app) {
  * Get the global actions with the gm selector.
  */
 function get_gm_actions() {
-  let gm_actions = [];
+  const gm_actions = [];
   const disabled_actions = SettingsUtils.getSetting("system_action_disabled");
-  for (let action of game.brsw.GLOBAL_ACTIONS) {
+  for (const action of game.brsw.GLOBAL_ACTIONS) {
     if (
       action.selector_type === "gm_action" &&
       !disabled_actions.includes(action.id)
@@ -762,7 +762,7 @@ export function register_gm_actions_settings() {
 
 export async function refresh_gm_actions() {
   const old_actions = SettingsUtils.getSetting("gm_actions");
-  let new_actions = get_gm_actions().map((n) => { n.enable = !!old_actions.find((o) => o?.id === n.id)?.enable; return n; });
+  const new_actions = get_gm_actions().map((n) => { n.enable = !!old_actions.find((o) => o?.id === n.id)?.enable; return n; });
   await SettingsUtils.setSetting("gm_actions", new_actions);
   return new_actions;
 }
