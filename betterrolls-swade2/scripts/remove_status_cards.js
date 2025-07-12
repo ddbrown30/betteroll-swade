@@ -8,7 +8,7 @@ import {
   roll_trait,
   spend_bennie,
 } from "./cards_common.js";
-import { SettingsUtils } from "./utils.js";
+import { SettingsUtils, addEventListenerAll } from "./utils.js";
 import { BrCommonCard } from "./BrCommonCard.js";
 import { TraitModifier } from "./modifiers.js";
 
@@ -99,7 +99,8 @@ export function activate_remove_status_card_listeners(
 ) {
   const roll_function =
     card_type === BRSW_CONST.TYPE_UNSHAKE_CARD ? roll_unshaken : roll_unstun;
-  html.querySelector(".brsw-spirit-button, .brsw-roll-button")?.addEventListener("click", (ev) => {
+  addEventListenerAll(html, ".brsw-spirit-button, .brsw-roll-button", "click", (ev) => {
+    ev.stopPropagation();
     let spend_bennie = false;
     if (
       ev.currentTarget.classList.contains("roll-bennie-button") ||

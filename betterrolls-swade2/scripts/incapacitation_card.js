@@ -8,7 +8,7 @@ import {
   spend_bennie,
 } from "./cards_common.js";
 import { get_owner } from "./damage_card.js";
-import { SettingsUtils } from "./utils.js";
+import { SettingsUtils, addEventListenerAll } from "./utils.js";
 import { BrCommonCard } from "./BrCommonCard.js";
 
 const INJURY_BASE = {
@@ -110,6 +110,7 @@ export function incapacitation_card_hooks() {
  * @param ev
  */
 function roll_incapacitation_clicked(ev, br_card) {
+  ev.stopPropagation();
   let spend_bennie = false;
   if (ev.currentTarget.classList.contains("roll-bennie-button")) {
     spend_bennie = true;
@@ -125,7 +126,7 @@ function roll_incapacitation_clicked(ev, br_card) {
  */
 export function activate_incapacitation_card_listeners(message, html) {
   const br_card = new BrCommonCard(message);
-  html.querySelector(".brsw-vigor-button, .brsw-roll-button")?.addEventListener("click", (ev) => {
+  addEventListenerAll(html, ".brsw-vigor-button, .brsw-roll-button", "click", (ev) => {
     roll_incapacitation_clicked(ev, br_card);
   });
   html.querySelector(".brsw-injury-button")?.addEventListener("click", (ev) => {

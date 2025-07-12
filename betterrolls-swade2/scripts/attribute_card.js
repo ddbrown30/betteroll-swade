@@ -152,6 +152,7 @@ export function activate_attribute_card_listeners(card, html) {
   const roll_buttons = html.querySelectorAll(".brsw-roll-button");
   for (const roll_button of roll_buttons) {
     roll_button.addEventListener("click", async (ev) => {
+      ev.stopPropagation();
       await roll_attribute(
         card,
         ev.currentTarget.classList.contains("roll-bennie-button"),

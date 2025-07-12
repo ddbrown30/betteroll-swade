@@ -12,7 +12,7 @@ import {
   process_common_actions,
 } from "./cards_common.js";
 import { run_macros } from "./item_card.js";
-import { SettingsUtils, measureDistance } from "./utils.js";
+import { SettingsUtils, addEventListenerAll, measureDistance } from "./utils.js";
 import { BrCommonCard } from "./BrCommonCard.js";
 import { TraitModifier } from "./modifiers.js";
 
@@ -178,7 +178,8 @@ export function activate_skill_listeners(app, html) {
  * @param html Html produced
  */
 export function activate_skill_card_listeners(br_card, html) {
-  html.querySelector(".brsw-roll-button")?.addEventListener("click", async (ev) => {
+  addEventListenerAll(html, ".brsw-roll-button", "click", async (ev) => {
+    ev.stopPropagation();
     await roll_skill(
       br_card,
       ev.currentTarget.classList.contains("roll-bennie-button"),
