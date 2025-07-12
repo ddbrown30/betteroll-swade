@@ -36,13 +36,14 @@ class Die {
 
   // noinspection JSUnusedGlobalSymbols, used in templates
   get result_icon() {
-    if (this.result === null || this.result < 0) {
+    if (this.result === null) {
       return "";
-    }
-    if (this.result < 4) {
-      return "brsw-blue-text fas fa-check fa-2xs";
+    } else if (this.result < 0) {
+      return "brsw-red-text fas fa-xmark fa-xs";
+    } else if (this.result < 4) {
+      return "brsw-lime-text fas fa-check fa-xs";
     } else {
-      return "brsw-blue-text fas fa-check-double fa-2xs";
+      return "brsw-lime-text fas fa-check-double fa-xs";
     }
   }
 
