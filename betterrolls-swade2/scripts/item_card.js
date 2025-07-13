@@ -305,21 +305,16 @@ async function item_click_listener(ev, target, currentTarget) {
  */
 export function activate_item_listeners(app, html) {
   const target = app.token || app.object;
-  const item_images = html.querySelectorAll(
+  addEventListenerAll(html,
     ".item-image, .item-img, .name.item-show, span.item>.item-control.item-edit," +
-      " .gear-card .card-header>.item-name, .damage-roll, .item-name>h4," +
-      " .power-header>.item-name, .card-button, .item-control.item-show," +
-      " .power button.item-show, .weapon button.item-show, .edge-hindrance>.item-control" +
-      " .item-control.item-edit, .item-control.item-show, .item.edge-hindrance>.item-show," +
-      " .item>.item-show",
-  );
-  for (const item_image of item_images) {
-    const new_image = item_image.cloneNode(true);
-    item_image.parentNode.replaceChild(new_image, item_image);
-    new_image.addEventListener("click", async (ev) => {
+    " .gear-card .card-header>.item-name, .damage-roll, .item-name>h4," +
+    " .power-header>.item-name, .card-button, .item-control.item-show," +
+    " .power button.item-show, .weapon button.item-show, .edge-hindrance>.item-control" +
+    " .item-control.item-edit, .item-control.item-show, .item.edge-hindrance>.item-show," +
+    " .item>.item-show",
+    "click", async (ev) => {
       await item_click_listener(ev, target, ev.currentTarget);
-    });
-  }
+  });
 }
 
 /**

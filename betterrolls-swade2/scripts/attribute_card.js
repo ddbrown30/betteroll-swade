@@ -13,6 +13,7 @@ import {
 } from "./cards_common.js";
 import { run_macros } from "./item_card.js";
 import { BrCommonCard } from "./BrCommonCard.js";
+import { addEventListenerAll } from "./utils.js";
 
 /**
 / Translation map for attributes
@@ -134,13 +135,9 @@ async function attribute_click_listener(ev, target) {
  */
 export function activate_attribute_listeners(app, html) {
   const target = app.token || app.object;
-  for (const attribute_label of html.querySelectorAll(".attribute-value")) {
-    const new_label = attribute_label.cloneNode(true);
-    attribute_label.parentNode.replaceChild(new_label, attribute_label);
-    new_label.addEventListener("click", async (ev) => {
-      await attribute_click_listener(ev, target);
-    });
-  }
+  addEventListenerAll(html, ".attribute-value", "click", async (ev) => {
+    await attribute_click_listener(ev, target);
+  });
 }
 
 /**

@@ -12,7 +12,7 @@ import {
   process_common_actions,
 } from "./cards_common.js";
 import { run_macros } from "./item_card.js";
-import { SettingsUtils, measureDistance } from "./utils.js";
+import { SettingsUtils, addEventListenerAll, measureDistance } from "./utils.js";
 import { BrCommonCard } from "./BrCommonCard.js";
 import { TraitModifier } from "./modifiers.js";
 
@@ -161,15 +161,11 @@ async function skill_click_listener(ev, target) {
  */
 export function activate_skill_listeners(app, html) {
   const target = app.token || app.object;
-  for (const skill_label of html.querySelectorAll(
+  addEventListenerAll(html,
     ".skill-label a, .skill.item>a, .skill-name, .skill-die",
-  )){
-    const new_label = skill_label.cloneNode(true);
-    skill_label.parentNode.replaceChild(new_label, skill_label);
-    new_label.addEventListener("click", async (ev) => {
-      await skill_click_listener(ev, target);
-    });
-  }
+    "click", async (ev) => {
+    await skill_click_listener(ev, target);
+  });
 }
 
 /**

@@ -88,13 +88,8 @@ export function activate_vehicle_listeners(app, html) {
     "button[data-action='maneuverCheck']",
   );
   if (maneuver_check_button) {
-    const new_button = maneuver_check_button.cloneNode(true);
-    maneuver_check_button.parentNode.replaceChild(
-      new_button,
-      maneuver_check_button,
-    );
-    new_button.addEventListener("click", async (ev) => {
-      await vehicle_click_listener(ev, target);
+    maneuver_check_button.addEventListener("click", async (ev) => {
+      await vehicle_click_listener(ev, target, true);
     });
   }
   const weapon_labels = html.querySelectorAll("a[data-action='showItem']");

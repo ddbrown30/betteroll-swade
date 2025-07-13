@@ -140,7 +140,7 @@ export async function set_or_update_condition(condition_id, actor) {
 
 export function addEventListenerAll(html, selector, type, listener) {
   html.querySelectorAll(selector).forEach((e) => {
-    e.addEventListener(type, listener);
+    e.addEventListener(type, listener, true);
   });
 }
 
