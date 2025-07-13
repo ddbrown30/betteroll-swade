@@ -314,9 +314,7 @@ export function activate_item_listeners(app, html) {
       " .item>.item-show",
   );
   for (const item_image of item_images) {
-    const new_image = item_image.cloneNode(true);
-    item_image.parentNode.replaceChild(new_image, item_image);
-    new_image.addEventListener("click", async (ev) => {
+    item_image.addEventListener("click", async (ev) => {
       await item_click_listener(ev, target, ev.currentTarget);
     });
   }
