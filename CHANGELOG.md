@@ -1,3 +1,9 @@
+# Version 4.25 aka Neverending bugfixes
+* Translations: Added some strings as translatable (Wrasal)
+* Actions: added `target_value` selector
+* Bugfix: Fixed remaining problems with benny rerolling (Dan Brown)
+* Bugfix: Fixed system rolls (Dan Brown)
+
 # Version 4.24
 * Bugfix: Scrolling in world actions menu is working again (Dan Brown).
 * Bugfix: Get the reroll using a bennie button working again.
