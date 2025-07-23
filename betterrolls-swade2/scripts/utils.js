@@ -138,9 +138,9 @@ export async function set_or_update_condition(condition_id, actor) {
   });
 }
 
-export function addEventListenerAll(html, selector, type, listener) {
+export function addEventListenerAll(html, selector, type, listener, useCapture=false) {
   html.querySelectorAll(selector).forEach((e) => {
-    e.addEventListener(type, listener, true);
+    e.addEventListener(type, listener, useCapture);
   });
 }
 

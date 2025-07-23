@@ -314,7 +314,7 @@ export function activate_item_listeners(app, html) {
     " .item>.item-show",
     "click", async (ev) => {
       await item_click_listener(ev, target, ev.currentTarget);
-  });
+  }, true);
 }
 
 /**

@@ -137,7 +137,7 @@ export function activate_attribute_listeners(app, html) {
   const target = app.token || app.object;
   addEventListenerAll(html, ".attribute-value", "click", async (ev) => {
     await attribute_click_listener(ev, target);
-  });
+  }, true);
 }
 
 /**
