@@ -90,7 +90,7 @@ export function activate_vehicle_listeners(app, html) {
   if (maneuver_check_button) {
     maneuver_check_button.addEventListener("click", async (ev) => {
       await vehicle_click_listener(ev, target, true);
-    });
+    }, true);
   }
   const weapon_labels = html.querySelectorAll("a[data-action='showItem']");
   for (const label of weapon_labels) {
