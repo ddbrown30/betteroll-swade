@@ -1,3 +1,6 @@
+# Version 4.26 aka Fixing Bugfixes, isn't it funny?
+* Bugfix: Fixed mistake in useCapture that stops benny rerolls from working (Dan Brown)
+
 # Version 4.25 aka Neverending bugfixes
 * Translations: Added some strings as translatable (Wrasal)
 * Actions: added `target_value` selector
