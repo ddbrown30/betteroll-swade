@@ -1,3 +1,6 @@
+# Version 4.27 aka you knew it, more bugs
+* Bugfix: Fixed a bug in player rolls (Dan Brown).
+
 # Version 4.26 aka Fixing Bugfixes, isn't it funny?
 * Bugfix: Fixed mistake in useCapture that stops benny rerolls from working (Dan Brown)
 
