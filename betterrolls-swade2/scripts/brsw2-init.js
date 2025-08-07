@@ -156,15 +156,15 @@ Hooks.on("renderChatMessageHTML", (message, html, options) => {
     activateCardListeners(card, html, message);
     // Hide forms to non-master, non owner
     if (!message.isOwner) {
-      html.querySelector(".brsw-form").classList.add("brsw-collapsed");
+      html.querySelectorAll(".brsw-form").forEach(e => e.classList.add("brsw-collapsed"));
     }
     // Hide master only sections
     if (!game.user.isGM) {
-      html.querySelector(".brsw-master-only")?.remove();
+      html.querySelectorAll(".brsw-master-only").forEach(e => e.remove());
     }
     // Hide save macro button from non-owner, non-trusted players
     if (!message.isOwner && !game.user.isTrusted) {
-      html.querySelector(".brsw-owner-trusted-only")?.remove();
+      html.querySelectorAll(".brsw-owner-trusted-only").forEach(e => e.remove());
     }
     if (Object.keys(message.apps).length < 1) {
       // Don't create popout when rendering popouts.
