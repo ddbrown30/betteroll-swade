@@ -1,3 +1,7 @@
+# Version 4.28 aka pequena correçao de falla (and a new Portuguese translation)
+* Translations: Add portuguese translations (ssantos)
+* Fixed a bug where some elements where visible to non owners (Dan Brown)
+
 # Version 4.27 aka you knew it, more bugs
 * Bugfix: Fixed a bug in player rolls (Dan Brown).
 
