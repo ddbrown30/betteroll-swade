@@ -1,4 +1,4 @@
-# Version 4.28 aka pequena correçao de falla (and a new Portuguese translation)
+# Version 4.28 aka pequena correçao de falha (and a new Portuguese translation)
 * Translations: Add portuguese translations (ssantos)
 * Fixed a bug where some elements where visible to non owners (Dan Brown)
 
