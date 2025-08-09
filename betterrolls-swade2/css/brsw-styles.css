@@ -328,11 +328,6 @@
     border-bottom: 1px solid #ff0000;
 }
 
-.brsw-chat-button.vertical {
-    position: absolute;
-    inset: auto auto 135px calc(100% + 16px);
-}
-
 .brsw-gm-popup {
     position: absolute;
     background: var(--background);
