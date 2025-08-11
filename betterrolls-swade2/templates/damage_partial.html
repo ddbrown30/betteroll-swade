@@ -1,7 +1,7 @@
 {{# each damage_rolls }}
     <div class="brsw-roll-row twbr:flex twbr:justify-between">
         <span class="brsw-clickable brsw-collapse-button twbr:max-w-1/2" data-collapse="brsw-damage-detail{{@index}}">
-            <i class="fas fa-caret-right"></i>{{ this.label}} :
+            {{ this.label}} :
         </span>
         <span class="twbr:flex">
             {{#each this.brswroll.rolls}}

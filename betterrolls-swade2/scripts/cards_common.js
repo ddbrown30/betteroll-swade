@@ -440,20 +440,9 @@ export function manage_collapsables(html, message) {
     e.preventDefault();
     e.stopPropagation();
     const data_collapse = e.currentTarget.attributes["data-collapse"].nodeValue;
-    const collapsable_span = html.querySelector("." + data_collapse);
-    collapsable_span.classList.toggle("brsw-collapsed");
-    if (collapsable_span.classList.contains("brsw-collapsed")) {
-      const button = e.currentTarget.querySelector(".fas.fa-caret-down");
-      if (button) {
-        button.classList.remove("fa-caret-down");
-        button.classList.add("fa-caret-right");
-      }
-    } else {
-      const button = e.target.querySelector(".fas.fa-caret-right");
-      if (button) {
-        button.classList.remove("fa-caret-right");
-        button.classList.add("fa-caret-down");
-      }
+    const collapsable_spans = html.querySelectorAll("." + data_collapse);
+    for (const collapsable_span of collapsable_spans) {
+      collapsable_span.classList.toggle("brsw-collapsed");
     }
     //Call setPosition on any popouts so that they resize to fit the new content
     if (message) {
