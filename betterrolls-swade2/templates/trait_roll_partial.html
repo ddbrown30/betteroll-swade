@@ -12,19 +12,18 @@
         {{/each}}
     </div>
 {{/if}}
-<div class="twbr:my-2 twbr:block twbr:p-1 twbr:bg-gray-500 twbr:border twbr:border-solid twbr:border-gray-700
-        twbr:rounded twbr:shadow twbr:hover:ring-2 twbr:hover:ring-offset-1 twbr:hover:cursor-pointer
-        twbr:leading-6 brsw-collapse-button" data-collapse="brsw-roll-detail">
-    <div class="twbr:flex twbr:justify-between twbr:align-middle">
-        <span>
+<div class="brsw-roll-results-wrapper brsw-collapse-button twbr:hover:ring-2 twbr:hover:ring-offset-1 twbr:hover:cursor-pointer" data-collapse="brsw-roll-detail">
+    <div class="brsw-roll-results">
+        <div class="brsw-roll-values">
             {{#each trait_roll.current_roll.dice }}
-                <a class="twbr:mr-2">
-                    <span class="{{this.extra_class}} twbr:text-xl twbr:font-bold twbr:inline-block"  title="{{this.result_text}}">
-                        {{ this.final_total }} <i class="{{ this.result_icon }}"></i>
+                <div class="brsw-roll-value twbr:text-xl twbr:font-bold">
+                    <span class="{{this.extra_class}}"  title="{{this.result_text}}">
+                        {{ this.final_total }}
                     </span>
-                </a>
+                    <i class="{{ this.result_icon }} brsw-roll-value-result-icon"></i>
+                </div>
             {{/each}}
-        </span>
+        </div>
         {{# if show_rerolls }}<span class="twbr:flex twbr:gap-1">
             <button class="brsw-row-button brsw-roll-button brsw-form twbr:py-0.5 twbr:px-1 twbr:font-medium
                     twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg twbr:border twbr:border-solid
