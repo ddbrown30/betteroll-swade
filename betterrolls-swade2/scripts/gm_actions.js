@@ -13,24 +13,6 @@ export function setup_chat_button() {
   }
 
   create_chat_button();
-
-  //These hooks are called in different cases of the sidebar changing
-  //This will ensure that the chat button is in the correct position
-  Hooks.on("renderChatLog", (chatlog, html, data, opt) => {
-    move_chat_button();
-  });
-  Hooks.on("closeChatLog", (chatlog, html, data, opt) => {
-    move_chat_button();
-  });
-  Hooks.on("activateChatLog", (chatlog) => {
-    move_chat_button();
-  });
-  Hooks.on("deactivateChatLog", (chatlog) => {
-    move_chat_button();
-  });
-  Hooks.on("collapseSidebar", (sidebar, expanded) => {
-    move_chat_button();
-  });
 }
 
 /**
@@ -54,20 +36,7 @@ function create_chat_button() {
     toggle_global_mods_menu(event.target);
   });
 
-  //We insert it here just so it exists somewhere but it will be moved where it needs to be when moveChatButton is called
   privacyButtons.insertAdjacentElement("afterend", button);
-}
-
-function move_chat_button() {
-  const place = document.querySelector("#roll-privacy");
-  const button = document.querySelector(".brsw-chat-button");
-  if (place.classList.contains("vertical")) {
-    button.classList.add("vertical");
-    place.parentElement.insertBefore(button, place);
-  } else {
-    button.classList.remove("vertical");
-    place.insertAdjacentElement("afterend", button);
-  }
 }
 
 /**
