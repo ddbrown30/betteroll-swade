@@ -12,7 +12,11 @@ import {
   process_common_actions,
 } from "./cards_common.js";
 import { run_macros } from "./item_card.js";
-import { SettingsUtils, addEventListenerAll, measureDistance } from "./utils.js";
+import {
+  SettingsUtils,
+  addEventListenerAll,
+  measureDistance,
+} from "./utils.js";
 import { BrCommonCard } from "./BrCommonCard.js";
 import { TraitModifier } from "./modifiers.js";
 
@@ -60,7 +64,10 @@ async function create_skill_card(
   { actions_stored = {}, vehicle } = {},
 ) {
   let actor;
-  if (origin instanceof TokenDocument || origin instanceof foundry.canvas.placeables.Token) {
+  if (
+    origin instanceof TokenDocument ||
+    origin instanceof foundry.canvas.placeables.Token
+  ) {
     actor = origin.actor;
   } else {
     actor = origin;
@@ -86,7 +93,10 @@ async function create_skill_card(
   br_message.skill_id = skill.id;
   if (vehicle) {
     br_message.vehicle_actor_id = vehicle.actor?.id || vehicle.id;
-    if (vehicle instanceof TokenDocument || vehicle instanceof foundry.canvas.placeables.Token) {
+    if (
+      vehicle instanceof TokenDocument ||
+      vehicle instanceof foundry.canvas.placeables.Token
+    ) {
       br_message.vehicle_token_id = vehicle.id;
     }
   }
@@ -161,11 +171,15 @@ async function skill_click_listener(ev, target) {
  */
 export function activate_skill_listeners(app, html) {
   const target = app.token || app.object;
-  addEventListenerAll(html,
+  addEventListenerAll(
+    html,
     ".skill-label a, .skill.item>a, .skill-name, .skill-die",
-    "click", async (ev) => {
-    await skill_click_listener(ev, target);
-  }, true);
+    "click",
+    async (ev) => {
+      await skill_click_listener(ev, target);
+    },
+    true,
+  );
 }
 
 /**
@@ -220,10 +234,17 @@ export async function roll_skill(br_card, expend_bennie) {
  * @return {boolean}
  */
 export function is_skill_fighting(skill) {
+  const configured_skill_swid = game.settings
+    .get("swade", "parryBaseSwid")
+    .toLowerCase();
+  if (skill.system.swid === configured_skill_swid) {
+    return true;
+  }
+  const configured_skill_name = game.settings
+    .get("swade", "parryBaseSkill")
+    .toLowerCase();
   const fighting_names = FIGHTING_SKILLS;
-  fighting_names.push(
-    game.settings.get("swade", "parryBaseSkill").toLowerCase(),
-  );
+  fighting_names.push(configured_skill_name);
   return fighting_names.includes(skill.name.toLowerCase());
 }
 
@@ -309,7 +330,8 @@ function calculate_generic_distance_modifier(
       ),
     );
     //Range penalties can be ignored by aiming so add it to the total
-    extra_data.total_aiming_ignorable_penalties = extra_data.total_aiming_ignorable_penalties ?? 0;
+    extra_data.total_aiming_ignorable_penalties =
+      extra_data.total_aiming_ignorable_penalties ?? 0;
     extra_data.total_aiming_ignorable_penalties += distance_penalty;
   }
 }
@@ -336,10 +358,7 @@ export function calculate_distance(
   }
   const grid_unit = canvas.grid.distance;
   let use_parry_as_tn = false;
-  let distance = measureDistance(
-    [origin_token.center,
-    target_token.center]
-  );
+  let distance = measureDistance([origin_token.center, target_token.center]);
   if (
     distance / grid_unit < SettingsUtils.getWorldSetting("meleeDistance") + 1 &&
     item
@@ -465,12 +484,10 @@ export async function get_tn_from_token(
  **/
 
 function getScaleModifier(origin_actor, target_actor, tn, extra_data) {
-  const origin_scale_mod = sizeToScale(
-    origin_actor?.system?.stats?.size || 1,
-  );
+  const origin_scale_mod = sizeToScale(origin_actor?.system?.stats?.size || 1);
   const target_scale_mod = sizeToScale(
     target_actor?.system?.size || // Vehicles
-    target_actor?.system?.stats?.size ||
+      target_actor?.system?.stats?.size ||
       1,
   ); // actor or default
   if (origin_scale_mod !== target_scale_mod) {
@@ -499,7 +516,8 @@ function getScaleModifier(origin_actor, target_actor, tn, extra_data) {
       }
       if (unignored_penalty > 0) {
         //Scale penalties can be ignored by aiming so add it to the total
-        extra_data.total_aiming_ignorable_penalties = extra_data.total_aiming_ignorable_penalties ?? 0;
+        extra_data.total_aiming_ignorable_penalties =
+          extra_data.total_aiming_ignorable_penalties ?? 0;
         extra_data.total_aiming_ignorable_penalties += unignored_penalty;
       }
     }
