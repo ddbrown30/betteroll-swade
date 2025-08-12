@@ -1,3 +1,9 @@
+# Version 4.29 aka changes, dangerous changes
+* Bugfix: Fixed a bug in the card display on Foundry 13.347 (Dan Brown)
+* Cards: Totally redesigned how results are displayed with the roll results (Dan Brown)
+* Bugfix: Make the result row visible again.
+* Actions: Support for SWIDs when testing if a skill is fighting.
+
 # Version 4.28 aka pequena correçao de falha (and a new Portuguese translation)
 * Translations: Add portuguese translations (ssantos)
 * Fixed a bug where some elements where visible to non owners (Dan Brown)
