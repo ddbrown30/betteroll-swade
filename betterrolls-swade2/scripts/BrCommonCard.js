@@ -749,7 +749,7 @@ export class BrCommonCard {
    * Creates the Foundry message object
    */
   async create_foundry_message(new_content) {
-    const chatData = this.create_basic_chat_data();
+    const chatData = await this.create_basic_chat_data();
     if (new_content) {
       chatData.content = new_content;
     }
@@ -760,7 +760,7 @@ export class BrCommonCard {
    * Creates the basic chat data common to most cards
    * @return {Object} An object suitable to create a ChatMessage
    */
-  create_basic_chat_data() {
+  async create_basic_chat_data() {
     const whisper_data = getWhisperData();
     const chatData = {
       user: game.user.id,
@@ -772,7 +772,7 @@ export class BrCommonCard {
     if (whisper_data.whisper) {
       chatData.whisper = whisper_data.whisper;
     }
-    chatData.roll = new Roll("0").roll();
+    chatData.rolls = [await new Roll("0").roll()];
     chatData.rollMode = whisper_data.rollMode;
     return chatData;
   }
