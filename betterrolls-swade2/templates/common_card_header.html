@@ -39,7 +39,7 @@
       {{# if header.img }}
         <img class="brsw-header-img twbr:w-8 twbr:h-8 twbr:rounded twbr:hover:ring-2
                           twbr:hover:ring-offset-1 twbr:hover:cursor-pointer" src="{{{header.img}}}" alt="Item image">
-        {{/if}}
+      {{/if}}
     </div>
     {{# if show_popup_button }}
       <button class="brsw-popout-button twbr:font-medium twbr:ml-1 twbr:w-8 twbr:h-8 twbr:min-w-8 twbr:align-top
@@ -48,7 +48,7 @@
                       twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700" title='{{ localize "BRSW.PopoutCard" }}'>
         <i class="fas fa-share-from-square"></i>
       </button>
-      {{/if}}
+    {{/if}}
   </div>
 </div>
 <div class="brsw-description {{# if collapse_descriptions }}brsw-collapsed{{/if}}">{{{ description }}}</div>
