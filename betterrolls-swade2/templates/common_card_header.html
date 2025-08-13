@@ -35,17 +35,19 @@
     </span>
   </div>
   <div class="twbr:flex">
-    {{# if header.img }}
-    <img class="brsw-header-img twbr:w-8 twbr:h-8 twbr:rounded twbr:hover:ring-2
-                    twbr:hover:ring-offset-1 twbr:hover:cursor-pointer" src="{{{header.img}}}" alt="Item image">
-    {{/if}}
-        {{# if show_popup_button }}
-    <button class="brsw-popout-button twbr:font-medium twbr:ml-1 twbr:w-8 twbr:h-8 twbr:min-w-8 twbr:align-top
-                    twbr:focus:outline-hidden twbr:bg-white twbr:rounded twbr:border twbr:border-solid
-                    twbr:focus:z-10 twbr:focus:ring-4 twbr:focus:ring-gray-700 twbr:text-gray-800
-                    twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700" title='{{ localize "BRSW.PopoutCard" }}'>
-      <i class="fas fa-share-from-square"></i>
-    </button>
+    <div class="twbr:w-8 twbr:h-8">
+      {{# if header.img }}
+        <img class="brsw-header-img twbr:w-8 twbr:h-8 twbr:rounded twbr:hover:ring-2
+                          twbr:hover:ring-offset-1 twbr:hover:cursor-pointer" src="{{{header.img}}}" alt="Item image">
+      {{/if}}
+    </div>
+    {{# if show_popup_button }}
+      <button class="brsw-popout-button twbr:font-medium twbr:ml-1 twbr:w-8 twbr:h-8 twbr:min-w-8 twbr:align-top
+                      twbr:focus:outline-hidden twbr:bg-white twbr:rounded twbr:border twbr:border-solid
+                      twbr:focus:z-10 twbr:focus:ring-4 twbr:focus:ring-gray-700 twbr:text-gray-800
+                      twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700" title='{{ localize "BRSW.PopoutCard" }}'>
+        <i class="fas fa-share-from-square"></i>
+      </button>
     {{/if}}
   </div>
 </div>
