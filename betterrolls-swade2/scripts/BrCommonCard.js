@@ -772,7 +772,8 @@ export class BrCommonCard {
     if (whisper_data.whisper) {
       chatData.whisper = whisper_data.whisper;
     }
-    chatData.rolls = [await new Roll("0").roll()];
+    chatData.rolls = [await new Roll("0").evaluate()];
+    chatData.sound = "";
     chatData.rollMode = whisper_data.rollMode;
     return chatData;
   }
