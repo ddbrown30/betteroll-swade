@@ -144,10 +144,65 @@ export function addEventListenerAll(html, selector, type, listener, useCapture=f
   });
 }
 
-export function measureDistance(waypoints) {
+function measurePath(waypoints) {
   let use_grid_calc = SettingsUtils.getWorldSetting("range_calc_grid");
   let path = canvas.grid.measurePath(waypoints);
   return use_grid_calc ? path.distance : path.euclidean;
+}
+
+function getTokenGridSpaces(token) {
+  const gridSpaces = [];
+  if (canvas.grid.isGridless) {
+    //If we have a gridless grid, divide our token into 1" sections based on the grid size
+    //We'll use those as our occupied "spaces" even though there are none
+    const halfGrid = canvas.grid.size;
+    const start = { x: token.bounds.left + halfGrid, y: token.bounds.top + halfGrid };
+    const dimensions = { width: Math.round(token.document.width), height: Math.round(token.document.height) };
+
+    for (let i = 0; i < dimensions.width; ++i) {
+      for (let j = 0; j < dimensions.height; ++j) {
+        const coords = { x: start.x + (i * canvas.grid.sizeX), y: start.y + (j * canvas.grid.sizeY) };
+        gridSpaces.push({ coords });
+      }
+    }
+  } else {
+    for (const space of token.document.getOccupiedGridSpaceOffsets()) {
+      gridSpaces.push({ coords: canvas.grid.getCenterPoint(space) });
+    }
+  }
+  return gridSpaces;
+}
+
+export function measureDistance(tokenA, tokenB) {
+  let tokenAGridSpaces = getTokenGridSpaces(tokenA);
+  let tokenBGridSpaces = getTokenGridSpaces(tokenB);
+
+  function distSq(a, b) {
+    return Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2);
+  }
+
+  let closestPair = { a: null, b: null };
+  for (let tokenASpace of tokenAGridSpaces) {
+    for (let tokenBSpace of tokenBGridSpaces) {
+      const dist = distSq(tokenASpace.coords, tokenBSpace.coords);
+      if (!closestPair.a) {
+        //If we don't have a closest pair yet, use this one
+        closestPair.a = tokenASpace;
+        closestPair.b = tokenBSpace;
+        closestPair.dist = dist;
+        continue;
+      }
+
+      if (dist < closestPair.dist) {
+        //This pair is closer than our previous pair
+        closestPair.a = tokenASpace;
+        closestPair.b = tokenBSpace;
+        closestPair.dist = dist;
+      }
+    }
+  }
+
+  return measurePath([closestPair.a.coords, closestPair.b.coords]);
 }
 
 export class SettingsUtils {

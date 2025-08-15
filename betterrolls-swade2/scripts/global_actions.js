@@ -412,16 +412,14 @@ export function check_selector(type, value, item, actor) {
     const targeted_token = game.user.targets.first()
     if (targeted_token) {
       selected = check_document_value(targeted_token.actor, value);
-    } 
+    }
   } else if (type === "item_has_damage") {
     selected = !!item?.system?.damage;
   } else if (type === "range_less_than") {
     const tokens = actor.getActiveTokens();
     if (tokens && game.user.targets.size) {
-      const distance = measureDistance([
-        tokens[0].center,
-        game.user.targets.first().center,
-      ]);
+      const distance = measureDistance(tokens[0], game.user.targets.first(),
+      );
       selected = parseInt(value) >= distance;
     }
   } else if (type === "module_is_not_active") {

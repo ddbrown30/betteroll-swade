@@ -358,7 +358,7 @@ export function calculate_distance(
   }
   const grid_unit = canvas.grid.distance;
   let use_parry_as_tn = false;
-  let distance = measureDistance([origin_token.center, target_token.center]);
+  let distance = measureDistance(origin_token, target_token);
   if (
     distance / grid_unit < SettingsUtils.getWorldSetting("meleeDistance") + 1 &&
     item
@@ -722,7 +722,7 @@ function withinRange(origin, target, range) {
     return false;
   }
   const grid_unit = canvas.grid.distance;
-  let distance = measureDistance([origin, target]);
+  let distance = measureDistance(origin, target);
   distance /= grid_unit;
   return range > distance;
 }
