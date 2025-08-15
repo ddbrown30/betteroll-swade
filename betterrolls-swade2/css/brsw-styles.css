@@ -371,7 +371,7 @@
     position: absolute;
     background: var(--background);
     padding: 1rem;
-    z-index: 200;
+    z-index: 99999;
 }
 
 #br-card-dialog {
