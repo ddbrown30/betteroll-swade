@@ -177,7 +177,7 @@ export function measureDistance(tokenA, tokenB) {
   let tokenAGridSpaces = getTokenGridSpaces(tokenA);
   let tokenBGridSpaces = getTokenGridSpaces(tokenB);
 
-  function distSq(a, b) {
+  const distSq = function (a, b) {
     return Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2);
   }
 
