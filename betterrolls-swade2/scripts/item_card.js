@@ -299,22 +299,69 @@ async function item_click_listener(ev, target, currentTarget) {
 }
 
 /**
+ * If the Super Power companion is active we wait for it to modify the sheet before
+ * adding our Hooks
+ */
+export function activate_item_listeners(app, html) {
+  if (game.modules.get("swade-supers-companion")?.active) {
+    console.log("Detectado Supers");
+    wait_for_supers_tab(html).then(() => {
+      // Give it some time to also update quick-access
+      setTimeout(() => {
+        activate_item_listeners_real(app, html);
+      }, 500);
+    });
+  } else {
+    activate_item_listeners_real(app, html);
+  }
+}
+
+/**
+ * Find if the Super Powers tab is in the sheet
+ * @param html Html code
+ *
+ */
+function wait_for_supers_tab(html) {
+  return new Promise((resolve, reject) => {
+    if (html.querySelector(".superPowers")) {
+      resolve();
+    }
+    const observer = new MutationObserver(() => {
+      if (html.querySelector(".superPowers")) {
+        observer.disconnect();
+        resolve();
+      }
+    });
+    observer.observe(html, { childList: true, subtree: true });
+    setTimeout(() => {
+      observer.disconnect();
+      reject();
+    }, 1000);
+  });
+}
+
+/**
  * Activates the listeners in the character sheet in items
  * @param app Sheet app
  * @param html Html code
  */
-export function activate_item_listeners(app, html) {
+function activate_item_listeners_real(app, html) {
   const target = app.token || app.object;
-  addEventListenerAll(html,
+  // It is possible that the Super Powers module had updated the sheet, so we get it again
+  addEventListenerAll(
+    html,
     ".item-image, .item-img, .name.item-show, span.item>.item-control.item-edit," +
-    " .gear-card .card-header>.item-name, .damage-roll, .item-name>h4," +
-    " .power-header>.item-name, .card-button, .item-control.item-show," +
-    " .power button.item-show, .weapon button.item-show, .edge-hindrance>.item-control" +
-    " .item-control.item-edit, .item-control.item-show, .item.edge-hindrance>.item-show," +
-    " .item>.item-show",
-    "click", async (ev) => {
+      " .gear-card .card-header>.item-name, .damage-roll, .item-name>h4," +
+      " .power-header>.item-name, .card-button, .item-control.item-show," +
+      " .power button.item-show, .weapon button.item-show, .edge-hindrance>.item-control" +
+      " .item-control.item-edit, .item-control.item-show, .item.edge-hindrance>.item-show," +
+      " .item>.item-show",
+    "click",
+    async (ev) => {
       await item_click_listener(ev, target, ev.currentTarget);
-  }, true);
+    },
+    true,
+  );
 }
 
 /**
@@ -555,11 +602,11 @@ export function get_item_trait(item, actor) {
     for (const action in item.system.actions.additional) {
       if (
         item.system.actions.additional[action].type === "trait" &&
-        item.system.actions.additional[action].override  // name => override (use override if we really want to check for action trait name)
+        item.system.actions.additional[action].override // name => override (use override if we really want to check for action trait name)
       ) {
         return trait_from_string(
           actor,
-          item.system.actions.additional[action].override,  // name => override  (use override if we really want to check for action trait name)
+          item.system.actions.additional[action].override, // name => override  (use override if we really want to check for action trait name)
         );
       }
     }
@@ -585,20 +632,20 @@ export function get_item_trait(item, actor) {
       // noinspection JSUnresolvedVariable
       if (item.system.damage.includes("str")) {
         skill = check_skill_in_actor(actor, [
-      ...THROWING_SKILLS,
-      game.i18n.localize("BRSW.SkillName-Athletics").toLowerCase(), // add localization
-    ]);
+          ...THROWING_SKILLS,
+          game.i18n.localize("BRSW.SkillName-Athletics").toLowerCase(), // add localization
+        ]);
       } else {
         skill = check_skill_in_actor(actor, [
-      ...SHOOTING_SKILLS,
-      game.i18n.localize("BRSW.SkillName-Shooting").toLowerCase(), // add localization
-    ]);
+          ...SHOOTING_SKILLS,
+          game.i18n.localize("BRSW.SkillName-Shooting").toLowerCase(), // add localization
+        ]);
       }
     } else {
       skill = check_skill_in_actor(actor, [
-      ...FIGHTING_SKILLS,
-      game.i18n.localize("BRSW.SkillName-fighting").toLowerCase(), // bag add localization
-    ]);
+        ...FIGHTING_SKILLS,
+        game.i18n.localize("BRSW.SkillName-fighting").toLowerCase(), // bag add localization
+      ]);
     }
   }
   if (skill === undefined) {
