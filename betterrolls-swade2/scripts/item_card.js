@@ -304,7 +304,6 @@ async function item_click_listener(ev, target, currentTarget) {
  */
 export function activate_item_listeners(app, html) {
   if (game.modules.get("swade-supers-companion")?.active) {
-    console.log("Detectado Supers");
     wait_for_supers_tab(html).then(() => {
       // Give it some time to also update quick-access
       setTimeout(() => {
