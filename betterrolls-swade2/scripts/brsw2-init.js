@@ -63,7 +63,6 @@ Hooks.on(`init`, () => {
 
 // Base Hook
 Hooks.on(`ready`, () => {
-  console.info("Better Rolls 2 for SWADE | Ready");
   //Update our cached user settings from the user's flags
   const user_settings = SettingsUtils.getModuleFlag(
     game.user,
@@ -105,6 +104,7 @@ Hooks.on(`ready`, () => {
     (ev) => ev.fn.name === "onHotbarDrop",
   );
   Hooks.off("hotbarDrop", system_event.fn);
+  console.info("Better Rolls 2 for SWADE | Ready");
   Hooks.callAll("brswReady");
 });
 
