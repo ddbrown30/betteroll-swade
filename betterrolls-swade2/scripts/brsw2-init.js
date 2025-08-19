@@ -39,9 +39,7 @@ import {
 import { OptionalRulesConfiguration } from "./optional_rules.js";
 import { activate_remove_status_card_listeners } from "./remove_status_cards.js";
 import { create_unshaken_wrapper, create_unstun_wrapper } from "./combat.js";
-import {
-  ModifierSettingsConfiguration,
-} from "./chat_modifers_names.js";
+import { ModifierSettingsConfiguration } from "./chat_modifers_names.js";
 import { setup_dialog } from "./card-dialog.js";
 import { SettingsUtils } from "./utils.js";
 import {
@@ -95,22 +93,6 @@ Hooks.on(`ready`, () => {
   foundry.applications.handlebars.loadTemplates(templatePaths).then(() => {
     console.info("Better Rolls templates preloaded");
   });
-  // Add some jquery magic to allow binding our functions prior to systems
-  $.fn.bindFirst = function (name, fn) {
-    // bind as you normally would
-    // don't want to miss out on any jQuery magic
-    this.on(name, fn);
-
-    // Thanks to a comment by @Martin, adding support for
-    // namespaced events too.
-    this.each(function () {
-      const handlers = $._data(this, "events")[name.split(".")[0]];
-      // take out the handler we just inserted from the end
-      const handler = handlers.pop();
-      // move it at the beginning
-      handlers.splice(0, 0, handler);
-    });
-  };
   // Add a hook to control combat flow.
   if (SettingsUtils.getWorldSetting("auto-status-cards")) {
     game.swade.effectCallbacks.set("shaken", create_unshaken_wrapper);
@@ -156,15 +138,19 @@ Hooks.on("renderChatMessageHTML", (message, html, options) => {
     activateCardListeners(card, html, message);
     // Hide forms to non-master, non owner
     if (!message.isOwner) {
-      html.querySelectorAll(".brsw-form").forEach(e => e.classList.add("brsw-collapsed"));
+      html
+        .querySelectorAll(".brsw-form")
+        .forEach((e) => e.classList.add("brsw-collapsed"));
     }
     // Hide master only sections
     if (!game.user.isGM) {
-      html.querySelectorAll(".brsw-master-only").forEach(e => e.remove());
+      html.querySelectorAll(".brsw-master-only").forEach((e) => e.remove());
     }
     // Hide save macro button from non-owner, non-trusted players
     if (!message.isOwner && !game.user.isTrusted) {
-      html.querySelectorAll(".brsw-owner-trusted-only").forEach(e => e.remove());
+      html
+        .querySelectorAll(".brsw-owner-trusted-only")
+        .forEach((e) => e.remove());
     }
     if (Object.keys(message.apps).length < 1) {
       // Don't create popout when rendering popouts.
