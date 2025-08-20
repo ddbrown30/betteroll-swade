@@ -1,3 +1,10 @@
+# Version 4.30 aka SuperChanges, like edme measures
+* Bugfix: Private roll now correctly appear as ?? to other users (Dan Brown)
+* Bugfix: Fixed header space when there is no image (Dan Brown)
+* Canvas: Distance is now measured from token borders not center (Dan Brown)
+* Bugfix: Disable roll sounds when just showing a card (Dan Brown)
+* Sheet: Support for Supers Compendium sheets.
+
 # Version 4.29 aka changes, dangerous changes
 * Bugfix: Fixed a bug in the card display on Foundry 13.347 (Dan Brown)
 * Cards: Totally redesigned how results are displayed with the roll results (Dan Brown)
