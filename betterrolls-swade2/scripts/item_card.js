@@ -304,39 +304,12 @@ async function item_click_listener(ev, target, currentTarget) {
  */
 export function activate_item_listeners(app, html) {
   if (game.modules.get("swade-supers-companion")?.active) {
-    wait_for_supers_tab(html).then(() => {
-      // Give it some time to also update quick-access
-      setTimeout(() => {
-        activate_item_listeners_real(app, html);
-      }, 500);
+    Hooks.on("spc.renderSuperPowerTab", () => {
+      activate_item_listeners_real(app, html);
     });
   } else {
     activate_item_listeners_real(app, html);
   }
-}
-
-/**
- * Find if the Super Powers tab is in the sheet
- * @param html Html code
- *
- */
-function wait_for_supers_tab(html) {
-  return new Promise((resolve, reject) => {
-    if (html.querySelector(".superPowers")) {
-      resolve();
-    }
-    const observer = new MutationObserver(() => {
-      if (html.querySelector(".superPowers")) {
-        observer.disconnect();
-        resolve();
-      }
-    });
-    observer.observe(html, { childList: true, subtree: true });
-    setTimeout(() => {
-      observer.disconnect();
-      reject();
-    }, 1000);
-  });
 }
 
 /**
