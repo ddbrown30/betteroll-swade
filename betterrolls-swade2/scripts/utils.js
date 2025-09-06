@@ -174,6 +174,11 @@ function getTokenGridSpaces(token) {
 }
 
 export function measureDistance(tokenA, tokenB) {
+  if (!tokenA || !tokenB) {
+    ui.notifications.error("measureDistance requires two tokens");
+    return;
+  }
+
   let tokenAGridSpaces = getTokenGridSpaces(tokenA);
   let tokenBGridSpaces = getTokenGridSpaces(tokenB);
 
