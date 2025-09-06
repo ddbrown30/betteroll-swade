@@ -41,7 +41,7 @@ import { activate_remove_status_card_listeners } from "./remove_status_cards.js"
 import { create_unshaken_wrapper, create_unstun_wrapper } from "./combat.js";
 import { ModifierSettingsConfiguration } from "./chat_modifers_names.js";
 import { setup_dialog } from "./card-dialog.js";
-import { SettingsUtils } from "./utils.js";
+import { SettingsUtils, measureDistance } from "./utils.js";
 import {
   SETTING_KEYS,
   USER_FLAGS,
@@ -56,6 +56,7 @@ Hooks.on(`init`, () => {
   game.brsw = {};
   game.brsw.cascade_count = 0;
   game.brsw.get_action_from_click = get_action_from_click;
+  game.brsw.measureDistance = measureDistance;
   register_settings_version2();
   register_actions();
   register_gm_actions_settings();
