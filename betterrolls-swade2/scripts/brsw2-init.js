@@ -464,6 +464,13 @@ function register_world_settings() {
     type: Boolean,
     default: true,
   });
+  SettingsUtils.registerBR2WorldSetting("measure_from_edge", {
+    name: "BRSW.MeasureFromEdge",
+    hint: "BRSW.MeasureFromEdgeHint",
+    type: Boolean,
+    default: false,
+    type: Boolean,
+  });
 }
 
 function register_settings_version2() {

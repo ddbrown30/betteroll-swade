@@ -531,5 +531,7 @@
   "BRSW.ReducedBy": "Reduced by",
   "BRSW.IncreasedBy": "Increased by",
   "BRSW.APModifier": "AP Mod.",
+  "BRSW.MeasureFromEdge": "Measure from edge",
+  "BRSW.MeasureFromEdgeHint": "When enabled, measurements will be taken from the edge of the token instead of the center",
   "I18N.MAINTAINERS": ["Javier Rivera"]
 }

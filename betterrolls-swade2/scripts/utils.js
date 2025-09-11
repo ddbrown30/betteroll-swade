@@ -4,8 +4,8 @@ import * as BRSW2_CONFIG from "./brsw2-config.js";
 /* globals ChatMessage, game, console, foundry, ClientSetting, CONFIG */
 
 export function getWhisperData() {
-  let rollMode, whisper, blind;
-  rollMode = game.settings.get("core", "rollMode");
+  let whisper, blind;
+  const rollMode = game.settings.get("core", "rollMode");
   if (["gmroll", "blindroll"].includes(rollMode)) {
     whisper = ChatMessage.getWhisperRecipients("GM");
   }
@@ -90,7 +90,9 @@ export async function simple_form(title, fields, callback) {
           const values = {};
           for (const field of fields) {
             const field_id = field.id || field.label;
-            values[field_id] = dialog.element.querySelector(`#input_${field_id}`).value;
+            values[field_id] = dialog.element.querySelector(
+              `#input_${field_id}`,
+            ).value;
           }
           callback(values);
         },
@@ -138,7 +140,13 @@ export async function set_or_update_condition(condition_id, actor) {
   });
 }
 
-export function addEventListenerAll(html, selector, type, listener, useCapture=false) {
+export function addEventListenerAll(
+  html,
+  selector,
+  type,
+  listener,
+  useCapture = false,
+) {
   html.querySelectorAll(selector).forEach((e) => {
     e.addEventListener(type, listener, useCapture);
   });
@@ -156,12 +164,21 @@ function getTokenGridSpaces(token) {
     //If we have a gridless grid, divide our token into 1" sections based on the grid size
     //We'll use those as our occupied "spaces" even though there are none
     const halfGrid = canvas.grid.size;
-    const start = { x: token.bounds.left + halfGrid, y: token.bounds.top + halfGrid };
-    const dimensions = { width: Math.round(token.document.width), height: Math.round(token.document.height) };
+    const start = {
+      x: token.bounds.left + halfGrid,
+      y: token.bounds.top + halfGrid,
+    };
+    const dimensions = {
+      width: Math.round(token.document.width),
+      height: Math.round(token.document.height),
+    };
 
     for (let i = 0; i < dimensions.width; ++i) {
       for (let j = 0; j < dimensions.height; ++j) {
-        const coords = { x: start.x + (i * canvas.grid.sizeX), y: start.y + (j * canvas.grid.sizeY) };
+        const coords = {
+          x: start.x + i * canvas.grid.sizeX,
+          y: start.y + j * canvas.grid.sizeY,
+        };
         gridSpaces.push({ coords });
       }
     }
@@ -176,7 +193,7 @@ function getTokenGridSpaces(token) {
 export function measureDistance(tokenA, tokenB) {
   if (!tokenA || !tokenB) {
     ui.notifications.error("measureDistance requires two tokens");
-    return;
+    return 0;
   }
 
   const tokenAGridSpaces = getTokenGridSpaces(tokenA);
@@ -184,7 +201,7 @@ export function measureDistance(tokenA, tokenB) {
 
   const distSq = function (a, b) {
     return Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2);
-  }
+  };
 
   const closestPair = { a: null, b: null };
   for (const tokenASpace of tokenAGridSpaces) {
@@ -206,8 +223,14 @@ export function measureDistance(tokenA, tokenB) {
       }
     }
   }
-
-  return measurePath([closestPair.a.coords, closestPair.b.coords]);
+  let measured_distance = measurePath([
+    closestPair.a.coords,
+    closestPair.b.coords,
+  ]);
+  if (SettingsUtils.getWorldSetting("measure_from_edge")) {
+    measured_distance -= game.scenes.current.grid.distance;
+  }
+  return measured_distance;
 }
 
 export class SettingsUtils {
