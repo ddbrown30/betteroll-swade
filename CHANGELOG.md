@@ -1,3 +1,9 @@
+# Version 4.31 aka Edge measurement, this time for real.
+* Bugfix: Use the new hook to wait for rendering the superpowers tab instead of the current hack.
+* API: Add the measure distance logic to the API, so it is usable in macros or modules (Dan Brown).
+* Refactoring: Some minor code refactors.
+* Measures: Add the option to measure distance from token borders instead of center (it must be enabled on settings)
+
 # Version 4.30 aka SuperChanges, like edme measures
 * Bugfix: Private roll now correctly appear as ?? to other users (Dan Brown)
 * Bugfix: Fixed header space when there is no image (Dan Brown)
