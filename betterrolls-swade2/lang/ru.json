@@ -193,7 +193,7 @@
     "BRSW.Broken": "Сломанн",
     "BRSW.Busted": "Разорван",
     "BRSW.CalledArm": "Прицельная атака: Рука (-2)",
-    "BRSW.CalledHead": "Прицельная атака: Голова, Кисти (+4)",
+    "BRSW.CalledHead": "Прицельная атака: Голова, Кисти (-4)",
     "BRSW.CalledLeg": "Прицельная атака: Нога (-2)",
     "BRSW.Card": "Карта",
     "BRSW.CharacterIsShaken": "Персонаж в шоке",
@@ -239,5 +239,6 @@
     "BRSW.PP": "Очки силы",
     "BRSW.No": "Нет",
     "BRSW.Yes": "Да",
-    "BRSW.Shots": "Выстрелы"
+    "BRSW.Shots": "Выстрелы",
+    "BRSW.Aiming": "Прицеливание"
 }
