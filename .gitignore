@@ -6,3 +6,4 @@ notas.txt
 node_modules/**
 package-lock.json
 .sourcery.yaml
+.zed/
