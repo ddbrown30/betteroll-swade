@@ -465,14 +465,14 @@ export function activate_item_card_listeners(br_card, html) {
     ev.currentTarget.classList.toggle("twbr:bg-red-700");
     ev.currentTarget.classList.toggle("twbr:bg-gray-500");
   });
-  html.querySelector(".brsw-macro-button")?.addEventListener("click", (ev) => {
+  addEventListenerAll(html, ".brsw-macro-button", "click", (ev) => {
     const action =
       br_card.item.system.actions.additional[ev.currentTarget.dataset.macro];
     execute_macro(action, br_card).catch((err) => {
       console.error("Error in macro", err);
     });
   });
-  html.querySelector(".brsw-resist-button")?.addEventListener("click", (ev) => {
+  addEventListenerAll(html, ".brsw-resist-button", "click", (ev) => {
     roll_resist(
       ev.currentTarget.dataset.trait,
       br_card,
