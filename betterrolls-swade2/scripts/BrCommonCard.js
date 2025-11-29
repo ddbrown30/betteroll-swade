@@ -512,7 +512,7 @@ export class BrCommonCard {
   }
 
   get has_feet_buttons() {
-    return this.resist_buttons.length > 0 || this.macro_buttons.length > 0;
+    return this.resist_buttons?.length > 0 || this.macro_buttons?.length > 0;
   }
 
   set_active_actions(actions) {
