@@ -240,5 +240,15 @@
     "BRSW.No": "Нет",
     "BRSW.Yes": "Да",
     "BRSW.Shots": "Выстрелы",
-    "BRSW.Aiming": "Прицеливание"
+    "BRSW.Aiming": "Прицеливание",
+    "BRSW.AbilityName-Darkvision": "Темное зрение",
+    "BRSW.AbilityName-DarkVision": "Темное видение",
+    "BRSW.AbilityName-NightVision": "Ночное видение",
+    "BRSW.Auto-status-cardsHint": "Покажите карты, чтобы снять статус в начале боя (Мир)",
+    "BRSW.ConeShort": "Конус",
+    "BRSW.expand-descriptions_hint": "Включите эту опцию, чтобы сделать описания предмета развернутыми, по умолчанию они свернуты. (Мир)",
+    "BRSW.LargeTemplateShort": "БРШ",
+    "BRSW.MediumTemplateShort": "СРШ",
+    "BRSW.NoTokenSelectedError": "Вам нужно выбрать токен, чтобы использовать эту функцию",
+    "BRSW.VehicleOperationSkillNotSetError": "Вы должны иметь навык управления этим транспортным средством."
 }
