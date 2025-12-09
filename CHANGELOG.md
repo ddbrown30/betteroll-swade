@@ -1,3 +1,7 @@
+# Version 4.32
+* Translations: Update Russian translation (Weblate)
+* Allow addition of event listener to all resist and macro buttons (Dan Brown)
+
 # Version 4.31 aka Edge measurement, this time for real.
 * Bugfix: Use the new hook to wait for rendering the superpowers tab instead of the current hack.
 * API: Add the measure distance logic to the API, so it is usable in macros or modules (Dan Brown).
