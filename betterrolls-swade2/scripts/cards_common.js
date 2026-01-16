@@ -298,7 +298,7 @@ export function activate_common_listeners(br_card, html) {
     );
   });
   // Edit modifiers
-  html.querySelector(".brsw-edit-modifier")?.addEventListener("click", (ev) => {
+  addEventListenerAll(html, ".brsw-edit-modifier", "click", (ev) => {
     const label_mod = game.i18n.localize("BRSW.Modifier");
     const { value, label, index } = ev.currentTarget.dataset;
     simple_form(
@@ -317,7 +317,7 @@ export function activate_common_listeners(br_card, html) {
     );
   });
   // Edit die results
-  html.querySelector(".brsw-override-die")?.addEventListener("click", (ev) => {
+  addEventListenerAll(html, ".brsw-override-die", "click", (ev) => {
     // Retrieve additional data
     const die_index = Number(ev.currentTarget.dataset.dieIndex);
     // Show modal
@@ -333,14 +333,12 @@ export function activate_common_listeners(br_card, html) {
     );
   });
   // Delete modifiers
-  html
-    .querySelector(".brsw-delete-modifier")
-    ?.addEventListener("click", async (ev) => {
-      ev.stopPropagation();
-      await delete_modifier(br_card, parseInt(ev.currentTarget.dataset.index));
-    });
+  addEventListenerAll(html, ".brsw-delete-modifier", "click", async (ev) => {
+    ev.stopPropagation();
+    await delete_modifier(br_card, parseInt(ev.currentTarget.dataset.index));
+  });
   // Edit TNs
-  html.querySelector(".brsw-edit-tn")?.addEventListener("click", (ev) => {
+  addEventListenerAll(html, ".brsw-edit-tn", "click", async (ev) => {
     const old_tn = ev.currentTarget.dataset.value;
     const tn_trans = game.i18n.localize("BRSW.TN");
     simple_form(
@@ -352,9 +350,7 @@ export function activate_common_listeners(br_card, html) {
     );
   });
   // TNs from target
-  html
-    .querySelector(".brsw-target-tn, .brsw-selected-tn")
-    ?.addEventListener("click", (ev) => {
+  addEventListenerAll(html, ".brsw-target-tn, .brsw-selected-tn", "click", (ev) => {
       ev.stopPropagation();
       const { index } = ev.currentTarget.dataset;
       get_tn_from_target(
@@ -1055,7 +1051,7 @@ async function old_roll_clicked(event, br_card) {
 async function override_die_result(br_card, die_index, new_value) {
   br_card.trait_roll.current_roll.dice[die_index].raw_total =
     parseInt(new_value);
-  await br_card.trait_roll.current_roll.recalculate_trait_results(
+  await br_card.trait_roll.recalculate_trait_results(
     br_card.trait_roll.tn,
     br_card.trait_roll.wild_die,
   );
