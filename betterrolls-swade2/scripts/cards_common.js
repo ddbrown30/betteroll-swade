@@ -338,7 +338,7 @@ export function activate_common_listeners(br_card, html) {
     await delete_modifier(br_card, parseInt(ev.currentTarget.dataset.index));
   });
   // Edit TNs
-  addEventListenerAll(html, ".brsw-edit-tn", "click", async (ev) => {
+  addEventListenerAll(html, ".brsw-edit-tn", "click", (ev) => {
     const old_tn = ev.currentTarget.dataset.value;
     const tn_trans = game.i18n.localize("BRSW.TN");
     simple_form(
