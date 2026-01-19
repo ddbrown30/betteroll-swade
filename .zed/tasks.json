@@ -1,9 +1,0 @@
-[
-  {
-    "label": "Compile tailwind",
-    "command": "npx @tailwindcss/cli -i betterrolls-swade2/css/source_css.css -o betterrolls-swade2/css/brsw-tw-styles.css",
-    "use_new_terminal": true,
-    "hide": "on_success",
-    "shell": "system"
-  }
-]
