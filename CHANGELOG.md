@@ -1,3 +1,9 @@
+# Version 4.33
+* Translations: Updates to Russian and Spanish translations from Weblate Team.
+* Typos: Fix capitalization in assassin
+* Bugfix: Remove unnecessary asyncs (Dan Brown)
+* Bugfix: Fix some problems in card buttons (Dan Brown)
+
 # Version 4.32
 * Translations: Update Russian translation (Weblate)
 * Allow addition of event listener to all resist and macro buttons (Dan Brown)
