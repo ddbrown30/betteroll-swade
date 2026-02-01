@@ -1176,8 +1176,9 @@ async function roll_dmg_target(
         faces: term._faces,
         results: [],
         extra_class: "",
-        label: game.i18n.localize("SWADE.Dmg") + ` (d${term._faces})`,
       };
+      new_die.label = term.flavor ? `${term.flavor.charAt(0).toUpperCase()}${term.flavor.slice(1)}` : game.i18n.localize("SWADE.Dmg");
+      new_die.label += ` (d${term._faces})`;
       for (const result of term.results) {
         new_die.results.push(result.result);
         if (result.result >= term._faces) {
