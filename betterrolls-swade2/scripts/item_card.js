@@ -200,9 +200,8 @@ export async function create_item_card(
 function get_applicable_effects(item) {
   const effects = [];
   for (const effect of item.effects) {
-    effects.push(effect);
+    effects.push({ id: effect.id, name: effect.name, uuid: effect.uuid });
   }
-  console.log(effects);
   return effects;
 }
 
