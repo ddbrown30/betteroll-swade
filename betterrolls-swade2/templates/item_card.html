@@ -52,6 +52,16 @@
         {{/if}}
     </div>
 {{/if}}
+{{# if applicable_effects }}
+    <p>Applicable effects: </p>
+    {{#each applicable_effects }}
+    <a class="twbr:p-1 twbr:rounded twbr:bg-white twbr:m-1" draggable="true" data-uuid="{{this.uuid}}" data-id="{{this.id}}"
+        data-type="ActiveEffect" data-tooltip="Active Effect" data-tooltip-text="Base Active Effect" data-link=""
+        style="display: inline-block">
+        {{this.name}}
+    </a>
+    {{/each}}
+{{/if}}
 {{# if (or damage skill) }}
     {{>"modules/betterrolls-swade2/templates/actions_partial.html"}}
 {{/if}}

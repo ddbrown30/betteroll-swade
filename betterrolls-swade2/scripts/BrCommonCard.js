@@ -56,6 +56,7 @@ export class BrCommonCard {
     this.trait_roll = new TraitRoll();
     this.popup_shown = false;
     this.manual_mods = {};
+    this.applicable_effects = [];
     if (message) {
       const data = this.message.getFlag("betterrolls-swade2", "br_data");
       if (data) {
@@ -144,6 +145,7 @@ export class BrCommonCard {
       damage: this.damage,
       popup_shown: this.popup_shown,
       manual_mods: this.manual_mods,
+      applicable_effects: this.applicable_effects,
     };
   }
 
@@ -167,6 +169,7 @@ export class BrCommonCard {
       "damage",
       "popup_shown",
       "manual_mods",
+      "applicable_effects",
     ];
     for (const field of FIELDS) {
       this[field] = data[field];
@@ -243,7 +246,7 @@ export class BrCommonCard {
   get item() {
     let item = this.actor.items.find((item) => item.id === this.item_id);
     if (!item) {
-      item = fromUuidSync(this.item_id)
+      item = fromUuidSync(this.item_id);
     }
     return item;
   }
@@ -660,7 +663,9 @@ export class BrCommonCard {
       this.render_data.template,
       this.get_data_render(),
     );
-    await foundry.applications.ux.TextEditor.implementation.enrichHTML(new_content);
+    await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+      new_content,
+    );
     if (this.message) {
       this.update_list.content = new_content;
     } else {
@@ -697,6 +702,7 @@ export class BrCommonCard {
     data.shots_pp_info = SettingsUtils.getWorldSetting("show_pp_shots_info")
       ? this.item_shots
       : "";
+    data.applicable_effects = this.applicable_effects;
     return data;
   }
 
