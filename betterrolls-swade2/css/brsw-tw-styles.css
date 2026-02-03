@@ -143,6 +143,9 @@
   .twbr\:grow {
     flex-grow: 1 !important;
   }
+  .twbr\:cursor-move {
+    cursor: move !important;
+  }
   .twbr\:cursor-pointer {
     cursor: pointer !important;
   }
@@ -228,6 +231,9 @@
   }
   .twbr\:border-gray-200 {
     border-color: var(--twbr-color-gray-200) !important;
+  }
+  .twbr\:border-gray-500 {
+    border-color: var(--twbr-color-gray-500) !important;
   }
   .twbr\:border-gray-600 {
     border-color: var(--twbr-color-gray-600) !important;
@@ -360,6 +366,9 @@
   }
   .twbr\:text-gray-300 {
     color: var(--twbr-color-gray-300) !important;
+  }
+  .twbr\:text-gray-700 {
+    color: var(--twbr-color-gray-700) !important;
   }
   .twbr\:text-gray-800 {
     color: var(--twbr-color-gray-800) !important;
