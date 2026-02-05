@@ -1,3 +1,7 @@
+# Version 4.34 aka lots of flavor
+* Cards: If a damage die has a flavor set, it will be used in the label. (Dan Brown)
+* Cards: Support for dragable active effects on cards.
+
 # Version 4.33
 * Translations: Updates to Russian and Spanish translations from Weblate Team.
 * Typos: Fix capitalization in assassin
