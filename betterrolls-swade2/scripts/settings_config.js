@@ -24,6 +24,7 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
       title: "BRSW.Settings.Title",
       minimizable: false,
       resizable: true,
+      contentClasses: ["brsw-settings-config"],
     },
     position: { width: 800, height: 700 },
     actions: {

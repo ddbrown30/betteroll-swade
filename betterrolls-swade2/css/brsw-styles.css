@@ -346,6 +346,14 @@
     width: 100%;
 }
 
+.brsw-settings-config .form-fields {
+    flex: 1;
+}
+
+.brsw-settings-config .tab {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
 /* Chat tabs */
 .brsw-chat-tab {
     margin-right: 6px;
