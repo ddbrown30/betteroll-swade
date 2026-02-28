@@ -255,7 +255,7 @@ export async function create_injury_card(token_id, reason) {
       );
     }
   }
-  let injury_effect = create_injury_effect(actor, reason, first_result, second_result);
+  let injury_effect = await create_injury_effect(actor, reason, first_result, second_result);
   let br_message = await create_common_card(
     token,
     {
