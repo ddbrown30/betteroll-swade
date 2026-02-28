@@ -103,6 +103,11 @@ export async function create_incapacitation_card(token_id) {
  */
 export function incapacitation_card_hooks() {
   game.brsw.create_incapacitation_card = create_incapacitation_card;
+  game.brsw.create_injury_card = create_injury_card;
+  game.brsw.create_injury_effect = create_injury_effect;
+
+  game.brsw.CONST.INJURY_BASE = INJURY_BASE;
+  game.brsw.CONST.SECOND_INJURY_TABLES = SECOND_INJURY_TABLES;
 }
 
 /**
@@ -250,32 +255,7 @@ export async function create_injury_card(token_id, reason) {
       );
     }
   }
-  const active_effect_index = `${first_result}+${second_result}`;
-  let new_effect;
-  let injury_effect;
-  if (INJURY_ACTIVE_EFFECT.hasOwnProperty(active_effect_index)) {
-    new_effect = { ...INJURY_ACTIVE_EFFECT[active_effect_index] };
-    new_effect.name = game.i18n.localize(first_result);
-    if (second_result) {
-      if (first_result === "BRSW.Guts") {
-        new_effect.name =
-          game.i18n.localize(second_result) + " " + new_effect.name;
-      } else {
-        new_effect.name = game.i18n.localize(second_result);
-      }
-    }
-    const injury_duration_name =
-      reason === "permanent"
-        ? "BRSW.PermanentInjuryName"
-        : reason === "temporal-wounds"
-          ? "BRSW.TempInjuryName"
-          : "BRSW.TempInjury24Name";
-    new_effect.name += game.i18n.localize(injury_duration_name);
-    new_effect.icon = "/systems/swade/assets/icons/skills/medical-pack.svg";
-    injury_effect = await actor.createEmbeddedDocuments("ActiveEffect", [
-      new_effect,
-    ]);
-  }
+  let injury_effect = create_injury_effect(actor, reason, first_result, second_result);
   let br_message = await create_common_card(
     token,
     {
@@ -313,4 +293,41 @@ function read_table(table, value) {
     }
   }
   return result;
+}
+
+/**
+ * Creates an injury active effect on the designated actor
+ * @param actor
+ * @param {string} reason Reason for the injury
+ * @param {string} first_result The first result of an injury roll e.g. BRSW.Guts
+ * @param {string} second_result The second result of an injury roll e.g. BRSW.Broken
+ */
+export async function create_injury_effect(actor, reason, first_result, second_result) {
+  const active_effect_index = `${first_result}+${second_result}`;
+  let new_effect;
+  let injury_effect;
+  if (INJURY_ACTIVE_EFFECT.hasOwnProperty(active_effect_index)) {
+    new_effect = { ...INJURY_ACTIVE_EFFECT[active_effect_index] };
+    new_effect.name = game.i18n.localize(first_result);
+    if (second_result) {
+      if (first_result === "BRSW.Guts") {
+        new_effect.name =
+          game.i18n.localize(second_result) + " " + new_effect.name;
+      } else {
+        new_effect.name = game.i18n.localize(second_result);
+      }
+    }
+    const injury_duration_name =
+      reason === "permanent"
+        ? "BRSW.PermanentInjuryName"
+        : reason === "temporal-wounds"
+          ? "BRSW.TempInjuryName"
+          : "BRSW.TempInjury24Name";
+    new_effect.name += game.i18n.localize(injury_duration_name);
+    new_effect.icon = "/systems/swade/assets/icons/skills/medical-pack.svg";
+    injury_effect = await actor.createEmbeddedDocuments("ActiveEffect", [
+      new_effect,
+    ]);
+  }
+  return injury_effect;
 }
