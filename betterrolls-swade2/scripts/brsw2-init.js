@@ -54,6 +54,7 @@ import { setup_chat_button } from "./gm_actions.js";
 // Init Hook
 Hooks.on(`init`, () => {
   game.brsw = {};
+  game.brsw.CONST = {};
   game.brsw.cascade_count = 0;
   game.brsw.get_action_from_click = get_action_from_click;
   game.brsw.measureDistance = measureDistance;
