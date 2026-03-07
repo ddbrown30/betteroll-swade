@@ -1077,11 +1077,11 @@ function get_target_defense(
   if (objective && objective.actor) {
     if (objective.actor.type !== "vehicle") {
       //Get the base toughness without armor
-      defense_values.toughness = objective.actor.system.stats.toughness.value - objective.actor.system.stats.toughness.armor;
+      const base_toughness = objective.actor.system.stats.toughness.value - objective.actor.system.stats.toughness.armor;
       //Get the armor of the location we're targeting
       defense_values.armor = objective.actor.armorPerLocation[location] ?? objective.actor.system.stats.toughness.armor;
       //Add that armor to the base toughness to get the correct toughness
-      defense_values.toughness += defense_values.armor;
+      defense_values.toughness = base_toughness + defense_values.armor;
       defense_values.name = objective.name;
       defense_values.token_id = objective.id;
     } else {
