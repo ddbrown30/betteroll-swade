@@ -327,7 +327,7 @@ export function activate_item_listeners(app, html) {
  * @param html Html code
  */
 function activate_item_listeners_real(app, html) {
-  const target = app.token || app.object;
+  const target = app.token || app.actor || app.object;
   // It is possible that the Super Powers module had updated the sheet, so we get it again
   addEventListenerAll(
     html,
