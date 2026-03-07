@@ -206,6 +206,9 @@ function get_applicable_effects(item) {
 }
 
 export function check_for_actions_with_damage(item) {
+  if (!item.system.actions?.additional) {
+    return false;
+  }
   for (const action in item.system.actions?.additional) {
     const current_action = item.system.actions.additional[action];
     if (current_action.type === "damage" && current_action.override) {
@@ -1354,7 +1357,8 @@ async function get_damage_mods_from_actions(
       damage_formulas.ap += parseInt(action.code.apMod);
     }
     const reroll_mode = expend_bennie ? "benny" : "free";
-    if (action.code.rerollDamageMod && action.code.rerollMode === reroll_mode) {
+    if (action.code.rerollDamageMod &&
+      (!action.code.rerollMode || action.code.rerollMode === reroll_mode)) {
       damage_roll.brswroll.modifiers.push(
         new DamageModifier(
           game.i18n.localize(action.code.name),
