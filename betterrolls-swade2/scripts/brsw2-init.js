@@ -295,11 +295,19 @@ Hooks.once("diceSoNiceReady", () => {
 
 // Character sheet hooks
 
-["SwadeCharacterSheet", "SwadeNPCSheet", "CharacterSheet"].forEach((name) => {
+["SwadeNPCSheet"].forEach((name) => {
   Hooks.on("render" + name, (app, html, _) => {
     activate_attribute_listeners(app, html[0]);
     activate_skill_listeners(app, html[0]);
     activate_item_listeners(app, html[0]);
+  });
+});
+
+["SwadeActorSheetV2"].forEach((name) => {
+  Hooks.on("render" + name, (app, html, _) => {
+    activate_attribute_listeners(app, html);
+    activate_skill_listeners(app, html);
+    activate_item_listeners(app, html);
   });
 });
 

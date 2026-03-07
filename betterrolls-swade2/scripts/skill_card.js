@@ -170,7 +170,7 @@ async function skill_click_listener(ev, target) {
  * @param html Html code
  */
 export function activate_skill_listeners(app, html) {
-  const target = app.token || app.object;
+  const target = app.token || app.actor || app.object;
   addEventListenerAll(
     html,
     ".skill-label a, .skill.item>a, .skill-name, .skill-die",
