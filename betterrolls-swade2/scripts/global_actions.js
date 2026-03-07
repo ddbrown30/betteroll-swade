@@ -2,7 +2,7 @@
   readTextFromFile, renderTemplate, foundry, canvas, $ */
 /* jshint -W089 */
 
-import { get_item_trait } from "./item_card.js";
+import { get_item_trait, check_for_actions_with_damage } from "./item_card.js";
 import { SYSTEM_GLOBAL_ACTION } from "./actions/builtin-actions.js";
 import { get_roll_options } from "./cards_common.js";
 import {
@@ -414,7 +414,10 @@ export function check_selector(type, value, item, actor) {
       selected = check_document_value(targeted_token.actor, value);
     }
   } else if (type === "item_has_damage") {
-    selected = !!item?.system?.damage;
+    selected = !!item?.system && (!!item.system.damage || check_for_actions_with_damage(item));
+    if (value === "false") {
+      selected = !selected;
+    }
   } else if (type === "range_less_than") {
     const tokens = actor.getActiveTokens();
     if (tokens && game.user.targets.size) {
@@ -674,6 +677,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(
         "raiseDamageFormula",
         "wildDieFormula",
         "rerollSkillMod",
+        "rerollMode",
         "rerollDamageMod",
         "selector_type",
         "selector_value",

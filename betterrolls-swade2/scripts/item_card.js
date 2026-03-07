@@ -205,12 +205,11 @@ function get_applicable_effects(item) {
   return effects;
 }
 
-function check_for_actions_with_damage(item) {
-  for (const action in item.system.actions.additional) {
+export function check_for_actions_with_damage(item) {
+  for (const action in item.system.actions?.additional) {
     const current_action = item.system.actions.additional[action];
     if (current_action.type === "damage" && current_action.override) {
       return true;
-      break;
     }
   }
   return false;
@@ -900,6 +899,9 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
   let shots_override; // Override the number of shots used
   let shots_modifier = 0; // Modifier to the number of shots
   const extra_data = { modifiers: [] };
+  if (br_message.trait_roll.is_rolled) {
+    br_message.trait_roll.reroll_mode = expend_bennie ? "benny" : "free";
+  }
   if (expend_bennie) {
     await spend_bennie(br_message.actor);
   }
@@ -1351,10 +1353,11 @@ async function get_damage_mods_from_actions(
     if (action.code.apMod) {
       damage_formulas.ap += parseInt(action.code.apMod);
     }
-    if (action.code.rerollDamageMod && expend_bennie) {
+    const reroll_mode = expend_bennie ? "benny" : "free";
+    if (action.code.rerollDamageMod && action.code.rerollMode === reroll_mode) {
       damage_roll.brswroll.modifiers.push(
         new DamageModifier(
-          action.code.name,
+          game.i18n.localize(action.code.name),
           action.code.rerollDamageMod,
           br_card.actor?.getRollData(),
         ),
