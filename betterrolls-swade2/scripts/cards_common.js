@@ -851,15 +851,19 @@ function get_reroll_options(br_card, extra_data) {
       return;
     }
   }
-  if (br_card.actor.system.stats.globalMods.bennyTrait.length) {
-    for (const mod of br_card.actor.system.stats.globalMods.bennyTrait) {
-      br_card.trait_roll.modifiers.push(
-        new TraitModifier(mod.label, mod.value),
-      );
+  if (br_card.trait_roll.reroll_mode === "benny") {
+    if (br_card.actor.system.stats.globalMods.bennyTrait.length) {
+      for (const mod of br_card.actor.system.stats.globalMods.bennyTrait) {
+        br_card.trait_roll.modifiers.push(
+          new TraitModifier(mod.label, mod.value),
+        );
+      }
     }
   }
   // Modifiers from actions
-  if (extra_data.reroll_modifier) {
+  if (extra_data.reroll_modifier &&
+    (!br_card.trait_roll.reroll_mode ||
+      br_card.trait_roll.reroll_mode === extra_data.reroll_mode)) {
     const new_modifier = new TraitModifier(
       `${extra_data.reroll_modifier.name} (reroll)`,
       extra_data.reroll_modifier.value,
@@ -1295,6 +1299,7 @@ export function process_common_actions(action, extra_data, macros, actor) {
       action_name,
       action.rerollSkillMod,
     );
+    extra_data.reroll_mode = action.rerollMode;
   }
   if (action.rof) {
     extra_data.rof = action.rof;

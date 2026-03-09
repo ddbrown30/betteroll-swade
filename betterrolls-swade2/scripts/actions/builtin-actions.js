@@ -11,8 +11,11 @@ export const SYSTEM_GLOBAL_ACTION = [
     name: "BRSW.EdgeName-NoMercy",
     button_name: "BRSW.EdgeName-NoMercy",
     rerollDamageMod: "+2",
-    selector_type: "actor_has_edge",
-    selector_value: "BRSW.EdgeName-NoMercy",
+    rerollMode: "benny",
+    and_selector: [
+      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-NoMercy" },
+      { selector_type: "item_has_damage", selector_value: "true" },
+    ],
     defaultChecked: "on",
     group: "BRSW.Edges",
   },

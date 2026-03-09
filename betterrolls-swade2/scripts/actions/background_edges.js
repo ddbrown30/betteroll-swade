@@ -104,6 +104,7 @@ export const BACKGROUND_EDGES = [
     name: "BRSW.EdgeName-Elan",
     button_name: "BRSW.EdgeName-Elan",
     rerollSkillMod: "+2",
+    rerollMode: "benny",
     selector_type: "actor_has_edge",
     selector_value: "BRSW.EdgeName-Elan",
     defaultChecked: "on",
