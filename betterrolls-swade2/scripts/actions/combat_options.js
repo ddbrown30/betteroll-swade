@@ -55,6 +55,18 @@ export const COMBAT_OPTIONS = [
     aiming_ignores: true,
   },
   {
+    id: "CS-HAND",
+    name: "BRSW.CalledHand",
+    button_name: "BRSW.CalledHand",
+    skillMod: -4,
+    selector_type: "item_type",
+    selector_value: "weapon",
+    change_location: "arms",
+    group: "BRSW.AttackOptionCalledShot",
+    group_single: true,
+    aiming_ignores: true,
+  },
+  {
     id: "CS-HEAD",
     name: "BRSW.CalledHead",
     button_name: "BRSW.CalledHead",
