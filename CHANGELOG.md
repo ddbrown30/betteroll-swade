@@ -1,3 +1,12 @@
+* Version 4.35 aka new character sheet
+* Refactor: Reduce the data stored on card flags for effects.
+* Settings Menu: Fix some CSS issues. (Dan Brown)
+* Injuries: Expose create_injure_effect as an API function. (Dan Brown)
+* Sheet: Support system 5.2 sheets. (Dan Brown)
+* Bugfix: Better calculation of armor in locations (Dan Brown)
+* Cards: Added support for reroll modes (Dan Brown)
+* Actions: Split hands and head called shot into separate actions (Dan Brown)
+
 # Version 4.34 aka lots of flavor
 * Cards: If a damage die has a flavor set, it will be used in the label. (Dan Brown)
 * Cards: Support for dragable active effects on cards.

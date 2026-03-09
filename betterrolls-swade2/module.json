@@ -91,7 +91,9 @@
       {
         "id": "swade",
         "type": "system",
-        "compatibility": {}
+        "compatibility": {
+          "minimum": "5.2"
+        }
       }
     ]
   },
