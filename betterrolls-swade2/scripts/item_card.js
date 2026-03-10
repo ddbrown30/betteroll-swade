@@ -294,10 +294,44 @@ async function item_click_listener(ev, target, currentTarget) {
   ev.stopImmediatePropagation();
   ev.preventDefault();
   ev.stopPropagation();
-  // First term for PC, second one for NPCs
+  let actor = target instanceof Actor ?
+              target :
+              target instanceof foundry.canvas.placeables.Token || target instanceof TokenDocument ?
+              target.actor : null;
+  const item_action = ev.currentTarget.dataset.action;
   const item_id = ev.target.closest("[data-item-id]").dataset.itemId;
+  const item = actor.items.find((item) => {
+    return item.id === item_id;
+  });
+  const actionObj = foundry.utils.getProperty(
+    item,
+    'system.actions.additional.' + item_action,
+  );
+  const actions_stored = {};
+  if (actionObj) {
+    if (actionObj.type === "trait" ||
+        actionObj.type === "damage") {
+          // This is a trait or damage action
+          // Start with the action enabled
+          actions_stored[item_action] = true;
+    } else if (actionObj.type === "macro") {
+      // This is a macro action
+      // Execute the macro and return; no need to create a card
+      const macro = await fromUuid(actionObj.uuid);
+      if (macro) {
+        await macro.execute({
+          actor: actor,
+          token: actor ? actor.token : null,
+          item: item,
+        });
+      }
+      return;
+    }
+  }
   // Show card
-  const br_card = await create_item_card(target, item_id);
+  const br_card = await create_item_card(target, item_id, {
+    actions_stored: actions_stored,
+  });
   if (action.includes("dialog")) {
     game.brsw.dialog.show_card(br_card);
   } else if (action.includes("trait")) {
