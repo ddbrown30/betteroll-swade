@@ -351,7 +351,7 @@ export class SettingsUtils {
   //Compares lhs and rhs for equality
   //This pulls operators from rhs for the comparison or defaults to === if none is present
   static check_equality_with_operators(lhs, rhs) {
-    const [, op = "===", raw] = rhs.match(/^\s*(>=|<=|!==|===|!=|==|=|>|<)?\s*(.*)$/);
+    const [, op = "===", raw] = String(rhs).match(/^\s*(>=|<=|!==|===|!=|==|=|>|<)?\s*(.*)$/);
     const val = raw.trim();
 
     const rhsVal =
