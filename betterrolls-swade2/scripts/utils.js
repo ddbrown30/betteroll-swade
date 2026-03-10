@@ -373,5 +373,5 @@ export class SettingsUtils {
       "===": lhs === rhsVal,
       "!==": lhs !== rhsVal
     }[op];
-  };
+  }
 }
