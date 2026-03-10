@@ -347,4 +347,31 @@ export class SettingsUtils {
       ? BRSW2_CONFIG.USER_SETTINGS[key].value
       : BRSW2_CONFIG.USER_SETTINGS[key].default;
   }
+
+  //Compares lhs and rhs for equality
+  //This pulls operators from rhs for the comparison or defaults to === if none is present
+  static check_equality_with_operators(lhs, rhs) {
+    const [, op = "===", raw] = String(rhs).match(/^\s*(>=|<=|!==|===|!=|==|=|>|<)?\s*(.*)$/);
+    const val = raw.trim();
+
+    const rhsVal =
+      val === "true" && typeof lhs === "boolean" ? true :
+      val === "false" && typeof lhs === "boolean" ? false :
+      val !== "" && !isNaN(val) ? +val :
+      val;
+
+    if ([">", "<", ">=", "<="].includes(op)) {
+      const a = typeof lhs === "number" ? lhs : NaN;
+      const b = typeof rhsVal === "number" ? rhsVal : NaN;
+      return !Number.isNaN(a) && !Number.isNaN(b) && { ">": a > b, ">=": a >= b, "<": a < b, "<=": a <= b }[op];
+    }
+
+    return {
+      "==": lhs == rhsVal,
+      "=": lhs == rhsVal,
+      "!=": lhs != rhsVal,
+      "===": lhs === rhsVal,
+      "!==": lhs !== rhsVal
+    }[op];
+  }
 }
