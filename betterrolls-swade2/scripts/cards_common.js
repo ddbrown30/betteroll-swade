@@ -845,19 +845,19 @@ async function get_new_roll_options(
  * @param {Object} extra_data
  */
 function get_reroll_options(br_card, extra_data) {
-  // Reroll, keep old options
-  for (const mod of br_card.trait_roll.modifiers) {
-    if (mod.name.includes("(reroll)")) {
-      return;
-    }
-  }
+  // Reroll, clear out old reroll mods so we don't double add
+  // This doesn't use filter() because the array is referenced elsewhere
+  br_card.trait_roll.modifiers.splice(
+    0,
+    br_card.trait_roll.modifiers.length,
+    ...br_card.trait_roll.modifiers.filter((mod) => !mod.isReroll)
+  );
+  // Modifiers from effects
   if (br_card.trait_roll.reroll_mode === "benny") {
-    if (br_card.actor.system.stats.globalMods.bennyTrait.length) {
-      for (const mod of br_card.actor.system.stats.globalMods.bennyTrait) {
-        br_card.trait_roll.modifiers.push(
-          new TraitModifier(mod.label, mod.value),
-        );
-      }
+    for (const mod of br_card.actor.system.stats.globalMods.bennyTrait) {
+      const new_modifier = new TraitModifier(mod.label, mod.value);
+      new_modifier.isReroll = true;
+      br_card.trait_roll.modifiers.push(new_modifier);
     }
   }
   // Modifiers from actions
@@ -865,9 +865,10 @@ function get_reroll_options(br_card, extra_data) {
     (!br_card.trait_roll.reroll_mode ||
       br_card.trait_roll.reroll_mode === extra_data.reroll_mode)) {
     const new_modifier = new TraitModifier(
-      `${extra_data.reroll_modifier.name} (reroll)`,
+      extra_data.reroll_modifier.name,
       extra_data.reroll_modifier.value,
     );
+    new_modifier.isReroll = true;
     new_modifier.evaluate();
     br_card.trait_roll.modifiers.push(new_modifier);
   }
