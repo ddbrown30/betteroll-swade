@@ -310,7 +310,10 @@ export function check_selector(type, value, item, actor) {
     const additional_stat = type.slice(23);
     for (const targeted_token of game.user.targets) {
       if (targeted_token?.actor?.system?.additionalStats.hasOwnProperty(additional_stat)) {
-        selected = selected || SettingsUtils.check_equality_with_operators(targeted_token.actor.system.additionalStats[additional_stat].value, value);
+        if (SettingsUtils.check_equality_with_operators(targeted_token.actor.system.additionalStats[additional_stat].value, value)) {
+          selected = true;
+          break;
+        }
       }
     }
   } else if (type === "actor_has_joker") {
