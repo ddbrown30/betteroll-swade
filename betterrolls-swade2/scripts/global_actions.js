@@ -299,14 +299,19 @@ export function check_selector(type, value, item, actor) {
   } else if (type.indexOf("actor_additional_stat_") === 0) {
     const additional_stat = type.slice(22);
     if (actor.system.additionalStats.hasOwnProperty(additional_stat)) {
-      // noinspection EqualityComparisonWithCoercionJS
-      selected = actor.system.additionalStats[additional_stat].value == value;
+      selected = SettingsUtils.check_equality_with_operators(actor.system.additionalStats[additional_stat].value, value);
     }
   } else if (type.indexOf("item_additional_stat_") === 0) {
     const additional_stat = type.slice(21);
     if (item?.system?.additionalStats.hasOwnProperty(additional_stat)) {
-      // noinspection EqualityComparisonWithCoercionJS
-      selected = item.system.additionalStats[additional_stat].value == value;
+      selected = SettingsUtils.check_equality_with_operators(item.system.additionalStats[additional_stat].value, value);
+    }
+  } else if (type.indexOf("target_additional_stat_") === 0) {
+    const additional_stat = type.slice(23);
+    for (const targeted_token of game.user.targets) {
+      if (targeted_token?.actor?.system?.additionalStats.hasOwnProperty(additional_stat)) {
+        selected = selected || SettingsUtils.check_equality_with_operators(targeted_token.actor.system.additionalStats[additional_stat].value, value);
+      }
     }
   } else if (type === "actor_has_joker") {
     selected = actor.hasJoker;
