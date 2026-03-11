@@ -1,4 +1,7 @@
-* Version 4.35 aka new character sheet
+# Version 4.26 aka a small but huge change, also The Forge
+* Let some actions use compare operators (Dan Brown)
+
+# Version 4.35 aka new character sheet
 * Refactor: Reduce the data stored on card flags for effects.
 * Settings Menu: Fix some CSS issues. (Dan Brown)
 * Injuries: Expose create_injure_effect as an API function. (Dan Brown)
