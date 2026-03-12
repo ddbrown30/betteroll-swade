@@ -793,9 +793,8 @@ async function import_global_actions(app) {
           if (!form.data.files.length) {
             return ui.notifications.error("You did not upload a data file!");
           }
-          await foundry.utils.readTextFromFile(form.data.files[0]).then(async (json) => {
-            await SettingsUtils.setSetting("world_global_actions", JSON.parse(json));
-          });
+          const jsonText = await foundry.utils.readTextFromFile(form.data.files[0]);
+          await SettingsUtils.setSetting("world_global_actions", JSON.parse(jsonText));
           app.render(true);
         },
       },
