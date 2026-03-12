@@ -1963,7 +1963,7 @@ function get_template_from_item(item) {
  * Returns true if the target wears a Heavy Armor
  * @param {PlaceableObject} target
  */
-function has_heavy_armor(target, location) {
+function has_heavy_armor(target, location = "torso") {
   // Equipped is equipStatus 3
   return target.document.actor.itemTypes.armor.some(
     (item) =>
