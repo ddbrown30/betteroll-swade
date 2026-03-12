@@ -37,9 +37,8 @@ export const COMBAT_OPTIONS = [
     button_name: "BRSW.TheDrop",
     skillMod: 4,
     dmgMod: 4,
-    dmgOverride: "",
-    selector_type: "item_type",
-    selector_value: "weapon",
+    selector_type: "item_has_damage",
+    selector_value: "true",
     group: "BRSW.SituationalModifiers",
   },
   {
@@ -47,8 +46,24 @@ export const COMBAT_OPTIONS = [
     name: "BRSW.CalledArm",
     button_name: "BRSW.CalledArm",
     skillMod: -2,
-    selector_type: "item_type",
-    selector_value: "weapon",
+    or_selector: [
+      {
+        and_selector: [
+          {
+            selector_type: "item_type",
+            selector_value: "power",
+          },
+          {
+            selector_type: "item_name",
+            selector_value: "Bolt",
+          },
+        ]
+      },
+      {
+        selector_type: "item_type",
+        selector_value: "weapon",
+      },
+    ],
     change_location: "arms",
     group: "BRSW.AttackOptionCalledShot",
     group_single: true,
@@ -59,8 +74,24 @@ export const COMBAT_OPTIONS = [
     name: "BRSW.CalledHand",
     button_name: "BRSW.CalledHand",
     skillMod: -4,
-    selector_type: "item_type",
-    selector_value: "weapon",
+    or_selector: [
+      {
+        and_selector: [
+          {
+            selector_type: "item_type",
+            selector_value: "power",
+          },
+          {
+            selector_type: "item_name",
+            selector_value: "Bolt",
+          },
+        ]
+      },
+      {
+        selector_type: "item_type",
+        selector_value: "weapon",
+      },
+    ],
     change_location: "arms",
     group: "BRSW.AttackOptionCalledShot",
     group_single: true,
@@ -73,8 +104,24 @@ export const COMBAT_OPTIONS = [
     skillMod: -4,
     dmgMod: +4,
     dmgOverride: "",
-    selector_type: "item_type",
-    selector_value: "weapon",
+    or_selector: [
+      {
+        and_selector: [
+          {
+            selector_type: "item_type",
+            selector_value: "power",
+          },
+          {
+            selector_type: "item_name",
+            selector_value: "Bolt",
+          },
+        ]
+      },
+      {
+        selector_type: "item_type",
+        selector_value: "weapon",
+      },
+    ],
     change_location: "head",
     group: "BRSW.AttackOptionCalledShot",
     group_single: true,
@@ -85,8 +132,24 @@ export const COMBAT_OPTIONS = [
     name: "BRSW.CalledLeg",
     button_name: "BRSW.CalledLeg",
     skillMod: -2,
-    selector_type: "item_type",
-    selector_value: "weapon",
+    or_selector: [
+      {
+        and_selector: [
+          {
+            selector_type: "item_type",
+            selector_value: "power",
+          },
+          {
+            selector_type: "item_name",
+            selector_value: "Bolt",
+          },
+        ]
+      },
+      {
+        selector_type: "item_type",
+        selector_value: "weapon",
+      },
+    ],
     change_location: "legs",
     group: "BRSW.AttackOptionCalledShot",
     group_single: true,
