@@ -788,13 +788,13 @@ async function import_global_actions(app) {
         icon: "fas fa-file-import",
         label: "Import",
         action: "import",
-        callback: (event, target, dialog) => {
+        callback: async (event, target, dialog) => {
           const form = dialog.element.querySelector("form");
           if (!form.data.files.length) {
             return ui.notifications.error("You did not upload a data file!");
           }
-          foundry.utils.readTextFromFile(form.data.files[0]).then((json) => {
-            SettingsUtils.setSetting("world_global_actions", JSON.parse(json));
+          await foundry.utils.readTextFromFile(form.data.files[0]).then(async (json) => {
+            await SettingsUtils.setSetting("world_global_actions", JSON.parse(json));
           });
           app.render(true);
         },
