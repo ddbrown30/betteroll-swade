@@ -294,10 +294,13 @@ async function item_click_listener(ev, target, currentTarget) {
   ev.stopImmediatePropagation();
   ev.preventDefault();
   ev.stopPropagation();
-  let actor = target instanceof Actor ?
-              target :
-              target instanceof foundry.canvas.placeables.Token || target instanceof TokenDocument ?
-              target.actor : null;
+  let actor =
+    target instanceof Actor
+      ? target
+      : target instanceof foundry.canvas.placeables.Token ||
+          target instanceof TokenDocument
+        ? target.actor
+        : null;
   const item_action = ev.currentTarget.dataset.action;
   const item_id = ev.target.closest("[data-item-id]").dataset.itemId;
   const item = actor.items.find((item) => {
@@ -305,15 +308,14 @@ async function item_click_listener(ev, target, currentTarget) {
   });
   const actionObj = foundry.utils.getProperty(
     item,
-    'system.actions.additional.' + item_action,
+    "system.actions.additional." + item_action,
   );
   const actions_stored = {};
   if (actionObj) {
-    if (actionObj.type === "trait" ||
-        actionObj.type === "damage") {
-          // This is a trait or damage action
-          // Start with the action enabled
-          actions_stored[item_action] = true;
+    if (actionObj.type === "trait" || actionObj.type === "damage") {
+      // This is a trait or damage action
+      // Start with the action enabled
+      actions_stored[item_action] = true;
     } else if (actionObj.type === "macro") {
       // This is a macro action
       // Execute the macro and return; no need to create a card
@@ -344,25 +346,11 @@ async function item_click_listener(ev, target, currentTarget) {
 }
 
 /**
- * If the Super Power companion is active we wait for it to modify the sheet before
- * adding our Hooks
- */
-export function activate_item_listeners(app, html) {
-  if (game.modules.get("swade-supers-companion")?.active) {
-    Hooks.on("spc.renderSuperPowerTab", () => {
-      activate_item_listeners_real(app, html);
-    });
-  } else {
-    activate_item_listeners_real(app, html);
-  }
-}
-
-/**
  * Activates the listeners in the character sheet in items
  * @param app Sheet app
  * @param html Html code
  */
-function activate_item_listeners_real(app, html) {
+export function activate_item_listeners(app, html) {
   const target = app.token || app.actor || app.object;
   // It is possible that the Super Powers module had updated the sheet, so we get it again
   addEventListenerAll(
@@ -1116,9 +1104,13 @@ function get_target_defense(
   if (objective && objective.actor) {
     if (objective.actor.type !== "vehicle") {
       //Get the base toughness without armor
-      const base_toughness = objective.actor.system.stats.toughness.value - objective.actor.system.stats.toughness.armor;
+      const base_toughness =
+        objective.actor.system.stats.toughness.value -
+        objective.actor.system.stats.toughness.armor;
       //Get the armor of the location we're targeting
-      defense_values.armor = objective.actor.armorPerLocation[location] ?? objective.actor.system.stats.toughness.armor;
+      defense_values.armor =
+        objective.actor.armorPerLocation[location] ??
+        objective.actor.system.stats.toughness.armor;
       //Add that armor to the base toughness to get the correct toughness
       defense_values.toughness = base_toughness + defense_values.armor;
       defense_values.name = objective.name;
@@ -1391,8 +1383,10 @@ async function get_damage_mods_from_actions(
       damage_formulas.ap += parseInt(action.code.apMod);
     }
     const reroll_mode = expend_bennie ? "benny" : "free";
-    if (action.code.rerollDamageMod &&
-      (!action.code.rerollMode || action.code.rerollMode === reroll_mode)) {
+    if (
+      action.code.rerollDamageMod &&
+      (!action.code.rerollMode || action.code.rerollMode === reroll_mode)
+    ) {
       damage_roll.brswroll.modifiers.push(
         new DamageModifier(
           game.i18n.localize(action.code.name),
