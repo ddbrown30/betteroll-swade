@@ -61,6 +61,7 @@ export const GENERIC_POWER_MODIFIERS = [
     name: "BRSW.PowerModifiersGenericHeavyWeaponModifier",
     button_name: "BRSW.PowerModifiersGenericHeavyWeaponModifier",
     shotsUsed: "+2",
+    isHeavyWeapon: true,
     selector_type: "item_type",
     selector_value: "power",
     group: groupNameGenericPModifiers,

@@ -1180,7 +1180,9 @@ async function roll_dmg_target(
   );
   await roll.evaluate();
   // Heavy armor
-  if (target && !item.system.isHeavyWeapon && has_heavy_armor(target)) {
+  if (target &&
+    (!item.system.isHeavyWeapon && !damage_formulas.heavy_weapon) &&
+    has_heavy_armor(target, damage_formulas.location)) {
     const no_damage_mod = new DamageModifier(
       game.i18n.localize("BRSW.HeavyArmor"),
       -999999,
@@ -1961,16 +1963,14 @@ function get_template_from_item(item) {
  * Returns true if the target wears a Heavy Armor
  * @param {PlaceableObject} target
  */
-function has_heavy_armor(target) {
+function has_heavy_armor(target, location) {
   // Equipped is equipStatus 3
-  const heavy_armor = target.document.actor.items.filter(
+  return target.document.actor.itemTypes.armor.some(
     (item) =>
-      item.type === "armor" &&
       item.system.isHeavyArmor &&
-      item.system.locations.torso &&
+      item.system.locations[location] &&
       item.system.equipStatus === 3,
   );
-  return heavy_armor.length > 0;
 }
 
 async function execute_macro(action, br_card) {
