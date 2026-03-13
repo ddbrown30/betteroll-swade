@@ -1,3 +1,11 @@
+# Version 4.27 aka 
+* Bugfix: Remove all special handling of the SPC Sheet, making BR2 work with last versions.
+* Bugfix: Make spell modifier for Heavy Weapons work. (Dan Brown)
+* Bugfix: Add location check for Heavy Armor (Dan Brown)
+* Actions: Bolt can now use called shots (Dan Brown)
+* Actions: The Drop now applies to all items with damage (Dan Brown)
+* Bugfix: Await added in settings to solve some rendering issues. (Dan Brown)
+
 # Version 4.26 aka a small but huge change, also The Forge
 * Let some actions use compare operators (Dan Brown)
 
