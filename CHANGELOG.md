@@ -1,4 +1,4 @@
-# Version 4.27 aka 
+# Version 4.37 aka 
 * Bugfix: Remove all special handling of the SPC Sheet, making BR2 work with last versions.
 * Bugfix: Make spell modifier for Heavy Weapons work. (Dan Brown)
 * Bugfix: Add location check for Heavy Armor (Dan Brown)
