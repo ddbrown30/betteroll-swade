@@ -314,8 +314,6 @@
     "BRSW.WorldGlobalMenuHint": "Utiliser cette fenêtre d'options pour créer des actions globales spécifiques à ce monde.",
     "BRSW.WorldGlobalMenuLabel": "Actions globales au monde",
     "BRSW.Wound": "Blessure",
-    "BRSW.WoundCap": "Limite de Blessures",
-    "BRSW.WoundCapHint": "Seuil pour la Limite de Blessures, et s'il est zéro ou vide, utilise le seuil standard de quatre.",
     "BRSW.Wounds": "Blessures",
     "I18N.MAINTAINERS": [
         "Cyril Ronseaux"

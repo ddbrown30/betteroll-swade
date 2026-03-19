@@ -320,8 +320,6 @@
     "BRSW.WorldGlobalMenuHint": "Verwalte die globalen Aktionen dieser Welt. (Welt)",
     "BRSW.WorldGlobalMenuLabel": "Globale Aktionen (Welt)",
     "BRSW.Wound": "Wunde",
-    "BRSW.WoundCap": "Wundobergrenze",
-    "BRSW.WoundCapHint": "Die hier eingetragene Nummer wird als Wundobergrenze angenommen. Bei einem leeren Feld gelten die Standardregeln. (Welt)",
     "BRSW.Wounds": "Wunden",
     "BRSW.WoundsOrFatigueIgnored": "Ignorierte Wunden oder Erschöpfung",
     "I18N.MAINTAINERS": [

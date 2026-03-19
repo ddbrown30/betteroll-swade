@@ -545,14 +545,6 @@ function register_settings_version2() {
     config: false,
     scope: "world",
   });
-  SettingsUtils.registerSetting("wound-cap", {
-    name: game.i18n.localize("BRSW.WoundCap"),
-    hint: game.i18n.localize("BRSW.WoundCapHint"),
-    default: 0,
-    scope: "world",
-    type: Number,
-    config: false,
-  });
   SettingsUtils.registerSetting("chat_modifiers_names", {
     name: "Chat Modifiers Names",
     hint: "",
