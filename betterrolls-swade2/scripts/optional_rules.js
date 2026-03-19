@@ -47,9 +47,8 @@ export class OptionalRulesConfiguration extends HandlebarsApplicationMixin(Appli
         enabled: enable_rules.indexOf(rule) > -1,
       });
     }
-    let wound_cap = SettingsUtils.getSetting("wound-cap");
     // noinspection JSValidateTypes
-    return { rules: rules, wound_cap: wound_cap };
+    return { rules: rules };
   }
 
   static async formHandler(event, form, formData) {
@@ -60,6 +59,5 @@ export class OptionalRulesConfiguration extends HandlebarsApplicationMixin(Appli
       }
     }
     await SettingsUtils.setSetting("optional_rules_enabled", enabled);
-    await SettingsUtils.setSetting("wound-cap", formData.object.wound_cap);
   }
 }

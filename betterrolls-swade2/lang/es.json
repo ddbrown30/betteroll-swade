@@ -318,8 +318,6 @@
     "BRSW.WorldGlobalMenuHint": "Usa esta ventana para crear acciones globales de mundo. (Mundo)",
     "BRSW.WorldGlobalMenuLabel": "Acciones globales de mundo",
     "BRSW.Wound": "Herida",
-    "BRSW.WoundCap": "Límite de heridas",
-    "BRSW.WoundCapHint": "Si este campo tiene un número se activará la regla de límite de heridas, si es 0 o está en blanco se desactivará. (Mundo)",
     "BRSW.Wounds": "Heridas",
     "I18N.MAINTAINERS": [
         "Javi Rivera"

@@ -36,8 +36,8 @@ export async function create_damage_card(
     shaken: actor.system.status.isShaken,
   };
   let wounds = Math.floor(damage / 4);
-  if (SettingsUtils.getSetting("wound-cap")) {
-    wounds = Math.min(wounds, SettingsUtils.getSetting("wound-cap"));
+  if (game.settings.get('swade', 'woundCap')) {
+    wounds = Math.min(wounds, 4);
   }
   // noinspection JSUnresolvedVariable
   const can_soak = wounds || actor.system.status.isShaken;

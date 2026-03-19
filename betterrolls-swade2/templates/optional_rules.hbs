@@ -7,19 +7,6 @@
                     {{#if this.enabled}}checked="checked"{{/if}}>
                 <label>{{ this.name }}</label></td>
         </tr>{{/ each}}
-        <tr class="form-group">
-            <td>
-                <label>{{ localize "BRSW.WoundCap" }}</label>
-            </td>
-            <td class="form-fields">
-                <input type="text" name="wound_cap" value="{{ wound_cap}}" data-dtype="Number">
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <p class="notes">{{ localize "BRSW.WoundCapHint" }}</p>
-            </td>
-        </tr>
     </table>
     <button type="submit"><i class="far fa-save"></i>{{localize "BRSW.Save"}}</button>
 </div>

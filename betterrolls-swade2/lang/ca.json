@@ -317,8 +317,6 @@
     "BRSW.WorldGlobalMenuHint": "Fes servir aquesta finesta per crear accions globals per aquest món (World)",
     "BRSW.WorldGlobalMenuLabel": "Accions globals de món",
     "BRSW.Wound": "Ferida",
-    "BRSW.WoundCap": "Límit de ferides",
-    "BRSW.WoundCapHint": "Si aquest camp té un número s'activarà la regla de límit de ferides, si és 0 o està en blanc es desactivarà. (World)",
     "BRSW.Wounds": "Ferides",
     "BRSW.WoundsOrFatigueIgnored": "Ignorar ferides i fatiga",
     "BRWS.ConvictionRoll": "Tirada de convicció",

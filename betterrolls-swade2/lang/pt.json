@@ -299,8 +299,6 @@
     "BRSW.WorldGlobalMenuHint": "Use esta janela para criar ações globais para este mundo (Mundo)",
     "BRSW.WorldGlobalMenuLabel": "Ações globais do Mundo",
     "BRSW.Wound": "Ferimento",
-    "BRSW.WoundCap": "Limite de Ferimentos",
-    "BRSW.WoundCapHint": "Adicionar um número aqui ativará a regra de limite de ferimentos, o valor adicionado será o limite. Se o valor for zero ou branco será utilizado a regra padrão. (Mundo)",
     "BRSW.Wounds": "Ferimentos",
     "BRSW.WoundsOrFatigueIgnored": "Ferimentos ou Fadiga ignorados",
     "Better Rolls": "Better Rolls"
