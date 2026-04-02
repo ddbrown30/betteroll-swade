@@ -4,7 +4,7 @@
 
 import { get_item_trait, check_for_actions_with_damage } from "./item_card.js";
 import { SYSTEM_GLOBAL_ACTION } from "./actions/builtin-actions.js";
-import { get_roll_options } from "./cards_common.js";
+import { BRSW_CONST, get_roll_options } from "./cards_common.js";
 import {
   SettingsUtils,
   measureDistance,
@@ -331,6 +331,15 @@ export function check_selector(type, value, item, actor) {
       });
       selected = selected || !!edge;
     }
+  } else if (type === "actor_has_arcane_mastery") {
+    const edge_names = BRSW_CONST.ARCANE_MASTERY_EDGES.map((edge) => game.i18n.localize(edge).toLowerCase());
+    const edge = actor.items.find((item) => {
+      return (
+        item.type === "edge" &&
+        edge_names.some((edge_name) => item.name.toLowerCase().includes(edge_name.toLowerCase()))
+      );
+    });
+    selected = !!edge;
   } else if (type === "target_has_hindrance") {
     const hindrance_name = value.includes("BRSW.EdgeName-")
       ? game.i18n.localize(value)
