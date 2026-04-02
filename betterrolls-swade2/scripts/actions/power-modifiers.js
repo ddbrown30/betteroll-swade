@@ -2,11 +2,12 @@
 // power modifiers for powers ...
 // ============================================
 
-/* NOTE: 
-    The various "epic" power modifiers require the edge "Epic Mastery", 
-      found in the SWADE Fantasy Companion, p.36
+/* NOTE:
+    The various "epic" power modifiers require the edge "Epic Mastery",
+      found in the SWADE Fantasy Companion, p.36 or "Arcane Mastery" or
+      "Divine Mastery" if using SWPF
     They are restricted by the following selector_type ...
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Epic-Mastery" }
+      { selector_type: "actor_has_arcane_mastery", selector_value: true }
 */
 
 // TODO ... some way to handle different Areas of Effect using the single button selector ???
@@ -470,7 +471,7 @@ export const POWER_MODIFIERS = [
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Arcane Protection" },
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Epic-Mastery" }
+      { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     group: "BRSW.PowerModifiersArcaneProtection"
   },
@@ -508,7 +509,7 @@ export const POWER_MODIFIERS = [
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Barrier" },
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Epic-Mastery" }
+      { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     group: "BRSW.PowerModifiersBarrier"
   },
@@ -520,7 +521,7 @@ export const POWER_MODIFIERS = [
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Barrier" },
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Epic-Mastery" }
+      { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     group: "BRSW.PowerModifiersBarrier"
   },
@@ -578,7 +579,7 @@ export const POWER_MODIFIERS = [
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Beast Friend" },
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Epic-Mastery" }
+      { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     group: "BRSW.PowerModifiersBeastFriend"
   },
@@ -624,10 +625,11 @@ export const POWER_MODIFIERS = [
     button_name: "BRSW.PowerModifiersBlastGreaterBlast",
     shotsUsed: "+4",
     dmgMod: "+2d6x",
+    isHeavyWeapon: true,
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Blast" },
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Epic-Mastery" }
+      { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     group: "BRSW.PowerModifiersBlast"
   },
@@ -721,7 +723,7 @@ export const POWER_MODIFIERS = [
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Bolt" },
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Epic-Mastery" }
+      { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     group: "BRSW.PowerModifiersBolt"
   },
@@ -731,10 +733,11 @@ export const POWER_MODIFIERS = [
     button_name: "BRSW.PowerModifiersBoltGreaterBolt",
     shotsUsed: "+4",
     dmgMod: "+2d6x",
+    isHeavyWeapon: true,
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Bolt" },
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Epic-Mastery" }
+      { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     group: "BRSW.PowerModifiersBolt"
   },
@@ -747,7 +750,7 @@ export const POWER_MODIFIERS = [
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Bolt" },
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Epic-Mastery" }
+      { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     group: "BRSW.PowerModifiersBolt"
   },
@@ -762,7 +765,7 @@ export const POWER_MODIFIERS = [
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Boost/Lower Trait" },
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Epic-Mastery" }
+      { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     group: "BRSW.PowerModifiersBoostLower"
   },
@@ -811,10 +814,11 @@ export const POWER_MODIFIERS = [
     button_name: "BRSW.PowerModifiersBurstGreaterBurst",
     shotsUsed: "+4",
     dmgMod: "+2d6x",
+    isHeavyWeapon: true,
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Burst" },
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Epic-Mastery" }
+      { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     group: "BRSW.PowerModifiersBurst"
   },
@@ -839,7 +843,7 @@ export const POWER_MODIFIERS = [
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Confusion" },
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Epic-Mastery" }
+      { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     group: "BRSW.PowerModifiersConfusion"
   },
@@ -910,10 +914,11 @@ export const POWER_MODIFIERS = [
     button_name: "BRSW.PowerModifiersDamageFieldGreaterDamageField",
     shotsUsed: "+4",
     dmgOverride: "3d6x",
+    isHeavyWeapon: true,
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Damage Field" },
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Epic-Mastery" }
+      { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     group: "BRSW.PowerModifiersDamageField"
   },
@@ -990,7 +995,7 @@ export const POWER_MODIFIERS = [
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Entangle" },
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Epic-Mastery" }
+      { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     group: "BRSW.PowerModifiersEntangle"
   },
@@ -1036,7 +1041,7 @@ export const POWER_MODIFIERS = [
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Havoc" },
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Epic-Mastery" }
+      { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     group: "BRSW.PowerModifiersHavoc"
   },
@@ -1083,7 +1088,7 @@ export const POWER_MODIFIERS = [
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Healing" },
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Epic-Mastery" }
+      { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     group: "BRSW.PowerModifiersHealing"
   },
@@ -1095,7 +1100,7 @@ export const POWER_MODIFIERS = [
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Healing" },
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Epic-Mastery" }
+      { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     group: "BRSW.PowerModifiersHealing"
   },
@@ -1178,7 +1183,7 @@ export const POWER_MODIFIERS = [
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Sanctuary" },
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Epic-Mastery" }
+      { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     group: "BRSW.PowerModifiersSanctuary"
   },
@@ -1228,7 +1233,7 @@ export const POWER_MODIFIERS = [
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Shape Change" },
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Epic-Mastery" }
+      { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     group: "BRSW.PowerModifiersShapeChange"
   },
@@ -1240,7 +1245,7 @@ export const POWER_MODIFIERS = [
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Shape Change" },
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Epic-Mastery" }
+      { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     group: "BRSW.PowerModifiersShapeChange"
   },
@@ -1252,7 +1257,7 @@ export const POWER_MODIFIERS = [
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Shape Change" },
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Epic-Mastery" }
+      { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     group: "BRSW.PowerModifiersShapeChange"
   },
@@ -1493,7 +1498,7 @@ export const POWER_MODIFIERS = [
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Summon Ally" },
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Epic-Mastery" }
+      { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     group: "BRSW.PowerModifiersSummonAlly"
   },
