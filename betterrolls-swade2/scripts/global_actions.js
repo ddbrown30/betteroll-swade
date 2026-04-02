@@ -336,10 +336,10 @@ export function check_selector(type, value, item, actor) {
     const edge = actor.items.find((item) => {
       return (
         item.type === "edge" &&
-        edge_names.some((edge_name) => item.name.toLowerCase().includes(edge_name.toLowerCase()))
+        edge_names.some((edge_name) => item.name.toLowerCase().includes(edge_name))
       );
     });
-    selected = !!edge;
+    selected = !!edge == value;
   } else if (type === "target_has_hindrance") {
     const hindrance_name = value.includes("BRSW.EdgeName-")
       ? game.i18n.localize(value)
