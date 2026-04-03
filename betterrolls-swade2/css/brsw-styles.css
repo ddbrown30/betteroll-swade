@@ -100,10 +100,39 @@
 
 .brsw-button-row {
     display: flex;
+    gap: 0.25rem;
+}
+
+.brsw-card .brsw-button-row button {
+    min-height: 1.75rem;
+    height: 1.75rem;
 }
 
 .brsw-header-img {
     max-width: unset;
+}
+
+.brsw-item-subheading {
+    font-size: 0.75rem;
+    margin: .4rem 0 .2rem;
+}
+
+.brsw-card .brsw-sub-button {
+    min-height: fit-content;
+    height: fit-content;
+}
+
+.brsw-consumable-charges {
+    font-size: 0.75rem;
+    margin: .4rem 0 .2rem;
+    font-weight: 700;
+}
+
+.brsw-item-action-button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.1rem;
+    margin-bottom: 0.5rem;
 }
 
 /* Styles for the critical failure card */
@@ -119,11 +148,10 @@
 
 .brsw-roll-row {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
-    border-top: solid lightgrey 2px;
-    padding: 5px 5px 5px 0;
+    justify-content: flex-end;
+    gap: 5px;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .brsw-roll-results-wrapper {
@@ -280,17 +308,18 @@
     font-size: 11px;
 }
 
-.brsw-old-roll {
-    margin: 5px;
+.brsw-old-rolls {
+    border-top: solid lightgrey 2px;
 }
 
 /* Damage buttons */
 
-.brsw-damage-button {
+.brsw-card .brsw-damage-button {
     width: 5.5em;
+    min-height: 1.75rem;
 }
 
-.brsw-damage-roll {
+.brsw-card .brsw-damage-roll {
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;

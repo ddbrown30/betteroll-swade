@@ -1,86 +1,107 @@
-{{# if trait_roll.old_rolls }}
-    <div class="brsw-roll-row">
-        <span class="brsw-small-font">{{ localize 'BRSW.OldRoll' }}</span>
-        {{# each trait_roll.old_rolls}}
-                <span class="brsw-old-roll twbr:bg-gray-500 twbr:border twbr:border-solid
+{{#if trait_roll.is_rolled}}
+    {{#if trait_roll.old_rolls}}
+        <div class="brsw-old-rolls">
+            <span class="brsw-small-font">{{localize 'BRSW.OldRoll'}}</span>
+            <div class="brsw-roll-row">
+                {{#each trait_roll.old_rolls}}
+                    <span class="brsw-old-roll twbr:bg-gray-500 twbr:border twbr:border-solid
                         twbr:border-gray-700 twbr:rounded twbr:shadow twbr:hover:ring-2
-                        twbr:hover:ring-offset-1 twbr:hover:cursor-pointer" data-index="{{@index}}">{{# each dice }}
-                    <span class="brsw-small-dice-image {{this.extra_class}}">
-                        {{ this.final_total }}
-                    </span>
-                {{/each}}</span>
-        {{/each}}
-    </div>
-{{/if}}
-<div class="brsw-roll-results-wrapper brsw-collapse-button twbr:hover:ring-2 twbr:hover:ring-offset-1 twbr:hover:cursor-pointer" data-collapse="brsw-roll-detail">
-    <div class="brsw-roll-results">
-        <div class="brsw-roll-values">
-            {{#each trait_roll.current_roll.dice }}
-                <div class="brsw-roll-value twbr:text-xl twbr:font-bold">
-                    <span class="{{this.extra_class}}"  title="{{this.result_text}}">
-                        {{ this.final_total }}
-                    </span>
-                    <i class="{{ this.result_icon }} brsw-roll-value-result-icon"></i>
-                </div>
-            {{/each}}
+                        twbr:hover:ring-offset-1 twbr:hover:cursor-pointer" data-index="{{@index}}">
+                        {{#each dice}}
+                            <span class="brsw-small-dice-image {{this.extra_class}}">
+                                {{this.final_total}}
+                            </span>
+                        {{/each}}</span>
+                {{/each}}
+            </div>
         </div>
-        {{# if show_rerolls }}<span class="twbr:flex twbr:gap-1">
-            <button class="brsw-row-button brsw-roll-button brsw-form twbr:py-0.5 twbr:px-1 twbr:font-medium
+    {{/if}}
+    <div class="brsw-roll-results-wrapper brsw-collapse-button twbr:hover:ring-2 twbr:hover:ring-offset-1 twbr:hover:cursor-pointer" data-collapse="brsw-roll-detail">
+        <div class="brsw-roll-results">
+            <div class="brsw-roll-values">
+                {{#each trait_roll.current_roll.dice}}
+                    <div class="brsw-roll-value twbr:text-xl twbr:font-bold">
+                        <span class="{{this.extra_class}}" title="{{this.result_text}}">
+                            {{this.final_total}}
+                        </span>
+                        <i class="{{this.result_icon}} brsw-roll-value-result-icon"></i>
+                    </div>
+                {{/each}}
+            </div>
+            {{#if show_rerolls}}
+                <span class="twbr:flex twbr:gap-1">
+                    <button class="brsw-row-button brsw-roll-button brsw-form twbr:py-0.5 twbr:px-1 twbr:font-medium
                     twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg twbr:border twbr:border-solid
                     twbr:focus:z-10 twbr:focus:ring-4 twbr:focus:ring-gray-700 twbr:text-gray-800
-                    twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700"
-                    title="{{ localize "BRSW.Free_reroll" }}">
-                <i class="fas fa-redo-alt"></i>
-            </button>
-            {{#if bennie_avaliable}}
-            <button class="brsw-trait-reroll brsw-row-button brsw-roll-button roll-bennie-button brsw-form
+                    twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700" title="{{localize 'BRSW.Free_reroll'}}">
+                        <i class="fas fa-redo-alt"></i>
+                    </button>
+                    {{#if bennie_available}}
+                        <button class="brsw-trait-reroll brsw-row-button brsw-roll-button roll-bennie-button brsw-form
                         twbr:py-0.5 twbr:px-1 twbr:font-medium twbr:focus:outline-hidden twbr:bg-white
                         twbr:rounded-lg twbr:border twbr:border-solid twbr:focus:z-10 twbr:focus:ring-4
                         twbr:focus:ring-gray-700 twbr:text-gray-800 twbr:border-gray-600
-                        twbr:hover:text-white twbr:hover:bg-gray-700"
-                        title="{{ localize 'BRSW.Roll_and_bennie' }}">
-                    <img src="{{{ benny_image }}}" class="brsw-button-image" alt="Bennie re-roll">
-                </button>
+                        twbr:hover:text-white twbr:hover:bg-gray-700" title="{{localize 'BRSW.Roll_and_bennie'}}">
+                            <img src="{{{benny_image}}}" class="brsw-button-image" alt="Bennie re-roll">
+                        </button>
+                    {{/if}}
+                </span>
             {{/if}}
-        </span>{{/if}}
-    </div>
-</div>
-<div class="brsw-roll-detail {{# if collapse_rolls }}brsw-collapsed{{/if}}">
-    <div class="brsw-form">
-        <span class="brsw-clickable brsw-add-modifier">
-            <i class="fas fa-plus-circle" title="{{ localize 'BRSW.AddModifier' }}"></i>
-        </span>
-    </div>
-    {{#each trait_roll.current_roll.dice as |current_dice|}}
-        <div class="brsw-roll-detail-row twbr:text-white {{ this.extra_class }} brsw-override-die
-                twbr:hover:ring-2 twbr:hover:ring-offset-1 twbr:hover:cursor-pointer twbr:bg-gray-600
-                twbr:border twbr:border-solid twbr:border-gray-700 twbr:rounded twbr:shadow" data-die-index="{{@index}}">
-            <span>{{ this.label }}</span>
-            <span class="twbr:text-black">{{#each this.unexploded }}
-                <span class="brsw-d{{current_dice.sides}} brsw-dice-image">{{ this }}</span>
-            {{/each}}</span>
         </div>
-    {{/each}}
-    {{#each trait_roll.modifiers}}
-        <div class="brsw-roll-detail-row twbr:text-white {{ this.extra_class }} twbr:hover:ring-2
-                twbr:hover:ring-offset-1 twbr:hover:cursor-pointer twbr:bg-gray-600 twbr:border
-                twbr:border-solid twbr:border-gray-700 twbr:rounded twbr:shadow brsw-edit-modifier"
-                data-index="{{@index}}" data-label="{{this.name}}" data-value="{{this.value}}">
-            <span>{{ this.name }}</span>
-            <span>
-                {{# if this.dice }}
-                    <span>{{#each this.dice.terms as |current_term| }}
-                        {{# each this.results }}
-                            <span class="brsw-d{{current_term.faces}} brsw-dice-image">{{ this.result }}</span>
-                        {{/each}}
-                    {{/each}}</span>
-                {{ else}}
-                    <span>
-                        {{ this.value }}
-                    </span>
-                {{/if}}
-                <i class="brsw-delete-modifier brsw-clickable fas fa-trash brsw-form" data-index="{{@index}}"></i>
+    </div>
+    <div class="brsw-roll-detail {{#if collapse_rolls}}brsw-collapsed{{/if}}">
+        <div class="brsw-form">
+            <span class="brsw-clickable brsw-add-modifier">
+                <i class="fas fa-plus-circle" title="{{localize 'BRSW.AddModifier'}}"></i>
             </span>
         </div>
-    {{/each}}
-</div>
+        {{#each trait_roll.current_roll.dice as |current_dice|}}
+            <div class="brsw-roll-detail-row twbr:text-white {{this.extra_class}} brsw-override-die
+                twbr:hover:ring-2 twbr:hover:ring-offset-1 twbr:hover:cursor-pointer twbr:bg-gray-600
+                twbr:border twbr:border-solid twbr:border-gray-700 twbr:rounded twbr:shadow" data-die-index="{{@index}}">
+                <span>{{this.label}}</span>
+                <span class="twbr:text-black">
+                    {{#each this.unexploded}}
+                        <span class="brsw-d{{current_dice.sides}} brsw-dice-image">{{this}}</span>
+                    {{/each}}
+                </span>
+            </div>
+        {{/each}}
+        {{#each trait_roll.modifiers}}
+            <div class="brsw-roll-detail-row twbr:text-white {{this.extra_class}} twbr:hover:ring-2
+                twbr:hover:ring-offset-1 twbr:hover:cursor-pointer twbr:bg-gray-600 twbr:border
+                twbr:border-solid twbr:border-gray-700 twbr:rounded twbr:shadow brsw-edit-modifier" data-index="{{@index}}" data-label="{{this.name}}" data-value="{{this.value}}">
+                <span>{{this.name}}</span>
+                <span>
+                    {{#if this.dice}}
+                        <span>
+                            {{#each this.dice.terms as |current_term|}}
+                                {{#each this.results}}
+                                    <span class="brsw-d{{current_term.faces}} brsw-dice-image">{{this.result}}</span>
+                                {{/each}}
+                            {{/each}}
+                        </span>
+                    {{else}}
+                        <span>
+                            {{this.value}}
+                        </span>
+                    {{/if}}
+                    <i class="brsw-delete-modifier brsw-clickable fas fa-trash brsw-form" data-index="{{@index}}"></i>
+                </span>
+            </div>
+        {{/each}}
+    </div>
+{{else}}
+    <div class="brsw-form">
+        <div class="brsw-button-row">
+            <button class="brsw-roll-button brsw-form twbr:py-0.5 twbr:px-5 twbr:mr-2 twbr:mb-2
+                      twbr:font-medium twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg
+                      twbr:border twbr:border-solid twbr:focus:z-10 twbr:focus:ring-4
+                      twbr:focus:ring-gray-700 twbr:text-gray-800 twbr:border-gray-600
+                      twbr:hover:text-white twbr:hover:bg-gray-700 twbr:w-full">
+                <i class="fas fa-dice"></i>
+                {{localize 'BRSW.Roll'}}
+            </button>
+        </div>
+    </div>
+{{/if}}

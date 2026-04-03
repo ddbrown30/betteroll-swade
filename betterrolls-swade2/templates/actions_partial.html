@@ -1,15 +1,15 @@
-{{# if action_groups }}
-    <div class="brsw-selected-actions twbr:my-2 twbr:block twbr:p-1 twbr:bg-gray-500 twbr:border twbr:border-solid twbr:border-gray-700 twbr:rounded twbr:text-blue-200 twbr:shadow twbr:hover:ring-2 twbr:hover:ring-offset-1 twbr:hover:cursor-pointer twbr:leading-6" data-card-id="{{ id }}">
-        {{# if this.selected_actions }}
-            {{# each this.selected_actions }}
+{{#if action_groups}}
+    <div class="brsw-selected-actions twbr:my-2 twbr:block twbr:p-1 twbr:bg-gray-500 twbr:border twbr:border-solid twbr:border-gray-700 twbr:rounded twbr:text-blue-200 twbr:shadow twbr:hover:ring-2 twbr:hover:ring-offset-1 twbr:hover:cursor-pointer twbr:leading-6" data-card-id="{{id}}">
+        {{#if this.selected_actions}}
+            {{#each this.selected_actions}}
                 <span class="twbr:bg-red-700 twbr:text-red-200 twbr:text-xs twbr:font-medium twbr:px-2.5 twbr:py-0.5 twbr:rounded twbr:m-0.5" style="display: inline-block">
-                    {{# if this.has_skill_mod }}<i class="fas fa-bullseye"></i>{{/if}}
-                    {{# if this.has_damage_mod }}<i class="fas fa-tint"></i>{{/if}}
-                    {{ this.name }}
+                    {{#if this.has_skill_mod}}<i class="fas fa-bullseye"></i>{{/if}}
+                    {{#if this.has_damage_mod}}<i class="fas fa-tint"></i>{{/if}}
+                    {{this.name}}
                 </span>
             {{/each}}
         {{else}}
-            {{ localize this.no_actions_message }}
+            {{localize this.no_actions_message}}
         {{/if}}
     </div>
 {{/if}}
