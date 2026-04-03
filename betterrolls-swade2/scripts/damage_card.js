@@ -69,7 +69,7 @@ export async function create_damage_card(
       show_injury: show_injury,
       attribute_name: "vigor",
     },
-    "modules/betterrolls-swade2/templates/damage_card.html",
+    "modules/betterrolls-swade2/templates/damage_card.hbs",
   );
   if (wounds === 0) {
     //If we're not dealing any wounds, don't bother popping out the card since there's no action required

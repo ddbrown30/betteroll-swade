@@ -89,7 +89,7 @@ export async function create_incapacitation_card(token_id) {
       show_roll_injury: false,
       attribute_name: "vigor",
     },
-    "modules/betterrolls-swade2/templates/incapacitation_card.html",
+    "modules/betterrolls-swade2/templates/incapacitation_card.hbs",
   );
   br_message.update_list = { ...br_message.update_list, ...{ user: user.id } };
   br_message.type = BRSW_CONST.TYPE_INC_CARD;
@@ -269,7 +269,7 @@ export async function create_injury_card(token_id, reason) {
       first_location: game.i18n.localize(first_result),
       second_location: game.i18n.localize(second_result),
     },
-    "modules/betterrolls-swade2/templates/injury_card.html",
+    "modules/betterrolls-swade2/templates/injury_card.hbs",
   );
   br_message.update_list = { ...br_message.update_list, ...{ user: user.id } };
   br_message.type = BRSW_CONST.TYPE_INJ_CARD;

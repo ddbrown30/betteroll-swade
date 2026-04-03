@@ -25,7 +25,7 @@ export class ModifierSettingsConfiguration extends HandlebarsApplicationMixin(Ap
   };
 
   static PARTS = {
-    form: { template: "/modules/betterrolls-swade2/templates/modifier_names_settings.html" },
+    form: { template: "/modules/betterrolls-swade2/templates/modifier_names_settings.hbs" },
   };
 
   async _prepareContext(options) {

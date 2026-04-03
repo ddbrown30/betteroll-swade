@@ -179,7 +179,7 @@ export async function create_item_card(
       tooltip: create_item_card_tooltip(item),
       swade_templates: get_template_from_item(item),
     },
-    "modules/betterrolls-swade2/templates/item_card.html",
+    "modules/betterrolls-swade2/templates/item_card.hbs",
   );
   br_message.type = BRSW_CONST.TYPE_ITEM_CARD;
   br_message.damage = damage;

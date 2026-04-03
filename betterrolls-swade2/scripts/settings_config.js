@@ -34,9 +34,9 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static PARTS = {
     tabs: { template: 'templates/generic/tab-navigation.hbs' },
-    world: { template: "modules/betterrolls-swade2/templates/settings_config/world_tab.html" },
-    user: { template: "modules/betterrolls-swade2/templates/settings_config/user_tab.html" },
-    footer: { template: "modules/betterrolls-swade2/templates/settings_config/footer.html" }
+    world: { template: "modules/betterrolls-swade2/templates/settings_config/world_tab.hbs" },
+    user: { template: "modules/betterrolls-swade2/templates/settings_config/user_tab.hbs" },
+    footer: { template: "modules/betterrolls-swade2/templates/settings_config/footer.hbs" }
   };
 
   static TABS = {

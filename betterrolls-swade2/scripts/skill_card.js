@@ -87,7 +87,7 @@ async function create_skill_card(
       trait_id: skill.id,
       description: skill.system.description,
     },
-    "modules/betterrolls-swade2/templates/skill_card.html",
+    "modules/betterrolls-swade2/templates/skill_card.hbs",
   );
   br_message.type = BRSW_CONST.TYPE_SKILL_CARD;
   br_message.skill_id = skill.id;

@@ -1,4 +1,4 @@
-{{>"modules/betterrolls-swade2/templates/common_card_header.html"}}
+{{>"modules/betterrolls-swade2/templates/common_card_header.hbs"}}
 <div class="twbr:flex twbr:justify-between twbr:border-t-1">
     <div>{{{text}}}</div>
     <button class="brsw-form brsw-row-button brsw-undo-damage twbr:mt-2 twbr:py-0.5
@@ -9,8 +9,8 @@
     </button>
 </div>
 {{#if trait_roll.rolls}}
-    {{>"modules/betterrolls-swade2/templates/trait_roll_partial.html"}}
-    {{>"modules/betterrolls-swade2/templates/trait_result_partial.html"}}
+    {{>"modules/betterrolls-swade2/templates/trait_roll_partial.hbs"}}
+    {{>"modules/betterrolls-swade2/templates/trait_result_partial.hbs"}}
 {{else}}
     {{#if soak_possible}}
         <div class="brsw-button-row brsw-form twbr:border-t-1 twbr:mt-1 twbr:p-1">

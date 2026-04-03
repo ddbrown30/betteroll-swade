@@ -1,10 +1,10 @@
-{{>"modules/betterrolls-swade2/templates/common_card_header.html"}}
+{{>"modules/betterrolls-swade2/templates/common_card_header.hbs"}}
 <div class="twbr:border-t-1">
   {{{text}}}
 </div>
 {{#if trait_roll.rolls}}
-  {{>"modules/betterrolls-swade2/templates/trait_roll_partial.html"}}
-  {{>"modules/betterrolls-swade2/templates/trait_result_partial.html"}}
+  {{>"modules/betterrolls-swade2/templates/trait_roll_partial.hbs"}}
+  {{>"modules/betterrolls-swade2/templates/trait_result_partial.hbs"}}
 {{else}}
   <div class="brsw-button-row brsw-form twbr:border-t-1">
     <button class="brsw-spirit-button twbr:py-0.5 twbr:px-5 twbr:mr-2 twbr:my-2

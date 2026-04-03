@@ -1,5 +1,5 @@
 <div class="brsw-card">
-    {{>"modules/betterrolls-swade2/templates/common_card_header.html"}}
+    {{>"modules/betterrolls-swade2/templates/common_card_header.hbs"}}
     {{#if notes}}
         <div class="twbr:w-full twbr:text-center twbr:font-bold">{{{notes}}}</div>
     {{/if}}
@@ -57,11 +57,11 @@
         {{/each}}
     {{/if}}
     {{#if (or damage skill)}}
-        {{>"modules/betterrolls-swade2/templates/actions_partial.html"}}
+        {{>"modules/betterrolls-swade2/templates/actions_partial.hbs"}}
     {{/if}}
     {{#if skill}}
-        {{>"modules/betterrolls-swade2/templates/trait_roll_partial.html"}}
-        {{>"modules/betterrolls-swade2/templates/trait_result_partial.html"}}
+        {{>"modules/betterrolls-swade2/templates/trait_roll_partial.hbs"}}
+        {{>"modules/betterrolls-swade2/templates/trait_result_partial.hbs"}}
     {{/if}}
     {{#if damage}}
         <div class="brsw-form brsw-button-row brsw-form-options twbr:pt-2">
@@ -85,7 +85,7 @@
                 </button>
             </span>
         </div>
-        {{>"modules/betterrolls-swade2/templates/damage_partial.html"}}
+        {{>"modules/betterrolls-swade2/templates/damage_partial.hbs"}}
     {{/if}}
     {{#if swade_templates}}
         <h4 class="brsw-item-subheading">
