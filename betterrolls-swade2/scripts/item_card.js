@@ -133,11 +133,6 @@ export async function create_item_card(
   if (!item) {
     item = await fromUuid(item_id);
   }
-  if (item.type === "consumable") {
-    // Show the system card
-    item.show();
-    return;
-  }
   if (
     item.type === "action" &&
     SettingsUtils.getWorldSetting("disable_for_actions")
@@ -498,6 +493,9 @@ export function activate_item_card_listeners(br_card, html) {
     ev.currentTarget.classList.toggle("twbr:bg-red-700");
     ev.currentTarget.classList.toggle("twbr:bg-gray-500");
   });
+  html.querySelector(".brsw-use-consumable-button")?.addEventListener("click", (ev) => {
+    br_card.item.consume();
+  });
   addEventListenerAll(html, ".brsw-macro-button", "click", (ev) => {
     const action =
       br_card.item.system.actions.additional[ev.currentTarget.dataset.macro];
@@ -618,7 +616,7 @@ export function get_item_trait(item, actor) {
   }
   // Some types of items don't have an associated skill
   if (
-    ["armor", "shield", "gear", "edge", "hindrance", "ability"].includes(
+    ["armor", "shield", "gear", "edge", "hindrance", "ability", "consumable"].includes(
       item.type.toLowerCase(),
     )
   ) {
