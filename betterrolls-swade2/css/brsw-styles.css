@@ -117,7 +117,7 @@
     margin: .4rem 0 .2rem;
 }
 
-.brsw-card .brsw-sub-button {
+.brsw-card button.brsw-sub-button {
     min-height: fit-content;
     height: fit-content;
 }
