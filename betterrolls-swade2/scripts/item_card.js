@@ -185,6 +185,7 @@ export async function create_item_card(
   br_message.damage = damage;
   br_message.item_id = item_id;
   br_message.applicable_effects = get_applicable_effects(item);
+  br_message.check_warnings(br_message.render_data);
   await br_message.render(actions_stored);
   await br_message.save();
   call_create_item_card_hooks(item, br_message);
