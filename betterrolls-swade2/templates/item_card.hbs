@@ -49,7 +49,7 @@
         </div>
     {{/if}}
     {{#if applicable_effects}}
-        <p>Applicable effects: </p>
+        <p>{{localize 'BRSW.ApplicableEffects'}}</p>
         {{#each applicable_effects}}
             <a class="twbr:p-1 twbr:rounded twbr:border-solid twbr:border twbr:border-gray-500 twbr:text-gray-700 twbr:m-1 twbr:text-xs twbr:cursor-move" draggable="true" data-uuid="{{this.uuid}}" data-id="{{this.id}}" data-type="ActiveEffect" data-tooltip="Active Effect" data-tooltip-text="Base Active Effect" data-link="" style="display: inline-block">
                 {{this.name}}
