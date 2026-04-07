@@ -494,9 +494,11 @@ export function activate_item_card_listeners(br_card, html) {
     ev.currentTarget.classList.toggle("twbr:bg-red-700");
     ev.currentTarget.classList.toggle("twbr:bg-gray-500");
   });
-  html.querySelector(".brsw-use-consumable-button")?.addEventListener("click", (ev) => {
-    br_card.item.consume();
-  });
+  html
+    .querySelector(".brsw-use-consumable-button")
+    ?.addEventListener("click", (ev) => {
+      br_card.item.consume();
+    });
   addEventListenerAll(html, ".brsw-macro-button", "click", (ev) => {
     const action =
       br_card.item.system.actions.additional[ev.currentTarget.dataset.macro];
@@ -617,9 +619,15 @@ export function get_item_trait(item, actor) {
   }
   // Some types of items don't have an associated skill
   if (
-    ["armor", "shield", "gear", "edge", "hindrance", "ability", "consumable"].includes(
-      item.type.toLowerCase(),
-    )
+    [
+      "armor",
+      "shield",
+      "gear",
+      "edge",
+      "hindrance",
+      "ability",
+      "consumable",
+    ].includes(item.type.toLowerCase())
   ) {
     return "";
   }
@@ -1179,9 +1187,12 @@ async function roll_dmg_target(
   );
   await roll.evaluate();
   // Heavy armor
-  if (target &&
-    (!item.system.isHeavyWeapon && !damage_formulas.heavy_weapon) &&
-    has_heavy_armor(target, damage_formulas.location)) {
+  if (
+    target &&
+    !item.system.isHeavyWeapon &&
+    !damage_formulas.heavy_weapon &&
+    has_heavy_armor(target, damage_formulas.location)
+  ) {
     const no_damage_mod = new DamageModifier(
       game.i18n.localize("BRSW.HeavyArmor"),
       -999999,
@@ -1191,6 +1202,7 @@ async function roll_dmg_target(
   }
   // Multiply modifiers must be last
   if (damage_formulas.multiplier !== 1) {
+    const multiplier = parseFloat(damage_formulas.multiplier) || 2;
     const final_value = (roll.total + total_modifiers) * 2;
     const multiply_mod = new DamageModifier(
       `x ${damage_formulas.multiplier}`,
