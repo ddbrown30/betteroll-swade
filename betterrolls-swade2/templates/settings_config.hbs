@@ -1,21 +1,21 @@
 <form>
     <nav class="sheet-tabs tabs" data-group="main" aria-role="Form Tab Navigation">
         {{#if can_modify_world}}
-        <a class="item active" data-tab="world"><i class="fas fa-globe"></i> {{localize "BRSW.Settings.Tabs.World"}}</a>
+            <a class="item active" data-tab="world"><i class="fas fa-globe"></i> {{localize "BRSW.Settings.Tabs.World"}}</a>
         {{/if}}
         <a class="item" data-tab="user"><i class="fas fa-user"></i> {{localize "BRSW.Settings.Tabs.User"}}</a>
     </nav>
 
     <section class="content">
         <div class="tab active" data-group="main" data-tab="world">
-            {{#each world_settings }}
-            {{>"modules/betterrolls-swade2/templates/setting_partial.html"}}
+            {{#each world_settings}}
+                {{>"modules/betterrolls-swade2/templates/setting_partial.hbs"}}
             {{/each}}
         </div>
 
         <div class="tab" data-group="main" data-tab="user">
-            {{#each user_settings }}
-            {{>"modules/betterrolls-swade2/templates/setting_partial.html"}}
+            {{#each user_settings}}
+                {{>"modules/betterrolls-swade2/templates/setting_partial.hbs"}}
             {{/each}}
         </div>
     </section>

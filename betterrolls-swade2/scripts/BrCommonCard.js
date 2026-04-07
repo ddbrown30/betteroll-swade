@@ -686,7 +686,7 @@ export class BrCommonCard {
     data.actor = this.actor;
     data.vehicle_actor = this.vehicle_actor;
     data.item = this.item;
-    data.bennie_avaliable = this.bennie_available;
+    data.bennie_available = this.bennie_available;
     data.show_rerolls = this.show_rerolls;
     data.selected_actions = this.get_selected_actions();
     data.no_actions_message =

@@ -747,7 +747,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(
     const new_span = document.createElement("span");
     new_span.insertAdjacentHTML(
       "beforeend",
-      '<h2 class=\'mb-0 border-none\'><button type="button" class="p-5 font-medium border border-b-0 border-gray-200 {{# if @first }}rounded-t-xl{{/if}} bg-gray-600 focus:ring-4 focus:ring-gray-700 hover:text-white hover:bg-gray-700 gap-3"><span>New</span></button></h2>',
+      '<h2 class=\'mb-0 border-none\'><button type="button" class="p-5 font-medium border border-b-0 border-gray-200 {{#if @first}}rounded-t-xl{{/if}} bg-gray-600 focus:ring-4 focus:ring-gray-700 hover:text-white hover:bg-gray-700 gap-3"><span>New</span></button></h2>',
     );
     new_span.insertAdjacentHTML(
       "beforeend",

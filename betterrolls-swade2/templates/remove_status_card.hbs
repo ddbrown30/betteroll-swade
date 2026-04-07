@@ -1,0 +1,19 @@
+{{>"modules/betterrolls-swade2/templates/common_card_header.hbs"}}
+<div class="twbr:border-t-1">
+  {{{text}}}
+</div>
+{{#if trait_roll.rolls}}
+  {{>"modules/betterrolls-swade2/templates/trait_roll_partial.hbs"}}
+  {{>"modules/betterrolls-swade2/templates/trait_result_partial.hbs"}}
+{{else}}
+  <div class="brsw-button-row brsw-form twbr:border-t-1">
+    <button class="brsw-spirit-button twbr:py-0.5 twbr:px-5 twbr:mr-2 twbr:my-2
+                twbr:font-medium twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg twbr:border
+                twbr:border-solid twbr:focus:z-10 twbr:focus:ring-4 twbr:focus:ring-gray-700
+                twbr:text-gray-800 twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700
+                twbr:w-full">
+      <i class="fas fa-dice"></i>
+      {{roll_title}}
+    </button>
+  </div>
+{{/if}}

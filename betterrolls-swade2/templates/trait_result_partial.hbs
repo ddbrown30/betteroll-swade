@@ -1,0 +1,31 @@
+{{#if trait_roll.current_roll.is_fumble}}
+    <div class="brsw-fumble-row">
+        {{localize 'BRSW.Fumble'}}
+    </div>
+{{else}}
+    <div class="brsw-roll-detail {{#if collapse_results}}brsw-collapsed{{/if}} ">
+        <div class="brsw-roll-detail-row">
+            <span>
+            </span>
+            <span>
+                <i class="brsw-edit-tn brsw-clickable fas fa-edit brsw-form" data-index="-1" data-value="4" title='{{localize "BRSW.EditAllTN"}}'></i>
+                <i class="brsw-target-tn brsw-clickable fas fa-bullseye brsw-form" data-index="-1" title="{{localize 'BRSW.TNTargeted'}}"></i>
+                <i class="brsw-selected-tn brsw-clickable fas fa-object-ungroup brsw-form" data-index="-1" title="{{localize 'BRSW.TNSelected'}}"></i>
+            </span>
+        </div>
+        {{#each trait_roll.current_roll.dice}}
+            {{#if this.is_not_discarded}}
+                <div class="brsw-roll-detail-row twbr:text-white twbr:hover:ring-2 twbr:hover:ring-offset-1
+                        twbr:hover:cursor-pointer twbr:bg-gray-600 twbr:border twbr:border-solid
+                        twbr:border-gray-700 twbr:rounded twbr:shadow brsw-edit-tn" data-index="{{@index}}" data-value="{{this.tn}}" title='{{localize "BRSW.EditTN"}}'>
+                    <span title="{{localize ../trait_roll.tn_reason}}">{{localize "BRSW.TN"}} {{../trait_roll.tn}} {{localize "BRSW.Result"}} {{this.final_total}}</span>
+                    <span>
+                        {{this.result_text}}
+                        <i class="brsw-target-tn brsw-clickable fas fa-bullseye brsw-form" data-index="{{@index}}" title="{{localize 'BRSW.TNTargeted'}}"></i>
+                        <i class="brsw-selected-tn brsw-clickable fas fa-object-ungroup brsw-form" data-index="{{@index}}" title="{{localize 'BRSW.TNSelected'}}"></i>
+                    </span>
+                </div>
+            {{/if}}
+        {{/each}}
+    </div>
+{{/if}}

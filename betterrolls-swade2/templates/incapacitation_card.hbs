@@ -1,29 +1,29 @@
-{{>"modules/betterrolls-swade2/templates/common_card_header.html"}}
+{{>"modules/betterrolls-swade2/templates/common_card_header.hbs"}}
 <div class="twbr:border-t-1 twbr:mt-1 twbr:p-1">
-    {{{ text }}} {{{ text_after }}}
+    {{{text}}}{{{text_after}}}
 </div>
-{{# if trait_roll.rolls }}
-    {{>"modules/betterrolls-swade2/templates/trait_roll_partial.html"}}
-    {{>"modules/betterrolls-swade2/templates/trait_result_partial.html"}}
-{{ else }}
+{{#if trait_roll.rolls}}
+    {{>"modules/betterrolls-swade2/templates/trait_roll_partial.hbs"}}
+    {{>"modules/betterrolls-swade2/templates/trait_result_partial.hbs"}}
+{{else}}
     <div class="brsw-button-row brsw-form twbr:border-t-1 twbr:mt-1 twbr:p-1">
         <button class="brsw-vigor-button brsw-form twbr:py-0.5 twbr:px-5 twbr:mr-2 twbr:mb-2
                 twbr:font-medium twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg twbr:border
                 twbr:border-solid twbr:focus:z-10 twbr:focus:ring-4 twbr:focus:ring-gray-700
                 twbr:text-gray-800 twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700
                 twbr:w-full">
-            <i class="fas fa-dice"></i> {{ localize 'BRSW.IncapacitationRoll' }}
+            <i class="fas fa-dice"></i> {{localize 'BRSW.IncapacitationRoll'}}
         </button>
     </div>
 {{/if}}
-{{# if show_roll_injury }}
+{{#if show_roll_injury}}
     <div class="brsw-button-row brsw-form twbr:border-t-1 twbr:mt-1 twbr:p-1">
         <button class="brsw-injury-button twbr:py-0.5 twbr:px-5 twbr:mr-2 twbr:mb-2 twbr:font-medium
                 twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg twbr:border twbr:border-solid
                 twbr:focus:z-10 twbr:focus:ring-4 twbr:focus:ring-gray-700 twbr:text-gray-800
                 twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700 twbr:w-full"
-                data-injury-type="{{ injury_type}}">
-            {{ localize 'BRSW.RollInjury' }}
+                data-injury-type="{{injury_type}}">
+            {{localize 'BRSW.RollInjury'}}
         </button>
     </div>
 {{/if}}

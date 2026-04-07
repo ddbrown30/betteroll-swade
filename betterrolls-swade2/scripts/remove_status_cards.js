@@ -55,7 +55,7 @@ async function create_remove_status_card(original_message, actor, type) {
       show_roll_injury: false,
       attribute_name: "spirit",
     },
-    "modules/betterrolls-swade2/templates/remove_status_card.html",
+    "modules/betterrolls-swade2/templates/remove_status_card.hbs",
   );
   br_message.update_list = { ...br_message.update_list, ...{ user: user.id } };
   br_message.type = type;

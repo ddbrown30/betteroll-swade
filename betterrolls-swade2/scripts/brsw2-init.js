@@ -83,13 +83,13 @@ Hooks.on(`ready`, () => {
   setup_chat_button();
   // Load partials.
   const templatePaths = [
-    "modules/betterrolls-swade2/templates/common_card_header.html",
-    "modules/betterrolls-swade2/templates/trait_roll_partial.html",
-    "modules/betterrolls-swade2/templates/trait_result_partial.html",
-    "modules/betterrolls-swade2/templates/damage_partial.html",
-    "modules/betterrolls-swade2/templates/actions_partial.html",
-    "modules/betterrolls-swade2/templates/card_dialog.html",
-    "modules/betterrolls-swade2/templates/setting_partial.html",
+    "modules/betterrolls-swade2/templates/common_card_header.hbs",
+    "modules/betterrolls-swade2/templates/trait_roll_partial.hbs",
+    "modules/betterrolls-swade2/templates/trait_result_partial.hbs",
+    "modules/betterrolls-swade2/templates/damage_partial.hbs",
+    "modules/betterrolls-swade2/templates/actions_partial.hbs",
+    "modules/betterrolls-swade2/templates/card_dialog.hbs",
+    "modules/betterrolls-swade2/templates/setting_partial.hbs",
   ];
   foundry.applications.handlebars.loadTemplates(templatePaths).then(() => {
     console.info("Better Rolls templates preloaded");

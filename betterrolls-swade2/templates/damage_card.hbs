@@ -1,36 +1,35 @@
-{{>"modules/betterrolls-swade2/templates/common_card_header.html"}}
+{{>"modules/betterrolls-swade2/templates/common_card_header.hbs"}}
 <div class="twbr:flex twbr:justify-between twbr:border-t-1">
-    <div>{{{ text }}}</div>
+    <div>{{{text}}}</div>
     <button class="brsw-form brsw-row-button brsw-undo-damage twbr:mt-2 twbr:py-0.5
             twbr:px-0.5 twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg twbr:border
             twbr:border-solid twbr:focus:ring-4 twbr:focus:ring-gray-700 twbr:text-gray-800
-            twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700"
-            title="{{ localize "BRSW.UndoDamage" }}">
+            twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700" title="{{localize 'BRSW.UndoDamage'}}">
         <i class="fas fa-undo"></i>
     </button>
 </div>
-{{# if trait_roll.rolls }}
-    {{>"modules/betterrolls-swade2/templates/trait_roll_partial.html"}}
-    {{>"modules/betterrolls-swade2/templates/trait_result_partial.html"}}
-{{ else }}
-    {{# if soak_possible }}
+{{#if trait_roll.rolls}}
+    {{>"modules/betterrolls-swade2/templates/trait_roll_partial.hbs"}}
+    {{>"modules/betterrolls-swade2/templates/trait_result_partial.hbs"}}
+{{else}}
+    {{#if soak_possible}}
         <div class="brsw-button-row brsw-form twbr:border-t-1 twbr:mt-1 twbr:p-1">
             <button class="brsw-soak-button twbr:py-0.5 twbr:px-5 twbr:focus:outline-hidden
                     twbr:bg-white twbr:rounded-lg twbr:border twbr:border-solid twbr:focus:ring-4
                     twbr:focus:ring-gray-700 twbr:text-gray-800 twbr:border-gray-600
                     twbr:hover:text-white twbr:hover:bg-gray-700 twbr:w-full">
-                <img src="{{{ benny_image }}}" class="brsw-button-image brws-soak-benny" alt="Cost bennie"> {{ localize 'BRSW.SoakRoll' }}
+                <img src="{{{benny_image}}}" class="brsw-button-image brws-soak-benny" alt="Cost bennie"> {{localize 'BRSW.SoakRoll'}}
             </button>
         </div>
     {{/if}}
 {{/if}}
-{{# if show_incapacitation }}
+{{#if show_incapacitation}}
     <div class="brsw-button-row brsw-form twbr:border-t-1 twbr:mt-1 twbr:p-1">
         <button class="brsw-show-incapacitation twbr:py-0.5 twbr:px-5 twbr:focus:outline-hidden
                 twbr:bg-white twbr:rounded-lg twbr:border twbr:border-solid twbr:focus:ring-4
                 twbr:focus:ring-gray-700 twbr:text-gray-800 twbr:border-gray-600
                 twbr:hover:text-white twbr:hover:bg-gray-700 twbr:w-full">
-            {{ localize "BRSW.IncapacitationCard" }}
+            {{localize "BRSW.IncapacitationCard"}}
         </button>
     </div>
     <div class="brsw-button-row brsw-form twbr:mt-1 twbr:p-1">
@@ -38,14 +37,14 @@
                 twbr:bg-white twbr:rounded-lg twbr:border twbr:border-solid twbr:focus:ring-4
                 twbr:focus:ring-gray-700 twbr:text-gray-800 twbr:border-gray-600
                 twbr:hover:text-white twbr:hover:bg-gray-700 twbr:w-full">
-            {{ localize "BRSW.MarkDefeated" }}
+            {{localize "BRSW.MarkDefeated"}}
         </button>
     </div>
 {{/if}}
-{{# if show_injury }}
+{{#if show_injury}}
     <div class="brsw-button-row brsw-form twbr:border-t-1 twbr:mt-1 twbr:p-1">
         <button class="brsw-injury-button twbr:w-full">
-            {{ localize 'BRSW.RollInjury' }}
+            {{localize 'BRSW.RollInjury'}}
         </button>
     </div>
 {{/if}}

@@ -133,11 +133,6 @@ export async function create_item_card(
   if (!item) {
     item = await fromUuid(item_id);
   }
-  if (item.type === "consumable") {
-    // Show the system card
-    item.show();
-    return;
-  }
   if (
     item.type === "action" &&
     SettingsUtils.getWorldSetting("disable_for_actions")
@@ -184,12 +179,13 @@ export async function create_item_card(
       tooltip: create_item_card_tooltip(item),
       swade_templates: get_template_from_item(item),
     },
-    "modules/betterrolls-swade2/templates/item_card.html",
+    "modules/betterrolls-swade2/templates/item_card.hbs",
   );
   br_message.type = BRSW_CONST.TYPE_ITEM_CARD;
   br_message.damage = damage;
   br_message.item_id = item_id;
   br_message.applicable_effects = get_applicable_effects(item);
+  br_message.check_warnings(br_message.render_data);
   await br_message.render(actions_stored);
   await br_message.save();
   call_create_item_card_hooks(item, br_message);
@@ -498,6 +494,9 @@ export function activate_item_card_listeners(br_card, html) {
     ev.currentTarget.classList.toggle("twbr:bg-red-700");
     ev.currentTarget.classList.toggle("twbr:bg-gray-500");
   });
+  html.querySelector(".brsw-use-consumable-button")?.addEventListener("click", (ev) => {
+    br_card.item.consume();
+  });
   addEventListenerAll(html, ".brsw-macro-button", "click", (ev) => {
     const action =
       br_card.item.system.actions.additional[ev.currentTarget.dataset.macro];
@@ -618,7 +617,7 @@ export function get_item_trait(item, actor) {
   }
   // Some types of items don't have an associated skill
   if (
-    ["armor", "shield", "gear", "edge", "hindrance", "ability"].includes(
+    ["armor", "shield", "gear", "edge", "hindrance", "ability", "consumable"].includes(
       item.type.toLowerCase(),
     )
   ) {

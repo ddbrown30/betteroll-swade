@@ -61,7 +61,7 @@ async function create_attribute_card(
       header: { type: game.i18n.localize("BRSW.Attribute"), title: title },
       attribute_name: name,
     },
-    "modules/betterrolls-swade2/templates/attribute_card.html",
+    "modules/betterrolls-swade2/templates/attribute_card.hbs",
   );
   // We always set the actor (as a fallback, and the token if possible)
   br_message.attribute_name = name;

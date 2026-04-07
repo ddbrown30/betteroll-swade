@@ -1,21 +1,21 @@
 <div class="scrollable">
-    <h2>{{ localize "BRSW.WorldGlobalMenuLabel" }}</h2>
+    <h2>{{localize "BRSW.WorldGlobalMenuLabel"}}</h2>
     <div class="brsw-action-list">
-        {{#each actions }}
+        {{#each actions}}
         <span>
             <h2 class="twbr:mb-0 twbr:border-none brsw-accordion">
                 <button type="button" data-action="accordion"
                         class="twbr:p-3 twbr:font-medium twbr:text-white twbr:border
-                        twbr:border-b-0 twbr:border-gray-200 {{# if @first }}twbr:rounded-t-xl{{/if}}
+                        twbr:border-b-0 twbr:border-gray-200 {{#if @first}}twbr:rounded-t-xl{{/if}}
                         twbr:bg-gray-600 twbr:focus:ring-4 twbr:focus:ring-gray-700
                         twbr:hover:text-white twbr:hover:bg-gray-700 gap-3">
-                    <span>{{ this.name }}</span>
+                    <span>{{this.name}}</span>
                 </button>
             </h2>
             <div class='brsw-edit-action twbr:p-5 twbr:border twbr:border-b-0 twbr:border-gray-200
                     twbr:bg-gray-500 brsw-collapsed'>
-                <textarea class='brsw-action-json' name="{{ this.id }}"
-                          rows="9">{{ this.json }}</textarea>
+                <textarea class='brsw-action-json' name="{{this.id}}"
+                          rows="9">{{this.json}}</textarea>
                 <i data-action="trash" class="brsw-red-text fas fa-trash brsw-clickable"></i>
             </div>
         </span>
