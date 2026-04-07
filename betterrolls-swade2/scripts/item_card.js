@@ -1203,7 +1203,7 @@ async function roll_dmg_target(
   // Multiply modifiers must be last
   if (damage_formulas.multiplier !== 1) {
     const multiplier = parseFloat(damage_formulas.multiplier) || 2;
-    const final_value = (roll.total + total_modifiers) * 2;
+    const final_value = (roll.total + total_modifiers) * multiplier;
     const multiply_mod = new DamageModifier(
       `x ${damage_formulas.multiplier}`,
       final_value - total_modifiers - roll.total,
