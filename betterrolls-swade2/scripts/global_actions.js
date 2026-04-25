@@ -460,7 +460,7 @@ function check_document_value(document, value) {
   const [path, result] = value.split("=");
   const data = foundry.utils.getProperty(document, path);
   // noinspection EqualityComparisonWithCoercionJS
-  return data == result;
+  return result != undefined ? SettingsUtils.check_equality_with_operators(data, result) : !!data;
 }
 
 // noinspection JSPrimitiveTypeWrapperUsage
