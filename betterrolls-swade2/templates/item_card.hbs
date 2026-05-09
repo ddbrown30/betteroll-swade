@@ -135,7 +135,7 @@
             </div>
         {{/if}}
         {{#if resist_buttons}}
-            <div class="brsw-form">
+            <div>
                 <h4 class="brsw-item-subheading">
                     <i class="fa-solid fa-ban"></i> {{localize 'BRSW.Resistance'}}
                 </h4>
@@ -144,8 +144,7 @@
                         <button class="brsw-resist-button brsw-sub-button twbr:py-0.5 twbr:px-0.5 twbr:w-full
                         twbr:font-medium twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg
                         twbr:border twbr:border-solid twbr:focus:z-10 twbr:focus:ring-4 twbr:focus:ring-gray-700
-                        twbr:text-gray-800 twbr:border-gray-600
-                        {{#if ../trait_roll.is_rolled}}twbr:hover:text-white twbr:hover:bg-gray-700{{/if}}" data-trait="{{this.trait}}" data-trait-mod="{{this.trait_mod}}" {{#unless ../trait_roll.is_rolled}}disabled{{/unless}}>
+                        twbr:text-gray-800 twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700" data-trait="{{this.trait}}" data-trait-mod="{{this.trait_mod}}">
                             <i class="fa-solid fa-ban"></i> {{this.name}}
                         </button>
                     {{/each}}
