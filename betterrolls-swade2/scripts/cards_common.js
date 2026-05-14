@@ -892,8 +892,9 @@ async function get_reroll_options(br_card, extra_data) {
 }
 
 /**
- * Show the 3d dice for a trait roll
- * @param {BrCommonCard} br_card
+ * Handle the feedback of rolling the dice
+ * @param {ChatMessage} message
+ * @param {BRWSRoll} brswroll
  * @param {Roll} roll
  */
 export async function roll_dice(message, brswroll, roll) {
@@ -905,8 +906,9 @@ export async function roll_dice(message, brswroll, roll) {
 }
 
 /**
- * Show the 3d dice for a trait roll
- * @param {BrCommonCard} br_card
+ * Show the 3d dice for a roll
+ * @param {ChatMessage} message
+ * @param {BRWSRoll} brswroll
  * @param {Roll} roll
  */
 async function show_3d_dice(message, brswroll, roll) {
