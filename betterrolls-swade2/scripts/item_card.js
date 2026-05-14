@@ -16,6 +16,7 @@ import {
   has_joker,
   process_common_actions,
   process_minimum_str_modifiers,
+  roll_dice,
 } from "./cards_common.js";
 import {
   FIGHTING_SKILLS,
@@ -1267,34 +1268,13 @@ async function roll_dmg_target(
     ].label = game.i18n.localize("BRSW.Raise");
   }
   current_damage_roll.label = defense_values.name;
-  // Dice so nice
-  if (game.dice3d) {
-    // Dice buried in modifiers.
-    let users = null;
-    if (message.whisper.length > 0) {
-      users = message.whisper;
+  const damage_theme = SettingsUtils.getUserSetting("damageDieTheme");
+  if (damage_theme !== "None") {
+    for (const die of roll.dice) {
+      die.options.colorset = damage_theme;
     }
-    for (const modifier of damage_roll.brswroll.modifiers) {
-      if (modifier.dice) {
-        // noinspection ES6MissingAwait
-        game.dice3d.showForRoll(
-          modifier.dice,
-          game.user,
-          true,
-          users,
-          message.blind,
-        );
-      }
-    }
-    const damage_theme = SettingsUtils.getUserSetting("damageDieTheme");
-    if (damage_theme !== "None") {
-      for (const die of roll.dice) {
-        die.options.colorset = damage_theme;
-      }
-    }
-    // noinspection ES6MissingAwait
-    await game.dice3d.showForRoll(roll, game.user, true, users, message.blind);
   }
+  await roll_dice(message, damage_roll.brswroll, roll);
   current_damage_roll.damage_result = calculate_damage_results(
     current_damage_roll.brswroll.rolls,
   );
@@ -1627,20 +1607,14 @@ async function add_damage_dice(br_card, index) {
   render_data.damage_rolls[index].damage_result = calculate_damage_results(
     damage_rolls.rolls,
   );
-  if (game.dice3d) {
-    const damage_theme = SettingsUtils.getUserSetting("damageDieTheme");
-    if (damage_theme !== "None") {
-      roll.dice.forEach((die) => {
-        die.options.colorset = damage_theme;
-      });
-    }
-    let users = null;
-    if (br_card.message.whisper.length > 0) {
-      users = br_card.message.whisper;
-    }
-    // noinspection ES6MissingAwait,JSIgnoredPromiseFromCall
-    game.dice3d.showForRoll(roll, game.user, true, users);
+
+  const damage_theme = SettingsUtils.getUserSetting("damageDieTheme");
+  if (damage_theme !== "None") {
+    roll.dice.forEach((die) => {
+      die.options.colorset = damage_theme;
+    });
   }
+  await roll_dice(br_card.message, render_data.damage_rolls[index].brswroll, roll);
   // noinspection JSIgnoredPromiseFromCall
   await update_message(br_card, render_data);
 }
