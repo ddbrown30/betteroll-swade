@@ -896,17 +896,30 @@ async function get_reroll_options(br_card, extra_data) {
  * @param {BrCommonCard} br_card
  * @param {Roll} roll
  */
-async function show_3d_dice(br_card, roll) {
-  if (br_card.trait_roll.wild_die) {
+export async function roll_dice(message, brswroll, roll) {
+  if (game.dice3d) {
+    await show_3d_dice(message, brswroll, roll);
+  } else {
+    game.audio.play(CONFIG.sounds.dice, { context: game.audio.interface });
+  }
+}
+
+/**
+ * Show the 3d dice for a trait roll
+ * @param {BrCommonCard} br_card
+ * @param {Roll} roll
+ */
+async function show_3d_dice(message, brswroll, roll) {
+  if (brswroll.wild_die) {
     set_wild_die_theme(roll.dice[roll.dice.length - 1]);
   }
   let users = null;
-  if (br_card.message.whisper.length > 0) {
-    users = br_card.message.whisper;
+  if (message.whisper.length > 0) {
+    users = message.whisper;
   }
-  const { blind } = br_card.message;
+  const { blind } = message;
   // Dice buried in modifiers.
-  for (const modifier of br_card.trait_roll.modifiers) {
+  for (const modifier of brswroll.modifiers) {
     if (modifier.dice && modifier.dice instanceof Roll) {
       // noinspection ES6MissingAwait
       game.dice3d.showForRoll(modifier.dice, game.user, true, users, blind);
@@ -1026,9 +1039,7 @@ export async function roll_trait(br_card, trait_dice, dice_label, extra_data) {
   const roll = new Roll(roll_string);
   await roll.evaluate();
   await br_card.trait_roll.add_roll(roll);
-  if (game.dice3d) {
-    await show_3d_dice(br_card, roll);
-  }
+  await roll_dice(br_card.message, br_card.trait_roll, roll);
   await br_card.render();
   await br_card.save();
 }
@@ -1102,18 +1113,8 @@ async function add_modifier(br_card, modifier) {
     const name = modifier.label || game.i18n.localize("BRSW.ManuallyAdded");
     const new_mod = new TraitModifier(name, modifier.value);
     await new_mod.evaluate();
-    if (game.dice3d && new_mod.dice) {
-      let users = null;
-      if (br_card.message.whisper.length > 0) {
-        users = br_card.message.whisper;
-      }
-      await game.dice3d.showForRoll(
-        new_mod.dice,
-        game.user,
-        true,
-        users,
-        br_card.message.blind,
-      );
+    if (new_mod.dice) {
+      await roll_dice(br_card.message, br_card.trait_roll, new_mod.dice);
     }
     br_card.trait_roll.modifiers.push(new_mod);
     await br_card.trait_roll.recalculate_trait_results();

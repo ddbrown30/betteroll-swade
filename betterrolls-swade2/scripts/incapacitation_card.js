@@ -234,6 +234,9 @@ export async function create_injury_card(token_id, reason) {
   // First roll
   let first_roll = new Roll("2d6");
   await first_roll.evaluate();
+  if (!game.dice3d) {
+    game.audio.play(CONFIG.sounds.dice, { context: game.audio.interface });
+  }
   if (game.dice3d) {
     // noinspection ES6MissingAwait
     await game.dice3d.showForRoll(first_roll, game.user, true);
