@@ -853,7 +853,7 @@ async function get_new_roll_options(
  * @param {BrCommonCard} br_card - The card to get the options from
  * @param {Object} extra_data
  */
-function get_reroll_options(br_card, extra_data) {
+async function get_reroll_options(br_card, extra_data) {
   // Reroll, clear out old reroll mods so we don't double add
   // This doesn't use filter() because the array is referenced elsewhere
   br_card.trait_roll.modifiers.splice(
@@ -861,6 +861,14 @@ function get_reroll_options(br_card, extra_data) {
     br_card.trait_roll.modifiers.length,
     ...br_card.trait_roll.modifiers.filter((mod) => !mod.isReroll)
   );
+  //Reroll any dice modifiers
+  const modifiers = br_card.trait_roll.modifiers;
+  for (let i = 0; i < modifiers.length; ++i) {
+    if (modifiers[i].dice) {
+      modifiers[i] = new TraitModifier(modifiers[i].name, modifiers[i].dice.formula);
+      await modifiers[i].evaluate();
+    }
+  }
   // Modifiers from effects
   if (br_card.trait_roll.reroll_mode === "benny") {
     for (const mod of br_card.actor.system.stats.globalMods.bennyTrait) {
@@ -986,7 +994,7 @@ export async function roll_trait(br_card, trait_dice, dice_label, extra_data) {
   } else {
     roll_options.modifiers = br_card.trait_roll.modifiers;
     roll_options.rof = br_card.trait_roll.rof;
-    get_reroll_options(br_card, extra_data);
+    await get_reroll_options(br_card, extra_data);
   }
   let roll_string = create_roll_string(trait_dice, roll_options.rof);
   // Wild Die
