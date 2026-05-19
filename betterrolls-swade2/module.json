@@ -101,14 +101,14 @@
         "id": "swade",
         "type": "system",
         "compatibility": {
-          "minimum": "5.2"
+          "minimum": "6.0"
         }
       }
     ]
   },
   "compatibility": {
-    "minimum": "13",
-    "verified": "13.351",
-    "maximum": "13"
+    "minimum": "14",
+    "verified": "14.361",
+    "maximum": "14"
   }
 }
