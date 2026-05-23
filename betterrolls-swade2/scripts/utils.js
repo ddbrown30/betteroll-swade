@@ -169,8 +169,8 @@ function getTokenGridSpaces(token) {
       y: token.bounds.top + halfGrid,
     };
     const dimensions = {
-      width: Math.round(token.document.width),
-      height: Math.round(token.document.height),
+      width: Math.max(1, Math.round(token.document.width)),
+      height: Math.max(1, Math.round(token.document.height)),
     };
 
     for (let i = 0; i < dimensions.width; ++i) {
