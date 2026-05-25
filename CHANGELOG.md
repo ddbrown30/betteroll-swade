@@ -1,3 +1,6 @@
+# Version 5.0.0
+* Updated to v14
+
 # Version 4.38
 * Bugfix: Fixed an error when measuring distance with very small tokens
 * Bugfix: Fixed dice modifiers not rerolling
