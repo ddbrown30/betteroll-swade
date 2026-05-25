@@ -125,7 +125,7 @@ export class BrCommonCard {
    * Prepares the data to be saved
    **/
   get_data() {
-    return {
+    const data = {
       type: this.type,
       token_id: this.token_id,
       actor_id: this.actor_id,
@@ -147,6 +147,7 @@ export class BrCommonCard {
       manual_mods: this.manual_mods,
       applicable_effects: this.applicable_effects,
     };
+    return JSON.parse(JSON.stringify(data));
   }
 
   load(data) {
