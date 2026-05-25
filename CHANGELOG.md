@@ -1,4 +1,16 @@
-# Version 4.37 aka 
+# Version 5.0.0
+* Updated to v14
+
+# Version 4.38
+* Bugfix: Fixed an error when measuring distance with very small tokens
+* Bugfix: Fixed dice modifiers not rerolling
+* Bugfix: Fixed resist roll buttons not appearing
+* Removed the wound cap setting and replaced it with the system setting
+* Added actor_has_arcane_mastery selector to support SWPF
+* Added consumable support
+* Huge cleanup, reformatting, and refactoring pass on the card display
+
+# Version 4.37 aka
 * Bugfix: Remove all special handling of the SPC Sheet, making BR2 work with last versions.
 * Bugfix: Make spell modifier for Heavy Weapons work. (Dan Brown)
 * Bugfix: Add location check for Heavy Armor (Dan Brown)

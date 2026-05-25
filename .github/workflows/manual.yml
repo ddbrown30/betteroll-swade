@@ -1,0 +1,27 @@
+
+name: Publish Package
+
+on:
+  workflow_dispatch:
+
+env:
+    GH_TOKEN: ${{ github.token }}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get release url
+        id: get_release_url
+        run:  |
+            tagName=$(gh release view --repo $GITHUB_REPOSITORY --json tagName)
+            echo "RELEASE_TAGNAME=$tagName" >> "$GITHUB_ENV"
+      - run: echo "https://github.com/${{github.repository}}/releases/download/${{ fromJson(env.RELEASE_TAGNAME).tagName }}/module.json"
+
+      - name: Publish Module to FoundryVTT Website
+        id: publish-to-foundry-website
+        uses: cs96and/FoundryVTT-release-package@v1
+        with:
+          package-token: ${{ secrets.PACKAGE_TOKEN }}
+          manifest-url: https://github.com/${{github.repository}}/releases/download/${{ fromJson(env.RELEASE_TAGNAME).tagName }}/module.json
+          notes-url: https://github.com/${{github.repository}}/releases/tag/${{ fromJson(env.RELEASE_TAGNAME).tagName }}

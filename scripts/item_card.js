@@ -376,7 +376,7 @@ function preview_template(ev, br_card) {
   if (type === "cone") {
     type = "swcone";
   }
-  CONFIG.MeasuredTemplate.objectClass.fromPreset(type, br_card.item);
+  swade.util.createRegionFromPreset(type, br_card.item);
   Hooks.call(
     "BRSW-BeforePreviewingTemplate",
     CONFIG.SWADE.activeMeasuredTemplatePreview,
