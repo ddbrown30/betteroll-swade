@@ -77,7 +77,7 @@ export class BrCommonCard {
     update_list.id = this.message.id;
     update_list.flags = this.message.flags;
     const br_flags = this.message.flags["betterrolls-swade2"] || {};
-    br_flags.br_data = this.get_data();
+    br_flags.br_data = JSON.parse(JSON.stringify(this.get_data()));
     // Temporary
     store_render_flag(br_flags, this.render_data);
     update_list.flags["betterrolls-swade2"] = br_flags;
@@ -136,7 +136,7 @@ export class BrCommonCard {
       environment: this.environment,
       extra_text: this.extra_text,
       attribute_name: this.attribute_name,
-      action_groups: JSON.parse(JSON.stringify(this.action_groups)),
+      action_groups: this.action_groups,
       macro_buttons: this.macro_buttons,
       id: this.id,
       target_ids: this.target_ids,
