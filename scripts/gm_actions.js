@@ -19,7 +19,7 @@ export function setup_chat_button() {
  * Creates and inits the button that opens the GM actions popup
  */
 function create_chat_button() {
-  const privacyButtons = document.querySelector("#roll-privacy");
+  const privacyButtons = document.querySelector("#message-modes");
   const button = document.createElement("button");
   button.classList.add(
     "brsw-chat-button",
