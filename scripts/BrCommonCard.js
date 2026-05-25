@@ -125,7 +125,7 @@ export class BrCommonCard {
    * Prepares the data to be saved
    **/
   get_data() {
-    const data = {
+    return {
       type: this.type,
       token_id: this.token_id,
       actor_id: this.actor_id,
@@ -136,7 +136,7 @@ export class BrCommonCard {
       environment: this.environment,
       extra_text: this.extra_text,
       attribute_name: this.attribute_name,
-      action_groups: this.action_groups,
+      action_groups: JSON.parse(JSON.stringify(this.action_groups)),
       macro_buttons: this.macro_buttons,
       id: this.id,
       target_ids: this.target_ids,
@@ -147,7 +147,6 @@ export class BrCommonCard {
       manual_mods: this.manual_mods,
       applicable_effects: this.applicable_effects,
     };
-    return JSON.parse(JSON.stringify(data));
   }
 
   load(data) {
