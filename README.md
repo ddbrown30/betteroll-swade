@@ -33,10 +33,6 @@ Please at the very least, tell me what you expect and why do you believe your ap
 In the [Wiki for this repository](https://github.com/javierriveracastro/betteroll-swade/wiki) you will find detailed documentation concerning the critical elements and functionality of Better Rolls fo SWADE.
 If you find outdated or missing information please feel free to create an issue to inform me about it.
 
-## Dependencies
-
-* **SWADE Ultimate Condition Changer (SUCC):** This module allows you to change the SWADE status icons along with some other things. It also provides a strong API that Better Rolls now makes use of. You will need SUCC to use Better Rolls.
-* **Settings Extender**: A library that makes easier working with settings.
 
 ## Integrations
 
