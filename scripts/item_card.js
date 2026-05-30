@@ -1117,8 +1117,8 @@ function get_target_defense(
         objective.actor.system.stats.toughness.armor;
       //Get the armor of the location we're targeting
       defense_values.armor =
-        objective.actor.armorPerLocation[location] ??
-        objective.actor.system.stats.toughness.armor;
+        location === "torso" ? objective.actor.system.stats.toughness.armor :
+        objective.actor.armorPerLocation[location] ?? objective.actor.system.stats.toughness.armor;
       //Add that armor to the base toughness to get the correct toughness
       defense_values.toughness = base_toughness + defense_values.armor;
       defense_values.name = objective.name;
