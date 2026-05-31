@@ -724,7 +724,7 @@ export class BrCommonCard {
     if (!this.item) {
       return;
     }
-    if (this.item.system.pp) {
+    if (this.item.system.pp != undefined) {
       if (
         this.actor.system.powerPoints.hasOwnProperty(this.item.system.arcane) &&
         this.actor.system.powerPoints[this.item.system.arcane].max
