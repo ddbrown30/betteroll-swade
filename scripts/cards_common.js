@@ -263,7 +263,7 @@ export function activate_common_listeners(br_card, html) {
         });
       });
   }
-  if (br_card.message.isOwner) {
+  if (br_card.message.speakerActor?.isOwner) {
     html
       .querySelector(".brsw-selected-actions")
       ?.addEventListener("click", () => {
@@ -273,7 +273,7 @@ export function activate_common_listeners(br_card, html) {
   // Collapsible
   manage_collapsables(html, br_card.message);
   // Old rolls
-  if (br_card.message.isOwner) {
+  if (br_card.message.speakerActor?.isOwner) {
     const old_rolls = html.querySelectorAll(".brsw-old-roll");
     for (const old_roll of old_rolls) {
       old_roll.addEventListener("click", async (ev) => {
