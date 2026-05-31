@@ -36,7 +36,7 @@ export function getAuthor(actor) {
     return game.user.id;
   }
 
-  //If we have exactly one owner, user that
+  //If we have exactly one owner, use that
   if (ownership.length == 1) {
     return ownership[0][0];
   }
