@@ -1,3 +1,6 @@
+# Version 5.0.4
+* Properly fixed the ownership bug with chat messages
+
 # Version 5.0.3
 * Fixed an ownership bug with chat messages created by the GM for players
 * Fixed PP display with 0 cost powers
