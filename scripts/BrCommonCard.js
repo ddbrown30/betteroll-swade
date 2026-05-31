@@ -3,7 +3,7 @@
      Roll, CONST */
 
 import { TraitRoll } from "./rolls.js";
-import { broofa, getWhisperData, SettingsUtils } from "./utils.js";
+import { broofa, getAuthor, getWhisperData, SettingsUtils } from "./utils.js";
 import { get_item_trait, trait_from_string } from "./item_card.js";
 import { get_actions, check_selector } from "./global_actions.js";
 import { brAction } from "./actions.js";
@@ -769,7 +769,7 @@ export class BrCommonCard {
   async create_basic_chat_data() {
     const whisper_data = getWhisperData();
     const chatData = {
-      user: game.user.id,
+      author: getAuthor(this.actor),
       content: "<p>Default content, likely an error in Better Rolls</p>",
       speaker: ChatMessage.getSpeaker({ actor: this.actor }),
       blind: whisper_data.blind,

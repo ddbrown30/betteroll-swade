@@ -139,7 +139,7 @@ Hooks.on("renderChatMessageHTML", (message, html, options) => {
     const card = new BrCommonCard(message);
     activateCardListeners(card, html, message);
     // Hide forms to non-master, non owner
-    if (!message.speakerActor?.isOwner) {
+    if (!message.isOwner) {
       html
         .querySelectorAll(".brsw-form")
         .forEach((e) => e.classList.add("brsw-collapsed"));
@@ -149,7 +149,7 @@ Hooks.on("renderChatMessageHTML", (message, html, options) => {
       html.querySelectorAll(".brsw-master-only").forEach((e) => e.remove());
     }
     // Hide save macro button from non-owner, non-trusted players
-    if (!message.speakerActor?.isOwner && !game.user.isTrusted) {
+    if (!message.isOwner && !game.user.isTrusted) {
       html
         .querySelectorAll(".brsw-owner-trusted-only")
         .forEach((e) => e.remove());
