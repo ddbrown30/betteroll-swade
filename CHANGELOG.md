@@ -1,5 +1,6 @@
 # Version 5.0.3
 * Fixed an ownership bug with chat messages created by the GM for players
+* Fixed PP display with 0 cost powers
 
 # Version 5.0.2
 * Made a change to how we calculate armor to help mitigate the bug in the system where armorPerLocation is not affected by Active Effects. This means that torso armor should be correct but called shots will still not have the additional armor provided by AEs. This will be properly fixed in a future version once the bug in the system has been fixed.
