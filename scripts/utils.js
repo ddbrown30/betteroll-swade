@@ -21,6 +21,50 @@ export function getWhisperData() {
   };
 }
 
+export function getAuthor(actor) {
+  if (!actor || !game.user.isGM){
+    return game.user.id;
+  }
+
+  //Filter out the default and local user
+  const ownership = Object.entries(actor.ownership).filter(o => o[0] != "default" &&
+                                                                o[0] != game.user.id &&
+                                                                o[1] === CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER);
+
+  //If we have no owners, use the GM
+  if (ownership.length == 0) {
+    return game.user.id;
+  }
+
+  //If we have exactly one owner, use that
+  if (ownership.length == 1) {
+    return ownership[0][0];
+  }
+
+  //If we have multiple owners, get the player that represents this actor
+  //If there is none, fall back to the first owner in the list
+  let fallbackAuthor;
+  for (let owner of ownership) {
+    const user = game.users.get(owner[0]);
+    if (user) {
+      if (user.isGM) {
+        //Skip other GMs
+        continue;
+      }
+
+      if (user.character === actor) {
+        return owner[0];
+      }
+      else if (!fallbackAuthor) {
+        fallbackAuthor = owner[0];
+      }
+    }
+  }
+
+  //There is no player rep so use the fallback or the GM
+  return fallbackAuthor ?? game.user.id;
+}
+
 export function makeExplotable(expression) {
   // Make all dice of a roll able to explode
   // Code from the SWADE system
