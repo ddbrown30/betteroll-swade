@@ -2,7 +2,6 @@ import { BACKGROUND_EDGES } from "./background_edges.js";
 import { COMBAT_OPTIONS } from "./combat_options.js";
 import { GENERIC_POWER_MODIFIERS } from "./power-generic-modifiers.js";
 import { POWER_MODIFIERS } from "./power-modifiers.js";
-import { POWER_POINT_OPTIONS } from "./PowerPoints.js";
 import { TARGET_ACTIONS } from "./target-actions.js";
 
 export const SYSTEM_GLOBAL_ACTION = [
@@ -492,7 +491,6 @@ export const SYSTEM_GLOBAL_ACTION = [
   },
 ]
   .concat(COMBAT_OPTIONS)
-  .concat(POWER_POINT_OPTIONS)
   .concat(BACKGROUND_EDGES)
   .concat(GENERIC_POWER_MODIFIERS)
   .concat(POWER_MODIFIERS)

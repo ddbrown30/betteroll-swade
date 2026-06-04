@@ -38,6 +38,8 @@ import { ATTRIBUTES_TRANSLATION_KEYS } from "./attribute_card.js";
 import { BrCommonCard } from "./BrCommonCard.js";
 import { DamageModifier, TraitModifier } from "./modifiers.js";
 import { brAction } from "./actions.js";
+import { PPManagementPopup } from "./pp_management_popup.js";
+import { get_current_generic_mods } from "../config/generic_pp_modifiers.js";
 
 const ARCANE_SKILLS = [
   "faith",
@@ -151,8 +153,7 @@ export async function create_item_card(
   let damage = item.system.damage;
   let possible_default_dmg_action;
   const ammon_enabled = parseInt(item.system.shots) || item.system.ammo;
-  const power_points =
-    !isNaN(parseFloat(item.system.pp)) || item.type === "power";
+  const is_power = !isNaN(parseFloat(item.system.pp)) || item.type === "power";
   const subtract_select = ammon_enabled
     ? SettingsUtils.getWorldSetting("default-ammo-management")
     : false;
@@ -170,11 +171,11 @@ export async function create_item_card(
       trait_id: trait ? trait.id || trait : false,
       ammo: ammon_enabled,
       subtract_selected: subtract_select,
-      subtract_pp: power_points
+      subtract_pp: is_power
         ? SettingsUtils.getWorldSetting("default-pp-management")
         : false,
       damage_rolls: [],
-      powerpoints: power_points,
+      is_power: is_power,
       used_shots: 0,
       description: description,
       tooltip: create_item_card_tooltip(item),
@@ -186,6 +187,7 @@ export async function create_item_card(
   br_message.damage = damage;
   br_message.item_id = item_id;
   br_message.applicable_effects = get_applicable_effects(item);
+  br_message.pp_modifiers = is_power ? get_pp_mods(item) : {};
   br_message.check_warnings(br_message.render_data);
   await br_message.render(actions_stored);
   await br_message.save();
@@ -200,6 +202,93 @@ function get_applicable_effects(item) {
     effects.push({ id: effect.id, name: effect.name, uuid: effect.uuid });
   }
   return effects;
+}
+
+function get_pp_mods(item) {
+  const pp_mods = { powerMods: [] };
+  pp_mods.additionalRecipientsMod = {};
+  pp_mods.genericMods = get_current_generic_mods().map(mod => ({...mod, selected: false}));
+
+  const toTitleCase = str => str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+
+  const descriptionDoc = new DOMParser().parseFromString(item.system.description, "text/html");
+  const modifiers = Array.from(descriptionDoc.querySelectorAll("li"))
+    .map(li => {
+      const text = li.textContent.trim();
+      const match = text.match(/^(.+?)\s*\(([+-]?\d+(?:\/[+-]?\d+)*)\):/);
+      if (!match) return null;
+
+      const mod = {
+        name: match[1],
+        costs: match[2].split("/"),
+        isEpic: li.classList.contains("star-icon"),
+      };
+
+      if (mod.name.toLowerCase() == "additional recipients") {
+        pp_mods.additionalRecipientsMod = {
+          name: toTitleCase(mod.name),
+          cost: mod.costs[0],
+          isEpic: mod.isEpic,
+          count: 0,
+        };
+        return null;
+      }
+
+      return mod;
+    })
+    .filter(Boolean);
+
+    if (modifiers.length) {
+      for (let mod of modifiers) {
+        for (let cost of mod.costs) {
+          if (cost !== "+0") {
+            pp_mods.powerMods.push({
+              name: toTitleCase(mod.name),
+              cost: cost,
+              isEpic: mod.isEpic,
+              selected: false,
+            });
+          }
+        }
+      }
+
+      pp_mods.powerMods.sort((a, b) => {
+        const nameA = a.name.toLowerCase();
+        const nameB = b.name.toLowerCase();
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameA > nameB) {
+          return 1;
+        }
+
+        return a.cost - b.cost;
+      });
+    }
+
+  return pp_mods;
+}
+
+export function calc_pp_cost(br_card) {
+  if (SettingsUtils.isOptionalRuleEnabled("InnatePowersDontConsume") && br_card.item.system.innate) {
+    return 0;
+  }
+
+  let ppCost = br_card.item.system.pp;
+
+  const modGroups = [br_card.pp_modifiers.genericMods, br_card.pp_modifiers.powerMods];
+  for (const group of modGroups) {
+    for (const mod of group) {
+      if (mod.selected) {
+        const cost = parseInt(mod.cost);
+        if (!isNaN(cost)) {
+          ppCost += cost;
+        }
+      }
+    }
+  }
+
+  return ppCost;
 }
 
 export function check_for_actions_with_damage(item) {
@@ -432,12 +521,14 @@ export function activate_item_card_listeners(br_card, html) {
   html
     .querySelector(".brsw-pp-manual")
     ?.addEventListener("click", async (ev) => {
-      await manual_pp(actor, item);
+      await new PPManagementPopup({ brCard: br_card }).wait({ force: true });
       //Update the pp text of the card we just clicked on.
       //This won't affect change the popout or vice versa,
       //but doing that would require an update to the chat message which would refresh the render which is disruptive
-      ev.target.parentElement.querySelector(".brsw-shots-pp").innerText =
-        br_card.item_shots;
+      const pp_remaining = ev.target.parentElement.parentElement.querySelector(".brsw-shots-pp");
+      pp_remaining.innerText = br_card.item_shots;
+      const pp_cost = ev.target.parentElement.parentElement.querySelector(".brsw-pp-cost");
+      pp_cost.innerText = calc_pp_cost(br_card);
     });
   addEventListenerAll(html, ".brsw-apply-damage", "click", (ev) => {
     create_damage_card(
@@ -748,13 +839,8 @@ async function displayRemainingCard(content) {
  * @param old_pp PPs expended in the current selected roll of this option
  * @param pp_modifier A number to be added or subtracted from PPs
  */
-export async function discount_pp(br_card, pp_override, old_pp, pp_modifier) {
-  if (
-    SettingsUtils.getSetting("optional_rules_enabled").indexOf(
-      "InnatePowersDontConsume",
-    ) > -1 &&
-    br_card.item.system.innate
-  ) {
+export async function discount_pp(br_card, old_pp) {
+  if (SettingsUtils.isOptionalRuleEnabled("InnatePowersDontConsume") && item.system.innate) {
     return 0;
   }
   let success = false;
@@ -763,11 +849,7 @@ export async function discount_pp(br_card, pp_override, old_pp, pp_modifier) {
       success = true;
     }
   }
-  let base_pp_expended = pp_override
-    ? parseInt(pp_override)
-    : parseInt(br_card.item.system.pp);
-  base_pp_expended += pp_modifier;
-  const pp = success ? base_pp_expended : 1;
+  const pp = success ? br_card.pp_cost : 1;
   br_card.render_data.used_pp = pp;
   await br_card.save();
   let current_pp;
@@ -951,19 +1033,13 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
       );
       br_message.skill_id = trait.id;
     }
-    if (action.code.shotsUsed || action.code.resourcesUsed) {
-      const shots_used = action.code.shotsUsed || action.code.resourcesUsed;
+    if (action.code.resourcesUsed) {
+      const shots_used = action.code.resourcesUsed;
       let first_char = "";
       try {
         first_char = shots_used.charAt(0);
       } catch {}
-      if (first_char === "+" || first_char === "-") {
-        // If we are using PP and the modifier starts with + or -
-        // we use it as a relative number.
-        if (parseInt(br_message.item.system.pp)) {
-          shots_modifier += parseInt(shots_used);
-        }
-      } else {
+      if (first_char !== "+" && first_char !== "-") {
         shots_override = parseInt(shots_used);
       }
     }
@@ -1064,9 +1140,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
   ) {
     br_message.render_data.used_pp = await discount_pp(
       br_message,
-      shots_override,
       previous_pp,
-      shots_modifier,
     );
   }
   await br_message.render();

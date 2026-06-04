@@ -82,6 +82,8 @@ class BrCardDialog {
     this.BrCard.set_active_actions(enabled_actions);
     this.BrCard.set_trait_using_skill_override();
 
+    this.BrCard.refreshPPModsFromActions();
+
     await this.BrCard.render();
     await this.BrCard.save();
     this.close_card();
