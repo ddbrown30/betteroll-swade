@@ -46,6 +46,7 @@ export const TARGET_ACTIONS = [
       }
     ],
     defaultChecked: "on",
+    section: "attack",
     group: "BRSW.Target",
   },
   {
@@ -80,6 +81,7 @@ export const TARGET_ACTIONS = [
       },
     ],
     defaultChecked: "on",
+    section: "attack",
     group: "BRSW.Target",
   },
 
@@ -118,6 +120,7 @@ export const TARGET_ACTIONS = [
       // },
     ],
     defaultChecked: "on",
+    section: "attack",
     group: "BRSW.Target",
   },
   // TODO ... Look at how a skillMod -2/-4 affects the power activation, really just Bolt, as it will activate on a 4 result, ignoring the -2/-4 imposed by Deflection.
@@ -155,6 +158,7 @@ export const TARGET_ACTIONS = [
       },
     ],
     defaultChecked: "on",
+    section: "attack",
     group: "BRSW.Target",
   },
   {
@@ -210,6 +214,7 @@ export const TARGET_ACTIONS = [
       },
     ],
     defaultChecked: "on",
+    section: "attack",
     group: "BRSW.Target",
   },
 
@@ -238,6 +243,7 @@ export const TARGET_ACTIONS = [
         ],
       },],
     defaultChecked: "on",
+    section: "attack",
     group: "BRSW.Target",
   },
 

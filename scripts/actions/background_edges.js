@@ -14,6 +14,7 @@ export const BACKGROUND_EDGES = [
       { selector_type: "skill", selector_value: "BRSW.SkillName-Notice" },
     ],
     defaultChecked: "on",
+    section: "character",
     group: "BRSW.Edges",
   },
   {
@@ -39,6 +40,7 @@ export const BACKGROUND_EDGES = [
         ],
       },
     ],
+    section: "character",
     group: "BRSW.Edges",
   },
   {
@@ -72,6 +74,7 @@ export const BACKGROUND_EDGES = [
         ],
       },
     ],
+    section: "character",
     group: "BRSW.Edges",
   },
   {
@@ -97,6 +100,7 @@ export const BACKGROUND_EDGES = [
         ],
       },
     ],
+    section: "character",
     group: "BRSW.Edges",
   },
   {
@@ -108,6 +112,7 @@ export const BACKGROUND_EDGES = [
     selector_type: "actor_has_edge",
     selector_value: "BRSW.EdgeName-Elan",
     defaultChecked: "on",
+    section: "character",
     group: "BRSW.Edges",
   },
   {
@@ -127,6 +132,7 @@ export const BACKGROUND_EDGES = [
         ],
       },
     ],
+    section: "character",
     group: "BRSW.Edges",
   },
   {
@@ -141,6 +147,7 @@ export const BACKGROUND_EDGES = [
       },
       { selector_type: "skill", selector_value: "BRSW.SkillName-Persuasion" },
     ],
+    section: "character",
     group: "BRSW.Edges",
   },
 ];

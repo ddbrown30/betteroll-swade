@@ -48,7 +48,7 @@ export class BrCommonCard {
     this.environment = { light: "bright" };
     this.extra_text = "";
     this.attribute_name = ""; // If this is an attribute card, its name
-    this.action_groups = {};
+    this.action_sections = {};
     this.macro_buttons = []; // Macro buttons from items
     this.render_data = {}; // Old render data, to be removed
     this.update_list = {}; // List of properties pending to be updated
@@ -67,6 +67,14 @@ export class BrCommonCard {
       this.id = broofa();
       this.recover_targets_from_user();
     }
+  }
+
+  get action_groups() {
+    let groups = {};
+    for (let section of Object.values(this.action_sections)) {
+      groups = { ...groups, ...section.action_groups };
+    }
+    return groups;
   }
 
   async save() {
@@ -136,7 +144,7 @@ export class BrCommonCard {
       environment: this.environment,
       extra_text: this.extra_text,
       attribute_name: this.attribute_name,
-      action_groups: this.action_groups,
+      action_sections: this.action_sections,
       macro_buttons: this.macro_buttons,
       id: this.id,
       target_ids: this.target_ids,
@@ -162,7 +170,7 @@ export class BrCommonCard {
       "environment",
       "extra_text",
       "attribute_name",
-      "action_groups",
+      "action_sections",
       "target_ids",
       "macro_buttons",
       "resist_buttons",
@@ -274,13 +282,6 @@ export class BrCommonCard {
       : "";
   }
 
-  get sorted_action_groups() {
-    const groups_array = Object.values(this.action_groups);
-    return groups_array.sort((a, b) => {
-      return a.name > b.name ? 1 : -1;
-    });
-  }
-
   get targets() {
     const target_array = [];
     for (const target_id in this.target_ids) {
@@ -318,7 +319,7 @@ export class BrCommonCard {
    *   and a boolean meaning if they need to set on or off
    */
   populate_actions(stored_selections) {
-    this.action_groups = {};
+    this.action_sections = {};
     this.populate_world_actions();
     if (this.item && !SettingsUtils.getWorldSetting("hide-weapon-actions")) {
       this.populate_item_actions();
@@ -350,15 +351,21 @@ export class BrCommonCard {
         global_action.button_name.slice(0, 5) === "BRSW."
           ? game.i18n.localize(global_action.button_name)
           : global_action.button_name;
+      const section_name = global_action.section ? global_action.section : "none";
       const group_name = global_action.group || "BRSW.NoGroup";
       const group_name_id = group_name.split(".").join("");
       const group_single = global_action.hasOwnProperty("group_single");
       if (global_action.hasOwnProperty("extra_text")) {
         this.extra_text += global_action.extra_text;
       }
-      if (!this.action_groups.hasOwnProperty(group_name_id)) {
+      if (!this.action_sections.hasOwnProperty(section_name)) {
+        this.action_sections[section_name] = {
+          action_groups: {},
+        };
+      }
+      if (!this.action_sections[section_name].action_groups.hasOwnProperty(group_name_id)) {
         const translated_group = game.i18n.localize(group_name);
-        this.action_groups[group_name_id] = {
+        this.action_sections[section_name].action_groups[group_name_id] = {
           name: translated_group,
           actions: [],
           id: broofa(),
@@ -380,7 +387,7 @@ export class BrCommonCard {
           );
         }
       }
-      this.action_groups[group_name_id].actions.push(new_action);
+      this.action_sections[section_name].action_groups[group_name_id].actions.push(new_action);
     }
   }
 
@@ -399,8 +406,13 @@ export class BrCommonCard {
       }
     }
     if (item_actions.length) {
+      if (!this.action_sections.hasOwnProperty("none")) {
+        this.action_sections["none"] = {
+          action_groups: {},
+        };
+      }
       const name = game.i18n.localize("BRSW.ItemActions");
-      this.action_groups[name] = {
+      this.action_sections["none"].action_groups[name] = {
         name: name,
         actions: item_actions,
         id: broofa(),
@@ -447,13 +459,18 @@ export class BrCommonCard {
     }
     if (effectActions.length) {
       const name = game.i18n.localize("BRSW.ActiveEffects");
-      if (this.action_groups.hasOwnProperty(name)) {
-        this.action_groups[name].actions = [
-          ...this.action_groups[name].actions,
+      if (!this.action_sections.hasOwnProperty("character")) {
+        this.action_sections["character"] = {
+          action_groups: {},
+        };
+      }
+      if (this.action_sections["character"].action_groups.hasOwnProperty(name)) {
+        this.action_sections["character"].action_groups[name].actions = [
+          ...this.action_sections["character"].action_groups[name].actions,
           ...effectActions,
         ];
       } else {
-        this.action_groups[name] = {
+        this.action_sections["character"].action_groups[name] = {
           name: name,
           actions: effectActions,
           id: broofa(),
@@ -506,7 +523,7 @@ export class BrCommonCard {
       }
       action_array.push(new_action);
     }
-    this.action_groups[game.i18n.localize("BRSW.NoPP")] = {
+    this.action_sections["power"].action_groups[game.i18n.localize("BRSW.NoPP")] = {
       name: game.i18n.localize("BRSW.NoPP"),
       actions: action_array,
       id: broofa(),
@@ -681,7 +698,6 @@ export class BrCommonCard {
     const data = {
       ...this.get_data(),
       ...this.render_data,
-      ...{ sorted_action_groups: this.sorted_action_groups },
     };
     data.actor = this.actor;
     data.vehicle_actor = this.vehicle_actor;

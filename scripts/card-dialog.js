@@ -27,9 +27,19 @@ class BrCardDialog {
   }
 
   async render() {
+    const sections = {};
+    for (const section of Object.entries(this.BrCard.action_sections)) {
+      sections[section[0]] = [];
+      for (let group of Object.values(section[1].action_groups)) {
+        sections[section[0]].push(group);
+      }
+      sections[section[0]].sort((a, b) => {
+        return a.name > b.name ? 1 : -1;
+      });
+    }
     this.dialog_element.innerHTML = await foundry.applications.handlebars.renderTemplate(
       "modules/betterrolls-swade2/templates/card_dialog.hbs",
-      { BrCard: this.BrCard },
+      { BrCard: this.BrCard, sections },
     );
     this.bind_events();
   }
@@ -68,7 +78,7 @@ class BrCardDialog {
 
   close_card() {
     this.BrCard = null;
-    this.dialog_element.inner_html = "";
+    this.dialog_element.innerHTML = "";
     this.dialog_element.close();
   }
 

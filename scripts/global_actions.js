@@ -699,6 +699,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(
         "selector_type",
         "selector_value",
         "and_selector",
+        "section",
         "group",
         "shotsUsed",
         "or_selector",

@@ -109,6 +109,7 @@ export const POWER_MODIFIERS = [
         ],
       }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersGenericAdditionalRecipients",
     group_single: true,
   },
@@ -196,6 +197,7 @@ export const POWER_MODIFIERS = [
         ],
       }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersGenericAdditionalRecipients",
     group_single: true,
   },
@@ -283,6 +285,7 @@ export const POWER_MODIFIERS = [
         ],
       }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersGenericAdditionalRecipients",
     group_single: true,
   },
@@ -370,6 +373,7 @@ export const POWER_MODIFIERS = [
         ],
       }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersGenericAdditionalRecipients",
     group_single: true,
   },
@@ -457,6 +461,7 @@ export const POWER_MODIFIERS = [
         ],
       }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersGenericAdditionalRecipients",
     group_single: true,
   },
@@ -473,6 +478,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_name", selector_value: "Arcane Protection" },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersArcaneProtection"
   },
 
@@ -488,6 +494,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Barrier" },
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBarrier"
   },
   {
@@ -499,6 +506,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Barrier" },
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBarrier"
   },
   {
@@ -511,6 +519,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_name", selector_value: "Barrier" },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBarrier"
   },
   {
@@ -523,6 +532,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_name", selector_value: "Barrier" },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBarrier"
   },
   {
@@ -534,6 +544,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Barrier" },
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBarrier"
   },
   {
@@ -545,6 +556,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Barrier" },
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBarrier"
   },
   {
@@ -556,6 +568,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Barrier" },
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBarrier"
   },
   {
@@ -567,6 +580,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Barrier" },
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBarrier"
   },
 
@@ -581,6 +595,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_name", selector_value: "Beast Friend" },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBeastFriend"
   },
   {
@@ -592,6 +607,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Beast Friend" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBeastFriend"
   },
   {
@@ -603,6 +619,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Beast Friend" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBeastFriend"
   },
 
@@ -617,6 +634,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Blast" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBlast"
   },
   {
@@ -631,6 +649,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_name", selector_value: "Blast" },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBlast"
   },
   {
@@ -641,6 +660,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Blast" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBlast"
   },
   {
@@ -651,6 +671,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Blast" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBlast"
   },
   {
@@ -661,6 +682,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Blast" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBlast"
   },
 
@@ -677,6 +699,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Blind" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBlind"
   },
   {
@@ -688,6 +711,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Blind" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBlind"
   },
   {
@@ -699,6 +723,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Blind" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBlind"
   },
 
@@ -713,6 +738,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Bolt" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBolt"
   },
   {
@@ -725,6 +751,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_name", selector_value: "Bolt" },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBolt"
   },
   {
@@ -739,6 +766,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_name", selector_value: "Bolt" },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBolt"
   },
   {
@@ -752,6 +780,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_name", selector_value: "Bolt" },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBolt"
   },
 
@@ -767,6 +796,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_name", selector_value: "Boost/Lower Trait" },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBoostLower"
   },
   {
@@ -778,6 +808,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Boost/Lower Trait" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBoostLower"
   },
 
@@ -792,6 +823,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Burrow" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBurrow"
   },
 
@@ -806,6 +838,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Burst" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBurst"
   },
   {
@@ -820,6 +853,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_name", selector_value: "Burst" },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBurst"
   },
   {
@@ -831,6 +865,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Burst" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersBurst"
   },
 
@@ -845,6 +880,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_name", selector_value: "Confusion" },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersConfusion"
   },
   {
@@ -855,6 +891,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Confusion" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersConfusion"
   },
   {
@@ -865,6 +902,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Confusion" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersConfusion"
   },
   {
@@ -876,6 +914,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Confusion" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersConfusion"
   },
   /*
@@ -894,6 +933,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Damage Field" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersDamageField"
   },
   {
@@ -906,6 +946,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Damage Field" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersDamageField"
   },
   {
@@ -920,6 +961,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_name", selector_value: "Damage Field" },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersDamageField"
   },
   {
@@ -931,6 +973,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Damage Field" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersDamageField"
   },
 
@@ -963,6 +1006,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Entangle" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersEntangle"
   },
   {
@@ -974,6 +1018,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Entangle" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersEntangle"
   },
   {
@@ -985,6 +1030,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Entangle" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersEntangle"
   },
   {
@@ -997,6 +1043,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_name", selector_value: "Entangle" },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersEntangle"
   },
   {
@@ -1008,6 +1055,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Entangle" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersEntangle"
   },
 
@@ -1021,6 +1069,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Environmental Protection" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersEnvironmentalProtection"
   },
 
@@ -1043,6 +1092,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_name", selector_value: "Havoc" },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersHavoc"
   },
   {
@@ -1054,6 +1104,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Havoc" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersHavoc"
   },
 
@@ -1067,6 +1118,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Healing" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersHealing"
   },
   {
@@ -1078,6 +1130,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Healing" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersHealing"
   },
   {
@@ -1090,6 +1143,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_name", selector_value: "Healing" },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersHealing"
   },
   {
@@ -1102,6 +1156,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_name", selector_value: "Healing" },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersHealing"
   },
   {
@@ -1113,6 +1168,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Healing" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersHealing"
   },
 
@@ -1158,6 +1214,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Relief" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersRelief"
   },
   {
@@ -1169,6 +1226,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Relief" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersRelief"
   },
 
@@ -1185,6 +1243,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_name", selector_value: "Sanctuary" },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersSanctuary"
   },
   {
@@ -1196,6 +1255,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Sanctuary" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersSanctuary"
   },
   {
@@ -1207,6 +1267,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Sanctuary" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersSanctuary"
   },
 
@@ -1223,6 +1284,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Shape Change" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersShapeChange"
   },
   {
@@ -1235,6 +1297,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_name", selector_value: "Shape Change" },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersShapeChange"
   },
   {
@@ -1247,6 +1310,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_name", selector_value: "Shape Change" },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersShapeChange"
   },
   {
@@ -1259,6 +1323,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_name", selector_value: "Shape Change" },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersShapeChange"
   },
   {
@@ -1270,6 +1335,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Shape Change" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersShapeChangeSize",
     group_single: true,
     defaultChecked: "on"
@@ -1299,6 +1365,7 @@ export const POWER_MODIFIERS = [
         ],
       }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersShapeChangeSize",
     group_single: true,
   },
@@ -1325,6 +1392,7 @@ export const POWER_MODIFIERS = [
       }
 
     ],
+    section: "power",
     group: "BRSW.PowerModifiersShapeChangeSize",
     group_single: true,
   },
@@ -1348,6 +1416,7 @@ export const POWER_MODIFIERS = [
       }
 
     ],
+    section: "power",
     group: "BRSW.PowerModifiersShapeChangeSize",
     group_single: true,
   },
@@ -1367,6 +1436,7 @@ export const POWER_MODIFIERS = [
         ],
       }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersShapeChangeSize",
     group_single: true,
   },
@@ -1394,6 +1464,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Summon Ally" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersSummonAllyRank"
   },
   {
@@ -1421,6 +1492,7 @@ export const POWER_MODIFIERS = [
         ],
       }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersSummonAllyRank"
   },
   {
@@ -1445,6 +1517,7 @@ export const POWER_MODIFIERS = [
         ],
       }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersSummonAllyRank"
   },
   {
@@ -1466,6 +1539,7 @@ export const POWER_MODIFIERS = [
         ],
       }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersSummonAllyRank"
   },
   {
@@ -1477,6 +1551,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Summon Ally" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersSummonAlly"
   },
   {
@@ -1488,6 +1563,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Summon Ally" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersSummonAlly"
   },
   {
@@ -1500,6 +1576,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_name", selector_value: "Summon Ally" },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersSummonAlly"
   },
   {
@@ -1511,6 +1588,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Summon Ally" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersSummonAlly"
   },
   {
@@ -1522,6 +1600,7 @@ export const POWER_MODIFIERS = [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Summon Ally" }
     ],
+    section: "power",
     group: "BRSW.PowerModifiersSummonAlly"
   },
 

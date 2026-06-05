@@ -1,5 +1,6 @@
 import { BACKGROUND_EDGES } from "./background_edges.js";
 import { COMBAT_OPTIONS } from "./combat_options.js";
+import { COMMON_ACTIONS } from "./common-actions.js";
 import { GENERIC_POWER_MODIFIERS } from "./power-generic-modifiers.js";
 import { POWER_MODIFIERS } from "./power-modifiers.js";
 import { POWER_POINT_OPTIONS } from "./PowerPoints.js";
@@ -17,6 +18,7 @@ export const SYSTEM_GLOBAL_ACTION = [
       { selector_type: "item_has_damage", selector_value: "true" },
     ],
     defaultChecked: "on",
+    section: "character",
     group: "BRSW.Edges",
   },
   {
@@ -40,6 +42,7 @@ export const SYSTEM_GLOBAL_ACTION = [
       },
     ],
     defaultChecked: "on",
+    section: "character",
     group: "BRSW.Edges",
     rof: "2",
   },
@@ -56,6 +59,7 @@ export const SYSTEM_GLOBAL_ACTION = [
       { selector_type: "item_type", selector_value: "weapon" },
     ],
     defaultChecked: "on",
+    section: "character",
     group: "BRSW.Edges",
     rof: "3",
   },
@@ -72,6 +76,7 @@ export const SYSTEM_GLOBAL_ACTION = [
       },
       { selector_type: "skill", selector_value: "BRSW.Shooting" },
     ],
+    section: "character",
     group: "BRSW.Edges",
   },
   {
@@ -87,6 +92,7 @@ export const SYSTEM_GLOBAL_ACTION = [
       { selector_type: "skill", selector_value: "BRSW.SkillName-Repair" },
     ],
     defaultChecked: "on",
+    section: "character",
     group: "BRSW.Edges",
   },
   {
@@ -96,6 +102,7 @@ export const SYSTEM_GLOBAL_ACTION = [
     skillMod: "+2",
     selector_type: "skill",
     selector_value: "fighting",
+    section: "attack",
     group: "BRSW.SituationalModifiers",
   },
   {
@@ -110,6 +117,7 @@ export const SYSTEM_GLOBAL_ACTION = [
       },
       { selector_type: "all" },
     ],
+    section: "common",
     group: "BRSW.SituationalModifiers",
   },
   {
@@ -119,6 +127,7 @@ export const SYSTEM_GLOBAL_ACTION = [
     skillMod: "-2",
     selector_type: "actor_has_hindrance",
     selector_value: "BRSW.EdgeName-All-Thumbs",
+    section: "character",
     group: "BRSW.Hindrances",
   },
   {
@@ -129,10 +138,11 @@ export const SYSTEM_GLOBAL_ACTION = [
     selector_type: "actor_has_hindrance",
     selector_value: "BRSW.EdgeName-Blind",
     defaultChecked: "on",
+    section: "character",
     group: "BRSW.Hindrances",
   },
   {
-    id: "CANTSWIN",
+    id: "CANTSWIM",
     name: "BRSW.EdgeName-Cant-Swim",
     button_name: "BRSW.EdgeName-Cant-Swim",
     skillMod: "-2",
@@ -140,6 +150,7 @@ export const SYSTEM_GLOBAL_ACTION = [
       { selector_type: "actor_has_hindrance", selector_value: "Can't Swim" },
       { selector_type: "skill", selector_value: "Athletics" },
     ],
+    section: "character",
     group: "BRSW.Hindrances",
   },
   {
@@ -163,6 +174,7 @@ export const SYSTEM_GLOBAL_ACTION = [
       },
     ],
     defaultChecked: "on",
+    section: "character",
     group: "BRSW.Hindrances",
   },
   {
@@ -186,6 +198,7 @@ export const SYSTEM_GLOBAL_ACTION = [
       },
     ],
     defaultChecked: "on",
+    section: "character",
     group: "BRSW.Hindrances",
   },
   {
@@ -200,6 +213,7 @@ export const SYSTEM_GLOBAL_ACTION = [
       },
       { selector_type: "skill", selector_value: "BRSW.SkillName-Notice" },
     ],
+    section: "character",
     group: "BRSW.Hindrances",
   },
   {
@@ -219,6 +233,7 @@ export const SYSTEM_GLOBAL_ACTION = [
       },
     ],
     defaultChecked: "on",
+    section: "character",
     group: "BRSW.Hindrances",
   },
   {
@@ -234,6 +249,7 @@ export const SYSTEM_GLOBAL_ACTION = [
       { selector_type: "skill", selector_value: "BRSW.SkillName-Intimidation" },
     ],
     defaultChecked: "on",
+    section: "character",
     group: "BRSW.Hindrances",
   },
   {
@@ -254,6 +270,7 @@ export const SYSTEM_GLOBAL_ACTION = [
       },
     ],
     defaultChecked: "on",
+    section: "character",
     group: "BRSW.Hindrances",
   },
   {
@@ -285,6 +302,7 @@ export const SYSTEM_GLOBAL_ACTION = [
       },
     ],
     defaultChecked: "on",
+    section: "character",
     group: "BRSW.Hindrances",
   },
   {
@@ -299,6 +317,7 @@ export const SYSTEM_GLOBAL_ACTION = [
       },
       { selector_type: "skill", selector_value: "BRSW.SkillName-Athletics" },
     ],
+    section: "character",
     group: "BRSW.Edges",
   },
   {
@@ -318,6 +337,7 @@ export const SYSTEM_GLOBAL_ACTION = [
         ],
       },
     ],
+    section: "character",
     group: "BRSW.Edges",
   },
   {
@@ -341,6 +361,7 @@ export const SYSTEM_GLOBAL_ACTION = [
       },
     ],
     defaultChecked: "on",
+    section: "character",
     group: "BRSW.Edges",
   },
   {
@@ -356,6 +377,7 @@ export const SYSTEM_GLOBAL_ACTION = [
       { selector_type: "item_name", selector_value: "BRSW.Unarmed" },
     ],
     defaultChecked: "on",
+    section: "character",
     group: "BRSW.Edges",
   },
   {
@@ -375,6 +397,7 @@ export const SYSTEM_GLOBAL_ACTION = [
         ],
       },
     ],
+    section: "character",
     group: "BRSW.Edges",
   },
   {
@@ -395,6 +418,7 @@ export const SYSTEM_GLOBAL_ACTION = [
       },
     ],
     defaultChecked: "on",
+    section: "character",
     group: "BRSW.Edges",
   },
   {
@@ -419,6 +443,7 @@ export const SYSTEM_GLOBAL_ACTION = [
         ],
       },
     ],
+    section: "character",
     group: "BRSW.Edges",
   },
   {
@@ -435,6 +460,7 @@ export const SYSTEM_GLOBAL_ACTION = [
       },
       { selector_type: "item_type", selector_value: "weapon" },
     ],
+    section: "character",
     group: "BRSW.Edges",
   },
   {
@@ -463,6 +489,7 @@ export const SYSTEM_GLOBAL_ACTION = [
       { selector_type: "item_type", selector_value: "weapon" },
     ],
     defaultChecked: "on",
+    section: "character",
     group: "BRSW.Edges",
     rof: "2",
   },
@@ -487,10 +514,12 @@ export const SYSTEM_GLOBAL_ACTION = [
       { selector_type: "item_type", selector_value: "weapon" },
     ],
     defaultChecked: "on",
+    section: "character",
     group: "BRSW.Edges",
     rof: "2",
   },
 ]
+  .concat(COMMON_ACTIONS)
   .concat(COMBAT_OPTIONS)
   .concat(POWER_POINT_OPTIONS)
   .concat(BACKGROUND_EDGES)
