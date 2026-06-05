@@ -1,3 +1,6 @@
+# Version 5.0.5
+* Ensure we have a skill before rolling item and damage before rolling damage when using auto-roll
+
 # Version 5.0.4
 * Properly fixed the ownership bug with chat messages
 
