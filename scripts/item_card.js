@@ -333,8 +333,10 @@ async function item_click_listener(ev, target, currentTarget) {
   });
   if (action.includes("dialog")) {
     game.brsw.dialog.show_card(br_card);
-  } else if (action.includes("trait")) {
+  } else if (br_card.skill && action.includes("trait")) {
     await roll_item(br_card, "", false, action.includes("damage"));
+  } else if (br_card.damage && action.includes("damage")) {
+    await roll_dmg(br_card, "");
   }
   // Shortcut for rolling damage
   if (ev.target.classList.contains("damage-roll")) {
