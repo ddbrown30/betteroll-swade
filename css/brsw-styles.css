@@ -62,6 +62,7 @@
 .brsw-action-button {
     white-space: nowrap;
     margin-bottom: 0px;
+    background-color: oklch(0.446 0.03 256.802);
 }
 
 .brsw-action-button-group {
