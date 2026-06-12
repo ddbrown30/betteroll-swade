@@ -3,7 +3,7 @@
      Roll, CONST */
 
 import { TraitRoll } from "./rolls.js";
-import { broofa, getAuthor, getWhisperData, SettingsUtils } from "./utils.js";
+import { broofa, getAuthor, getWhisperData, SettingsUtils, Utils } from "./utils.js";
 import { get_item_trait, trait_from_string } from "./item_card.js";
 import { get_actions, check_selector } from "./global_actions.js";
 import { brAction } from "./actions.js";
@@ -67,14 +67,6 @@ export class BrCommonCard {
       this.id = broofa();
       this.recover_targets_from_user();
     }
-  }
-
-  get action_groups() {
-    let groups = {};
-    for (let section of Object.values(this.action_sections)) {
-      groups = { ...groups, ...section.action_groups };
-    }
-    return groups;
   }
 
   async save() {
@@ -327,19 +319,19 @@ export class BrCommonCard {
     this.populate_active_effect_actions();
     this.populate_resist_actions();
     this.populate_no_power_points_actions();
-    for (const group in this.action_groups) {
-      this.action_groups[group].actions.sort((a, b) => {
-        if (group === "Active effects" || group === "Item actions") {
+    Utils.forEachActionGroup(this, group => {
+      group.actions.sort((a, b) => {
+        if (group.name === "Active effects" || group.name === "Item actions") {
           return a.code.name > b.code.name ? 1 : -1;
         }
         return a.code.id > b.code.id ? 1 : -1;
       });
-      for (const action of this.action_groups[group].actions) {
+      for (const action of group.actions) {
         if (stored_selections.hasOwnProperty(action.code.id)) {
           action.selected = stored_selections[action.code.id];
         }
       }
-    }
+    });
     Hooks.call("BRSWCardActionsPopulated", this);
   }
 
@@ -536,11 +528,11 @@ export class BrCommonCard {
   }
 
   set_active_actions(actions) {
-    for (const group in this.action_groups) {
-      for (const action of this.action_groups[group].actions) {
+    Utils.forEachActionGroup(this, group => {
+      for (const action of group.actions) {
         action.selected = actions.includes(action.code.id);
       }
-    }
+    });
   }
 
   /**
@@ -669,7 +661,7 @@ export class BrCommonCard {
    * @returns {Promise<void>}
    */
   async render(stored_selections = {}) {
-    if (Object.keys(this.action_groups).length === 0) {
+    if (!Object.keys(this.action_sections).length) {
       this.populate_actions(stored_selections);
     }
     if (this.item && this.macro_buttons.length === 0) {
@@ -726,14 +718,13 @@ export class BrCommonCard {
    * Returns an action from an id
    */
   get_action_from_id(action_id) {
-    for (const group in this.action_groups) {
-      for (const action of this.action_groups[group].actions) {
+    return Utils.forEachActionGroup(this, group => {
+      for (const action of group.actions) {
         if (action.code.name === action_id) {
           return action;
         }
       }
-    }
-    return null;
+    });
   }
 
   get item_shots() {
@@ -757,13 +748,13 @@ export class BrCommonCard {
    */
   get_selected_actions() {
     const selected_actions = [];
-    for (const group in this.action_groups) {
-      for (const action of this.action_groups[group].actions) {
+    Utils.forEachActionGroup(this, group => {
+      for (const action of group.actions) {
         if (action.selected) {
           selected_actions.push(action);
         }
       }
-    }
+    });
     return selected_actions;
   }
 
