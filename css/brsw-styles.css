@@ -61,6 +61,7 @@
 
 .brsw-action-button {
     white-space: nowrap;
+    margin-bottom: 0px;
 }
 
 .brsw-action-button-group {
@@ -495,5 +496,6 @@
 #br-card-dialog .brsw-action-buttons {
     display: flex;
     flex-direction: column;
-    padding: 0.25rem;
+    padding: 0.5rem;
+    gap: 0.25rem;
 }
