@@ -27,9 +27,24 @@ class BrCardDialog {
   }
 
   async render() {
+    const KNOWN_KEYS = ["character", "power", "common", "attack", "none"];
+    const sections = { other: {} };
+    for (const [key, section] of Object.entries(this.BrCard.action_sections)) {
+      let targetSections = sections;
+      if (!KNOWN_KEYS.includes(key)) {
+        targetSections = sections.other;
+      }
+      targetSections[key] = [];
+      for (let group of Object.values(section.action_groups)) {
+        targetSections[key].push(group);
+      }
+      targetSections[key].sort((a, b) => {
+        return a.name > b.name ? 1 : -1;
+      });
+    }
     this.dialog_element.innerHTML = await foundry.applications.handlebars.renderTemplate(
       "modules/betterrolls-swade2/templates/card_dialog.hbs",
-      { BrCard: this.BrCard },
+      { BrCard: this.BrCard, sections },
     );
     this.bind_events();
   }
@@ -68,7 +83,7 @@ class BrCardDialog {
 
   close_card() {
     this.BrCard = null;
-    this.dialog_element.inner_html = "";
+    this.dialog_element.innerHTML = "";
     this.dialog_element.close();
   }
 

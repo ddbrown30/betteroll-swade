@@ -1,0 +1,25 @@
+<div class="brsw-action-section">
+    <h2 class="twbr:p-1 twbr:w-full twbr:font-medium twbr:bg-gray-700 twbr:text-white
+                            twbr:rounded-t twbr:border-none twbr:mb-0 twbr:text-xl">
+        {{br2-cap (localize name)}}
+    </h2>
+    <div class="brsw-action-section-groups">
+        {{#each section}}
+            <fieldset class="brsw-action-group">
+                <legend class="brsw-action-group-name">{{this.name}}</legend>
+                <div class="brsw-action-buttons" {{#if this.single_choice}}data-single-choice="true" {{/if}}>
+                    {{#each this.actions}}
+                        <span class="brsw-action-button twbr:border twbr:border-solid  twbr:text-white
+                                twbr:text-sm twbr:font-medium twbr:px-2.5 twbr:py-0.5 twbr:rounded
+                                {{#if this.selected}}twbr:bg-red-700{{/if}}
+                                twbr:hover:bg-gray-900 twbr:hover:ring-2 twbr:hover:ring-offset-1
+                                twbr:hover:cursor-pointer" data-action-id="{{this.code.id}}" style="display: inline-block">
+                            {{#if this.has_skill_mod}}<i class="fas fa-bullseye"></i>{{/if}}
+                            {{#if this.has_damage_mod}}<i class="fas fa-tint"></i>{{/if}} {{this.name}}
+                        </span>
+                    {{/each}}
+                </div>
+            </fieldset>
+        {{/each}}
+    </div>
+</div>

@@ -32,6 +32,7 @@ import {
   simple_form,
   broofa,
   addEventListenerAll,
+  Utils,
 } from "./utils.js";
 import { create_damage_card } from "./damage_card.js";
 import { ATTRIBUTES_TRANSLATION_KEYS } from "./attribute_card.js";
@@ -422,8 +423,10 @@ async function item_click_listener(ev, target, currentTarget) {
   });
   if (action.includes("dialog")) {
     game.brsw.dialog.show_card(br_card);
-  } else if (action.includes("trait")) {
+  } else if (br_card.skill && action.includes("trait")) {
     await roll_item(br_card, "", false, action.includes("damage"));
+  } else if (br_card.damage && action.includes("damage")) {
+    await roll_dmg(br_card, "");
   }
   // Shortcut for rolling damage
   if (ev.target.classList.contains("damage-roll")) {
@@ -645,7 +648,7 @@ async function roll_resist(trait, br_card, trait_mod) {
         skillMod: trait_mod,
       });
       resist_action.selected = true;
-      new_card.action_groups.resist_button = {
+      new_card.action_sections["none"].action_groups.resist_button = {
         defaultChecked: "on",
         name: localized_name,
         id: broofa(),
@@ -1480,13 +1483,16 @@ async function get_damage_mods_from_actions(
  */
 function get_any_damage_from_actions(br_card) {
   let damage = "1";
-  for (const group in br_card.action_groups) {
-    for (const action of br_card.action_groups[group].actions) {
+  Utils.forEachActionGroup(br_card, group => {
+    for (const action of group.actions) {
       if (action.code.dmgOverride) {
-        damage = action.code.dmgOverride;
+        if (action.selected || action.code.dmgOverride != 0) {
+          damage = action.code.dmgOverride;
+          return true;
+        }
       }
     }
-  }
+  });
   return damage;
 }
 

@@ -3,6 +3,8 @@
      Roll, CONST */
 
 import { TraitRoll } from "./rolls.js";
+import { broofa, getAuthor, getWhisperData, SettingsUtils, Utils } from "./utils.js";
+import { get_item_trait, trait_from_string } from "./item_card.js";
 import { broofa, getAuthor, getWhisperData, SettingsUtils } from "./utils.js";
 import { calc_pp_cost, get_item_trait, trait_from_string } from "./item_card.js";
 import { get_actions, check_selector } from "./global_actions.js";
@@ -48,7 +50,7 @@ export class BrCommonCard {
     this.environment = { light: "bright" };
     this.extra_text = "";
     this.attribute_name = ""; // If this is an attribute card, its name
-    this.action_groups = {};
+    this.action_sections = {};
     this.macro_buttons = []; // Macro buttons from items
     this.render_data = {}; // Old render data, to be removed
     this.update_list = {}; // List of properties pending to be updated
@@ -137,7 +139,7 @@ export class BrCommonCard {
       environment: this.environment,
       extra_text: this.extra_text,
       attribute_name: this.attribute_name,
-      action_groups: this.action_groups,
+      action_sections: this.action_sections,
       macro_buttons: this.macro_buttons,
       id: this.id,
       target_ids: this.target_ids,
@@ -165,7 +167,7 @@ export class BrCommonCard {
       "environment",
       "extra_text",
       "attribute_name",
-      "action_groups",
+      "action_sections",
       "target_ids",
       "macro_buttons",
       "resist_buttons",
@@ -279,17 +281,10 @@ export class BrCommonCard {
       : "";
   }
 
-  get sorted_action_groups() {
-    const groups_array = Object.values(this.action_groups);
-    return groups_array.sort((a, b) => {
-      return a.name > b.name ? 1 : -1;
-    });
-  }
-
   get targets() {
     const target_array = [];
-    for (const target_id in this.target_ids) {
-      target_array.push(canvas.tokens.get(target_id));
+    for (const target_id of this.target_ids) {
+      target_array.push(fromUuidSync(target_id));
     }
     return target_array;
   }
@@ -301,7 +296,7 @@ export class BrCommonCard {
   recover_targets_from_user() {
     this.target_ids = [];
     for (const target of game.user.targets) {
-      this.target_ids.push(target.id);
+      this.target_ids.push(target.document.uuid);
     }
   }
 
@@ -323,7 +318,8 @@ export class BrCommonCard {
    *   and a boolean meaning if they need to set on or off
    */
   populate_actions(stored_selections) {
-    this.action_groups = {};
+    this.action_sections = {};
+    this.populate_world_actions();
     if (this.item && !SettingsUtils.getWorldSetting("hide-weapon-actions")) {
       this.populate_item_actions();
     }
@@ -331,19 +327,19 @@ export class BrCommonCard {
     this.populate_active_effect_actions();
     this.populate_resist_actions();
     this.populate_no_power_points_actions();
-    for (const group in this.action_groups) {
-      this.action_groups[group].actions.sort((a, b) => {
-        if (group === "Active effects" || group === "Item actions") {
+    Utils.forEachActionGroup(this, group => {
+      group.actions.sort((a, b) => {
+        if (group.name === "Active effects" || group.name === "Item actions") {
           return a.code.name > b.code.name ? 1 : -1;
         }
         return a.code.id > b.code.id ? 1 : -1;
       });
-      for (const action of this.action_groups[group].actions) {
+      for (const action of group.actions) {
         if (stored_selections.hasOwnProperty(action.code.id)) {
           action.selected = stored_selections[action.code.id];
         }
       }
-    }
+    });
     Hooks.call("BRSWCardActionsPopulated", this);
   }
 
@@ -355,15 +351,21 @@ export class BrCommonCard {
         global_action.button_name.slice(0, 5) === "BRSW."
           ? game.i18n.localize(global_action.button_name)
           : global_action.button_name;
+      const section_name = (global_action.section ? global_action.section : "none").toLowerCase();
       const group_name = global_action.group || "BRSW.NoGroup";
       const group_name_id = group_name.split(".").join("");
       const group_single = global_action.hasOwnProperty("group_single");
       if (global_action.hasOwnProperty("extra_text")) {
         this.extra_text += global_action.extra_text;
       }
-      if (!this.action_groups.hasOwnProperty(group_name_id)) {
+      if (!this.action_sections.hasOwnProperty(section_name)) {
+        this.action_sections[section_name] = {
+          action_groups: {},
+        };
+      }
+      if (!this.action_sections[section_name].action_groups.hasOwnProperty(group_name_id)) {
         const translated_group = game.i18n.localize(group_name);
-        this.action_groups[group_name_id] = {
+        this.action_sections[section_name].action_groups[group_name_id] = {
           name: translated_group,
           actions: [],
           id: broofa(),
@@ -386,7 +388,7 @@ export class BrCommonCard {
           );
         }
       }
-      this.action_groups[group_name_id].actions.push(new_action);
+      this.action_sections[section_name].action_groups[group_name_id].actions.push(new_action);
     }
   }
 
@@ -405,8 +407,13 @@ export class BrCommonCard {
       }
     }
     if (item_actions.length) {
+      if (!this.action_sections.hasOwnProperty("none")) {
+        this.action_sections["none"] = {
+          action_groups: {},
+        };
+      }
       const name = game.i18n.localize("BRSW.ItemActions");
-      this.action_groups[name] = {
+      this.action_sections["none"].action_groups[name] = {
         name: name,
         actions: item_actions,
         id: broofa(),
@@ -453,13 +460,18 @@ export class BrCommonCard {
     }
     if (effectActions.length) {
       const name = game.i18n.localize("BRSW.ActiveEffects");
-      if (this.action_groups.hasOwnProperty(name)) {
-        this.action_groups[name].actions = [
-          ...this.action_groups[name].actions,
+      if (!this.action_sections.hasOwnProperty("character")) {
+        this.action_sections["character"] = {
+          action_groups: {},
+        };
+      }
+      if (this.action_sections["character"].action_groups.hasOwnProperty(name)) {
+        this.action_sections["character"].action_groups[name].actions = [
+          ...this.action_sections["character"].action_groups[name].actions,
           ...effectActions,
         ];
       } else {
-        this.action_groups[name] = {
+        this.action_sections["character"].action_groups[name] = {
           name: name,
           actions: effectActions,
           id: broofa(),
@@ -512,7 +524,8 @@ export class BrCommonCard {
       }
       action_array.push(new_action);
     }
-    this.action_groups[game.i18n.localize("BRSW.NoPP")] = {
+    this.action_sections["power"] ??= { action_groups: {} };
+    this.action_sections["power"].action_groups[game.i18n.localize("BRSW.NoPP")] = {
       name: game.i18n.localize("BRSW.NoPP"),
       actions: action_array,
       id: broofa(),
@@ -525,11 +538,11 @@ export class BrCommonCard {
   }
 
   set_active_actions(actions) {
-    for (const group in this.action_groups) {
-      for (const action of this.action_groups[group].actions) {
+    Utils.forEachActionGroup(this, group => {
+      for (const action of group.actions) {
         action.selected = actions.includes(action.code.id);
       }
-    }
+    });
   }
 
   refreshPPModsFromActions(actions) {
@@ -676,7 +689,7 @@ export class BrCommonCard {
    * @returns {Promise<void>}
    */
   async render(stored_selections = {}) {
-    if (Object.keys(this.action_groups).length === 0) {
+    if (!Object.keys(this.action_sections).length) {
       this.populate_actions(stored_selections);
     }
     if (this.item && this.macro_buttons.length === 0) {
@@ -707,7 +720,6 @@ export class BrCommonCard {
     const data = {
       ...this.get_data(),
       ...this.render_data,
-      ...{ sorted_action_groups: this.sorted_action_groups },
     };
     data.actor = this.actor;
     data.vehicle_actor = this.vehicle_actor;
@@ -749,18 +761,14 @@ export class BrCommonCard {
   /**
    * Returns an action by both localized and un-localized partial name
    */
-  get_action_by_name(action_name) {
-    const lowerName = action_name.toLowerCase();
-    const localLower = game.i18n.localize(action_name).toLowerCase();
-    for (const group in this.action_groups) {
-      for (const action of this.action_groups[group].actions) {
-        if (action.code.name.toLowerCase().includes(lowerName) ||
-          game.i18n.localize(action.code.name).toLowerCase().includes(localLower)) {
+  get_action_from_id(action_id) {
+    return Utils.forEachActionGroup(this, group => {
+      for (const action of group.actions) {
+        if (action.code.name === action_id) {
           return action;
         }
       }
-    }
-    return null;
+    });
   }
 
   get item_shots() {
@@ -784,13 +792,13 @@ export class BrCommonCard {
    */
   get_selected_actions() {
     const selected_actions = [];
-    for (const group in this.action_groups) {
-      for (const action of this.action_groups[group].actions) {
+    Utils.forEachActionGroup(this, group => {
+      for (const action of group.actions) {
         if (action.selected) {
           selected_actions.push(action);
         }
       }
-    }
+    });
     return selected_actions;
   }
 

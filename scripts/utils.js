@@ -277,6 +277,47 @@ export function measureDistance(tokenA, tokenB) {
   return measured_distance;
 }
 
+export class Utils {
+  //Compares lhs and rhs for equality
+  //This pulls operators from rhs for the comparison or defaults to === if none is present
+  static check_equality_with_operators(lhs, rhs) {
+    const [, op = "===", raw] = String(rhs).match(/^\s*(>=|<=|!==|===|!=|==|=|>|<)?\s*(.*)$/);
+    const val = raw.trim();
+
+    const rhsVal =
+      val === "true" && typeof lhs === "boolean" ? true :
+        val === "false" && typeof lhs === "boolean" ? false :
+          val !== "" && !isNaN(val) ? +val :
+            val;
+
+    if ([">", "<", ">=", "<="].includes(op)) {
+      const a = typeof lhs === "number" ? lhs : NaN;
+      const b = typeof rhsVal === "number" ? rhsVal : NaN;
+      return !Number.isNaN(a) && !Number.isNaN(b) && { ">": a > b, ">=": a >= b, "<": a < b, "<=": a <= b }[op];
+    }
+
+    return {
+      "==": lhs == rhsVal,
+      "=": lhs == rhsVal,
+      "!=": lhs != rhsVal,
+      "===": lhs === rhsVal,
+      "!==": lhs !== rhsVal
+    }[op];
+  }
+
+  static forEachActionGroup(brCard, callbackFn) {
+    for (const sectionName in brCard.action_sections) {
+      const section = brCard.action_sections[sectionName];
+      for (const group in section.action_groups) {
+        const retVal = callbackFn(section.action_groups[group]);
+        if (retVal !== undefined) {
+          return retVal;
+        }
+      }
+    }
+  }
+}
+
 export class SettingsUtils {
   /**
    * Get a single setting using the provided key
@@ -394,32 +435,5 @@ export class SettingsUtils {
     return BRSW2_CONFIG.USER_SETTINGS[key].value !== undefined
       ? BRSW2_CONFIG.USER_SETTINGS[key].value
       : BRSW2_CONFIG.USER_SETTINGS[key].default;
-  }
-
-  //Compares lhs and rhs for equality
-  //This pulls operators from rhs for the comparison or defaults to === if none is present
-  static check_equality_with_operators(lhs, rhs) {
-    const [, op = "===", raw] = String(rhs).match(/^\s*(>=|<=|!==|===|!=|==|=|>|<)?\s*(.*)$/);
-    const val = raw.trim();
-
-    const rhsVal =
-      val === "true" && typeof lhs === "boolean" ? true :
-      val === "false" && typeof lhs === "boolean" ? false :
-      val !== "" && !isNaN(val) ? +val :
-      val;
-
-    if ([">", "<", ">=", "<="].includes(op)) {
-      const a = typeof lhs === "number" ? lhs : NaN;
-      const b = typeof rhsVal === "number" ? rhsVal : NaN;
-      return !Number.isNaN(a) && !Number.isNaN(b) && { ">": a > b, ">=": a >= b, "<": a < b, "<=": a <= b }[op];
-    }
-
-    return {
-      "==": lhs == rhsVal,
-      "=": lhs == rhsVal,
-      "!=": lhs != rhsVal,
-      "===": lhs === rhsVal,
-      "!==": lhs !== rhsVal
-    }[op];
   }
 }
