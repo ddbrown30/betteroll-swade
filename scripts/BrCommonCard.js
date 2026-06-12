@@ -515,6 +515,7 @@ export class BrCommonCard {
       }
       action_array.push(new_action);
     }
+    this.action_sections["power"] ??= { action_groups: {} };
     this.action_sections["power"].action_groups[game.i18n.localize("BRSW.NoPP")] = {
       name: game.i18n.localize("BRSW.NoPP"),
       actions: action_array,
