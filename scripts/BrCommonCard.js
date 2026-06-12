@@ -283,8 +283,8 @@ export class BrCommonCard {
 
   get targets() {
     const target_array = [];
-    for (const target_id in this.target_ids) {
-      target_array.push(canvas.tokens.get(target_id));
+    for (const target_id of this.target_ids) {
+      target_array.push(fromUuidSync(target_id));
     }
     return target_array;
   }
@@ -296,7 +296,7 @@ export class BrCommonCard {
   recover_targets_from_user() {
     this.target_ids = [];
     for (const target of game.user.targets) {
-      this.target_ids.push(target.id);
+      this.target_ids.push(target.document.uuid);
     }
   }
 
