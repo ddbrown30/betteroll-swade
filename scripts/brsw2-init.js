@@ -387,6 +387,18 @@ function register_world_settings() {
     default: true,
     type: Boolean,
   });
+  const modifiers_source_choices = {
+    swade: game.i18n.localize("BRSW.DefaultSWADE"),
+    fc: game.i18n.localize("BRSW.FantasyCompanion"),
+    swpf: game.i18n.localize("BRSW.Pathfinder"),
+  };
+  SettingsUtils.registerBR2WorldSetting("generic-pp-modifiers-source", {
+    name: game.i18n.localize("BRSW.PowerModifiersSource"),
+    hint: game.i18n.localize("BRSW.PowerModifiersSourceHint"),
+    default: "swade",
+    type: String,
+    choices: modifiers_source_choices,
+  });
   SettingsUtils.registerBR2WorldSetting("hide-weapon-actions", {
     name: game.i18n.localize("BRSW.HideWeaponActions"),
     hint: game.i18n.localize("BRSW.HideWeaponActionsHint"),

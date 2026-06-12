@@ -517,7 +517,6 @@ export const POWER_MODIFIERS = [
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Barrier" },
-      { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     section: "power",
     group: "BRSW.PowerModifiersBarrier"
@@ -526,7 +525,7 @@ export const POWER_MODIFIERS = [
     id: "POWERBARRIERDEADLY",
     name: "☆ Deadly (2d6)",
     button_name: "BRSW.PowerModifiersBarrierDeadly",
-    shotsUsed: "+2",
+    dmgOverride: "2d6x",
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Barrier" },
@@ -626,10 +625,9 @@ export const POWER_MODIFIERS = [
   // BLAST (S)
   {
     id: "POWERBLASTMOD1DAMAGE",
-    name: "Damage (+2d6)",
+    name: "Damage",
     button_name: "BRSW.PowerModifiersBlastDamage",
-    shotsUsed: "+2",
-    dmgMod: "+d6x",
+    dmgOverride: "3d6x",
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Blast" }
@@ -638,11 +636,10 @@ export const POWER_MODIFIERS = [
     group: "BRSW.PowerModifiersBlast"
   },
   {
-    id: "POWERBLASTMOD3GREATERBURST",
-    name: "Greater Blast (+2d6)",
+    id: "POWERBLASTMOD3GREATERBLAST",
+    name: "Greater Blast",
     button_name: "BRSW.PowerModifiersBlastGreaterBlast",
-    shotsUsed: "+4",
-    dmgMod: "+2d6x",
+    dmgOverride: "4d6x",
     isHeavyWeapon: true,
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
@@ -730,10 +727,9 @@ export const POWER_MODIFIERS = [
   // BOLT
   {
     id: "POWERBOLTMOD1DAMAGE",
-    name: "Damage (+1d6)",
+    name: "Damage",
     button_name: "BRSW.PowerModifiersBoltDamage",
-    shotsUsed: "+2",
-    dmgMod: "+d6x",
+    dmgOverride: "3d6x",
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Bolt" }
@@ -756,10 +752,9 @@ export const POWER_MODIFIERS = [
   },
   {
     id: "POWERBOLTMOD2GREATERBOLT",
-    name: "Greater Bolt (+2d6)",
+    name: "Greater Bolt",
     button_name: "BRSW.PowerModifiersBoltGreaterBolt",
-    shotsUsed: "+4",
-    dmgMod: "+2d6x",
+    dmgOverride: "4d6x",
     isHeavyWeapon: true,
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
@@ -773,7 +768,6 @@ export const POWER_MODIFIERS = [
     id: "POWERBOLTMOD4RATEOFFIRE",
     name: "Rate of Fire",
     button_name: "BRSW.PowerModifiersBoltRateOfFire",
-    shotsUsed: "+2",
     rof: "2",
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
@@ -938,9 +932,8 @@ export const POWER_MODIFIERS = [
   },
   {
     id: "POWERDAMAGEFIELD1DAMAGE",
-    name: "Damage (2d6)",
+    name: "Damage",
     button_name: "BRSW.PowerModifiersDamageFieldDamage",
-    shotsUsed: "+2",
     dmgOverride: "2d6x",
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
@@ -950,10 +943,9 @@ export const POWER_MODIFIERS = [
     group: "BRSW.PowerModifiersDamageField"
   },
   {
-    id: "POWERDAMAGEFIELD3GREATERBURST",
-    name: "Greater Blast (3d6)",
+    id: "POWERDAMAGEFIELD3GREATERDAMAGEFIELD",
+    name: "Greater Damage Field",
     button_name: "BRSW.PowerModifiersDamageFieldGreaterDamageField",
-    shotsUsed: "+4",
     dmgOverride: "3d6x",
     isHeavyWeapon: true,
     and_selector: [
@@ -1023,9 +1015,9 @@ export const POWER_MODIFIERS = [
   },
   {
     id: "POWERENTANGLEMOD4DAMAGE",
-    name: "Damage (+2)",
+    name: "Damage",
     button_name: "BRSW.PowerModifiersEntangleDamage",
-    shotsUsed: "+2",
+    dmgOverride: "2d4x",
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Entangle" }
@@ -1035,9 +1027,9 @@ export const POWER_MODIFIERS = [
   },
   {
     id: "POWERENTANGLEMOD5DEADLY",
-    name: "☆ Deadly (+4)",
+    name: "☆ Deadly",
     button_name: "BRSW.PowerModifiersEntangleDeadly",
-    shotsUsed: "+4",
+    dmgOverride: "2d6x",
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Entangle" },
@@ -1084,9 +1076,9 @@ export const POWER_MODIFIERS = [
   // HAVOC
   {
     id: "POWERHAVOCMODGREATER",
-    name: "Greater Havoc (+2d6)",
+    name: "Greater Havoc",
     button_name: "BRSW.PowerModifiersHavocGreaterHavoc",
-    shotsUsed: "+2",
+    dmgOverride: "2d6x",
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Havoc" },

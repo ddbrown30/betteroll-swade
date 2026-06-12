@@ -702,7 +702,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(
         "and_selector",
         "section",
         "group",
-        "shotsUsed",
+        "resourcesUsed",
         "or_selector",
         "rof",
         "self_add_status",

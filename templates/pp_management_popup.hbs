@@ -1,0 +1,43 @@
+<form class="standard-form">
+    <fieldset>
+        <legend>{{{localize "BRSW.PPManagementGenericMods"}}}</legend>
+        <div class="pp-mod-selection" name="generic-mods">
+            {{#each genericMods}}
+                <button class="pp-mod {{#if selected}}selected{{/if}}" type="button" data-action="toggleMod" data-modName="{{name}}">
+                    {{{localize name}}} [{{cost}}PP]
+                </button>
+            {{/each}}
+        </div>
+    </fieldset>
+    {{#if powerMods.length}}
+        <fieldset>
+            <legend>{{localize "BRSW.PPManagementPowerMods"}}</legend>
+            <div class="pp-mod-selection" name="power-mods">
+                {{#each powerMods}}
+                    <button class="pp-mod {{#if selected}}selected{{/if}}" type="button" data-action="toggleMod" data-modName="{{name}}">
+                        {{#if isEpic}}<i class="fas fa-star" style="color: #db8f26;"></i>{{/if}}{{name}} [{{cost}}PP]
+                    </button>
+                {{/each}}
+            </div>
+        </fieldset>
+    {{/if}}
+    {{#if additionalRecipientsMod.name}}
+        <div class="form-group">
+            <label for="additional-recipients">
+                {{#if isEpic}}<i class="fas fa-star" style="color: #db8f26;"></i>{{/if}}
+                {{localize additionalRecipientsMod.name}} [{{additionalRecipientsMod.cost}}PP]
+            </label>
+            <input type='number' id='additional-recipients' value='0'/>
+        </div>
+    {{/if}}
+    <div class="form-group">
+        <label for="extraPP">
+            {{localize "Extra PP Costs"}}
+        </label>
+        <input type='number' id='extraPP' value='0' />
+    </div>
+    <footer class="form-footer">
+        <button type="button" data-action="confirm">{{localize "Grant Edges"}}</button>
+        <button type="button" data-action="cancel">{{localize "Cancel"}}</button>
+    </footer>
+</form>

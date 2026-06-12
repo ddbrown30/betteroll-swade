@@ -5,6 +5,8 @@
 import { TraitRoll } from "./rolls.js";
 import { broofa, getAuthor, getWhisperData, SettingsUtils, Utils } from "./utils.js";
 import { get_item_trait, trait_from_string } from "./item_card.js";
+import { broofa, getAuthor, getWhisperData, SettingsUtils } from "./utils.js";
+import { calc_pp_cost, get_item_trait, trait_from_string } from "./item_card.js";
 import { get_actions, check_selector } from "./global_actions.js";
 import { brAction } from "./actions.js";
 import { are_bennies_available, trait_to_string } from "./cards_common.js";
@@ -57,6 +59,7 @@ export class BrCommonCard {
     this.popup_shown = false;
     this.manual_mods = {};
     this.applicable_effects = [];
+    this.pp_modifiers = {};
     if (message) {
       const data = this.message.getFlag("betterrolls-swade2", "br_data");
       if (data) {
@@ -146,6 +149,8 @@ export class BrCommonCard {
       popup_shown: this.popup_shown,
       manual_mods: this.manual_mods,
       applicable_effects: this.applicable_effects,
+      pp_modifiers: this.pp_modifiers,
+      pp_cost: this.pp_cost,
     };
   }
 
@@ -170,6 +175,8 @@ export class BrCommonCard {
       "popup_shown",
       "manual_mods",
       "applicable_effects",
+      "pp_modifiers",
+      "pp_cost",
     ];
     for (const field of FIELDS) {
       this[field] = data[field];
@@ -316,6 +323,7 @@ export class BrCommonCard {
     if (this.item && !SettingsUtils.getWorldSetting("hide-weapon-actions")) {
       this.populate_item_actions();
     }
+    this.populate_world_actions();
     this.populate_active_effect_actions();
     this.populate_resist_actions();
     this.populate_no_power_points_actions();
@@ -364,6 +372,7 @@ export class BrCommonCard {
           single_choice: group_single,
         };
       }
+
       const new_action = new brAction(name, global_action);
       if (global_action.hasOwnProperty("defaultChecked")) {
         if (global_action.defaultChecked == "on") {
@@ -536,6 +545,24 @@ export class BrCommonCard {
     });
   }
 
+  refreshPPModsFromActions(actions) {
+    for (const mod of this.pp_modifiers.genericMods) {
+      if (mod.actionId) {
+        const action = this.get_action_by_id(mod.actionId);
+        if (action) {
+          mod.selected = action.selected;
+        }
+      }
+    }
+
+    for (const mod of this.pp_modifiers.powerMods) {
+      const action = this.get_action_by_name(mod.name);
+      if (action) {
+        mod.selected = action.selected;
+      }
+    }
+  }
+
   /**
    * Set the trait_id for the render_data
    */
@@ -669,6 +696,8 @@ export class BrCommonCard {
       this.populate_macro_buttons();
     }
     this.get_trait();
+
+    this.pp_cost = this.render_data.is_power ? calc_pp_cost(this) : 0;
     const new_content = await foundry.applications.handlebars.renderTemplate(
       this.render_data.template,
       this.get_data_render(),
@@ -716,7 +745,21 @@ export class BrCommonCard {
   }
 
   /**
-   * Returns an action from an id
+   * Returns an action by id
+   */
+  get_action_by_id(action_id) {
+    for (const group in this.action_groups) {
+      for (const action of this.action_groups[group].actions) {
+        if (action.code.id === action_id) {
+          return action;
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Returns an action by both localized and un-localized partial name
    */
   get_action_from_id(action_id) {
     return Utils.forEachActionGroup(this, group => {

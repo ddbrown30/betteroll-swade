@@ -818,10 +818,7 @@ async function get_new_roll_options(
     );
   }
   // Encumbrance
-  const npc_avoid_encumbrance =
-    SettingsUtils.getSetting("optional_rules_enabled").indexOf(
-      "NPCDontUseEncumbrance",
-    ) > -1;
+  const npc_avoid_encumbrance = SettingsUtils.isOptionalRuleEnabled("NPCDontUseEncumbrance");
   if (
     (br_card.actor.type === "character" || !npc_avoid_encumbrance) &&
     br_card.actor.system.encumbered &&

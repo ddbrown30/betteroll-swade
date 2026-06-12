@@ -397,6 +397,10 @@ export class SettingsUtils {
     BRSW2_CONFIG.USER_SETTINGS[key] = setting;
   }
 
+  static isOptionalRuleEnabled(rule) {
+    return SettingsUtils.getSetting("optional_rules_enabled").indexOf(rule) > -1;
+  }
+
   static hasModuleFlags(obj) {
     if (!obj.flags) {
       return false;
