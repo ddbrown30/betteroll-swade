@@ -89,6 +89,7 @@ Hooks.on(`ready`, () => {
     "modules/betterrolls-swade2/templates/damage_partial.hbs",
     "modules/betterrolls-swade2/templates/actions_partial.hbs",
     "modules/betterrolls-swade2/templates/card_dialog.hbs",
+    "modules/betterrolls-swade2/templates/action_section_partial.hbs",
     "modules/betterrolls-swade2/templates/setting_partial.hbs",
   ];
   foundry.applications.handlebars.loadTemplates(templatePaths).then(() => {
