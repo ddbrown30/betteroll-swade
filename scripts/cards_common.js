@@ -638,9 +638,6 @@ export function calculate_damage_results(rolls) {
  * @param render_data
  */
 export async function update_message(br_message, render_data) {
-  if (!br_message.hasOwnProperty("action_groups")) {
-    br_message = new BrCommonCard(br_message);
-  }
   if (br_message.type === BRSW_CONST.TYPE_ITEM_CARD) {
     render_data.skill = get_item_trait(br_message.item, br_message.actor);
   }
