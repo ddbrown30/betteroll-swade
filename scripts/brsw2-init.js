@@ -94,6 +94,7 @@ Hooks.on(`ready`, () => {
   foundry.applications.handlebars.loadTemplates(templatePaths).then(() => {
     console.info("Better Rolls templates preloaded");
   });
+  Handlebars.registerHelper(`br2-cap`, s => s && String(s[0]).toUpperCase() + String(s).slice(1));
   // Add a hook to control combat flow.
   if (SettingsUtils.getWorldSetting("auto-status-cards")) {
     game.swade.effectCallbacks.set("shaken", create_unshaken_wrapper);

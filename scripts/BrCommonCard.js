@@ -343,7 +343,7 @@ export class BrCommonCard {
         global_action.button_name.slice(0, 5) === "BRSW."
           ? game.i18n.localize(global_action.button_name)
           : global_action.button_name;
-      const section_name = global_action.section ? global_action.section : "none";
+      const section_name = (global_action.section ? global_action.section : "none").toLowerCase();
       const group_name = global_action.group || "BRSW.NoGroup";
       const group_name_id = group_name.split(".").join("");
       const group_single = global_action.hasOwnProperty("group_single");

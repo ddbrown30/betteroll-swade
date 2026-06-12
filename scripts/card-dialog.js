@@ -27,13 +27,18 @@ class BrCardDialog {
   }
 
   async render() {
-    const sections = {};
+    const KNOWN_KEYS = ["character", "power", "common", "attack", "none"];
+    const sections = { other: {} };
     for (const [key, section] of Object.entries(this.BrCard.action_sections)) {
-      sections[key] = [];
-      for (let group of Object.values(section.action_groups)) {
-        sections[key].push(group);
+      let targetSections = sections;
+      if (!KNOWN_KEYS.includes(key)) {
+        targetSections = sections.other;
       }
-      sections[key].sort((a, b) => {
+      targetSections[key] = [];
+      for (let group of Object.values(section.action_groups)) {
+        targetSections[key].push(group);
+      }
+      targetSections[key].sort((a, b) => {
         return a.name > b.name ? 1 : -1;
       });
     }
