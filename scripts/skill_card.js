@@ -257,6 +257,7 @@ export function is_skill_fighting(skill) {
  * @return {boolean}
  */
 export function is_shooting_skill(skill) {
+  if (!skill) return false;
   const shooting_names = SHOOTING_SKILLS;
   shooting_names.push(game.i18n.localize("BRSW.ShootingSkill"));
   for (const name of shooting_names) {
