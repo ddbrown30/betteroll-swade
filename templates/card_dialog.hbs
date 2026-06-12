@@ -1,4 +1,4 @@
-<div class="twbr:z-50 twbr:overflow-y-auto twbr:max-h-full">
+<div class="twbr:z-50 twbr:max-h-full">
     <div class="twbr:flex twbr:items-start twbr:justify-between twbr:p-1 twbr:border-solid
             twbr:border-0 twbr:border-b twbr:border-gray-600">
         <h2 class="twbr:text-xl twbr:font-semibold twbr:border-none twbr:ml-2 twbr:text-black">
@@ -13,30 +13,47 @@
             <span class="sr-only">Close modal</span>
         </button>
     </div>
-    <div class="twbr:p-3 twbr:space-y-2">
-        {{#each BrCard.sorted_action_groups}}
-            <div>
+    <div class="brsw-actions-scrollable">
+        {{#if sections.common}}
+            {{>"modules/betterrolls-swade2/templates/action_section_partial.hbs" name="BRSW.ActionSection.Common" section=sections.common}}
+        {{/if}}
+        {{#if sections.character}}
+            {{>"modules/betterrolls-swade2/templates/action_section_partial.hbs" name="BRSW.ActionSection.Character" section=sections.character}}
+        {{/if}}
+        {{#if sections.attack}}
+            {{>"modules/betterrolls-swade2/templates/action_section_partial.hbs" name="BRSW.ActionSection.Attack" section=sections.attack}}
+        {{/if}}
+        {{#if sections.power}}
+            {{>"modules/betterrolls-swade2/templates/action_section_partial.hbs" name="BRSW.ActionSection.Power" section=sections.power}}
+        {{/if}}
+        {{#each sections.other}}
+            {{>"modules/betterrolls-swade2/templates/action_section_partial.hbs" name=(br2-cap @key) section=this}}
+        {{/each}}
+        <div class="twbr:p-3 twbr:space-y-2">
+            {{#each sections.none}}
                 <div>
-                    <h2 class="twbr:p-1 twbr:w-full twbr:font-medium twbr:bg-gray-600 twbr:text-white
+                    <div>
+                        <h2 class="twbr:p-1 twbr:w-full twbr:font-medium twbr:bg-gray-600 twbr:text-white
                             twbr:rounded-t twbr:border-none twbr:mb-0 twbr:text-xl">
-                        {{this.name}} {{#if this.single_choice}} (Single choice){{/if}}
-                    </h2>
-                </div>
-                <div class="twbr:p-2 twbr:border-b-0 twbr:border-solid twbr:bg-gray-500 twbr:border
+                            {{this.name}} {{#if this.single_choice}} (Single choice){{/if}}
+                        </h2>
+                    </div>
+                    <div class="twbr:p-2 twbr:border-b-0 twbr:border-solid twbr:bg-gray-500 twbr:border
                         twbr:border-gray-700 twbr:mt-0 twbr:leading-8" {{#if this.single_choice}}data-single-choice="true" {{/if}}>
-                    {{#each this.actions}}
-                        <span class="brsw-action-button twbr:m-1 twbr:border twbr:border-solid  twbr:text-white
+                        {{#each this.actions}}
+                            <span class="brsw-action-button twbr:border twbr:border-solid  twbr:text-white
                                 twbr:text-sm twbr:font-medium twbr:px-2.5 twbr:py-0.5 twbr:rounded
                                 {{#if this.selected}}twbr:bg-red-700{{/if}}
                                 twbr:hover:bg-gray-900 twbr:hover:ring-2 twbr:hover:ring-offset-1
                                 twbr:hover:cursor-pointer" data-action-id="{{this.code.id}}" style="display: inline-block">
-                            {{#if this.has_skill_mod}}<i class="fas fa-bullseye"></i>{{/if}}
-                            {{#if this.has_damage_mod}}<i class="fas fa-tint"></i>{{/if}} {{this.name}}
-                        </span>
-                    {{/each}}
+                                {{#if this.has_skill_mod}}<i class="fas fa-bullseye"></i>{{/if}}
+                                {{#if this.has_damage_mod}}<i class="fas fa-tint"></i>{{/if}} {{this.name}}
+                            </span>
+                        {{/each}}
+                    </div>
                 </div>
-            </div>
-        {{/each}}
+            {{/each}}
+        </div>
     </div>
     <div class="twbr:flex twbr:p-1">
         <button type="button" id="brsw-save-button" class="twbr:py-0.5 twbr:px-5 twbr:mr-2 twbr:mb-2 twbr:font-medium

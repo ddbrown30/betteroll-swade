@@ -9,6 +9,7 @@ import {
   SettingsUtils,
   measureDistance,
   addEventListenerAll,
+  Utils,
 } from "./utils.js";
 import { get_enabled_gm_actions } from "./gm_actions.js";
 
@@ -299,18 +300,18 @@ export function check_selector(type, value, item, actor) {
   } else if (type.indexOf("actor_additional_stat_") === 0) {
     const additional_stat = type.slice(22);
     if (actor.system.additionalStats.hasOwnProperty(additional_stat)) {
-      selected = SettingsUtils.check_equality_with_operators(actor.system.additionalStats[additional_stat].value, value);
+      selected = Utils.check_equality_with_operators(actor.system.additionalStats[additional_stat].value, value);
     }
   } else if (type.indexOf("item_additional_stat_") === 0) {
     const additional_stat = type.slice(21);
     if (item?.system?.additionalStats.hasOwnProperty(additional_stat)) {
-      selected = SettingsUtils.check_equality_with_operators(item.system.additionalStats[additional_stat].value, value);
+      selected = Utils.check_equality_with_operators(item.system.additionalStats[additional_stat].value, value);
     }
   } else if (type.indexOf("target_additional_stat_") === 0) {
     const additional_stat = type.slice(23);
     for (const targeted_token of game.user.targets) {
       if (targeted_token?.actor?.system?.additionalStats.hasOwnProperty(additional_stat)) {
-        if (SettingsUtils.check_equality_with_operators(targeted_token.actor.system.additionalStats[additional_stat].value, value)) {
+        if (Utils.check_equality_with_operators(targeted_token.actor.system.additionalStats[additional_stat].value, value)) {
           selected = true;
           break;
         }
@@ -460,7 +461,7 @@ function check_document_value(document, value) {
   const [path, result] = value.split("=");
   const data = foundry.utils.getProperty(document, path);
   // noinspection EqualityComparisonWithCoercionJS
-  return result != undefined ? SettingsUtils.check_equality_with_operators(data, result) : !!data;
+  return result != undefined ? Utils.check_equality_with_operators(data, result) : !!data;
 }
 
 // noinspection JSPrimitiveTypeWrapperUsage
@@ -699,6 +700,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(
         "selector_type",
         "selector_value",
         "and_selector",
+        "section",
         "group",
         "shotsUsed",
         "or_selector",

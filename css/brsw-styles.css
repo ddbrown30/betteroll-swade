@@ -59,6 +59,12 @@
     margin-top: auto;
 }
 
+.brsw-action-button {
+    white-space: nowrap;
+    margin-bottom: 0px;
+    background-color: oklch(0.446 0.03 256.802);
+}
+
 .brsw-action-button-group {
     display: flex;
     gap: 0.25rem;
@@ -196,15 +202,19 @@
 .brsw-d4 {
     background-image: url("/modules/betterrolls-swade2/assets/dice_svg/d4-grey.svg");
 }
+
 .brsw-d6 {
     background-image: url("/modules/betterrolls-swade2/assets/dice_svg/d6-grey.svg");
 }
+
 .brsw-d8 {
     background-image: url("/modules/betterrolls-swade2/assets/dice_svg/d8-grey.svg");
 }
+
 .brsw-d10 {
     background-image: url("/modules/betterrolls-swade2/assets/dice_svg/d10-grey.svg");
 }
+
 .brsw-d12 {
     background-image: url("/modules/betterrolls-swade2/assets/dice_svg/d12-grey.svg");
 }
@@ -212,15 +222,19 @@
 .brsw-d4-fail {
     background-image: url("/modules/betterrolls-swade2/assets/dice_svg/d4-red.svg");
 }
+
 .brsw-d6-fail {
     background-image: url("/modules/betterrolls-swade2/assets/dice_svg/d6-red.svg");
 }
+
 .brsw-d8-fail {
     background-image: url("/modules/betterrolls-swade2/assets/dice_svg/d8-red.svg");
 }
+
 .brsw-d10-fail {
     background-image: url("/modules/betterrolls-swade2/assets/dice_svg/d10-red.svg");
 }
+
 .brsw-d12-fail {
     background-image: url("/modules/betterrolls-swade2/assets/dice_svg/d12-red.svg");
 }
@@ -228,15 +242,19 @@
 .brsw-d4-success {
     background-image: url("/modules/betterrolls-swade2/assets/dice_svg/d4-green.svg");
 }
+
 .brsw-d6-success {
     background-image: url("/modules/betterrolls-swade2/assets/dice_svg/d6-green.svg");
 }
+
 .brsw-d8-success {
     background-image: url("/modules/betterrolls-swade2/assets/dice_svg/d8-green.svg");
 }
+
 .brsw-d10-success {
     background-image: url("/modules/betterrolls-swade2/assets/dice_svg/d10-green.svg");
 }
+
 .brsw-d12-success {
     background-image: url("/modules/betterrolls-swade2/assets/dice_svg/d12-green.svg");
 }
@@ -244,15 +262,19 @@
 .brsw-d4-raise {
     background-image: url("/modules/betterrolls-swade2/assets/dice_svg/d4-blue.svg");
 }
+
 .brsw-d6-raise {
     background-image: url("/modules/betterrolls-swade2/assets/dice_svg/d6-blue.svg");
 }
+
 .brsw-d8-raise {
     background-image: url("/modules/betterrolls-swade2/assets/dice_svg/d8-blue.svg");
 }
+
 .brsw-d10-raise {
     background-image: url("/modules/betterrolls-swade2/assets/dice_svg/d10-blue.svg");
 }
+
 .brsw-d12-raise {
     background-image: url("/modules/betterrolls-swade2/assets/dice_svg/d12-blue.svg");
 }
@@ -383,6 +405,7 @@
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
 }
+
 /* Chat tabs */
 .brsw-chat-tab {
     margin-right: 6px;
@@ -412,17 +435,68 @@
 }
 
 #br-card-dialog {
-    width: 35%;
-    margin-left: 63%;
+    width: fit-content;
+    max-width: min-content;
     margin-right: 2%;
     padding: 3px;
     background: url("/ui/parchment.jpg") repeat;
     border: 3px solid #6f6c66;
     border-radius: 5px;
+    max-height: 90%;
+
+    display: flex;
+    flex-direction: column;
+}
+
+#br-card-dialog > div {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
 }
 
 /* Tailwind hides all inputs with the collapse class */
 
 .brsw-groove-border {
     border-bottom-style: groove;
+}
+
+#br-card-dialog .brsw-actions-scrollable {
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+}
+
+#br-card-dialog .brsw-action-section {
+    background-color: oklch(0.551 0.027 264.364);
+    margin: 0.75rem;
+    border-radius: 8px;
+}
+
+#br-card-dialog .brsw-action-section-groups {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(max-content, 1fr));
+}
+
+#br-card-dialog .brsw-action-group {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0.5em;
+    border-color: oklch(0.373 0.034 259.733);
+    border-radius: 8px;
+}
+
+#br-card-dialog .brsw-action-group .brsw-action-group-name {
+    margin-left: 0.75em;
+    text-shadow: 1px 1px black;
+    color: white;
+    font-weight: bold;
+}
+
+#br-card-dialog .brsw-action-buttons {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+    gap: 0.25rem;
 }

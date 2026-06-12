@@ -13,6 +13,7 @@ export const GENERIC_POWER_MODIFIERS = [
     shotsUsed: "+1",
     selector_type: "item_type",
     selector_value: "power",
+    section: "power",
     group: groupNameGenericPModifiersArmourPiercing,
     group_single: true,
   },
@@ -24,6 +25,7 @@ export const GENERIC_POWER_MODIFIERS = [
     shotsUsed: "+2",
     selector_type: "item_type",
     selector_value: "power",
+    section: "power",
     group: groupNameGenericPModifiersArmourPiercing,
     group_single: true,
   },
@@ -35,6 +37,7 @@ export const GENERIC_POWER_MODIFIERS = [
     shotsUsed: "+3",
     selector_type: "item_type",
     selector_value: "power",
+    section: "power",
     group: groupNameGenericPModifiersArmourPiercing,
     group_single: true,
   },
@@ -45,6 +48,7 @@ export const GENERIC_POWER_MODIFIERS = [
     shotsUsed: "+2",
     selector_type: "item_type",
     selector_value: "power",
+    section: "power",
     group: groupNameGenericPModifiers,
   },
   {
@@ -54,6 +58,7 @@ export const GENERIC_POWER_MODIFIERS = [
     shotsUsed: "+1",
     selector_type: "item_type",
     selector_value: "power",
+    section: "power",
     group: groupNameGenericPModifiers,
   },
   {
@@ -64,6 +69,7 @@ export const GENERIC_POWER_MODIFIERS = [
     isHeavyWeapon: true,
     selector_type: "item_type",
     selector_value: "power",
+    section: "power",
     group: groupNameGenericPModifiers,
   },
   {
@@ -73,6 +79,7 @@ export const GENERIC_POWER_MODIFIERS = [
     shotsUsed: "+1",
     selector_type: "item_type",
     selector_value: "power",
+    section: "power",
     group: groupNameGenericPModifiers,
   },
   {
@@ -82,6 +89,7 @@ export const GENERIC_POWER_MODIFIERS = [
     shotsUsed: "+2",
     selector_type: "item_type",
     selector_value: "power",
+    section: "power",
     group: groupNameGenericPModifiers,
   },
   {
@@ -91,6 +99,7 @@ export const GENERIC_POWER_MODIFIERS = [
     shotsUsed: "+1",
     selector_type: "item_type",
     selector_value: "power",
+    section: "power",
     group: groupNameGenericPModifiersRange,
     group_single: true,
   },
@@ -101,6 +110,7 @@ export const GENERIC_POWER_MODIFIERS = [
     shotsUsed: "+2",
     selector_type: "item_type",
     selector_value: "power",
+    section: "power",
     group: groupNameGenericPModifiersRange,
     group_single: true,
   },
@@ -111,6 +121,7 @@ export const GENERIC_POWER_MODIFIERS = [
     shotsUsed: "+1",
     selector_type: "item_type",
     selector_value: "power",
+    section: "power",
     group: groupNameGenericPModifiers,
   },
   {
@@ -120,6 +131,7 @@ export const GENERIC_POWER_MODIFIERS = [
     shotsUsed: "+2",
     selector_type: "item_type",
     selector_value: "power",
+    section: "power",
     group: groupNameGenericPModifiers,
   },
 ];

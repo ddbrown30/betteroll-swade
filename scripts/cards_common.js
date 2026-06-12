@@ -10,6 +10,7 @@ import {
   SettingsUtils,
   simple_form,
   spendMastersBenny,
+  Utils,
 } from "./utils.js";
 import {
   discount_pp,
@@ -394,11 +395,12 @@ export function activate_common_listeners(br_card, html) {
 
 function create_macro_command_from_card(br_card) {
   let actions_stored = "";
-  for (const group of Object.values(br_card.action_groups)) {
+  Utils.forEachActionGroup(br_card, group => {
     for (const action of group.actions) {
       actions_stored += `'${action.code.id}':` + action.selected + `,`;
     }
-  }
+  });
+
   let card_function_name = "";
   let roll_function = "";
   let id = "";
@@ -638,9 +640,6 @@ export function calculate_damage_results(rolls) {
  * @param render_data
  */
 export async function update_message(br_message, render_data) {
-  if (!br_message.hasOwnProperty("action_groups")) {
-    br_message = new BrCommonCard(br_message);
-  }
   if (br_message.type === BRSW_CONST.TYPE_ITEM_CARD) {
     render_data.skill = get_item_trait(br_message.item, br_message.actor);
   }

@@ -89,11 +89,13 @@ Hooks.on(`ready`, () => {
     "modules/betterrolls-swade2/templates/damage_partial.hbs",
     "modules/betterrolls-swade2/templates/actions_partial.hbs",
     "modules/betterrolls-swade2/templates/card_dialog.hbs",
+    "modules/betterrolls-swade2/templates/action_section_partial.hbs",
     "modules/betterrolls-swade2/templates/setting_partial.hbs",
   ];
   foundry.applications.handlebars.loadTemplates(templatePaths).then(() => {
     console.info("Better Rolls templates preloaded");
   });
+  Handlebars.registerHelper(`br2-cap`, s => s && String(s[0]).toUpperCase() + String(s).slice(1));
   // Add a hook to control combat flow.
   if (SettingsUtils.getWorldSetting("auto-status-cards")) {
     game.swade.effectCallbacks.set("shaken", create_unshaken_wrapper);
