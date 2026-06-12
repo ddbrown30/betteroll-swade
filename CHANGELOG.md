@@ -1,3 +1,6 @@
+# Version 5.1.0
+* Big overhaul of the actions menu UI
+
 # Version 5.0.6
 * Changed targets to be saved as uuids
 
