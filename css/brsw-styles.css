@@ -499,6 +499,8 @@
     flex-direction: column;
     padding: 0.5rem;
     gap: 0.25rem;
+}
+
 /* PP Management */
 
 .brsw-pp-popup .mods-form {

@@ -4,8 +4,6 @@
 
 import { TraitRoll } from "./rolls.js";
 import { broofa, getAuthor, getWhisperData, SettingsUtils, Utils } from "./utils.js";
-import { get_item_trait, trait_from_string } from "./item_card.js";
-import { broofa, getAuthor, getWhisperData, SettingsUtils } from "./utils.js";
 import { calc_pp_cost, get_item_trait, trait_from_string } from "./item_card.js";
 import { get_actions, check_selector } from "./global_actions.js";
 import { brAction } from "./actions.js";
@@ -319,7 +317,6 @@ export class BrCommonCard {
    */
   populate_actions(stored_selections) {
     this.action_sections = {};
-    this.populate_world_actions();
     if (this.item && !SettingsUtils.getWorldSetting("hide-weapon-actions")) {
       this.populate_item_actions();
     }
@@ -744,27 +741,29 @@ export class BrCommonCard {
     return data;
   }
 
+
   /**
-   * Returns an action by id
+   * Returns an action by name
    */
   get_action_by_id(action_id) {
-    for (const group in this.action_groups) {
-      for (const action of this.action_groups[group].actions) {
-        if (action.code.id === action_id) {
+    return Utils.forEachActionGroup(this, group => {
+      for (const action of group.actions) {
+        if (action.code.name === action_id) {
           return action;
         }
       }
-    }
-    return null;
+    });
   }
 
   /**
    * Returns an action by both localized and un-localized partial name
    */
-  get_action_from_id(action_id) {
+  get_action_by_name(action_name) {
+    const lowerName = action_name.toLowerCase();
+    const localLower = game.i18n.localize(action_name).toLowerCase();
     return Utils.forEachActionGroup(this, group => {
       for (const action of group.actions) {
-        if (action.code.name === action_id) {
+        if (action.code.name.toLowerCase().includes(lowerName) || game.i18n.localize(action.code.name).toLowerCase().includes(localLower)) {
           return action;
         }
       }
