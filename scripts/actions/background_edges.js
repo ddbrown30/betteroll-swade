@@ -3,15 +3,15 @@
 export const BACKGROUND_EDGES = [
   {
     id: "ALERTNESS",
-    name: "BRSW.EdgeName-Alertness",
-    button_name: "BRSW.EdgeName-Alertness",
+    name: "BRSW.EdgeName.Alertness",
+    button_name: "BRSW.EdgeName.Alertness",
     skillMod: "+2",
     and_selector: [
       {
         selector_type: "actor_has_edge",
-        selector_value: "BRSW.EdgeName-Alertness",
+        selector_value: "BRSW.EdgeName.Alertness",
       },
-      { selector_type: "skill", selector_value: "BRSW.SkillName-Notice" },
+      { selector_type: "skill", selector_value: "BRSW.SkillName.Notice" },
     ],
     defaultChecked: "on",
     section: "character",
@@ -19,23 +19,23 @@ export const BACKGROUND_EDGES = [
   },
   {
     id: "Aristocrat",
-    name: "BRSW.EdgeName-Aristocrat",
-    button_name: "BRSW.EdgeName-Aristocrat",
+    name: "BRSW.EdgeName.Aristocrat",
+    button_name: "BRSW.EdgeName.Aristocrat",
     skillMod: "+2",
     and_selector: [
       {
         selector_type: "actor_has_edge",
-        selector_value: "BRSW.EdgeName-Aristocrat",
+        selector_value: "BRSW.EdgeName.Aristocrat",
       },
       {
         or_selector: [
           {
             selector_type: "skill",
-            selector_value: "BRSW.SkillName-Persuasion",
+            selector_value: "BRSW.SkillName.Persuasion",
           },
           {
             selector_type: "skill",
-            selector_value: "BRSW.SkillName-CommonKnowledge",
+            selector_value: "BRSW.SkillName.CommonKnowledge",
           },
         ],
       },
@@ -45,23 +45,23 @@ export const BACKGROUND_EDGES = [
   },
   {
     id: "Attractive",
-    name: "BRSW.EdgeName-Attractive",
-    button_name: "BRSW.EdgeName-Attractive",
+    name: "BRSW.EdgeName.Attractive",
+    button_name: "BRSW.EdgeName.Attractive",
     skillMod: "+1",
     and_selector: [
       {
         selector_type: "actor_has_edge",
-        selector_value: "BRSW.EdgeName-Attractive",
+        selector_value: "BRSW.EdgeName.Attractive",
       },
       {
         or_selector: [
           {
             selector_type: "skill",
-            selector_value: "BRSW.SkillName-Performance",
+            selector_value: "BRSW.SkillName.Performance",
           },
           {
             selector_type: "skill",
-            selector_value: "BRSW.SkillName-Persuasion",
+            selector_value: "BRSW.SkillName.Persuasion",
           },
         ],
       },
@@ -69,7 +69,7 @@ export const BACKGROUND_EDGES = [
         not_selector: [
           {
             selector_type: "actor_has_edge",
-            selector_value: "BRSW.EdgeName-VeryAttractive",
+            selector_value: "BRSW.EdgeName.VeryAttractive",
           },
         ],
       },
@@ -79,23 +79,23 @@ export const BACKGROUND_EDGES = [
   },
   {
     id: "Very Attractive",
-    name: "BRSW.EdgeName-VeryAttractive",
-    button_name: "BRSW.EdgeName-VeryAttractive",
+    name: "BRSW.EdgeName.VeryAttractive",
+    button_name: "BRSW.EdgeName.VeryAttractive",
     skillMod: "+2",
     and_selector: [
       {
         selector_type: "actor_has_edge",
-        selector_value: "BRSW.EdgeName-VeryAttractive",
+        selector_value: "BRSW.EdgeName.VeryAttractive",
       },
       {
         or_selector: [
           {
             selector_type: "skill",
-            selector_value: "BRSW.SkillName-Performance",
+            selector_value: "BRSW.SkillName.Performance",
           },
           {
             selector_type: "skill",
-            selector_value: "BRSW.SkillName-Persuasion",
+            selector_value: "BRSW.SkillName.Persuasion",
           },
         ],
       },
@@ -105,12 +105,12 @@ export const BACKGROUND_EDGES = [
   },
   {
     id: "ELAN",
-    name: "BRSW.EdgeName-Elan",
-    button_name: "BRSW.EdgeName-Elan",
+    name: "BRSW.EdgeName.Elan",
+    button_name: "BRSW.EdgeName.Elan",
     rerollSkillMod: "+2",
     rerollMode: "benny",
     selector_type: "actor_has_edge",
-    selector_value: "BRSW.EdgeName-Elan",
+    selector_value: "BRSW.EdgeName.Elan",
     defaultChecked: "on",
     section: "character",
     group: "BRSW.Edges",
@@ -118,16 +118,16 @@ export const BACKGROUND_EDGES = [
   {
     id: "Fame",
     name: "Fame",
-    button_name: "BRSW.EdgeName-Fame",
+    button_name: "BRSW.EdgeName.Fame",
     skillMod: "+1",
     and_selector: [
-      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName-Fame" },
-      { selector_type: "skill", selector_value: "BRSW.SkillName-Persuasion" },
+      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName.Fame" },
+      { selector_type: "skill", selector_value: "BRSW.SkillName.Persuasion" },
       {
         not_selector: [
           {
             selector_type: "actor_has_edge",
-            selector_value: "BRSW.EdgeName-Famous",
+            selector_value: "BRSW.EdgeName.Famous",
           },
         ],
       },
@@ -138,14 +138,14 @@ export const BACKGROUND_EDGES = [
   {
     id: "Famous",
     name: "Famous",
-    button_name: "BRSW.EdgeName-Famous",
+    button_name: "BRSW.EdgeName.Famous",
     skillMod: "+2",
     and_selector: [
       {
         selector_type: "actor_has_edge",
-        selector_value: "BRSW.EdgeName-Famous",
+        selector_value: "BRSW.EdgeName.Famous",
       },
-      { selector_type: "skill", selector_value: "BRSW.SkillName-Persuasion" },
+      { selector_type: "skill", selector_value: "BRSW.SkillName.Persuasion" },
     ],
     section: "character",
     group: "BRSW.Edges",

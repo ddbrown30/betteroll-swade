@@ -43,7 +43,7 @@ export class OptionalRulesConfiguration extends HandlebarsApplicationMixin(Appli
     for (let rule of OPTIONAL_RULES) {
       rules.push({
         id: rule,
-        name: game.i18n.localize("BRSW.OR." + rule),
+        name: game.i18n.localize("BRSW.Settings.OptionalRules." + rule),
         enabled: enable_rules.indexOf(rule) > -1,
       });
     }

@@ -613,7 +613,7 @@ function calculate_gangUp(attacker, target) {
           combatant_gives_gangup(t.combatant, t.actor),
       );
     const formation_fighter_name = game.i18n
-      .localize("BRSW.EdgeName-FormationFighter")
+      .localize("BRSW.EdgeName.FormationFighter")
       .toLowerCase();
     const allies_with_formation_fighter = allies_within_range_of_target.filter(
       (t) =>
@@ -624,7 +624,7 @@ function calculate_gangUp(attacker, target) {
         }),
     );
     if (allies_with_formation_fighter.length > 0) {
-      gangup_name += `, ${game.i18n.localize("BRSW.EdgeName-FormationFighter")}`;
+      gangup_name += `, ${game.i18n.localize("BRSW.EdgeName.FormationFighter")}`;
     }
     enemies =
       allies_within_range_of_target.length +
@@ -650,9 +650,9 @@ function calculate_gangUp(attacker, target) {
   }
   let modifier = Math.max(0, enemies - allies - reduction + addition);
   const improved_block_name = game.i18n
-    .localize("BRSW.EdgeName-ImprovedBlock")
+    .localize("BRSW.EdgeName.ImprovedBlock")
     .toLowerCase();
-  const block_name = game.i18n.localize("BRSW.EdgeName-Block").toLowerCase();
+  const block_name = game.i18n.localize("BRSW.EdgeName.Block").toLowerCase();
   let findBlock = true;
   const blockEffects = target.actor.appliedEffects.filter((e) =>
     e.name.toLowerCase().includes(block_name),
@@ -670,7 +670,7 @@ function calculate_gangUp(attacker, target) {
         return item.name.toLowerCase().includes(improved_block_name);
       })
     ) {
-      gangup_name += ', ${game.i18n.localize("BRSW.EdgeName-ImprovedBlock")}';
+      gangup_name += ', ${game.i18n.localize("BRSW.EdgeName.ImprovedBlock")}';
       modifier = Math.max(0, modifier - 2);
     } else if (
       target.actor.items.find((item) => {
@@ -678,7 +678,7 @@ function calculate_gangUp(attacker, target) {
       })
     ) {
       modifier = Math.max(0, modifier - 1);
-      gangup_name += ', ${game.i18n.localize("BRSW.EdgeName-Block")}';
+      gangup_name += ', ${game.i18n.localize("BRSW.EdgeName.Block")}';
     }
   }
   return { name: gangup_name, bonus: Math.min(4, modifier) };

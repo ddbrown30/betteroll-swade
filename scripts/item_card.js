@@ -740,25 +740,25 @@ export function get_item_trait(item, actor) {
       if (item.system.damage.includes("str")) {
         skill = check_skill_in_actor(actor, [
           ...THROWING_SKILLS,
-          game.i18n.localize("BRSW.SkillName-Athletics").toLowerCase(), // add localization
+          game.i18n.localize("BRSW.SkillName.Athletics").toLowerCase(), // add localization
         ]);
       } else {
         skill = check_skill_in_actor(actor, [
           ...SHOOTING_SKILLS,
-          game.i18n.localize("BRSW.SkillName-Shooting").toLowerCase(), // add localization
+          game.i18n.localize("BRSW.SkillName.Shooting").toLowerCase(), // add localization
         ]);
       }
     } else {
       skill = check_skill_in_actor(actor, [
         ...FIGHTING_SKILLS,
-        game.i18n.localize("BRSW.SkillName-fighting").toLowerCase(), // bag add localization
+        game.i18n.localize("BRSW.SkillName.Fighting").toLowerCase(), // bag add localization
       ]);
     }
   }
   if (skill === undefined) {
     skill = check_skill_in_actor(actor, [
       ...UNTRAINED_SKILLS,
-      game.i18n.localize("BRSW.SkillName-untrained").toLowerCase(),
+      game.i18n.localize("BRSW.SkillName.UnskilledAttempt").toLowerCase(),
     ]);
   }
   return skill;
@@ -794,7 +794,7 @@ export function trait_from_string(actor, trait_name) {
     // No skill was found, we try to find untrained
     skill = check_skill_in_actor(actor, [
       ...UNTRAINED_SKILLS,
-      game.i18n.localize("BRSW.SkillName-untrained").toLowerCase(),
+      game.i18n.localize("BRSW.SkillName.UnskilledAttempt").toLowerCase(),
     ]);
   }
   return skill;
@@ -1077,7 +1077,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
       (item) =>
         item.type === "edge" &&
         item.name.toLowerCase() ===
-          game.i18n.localize("BRSW.EdgeName-Ambidextrous").toLowerCase(),
+          game.i18n.localize("BRSW.EdgeName.Ambidextrous").toLowerCase(),
     );
     is_ambidextrous =
       is_ambidextrous || br_message.actor.getFlag("swade", "ambidextrous");
@@ -1871,7 +1871,7 @@ function modify_power_points(number, mode, actor, item) {
 async function manual_pp(actor, item) {
   const amount_pp = game.i18n.localize("BRSW.AmountPP");
   await foundry.applications.api.DialogV2.wait({
-    window: { title: "BRSW.PPManagement" },
+    window: { title: "BRSW.Settings.PPManagement.Name" },
     content: `<form> <div class="form-group">
             <label for="num" style="flex:unset">${amount_pp}: </label>
              <input id="brsw2-num" name="num" type="number" min="0" value="5">

@@ -44,11 +44,11 @@ export const COMMON_ACTIONS = [
         or_selector: [
           {
             selector_type: "actor_has_ability",
-            selector_value: "BRSW.AbilityName-LowLightVision",
+            selector_value: "BRSW.AbilityName.LowLightVision",
           },
           {
             selector_type: "actor_has_ability",
-            selector_value: "BRSW.AbilityName-NightVision",
+            selector_value: "BRSW.AbilityName.NightVision",
           },
         ],
       },
@@ -71,11 +71,11 @@ export const COMMON_ACTIONS = [
         or_selector: [
           {
             selector_type: "actor_has_ability",
-            selector_value: "BRSW.AbilityName-LowLightVision",
+            selector_value: "BRSW.AbilityName.LowLightVision",
           },
           {
             selector_type: "actor_has_ability",
-            selector_value: "BRSW.AbilityName-NightVision",
+            selector_value: "BRSW.AbilityName.NightVision",
           },
         ],
       },
@@ -98,7 +98,7 @@ export const COMMON_ACTIONS = [
         or_selector: [
           {
             selector_type: "actor_has_ability",
-            selector_value: "BRSW.AbilityName-NightVision",
+            selector_value: "BRSW.AbilityName.NightVision",
           },
         ],
       },
@@ -131,7 +131,7 @@ export const COMMON_ACTIONS = [
         not_selector: [
           {
             selector_type: "actor_has_edge",
-            selector_value: "BRSW.EdgeName-Steady-Hands",
+            selector_value: "BRSW.EdgeName.Steady-Hands",
           },
         ],
       },
@@ -151,7 +151,7 @@ export const COMMON_ACTIONS = [
     not_selector: [
       {
         selector_type: "actor_has_edge",
-        selector_value: "BRSW.EdgeName-Steady-Hands",
+        selector_value: "BRSW.EdgeName.Steady-Hands",
       },
     ],
     section: "common",

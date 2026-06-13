@@ -285,12 +285,12 @@ async function roll_soak(br_card, use_bennie) {
         item.type === "edge" &&
         item.name
           .toLowerCase()
-          .includes(game.i18n.localize("BRSW.EdgeName-IronJaw").toLowerCase())
+          .includes(game.i18n.localize("BRSW.EdgeName.IronJaw").toLowerCase())
       );
     })
   ) {
     soak_modifiers.push({
-      name: game.i18n.localize("BRSW.EdgeName-IronJaw"),
+      name: game.i18n.localize("BRSW.EdgeName.IronJaw"),
       value: 2,
     });
   }

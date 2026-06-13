@@ -34,7 +34,7 @@ export const TARGET_ACTIONS = [
     and_selector: [
       {
         selector_type: "target_has_edge",
-        selector_value: "BRSW.EdgeName-Dodge", // NOTE This works because the global_actions.js expects ... value.includes("BRSW.EdgeName-")
+        selector_value: "BRSW.EdgeName.Dodge", // NOTE This works because the global_actions.js expects ... value.includes("BRSW.EdgeName.")
       },
       {
         selector_type: "item_type",
@@ -57,7 +57,7 @@ export const TARGET_ACTIONS = [
     and_selector: [
       {
         selector_type: "target_has_edge",
-        selector_value: "BRSW.EdgeName-Dodge",
+        selector_value: "BRSW.EdgeName.Dodge",
       },
       {
         selector_type: "item_type",
@@ -67,15 +67,15 @@ export const TARGET_ACTIONS = [
         or_selector: [
           {
             selector_type: "skill",
-            selector_value: "BRSW.SkillName-UnskilledAttempt"
+            selector_value: "BRSW.SkillName.UnskilledAttempt"
           },
           {
             selector_type: "skill",
-            selector_value: "BRSW.SkillName-Shooting"
+            selector_value: "BRSW.SkillName.Shooting"
           },
           {
             selector_type: "skill",
-            selector_value: "BRSW.SkillName-Athletics"
+            selector_value: "BRSW.SkillName.Athletics"
           },
         ],
       },
@@ -143,16 +143,16 @@ export const TARGET_ACTIONS = [
         or_selector: [
           {
             selector_type: "skill",
-            selector_value: "BRSW.SkillName-Athletics"
+            selector_value: "BRSW.SkillName.Athletics"
           },
           {
             selector_type: "skill",
-            selector_value: "BRSW.SkillName-Shooting"
+            selector_value: "BRSW.SkillName.Shooting"
           },
           // TODO ... How to handle ranged attacks when the attacker does NOT have "Shooting" or "Athletics", so uses "Unskilled Attempt"
           // {
           //   selector_type: "skill",
-          //   selector_value: "BRSW.SkillName-UnskilledAttempt"
+          //   selector_value: "BRSW.SkillName.UnskilledAttempt"
           // },
         ],
       },
@@ -195,11 +195,11 @@ export const TARGET_ACTIONS = [
         or_selector: [
           {
             selector_type: "skill",
-            selector_value: "BRSW.SkillName-Athletics"
+            selector_value: "BRSW.SkillName.Athletics"
           },
           {
             selector_type: "skill",
-            selector_value: "BRSW.SkillName-Shooting"
+            selector_value: "BRSW.SkillName.Shooting"
           },
           {
             selector_type: "skill",
@@ -208,7 +208,7 @@ export const TARGET_ACTIONS = [
           // TODO ... How to handle ranged attacks when the attacker does NOT have "Shooting" or "Athletics", so uses "Unskilled Attempt"
           // {
           //   selector_type: "skill",
-          //   selector_value: "BRSW.SkillName-UnskilledAttempt"
+          //   selector_value: "BRSW.SkillName.UnskilledAttempt"
           // },
         ],
       },

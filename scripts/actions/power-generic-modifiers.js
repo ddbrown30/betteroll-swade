@@ -1,12 +1,12 @@
 /// generic power modifiers for any power ...
 
-const groupNameGenericPModifiers = "BRSW.PowerModifiersGeneric";
+const groupNameGenericPModifiers = "BRSW.PowerModifiers.Generic.GroupName";
 
 export const GENERIC_POWER_MODIFIERS = [
   {
     id: "ARMORPIERCING2",
-    name: "BRSW.PowerModifiersGenericArmorPiercing2",
-    button_name: "BRSW.PowerModifiersGenericArmorPiercing2",
+    name: "BRSW.PowerModifiers.Generic.ArmorPiercing2",
+    button_name: "BRSW.PowerModifiers.Generic.ArmorPiercing2",
     overrideAp: "2",
     selector_type: "item_type",
     selector_value: "power",
@@ -16,8 +16,8 @@ export const GENERIC_POWER_MODIFIERS = [
   },
   {
     id: "ARMORPIERCING4",
-    name: "BRSW.PowerModifiersGenericArmorPiercing4",
-    button_name: "BRSW.PowerModifiersGenericArmorPiercing4",
+    name: "BRSW.PowerModifiers.Generic.ArmorPiercing4",
+    button_name: "BRSW.PowerModifiers.Generic.ArmorPiercing4",
     overrideAp: "4",
     selector_type: "item_type",
     selector_value: "power",
@@ -27,8 +27,8 @@ export const GENERIC_POWER_MODIFIERS = [
   },
   {
     id: "ARMORPIERCING6",
-    name: "BRSW.PowerModifiersGenericArmorPiercing6",
-    button_name: "BRSW.PowerModifiersGenericArmorPiercing6",
+    name: "BRSW.PowerModifiers.Generic.ArmorPiercing6",
+    button_name: "BRSW.PowerModifiers.Generic.ArmorPiercing6",
     overrideAp: "6",
     selector_type: "item_type",
     selector_value: "power",
@@ -38,8 +38,8 @@ export const GENERIC_POWER_MODIFIERS = [
   },
   {
     id: "HEAVYWEAPON",
-    name: "BRSW.PowerModifiersGenericHeavyWeaponModifier",
-    button_name: "BRSW.PowerModifiersGenericHeavyWeapon",
+    name: "BRSW.PowerModifiers.Generic.HeavyWeaponModifier",
+    button_name: "BRSW.PowerModifiers.Generic.HeavyWeapon",
     isHeavyWeapon: true,
     selector_type: "item_type",
     selector_value: "power",

@@ -14,161 +14,161 @@ export function get_current_generic_mods() {
 
 const DEFAULT_SWADE_GENERIC_POWER_MODIFIERS = [
     {
-        name: "BRSW.PowerModifiersGenericArmorPiercing2",
+        name: "BRSW.PowerModifiers.Generic.ArmorPiercing2",
         actionId: "ARMORPIERCING2",
         cost: "+1"
     },
     {
-        name: "BRSW.PowerModifiersGenericArmorPiercing4",
+        name: "BRSW.PowerModifiers.Generic.ArmorPiercing4",
         actionId: "ARMORPIERCING4",
         cost: "+2"
     },
     {
-        name: "BRSW.PowerModifiersGenericArmorPiercing6",
+        name: "BRSW.PowerModifiers.Generic.ArmorPiercing6",
         actionId: "ARMORPIERCING6",
         cost: "+3"
     },
     {
-        name: "BRSW.PowerModifiersGenericFatigue",
+        name: "BRSW.PowerModifiers.Generic.Fatigue",
         cost: "+2"
     },
     {
-        name: "BRSW.PowerModifiersGenericGlowShroud",
+        name: "BRSW.PowerModifiers.Generic.GlowShroud",
         cost: "+1"
     },
     {
-        name: "BRSW.PowerModifiersGenericHeavyWeapon",
+        name: "BRSW.PowerModifiers.Generic.HeavyWeapon",
         actionId: "HEAVYWEAPON",
         cost: "+2"
     },
     {
-        name: "BRSW.PowerModifiersGenericHinderHurry",
+        name: "BRSW.PowerModifiers.Generic.HinderHurry",
         cost: "+1"
     },
     {
-        name: "BRSW.PowerModifiersGenericLingeringDamage",
+        name: "BRSW.PowerModifiers.Generic.LingeringDamage",
         cost: "+2"
     },
     {
-        name: "BRSW.PowerModifiersGenericRange2",
+        name: "BRSW.PowerModifiers.Generic.Range2",
         cost: "+1"
     },
     {
-        name: "BRSW.PowerModifiersGenericRange3",
+        name: "BRSW.PowerModifiers.Generic.Range3",
         cost: "+2"
     },
     {
-        name: "BRSW.PowerModifiersGenericSelective",
+        name: "BRSW.PowerModifiers.Generic.Selective",
         cost: "+1"
     },
 ];
 
 const FANTASY_COMPANION_GENERIC_POWER_MODIFIERS = [
     {
-        name: "BRSW.PowerModifiersGenericArmorPiercing2",
+        name: "BRSW.PowerModifiers.Generic.ArmorPiercing2",
         actionId: "ARMORPIERCING2",
         cost: "+1"
     },
     {
-        name: "BRSW.PowerModifiersGenericArmorPiercing4",
+        name: "BRSW.PowerModifiers.Generic.ArmorPiercing4",
         actionId: "ARMORPIERCING4",
         cost: "+2"
     },
     {
-        name: "BRSW.PowerModifiersGenericArmorPiercing6",
+        name: "BRSW.PowerModifiers.Generic.ArmorPiercing6",
         actionId: "ARMORPIERCING6",
         cost: "+3"
     },
     {
-        name: "BRSW.PowerModifiersGenericFatigue",
+        name: "BRSW.PowerModifiers.Generic.Fatigue",
         cost: "+2"
     },
     {
-        name: "BRSW.PowerModifiersGenericGlowShroud",
+        name: "BRSW.PowerModifiers.Generic.GlowShroud",
         cost: "+1"
     },
     {
-        name: "BRSW.PowerModifiersGenericHasty",
+        name: "BRSW.PowerModifiers.Generic.Hasty",
         cost: "+2"
     },
     {
-        name: "BRSW.PowerModifiersGenericHeavyWeapon",
+        name: "BRSW.PowerModifiers.Generic.HeavyWeapon",
         actionId: "HEAVYWEAPON",
         cost: "+2"
     },
     {
-        name: "BRSW.PowerModifiersGenericHinderHurry",
+        name: "BRSW.PowerModifiers.Generic.HinderHurry",
         cost: "+1"
     },
     {
-        name: "BRSW.PowerModifiersGenericLingeringDamage",
+        name: "BRSW.PowerModifiers.Generic.LingeringDamage",
         cost: "+2"
     },
     {
-        name: "BRSW.PowerModifiersGenericRange2",
+        name: "BRSW.PowerModifiers.Generic.Range2",
         cost: "+1"
     },
     {
-        name: "BRSW.PowerModifiersGenericRange3",
+        name: "BRSW.PowerModifiers.Generic.Range3",
         cost: "+2"
     },
     {
-        name: "BRSW.PowerModifiersGenericSelective",
+        name: "BRSW.PowerModifiers.Generic.Selective",
         cost: "+1"
     },
 ];
 
 const PATHFINDER_GENERIC_POWER_MODIFIERS = [
     {
-        name: "BRSW.PowerModifiersGenericAdaptableCaster",
+        name: "BRSW.PowerModifiers.Generic.AdaptableCaster",
         cost: "+1"
     },
     {
-        name: "BRSW.PowerModifiersGenericArmorPiercing2",
+        name: "BRSW.PowerModifiers.Generic.ArmorPiercing2",
         actionId: "ARMORPIERCING2",
         cost: "+1"
     },
     {
-        name: "BRSW.PowerModifiersGenericArmorPiercing4",
+        name: "BRSW.PowerModifiers.Generic.ArmorPiercing4",
         actionId: "ARMORPIERCING4",
         cost: "+2"
     },
     {
-        name: "BRSW.PowerModifiersGenericArmorPiercing6",
+        name: "BRSW.PowerModifiers.Generic.ArmorPiercing6",
         actionId: "ARMORPIERCING6",
         cost: "+3"
     },
     {
-        name: "BRSW.PowerModifiersGenericFatigue",
+        name: "BRSW.PowerModifiers.Generic.Fatigue",
         cost: "+2"
     },
     {
-        name: "BRSW.PowerModifiersGenericGlowShroud",
+        name: "BRSW.PowerModifiers.Generic.GlowShroud",
         cost: "+1"
     },
     {
-        name: "BRSW.PowerModifiersGenericHeavyWeapon",
+        name: "BRSW.PowerModifiers.Generic.HeavyWeapon",
         actionId: "HEAVYWEAPON",
         cost: "+2"
     },
     {
-        name: "BRSW.PowerModifiersGenericHinderHurry",
+        name: "BRSW.PowerModifiers.Generic.HinderHurry",
         cost: "+1"
     },
     {
-        name: "BRSW.PowerModifiersGenericLingeringDamage",
+        name: "BRSW.PowerModifiers.Generic.LingeringDamage",
         cost: "+2"
     },
     {
-        name: "BRSW.PowerModifiersGenericRange2",
+        name: "BRSW.PowerModifiers.Generic.Range2",
         cost: "+1"
     },
     {
-        name: "BRSW.PowerModifiersGenericRange3",
+        name: "BRSW.PowerModifiers.Generic.Range3",
         cost: "+2"
     },
     {
-        name: "BRSW.PowerModifiersGenericSelective",
+        name: "BRSW.PowerModifiers.Generic.Selective",
         cost: "+1"
     },
 ];

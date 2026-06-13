@@ -45,9 +45,9 @@ export const BRSW_CONST = {
   TYPE_UNSTUN_CARD: 14,
   TYPE_RESULT_CARD: 100,
   ARCANE_MASTERY_EDGES: [
-    "BRSW.EdgeName-Arcane-Mastery",
-    "BRSW.EdgeName-Divine-Mastery",
-    "BRSW.EdgeName-Epic-Mastery",
+    "BRSW.EdgeName.ArcaneMastery",
+    "BRSW.EdgeName.DivineMastery",
+    "BRSW.EdgeName.Epic-Mastery",
   ],
 };
 

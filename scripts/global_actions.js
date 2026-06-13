@@ -188,7 +188,7 @@ export function check_selector(type, value, item, actor) {
                 .toLowerCase()
                 .includes(
                   game.i18n
-                    .localize("BRSW.SkillName-" + value.toLowerCase())
+                    .localize("BRSW.SkillName." + value.toLowerCase())
                     .toLowerCase(),
                 );
           }
@@ -249,7 +249,7 @@ export function check_selector(type, value, item, actor) {
     );
     selected = effect ? !effect.disabled : false;
   } else if (type === "actor_has_edge") {
-    const edge_name = value.includes("BRSW.EdgeName-")
+    const edge_name = value.includes("BRSW.EdgeName.")
       ? game.i18n.localize(value)
       : value;
     // noinspection AnonymousFunctionJS
@@ -261,7 +261,7 @@ export function check_selector(type, value, item, actor) {
     });
     selected = !!edge;
   } else if (type === "actor_has_ability") {
-    const ability_name = value.includes("BRSW.AbilityName-")
+    const ability_name = value.includes("BRSW.AbilityName.")
       ? game.i18n.localize(value)
       : value;
     // noinspection AnonymousFunctionJS
@@ -273,7 +273,7 @@ export function check_selector(type, value, item, actor) {
     });
     selected = !!ability;
   } else if (type === "actor_has_hindrance") {
-    const hindrance_name = value.includes("BRSW.EdgeName-")
+    const hindrance_name = value.includes("BRSW.EdgeName.")
       ? game.i18n.localize(value)
       : value;
     // noinspection AnonymousFunctionJS
@@ -285,7 +285,7 @@ export function check_selector(type, value, item, actor) {
     });
     selected = !!hindrance;
   } else if (type === "actor_has_major_hindrance") {
-    const hindrance_name = value.includes("BRSW.EdgeName-")
+    const hindrance_name = value.includes("BRSW.EdgeName.")
       ? game.i18n.localize(value)
       : value;
     // noinspection AnonymousFunctionJS
@@ -320,7 +320,7 @@ export function check_selector(type, value, item, actor) {
   } else if (type === "actor_has_joker") {
     selected = actor.hasJoker;
   } else if (type === "target_has_edge") {
-    const edge_name = value.includes("BRSW.EdgeName-")
+    const edge_name = value.includes("BRSW.EdgeName.")
       ? game.i18n.localize(value)
       : value;
     for (const targeted_token of game.user.targets) {
@@ -342,7 +342,7 @@ export function check_selector(type, value, item, actor) {
     });
     selected = !!edge == value;
   } else if (type === "target_has_hindrance") {
-    const hindrance_name = value.includes("BRSW.EdgeName-")
+    const hindrance_name = value.includes("BRSW.EdgeName.")
       ? game.i18n.localize(value)
       : value;
     for (const targeted_token of game.user.targets) {
@@ -355,7 +355,7 @@ export function check_selector(type, value, item, actor) {
       selected = selected || !!hindrance;
     }
   } else if (type === "target_has_major_hindrance") {
-    const hindrance_name = value.includes("BRSW.EdgeName-")
+    const hindrance_name = value.includes("BRSW.EdgeName.")
       ? game.i18n.localize(value)
       : value;
     // noinspection AnonymousFunctionJS
@@ -370,7 +370,7 @@ export function check_selector(type, value, item, actor) {
       selected = selected || !!hindrance;
     }
   } else if (type === "target_has_ability") {
-    const ability_name = value.includes("BRSW.EdgeName-")
+    const ability_name = value.includes("BRSW.EdgeName.")
       ? game.i18n.localize(value)
       : value;
     for (const targeted_token of game.user.targets) {

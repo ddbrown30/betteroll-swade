@@ -173,11 +173,11 @@ async function roll_unshaken(br_card, use_bennie) {
 
 async function check_abilities(actor) {
   let edgeAndAbilityNames = [
-    game.i18n.localize("BRSW.EdgeName-CombatReflexes"), // index #0
-    game.i18n.localize("BRSW.AbilityName-Demon_Hellfrost"), // index #1
-    game.i18n.localize("BRSW.AbilityName-Construct"), // index #2
-    game.i18n.localize("BRSW.AbilityName-Undead"), // index #3
-    game.i18n.localize("BRSW.AbilityName-Amorphous_theAfter"), // index #4
+    game.i18n.localize("BRSW.EdgeName.CombatReflexes"), // index #0
+    game.i18n.localize("BRSW.AbilityName.DemonHellfrost"), // index #1
+    game.i18n.localize("BRSW.AbilityName.Construct"), // index #2
+    game.i18n.localize("BRSW.AbilityName.Undead"), // index #3
+    game.i18n.localize("BRSW.AbilityName.Amorphous"), // index #4
   ];
   // Making all names lower case:
   edgeAndAbilityNames = edgeAndAbilityNames.map((name) => name.toLowerCase());
