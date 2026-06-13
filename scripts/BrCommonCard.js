@@ -317,10 +317,10 @@ export class BrCommonCard {
    */
   populate_actions(stored_selections) {
     this.action_sections = {};
+    this.populate_world_actions();
     if (this.item && !SettingsUtils.getWorldSetting("hide-weapon-actions")) {
       this.populate_item_actions();
     }
-    this.populate_world_actions();
     this.populate_active_effect_actions();
     this.populate_resist_actions();
     this.populate_no_power_points_actions();
@@ -403,14 +403,39 @@ export class BrCommonCard {
         item_actions.push(br_action);
       }
     }
+
+    //For power item actions, check if any of them match power modifiers
+    //If so, use the item action instead
+    if (this.item.type === "power" && this.action_sections.hasOwnProperty("power")) {
+      const modsGroupName = "BRSW.PowerModifiers.PowerModifiers".split(".").join("");
+      const modsGroup = this.action_sections["power"].action_groups[modsGroupName];
+      if (modsGroup) {
+        for (let i = item_actions.length - 1; i >= 0; --i) {
+          const itemAction = item_actions[i];
+          for (const action of modsGroup.actions) {
+            const nameSimilarity = Utils.actionNameSimilarity(itemAction.name, action.name);
+            const codeSimilarity = Utils.actionNameSimilarity(itemAction.name, action.code.name);
+            if (nameSimilarity == 1 || codeSimilarity == 1) {
+              const name = action.name;
+              Object.assign(action, foundry.utils.deepClone(itemAction));
+              action.name = name; //Keep the BR2 action name since it will be localized
+              item_actions.splice(i, 1);
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    const section = "none";
     if (item_actions.length) {
-      if (!this.action_sections.hasOwnProperty("none")) {
-        this.action_sections["none"] = {
+      if (!this.action_sections.hasOwnProperty(section)) {
+        this.action_sections[section] = {
           action_groups: {},
         };
       }
       const name = game.i18n.localize("BRSW.ItemActions");
-      this.action_sections["none"].action_groups[name] = {
+      this.action_sections[section].action_groups[name] = {
         name: name,
         actions: item_actions,
         id: broofa(),

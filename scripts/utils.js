@@ -316,6 +316,25 @@ export class Utils {
       }
     }
   }
+
+  static actionNameSimilarity(a, b) {
+    function normalizeName(name) {
+      return name
+        .replace(/\s*\([^)]*\)/g, "")     // Remove stuff in parentheses e.g. Greater Damage (4d6)
+        .replace(/[^\p{L}\p{N}]+/gu, " ") // Remove non-alphanumeric characters
+        .replace(/\s+/g, " ")             // Remove all whitespace except a single space between words
+        .trim()
+        .toLowerCase();
+    }
+
+    const aWords = new Set(normalizeName(a).split(" "));
+    const bWords = new Set(normalizeName(b).split(" "));
+
+    const intersection = [...aWords].filter(word => bWords.has(word)).length;
+    const union = new Set([...aWords, ...bWords]).size;
+
+    return union === 0 ? 1 : intersection / union;
+  }
 }
 
 export class SettingsUtils {
