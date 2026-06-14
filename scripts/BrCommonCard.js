@@ -570,19 +570,23 @@ export class BrCommonCard {
   }
 
   refreshPPModsFromActions(actions) {
-    for (const mod of this.pp_modifiers.genericMods) {
-      if (mod.actionId) {
-        const action = this.get_action_by_id(mod.actionId);
-        if (action) {
-          mod.selected = action.selected;
+    if (this.pp_modifiers.genericMods) {
+      for (const mod of this.pp_modifiers.genericMods) {
+        if (mod.actionId) {
+          const action = this.get_action_by_id(mod.actionId);
+          if (action) {
+            mod.selected = action.selected;
+          }
         }
       }
     }
 
-    for (const mod of this.pp_modifiers.powerMods) {
-      const action = this.get_action_by_name(mod.name);
-      if (action) {
-        mod.selected = action.selected;
+    if (this.pp_modifiers.powerMods) {
+      for (const mod of this.pp_modifiers.powerMods) {
+        const action = this.get_action_by_name(mod.name);
+        if (action) {
+          mod.selected = action.selected;
+        }
       }
     }
   }
