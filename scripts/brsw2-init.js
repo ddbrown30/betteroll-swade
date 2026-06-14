@@ -417,7 +417,7 @@ function register_world_settings() {
   SettingsUtils.registerBR2WorldSetting("pp_change_card_behaviour", {
     name: game.i18n.localize("BRSW.Settings.PPChangeCardBehaviour.Name"),
     hint: game.i18n.localize("BRSW.Settings.PPChangeCardBehaviour.Hint"),
-    default: "master_only",
+    default: "none",
     type: String,
     choices: {
       none: game.i18n.localize("BRSW.NoOne"),
