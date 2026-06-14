@@ -70,9 +70,12 @@ Hooks.on(`ready`, () => {
     game.user,
     USER_FLAGS.user_settings,
   );
-  foundry.utils.mergeObject(USER_SETTINGS, user_settings, {
-    insertKeys: false,
-  });
+
+  for (const key in USER_SETTINGS) {
+    if (user_settings[key] !== undefined) {
+      USER_SETTINGS[key].value = user_settings[key].value;
+    }
+  }
   // Create a base object to hook functions
   attribute_card_hooks();
   skill_card_hooks();
@@ -616,9 +619,11 @@ function register_settings_version2() {
 
   //Update our cached world settings with our saved data
   const world_settings = SettingsUtils.getSetting(SETTING_KEYS.world_settings);
-  foundry.utils.mergeObject(WORLD_SETTINGS, world_settings, {
-    insertKeys: false,
-  });
+  for (const key in WORLD_SETTINGS) {
+    if (world_settings[key] !== undefined) {
+      WORLD_SETTINGS[key].value = world_settings[key].value;
+    }
+  }
 }
 
 // Settings related to Dice So Nice.
