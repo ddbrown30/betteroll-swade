@@ -21,6 +21,27 @@ const CALLED_SHOT_SELECTOR = {
   ]
 };
 
+const COVER_SELECTOR = {
+  or_selector: [
+    {
+      and_selector: [
+        {
+          selector_type: "item_type",
+          selector_value: "power",
+        },
+        {
+          selector_type: "item_name",
+          selector_value: "Bolt",
+        },
+      ]
+    },
+    {
+      selector_type: "item_type",
+      selector_value: "weapon",
+    },
+  ]
+};
+
 export const COMBAT_OPTIONS = [
   {
     id: "AIM",
@@ -120,16 +141,7 @@ export const COMBAT_OPTIONS = [
     name: "BRSW.LightCover",
     button_name: "BRSW.LightCover",
     skillMod: "-2",
-    or_selector: [
-      {
-        selector_type: "item_type",
-        selector_value: "power",
-      },
-      {
-        selector_type: "item_type",
-        selector_value: "weapon",
-      },
-    ],
+    ...COVER_SELECTOR,
     section: "attack",
     group: "BRSW.Cover",
     group_single: true,
@@ -140,16 +152,7 @@ export const COMBAT_OPTIONS = [
     name: "BRSW.MediumCover",
     button_name: "BRSW.MediumCover",
     skillMod: "-4",
-    or_selector: [
-      {
-        selector_type: "item_type",
-        selector_value: "power",
-      },
-      {
-        selector_type: "item_type",
-        selector_value: "weapon",
-      },
-    ],
+    ...COVER_SELECTOR,
     section: "attack",
     group: "BRSW.Cover",
     group_single: true,
@@ -160,16 +163,7 @@ export const COMBAT_OPTIONS = [
     name: "BRSW.HeavyCover",
     button_name: "BRSW.HeavyCover",
     skillMod: "-6",
-    or_selector: [
-      {
-        selector_type: "item_type",
-        selector_value: "power",
-      },
-      {
-        selector_type: "item_type",
-        selector_value: "weapon",
-      },
-    ],
+    ...COVER_SELECTOR,
     section: "attack",
     group: "BRSW.Cover",
     group_single: true,
@@ -180,16 +174,7 @@ export const COMBAT_OPTIONS = [
     name: "BRSW.NearTotalCover",
     button_name: "BRSW.NearTotalCover",
     skillMod: "-8",
-    or_selector: [
-      {
-        selector_type: "item_type",
-        selector_value: "power",
-      },
-      {
-        selector_type: "item_type",
-        selector_value: "weapon",
-      },
-    ],
+    ...COVER_SELECTOR,
     section: "attack",
     group: "BRSW.Cover",
     group_single: true,
@@ -222,8 +207,7 @@ export const COMBAT_OPTIONS = [
     button_name: "BRSW.AttackInanimate",
     avoid_exploding_damage: "true",
     or_selector: [
-      { selector_type: "item_type", selector_value: "power" },
-      { selector_type: "item_type", selector_value: "weapon" },
+      { selector_type: "item_has_damage", selector_value: "true" },
     ],
     section: "attack",
     group: "BRSW.AttackOption",
