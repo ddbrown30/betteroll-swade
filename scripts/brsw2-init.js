@@ -482,7 +482,7 @@ function register_world_settings() {
     label: "BRSW.Settings.ShowPPShots.Label",
     hint: "BRSW.Settings.ShowPPShots.Hint",
     type: Boolean,
-    default: false,
+    default: true,
   });
   SettingsUtils.registerBR2WorldSetting(SETTING_KEYS.auto_check_extra_fumbles, {
     name: "BRSW.Settings.AutoCheckFumbles.Name",
