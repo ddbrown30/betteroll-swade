@@ -1,3 +1,9 @@
+# Version 5.2.0
+* Complete rework of PP management
+* Big pass on string IDs
+* We now check for Darkvision with illumination actions
+* Illumination actions now only appear for a subset of skills. It's still pretty liberal but removes obvious things like knowledge skills.
+
 # Version 5.1.0
 * Big overhaul of the actions menu UI
 
