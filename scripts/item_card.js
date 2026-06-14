@@ -39,7 +39,7 @@ import { ATTRIBUTES_TRANSLATION_KEYS } from "./attribute_card.js";
 import { BrCommonCard } from "./BrCommonCard.js";
 import { DamageModifier, TraitModifier } from "./modifiers.js";
 import { brAction } from "./actions.js";
-import { PPManagementPopup } from "./pp_management_popup.js";
+import { PPManagementDialog } from "./pp_management_dialog.js";
 import { get_current_generic_mods } from "../config/generic_pp_modifiers.js";
 
 const ARCANE_SKILLS = [
@@ -206,8 +206,11 @@ function get_applicable_effects(item) {
 }
 
 function get_pp_mods(item) {
-  const pp_mods = { powerMods: [] };
-  pp_mods.additionalRecipientsMod = {};
+  const pp_mods = {
+    powerMods: [],
+    additionalRecipientsMod: {},
+    extraCost: 0,
+  };
   pp_mods.genericMods = get_current_generic_mods().map(mod => ({...mod, selected: false}));
 
   const toTitleCase = str => str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
@@ -276,6 +279,12 @@ export function calc_pp_cost(br_card) {
   }
 
   let ppCost = br_card.item.system.pp;
+
+  ppCost += br_card.pp_modifiers.extraCost;
+
+  if (br_card.pp_modifiers.additionalRecipientsMod.name) {
+    ppCost += br_card.pp_modifiers.additionalRecipientsMod.cost * br_card.pp_modifiers.additionalRecipientsMod.count;
+  }
 
   const modGroups = [br_card.pp_modifiers.genericMods, br_card.pp_modifiers.powerMods];
   for (const group of modGroups) {
@@ -524,14 +533,17 @@ export function activate_item_card_listeners(br_card, html) {
   html
     .querySelector(".brsw-pp-manual")
     ?.addEventListener("click", async (ev) => {
-      await new PPManagementPopup({ brCard: br_card }).wait({ force: true });
-      //Update the pp text of the card we just clicked on.
-      //This won't affect change the popout or vice versa,
-      //but doing that would require an update to the chat message which would refresh the render which is disruptive
-      const pp_remaining = ev.target.parentElement.parentElement.querySelector(".brsw-shots-pp");
-      pp_remaining.innerText = br_card.item_shots;
-      const pp_cost = ev.target.parentElement.parentElement.querySelector(".brsw-pp-cost");
-      pp_cost.innerText = calc_pp_cost(br_card);
+      await new PPManagementDialog({ brCard: br_card }).wait({ force: true });
+
+      if (SettingsUtils.getWorldSetting("show_pp_shots_info")) {
+        //Update the pp text of the card we just clicked on.
+        //This won't affect change the popout or vice versa,
+        //but doing that would require an update to the chat message which would refresh the render which is disruptive
+        const pp_remaining = ev.target.parentElement.parentElement.querySelector(".brsw-shots-pp");
+        pp_remaining.innerText = br_card.item_shots;
+        const pp_cost = ev.target.parentElement.parentElement.querySelector(".brsw-pp-cost");
+        pp_cost.innerText = calc_pp_cost(br_card);
+      }
     });
   addEventListenerAll(html, ".brsw-apply-damage", "click", (ev) => {
     create_damage_card(
@@ -1776,169 +1788,6 @@ async function edit_toughness(br_card, index) {
     calculate_damage_results(damage_rolls);
   // noinspection JSIgnoredPromiseFromCall
   await update_message(br_card, render_data);
-}
-
-/**
- * Expends power points, called when the first button in the dialog is clicked.
- * @param {Number} number Number ot power points to remove
- * @param {string} mode 'reload' to recharge pp
- * @param {SwadeActor} actor The actor that casts the power
- * @param {Item} item The power itself
- */
-function modify_power_points(number, mode, actor, item) {
-  const arcaneDevice = item.system.additionalStats.devicePP;
-  let ppv = arcaneDevice
-    ? item.system.additionalStats.devicePP.value
-    : actor.system.powerPoints.general.value;
-  let ppm = arcaneDevice
-    ? item.system.additionalStats.devicePP.max
-    : actor.system.powerPoints.general.max;
-  let otherArcane = false;
-  if (
-    actor.system.powerPoints.hasOwnProperty(item.system.arcane) &&
-    actor.system.powerPoints[item.system.arcane].max
-  ) {
-    // Specific power points
-    otherArcane = true;
-    ppv = actor.system.powerPoints[item.system.arcane].value;
-    ppm = actor.system.powerPoints[item.system.arcane].max;
-  }
-  if (ppv - number < 0) {
-    ui.notifications.notify(game.i18n.localize("BRSW.InsufficientPP"));
-    return;
-  }
-  let newPP = Math.max(ppv - number, 0);
-  if (newPP > ppm) {
-    const rechargedPP = -number - (newPP - ppm);
-    newPP = ppm;
-    ChatMessage.create({
-      speaker: { alias: name },
-      content: game.i18n.format("BRSW.RechargePPTextHitMax", {
-        name: actor.name,
-        rechargedPP: rechargedPP,
-        ppm: ppm,
-      }),
-    });
-  }
-  newPP = Math.min(newPP, ppm);
-  if (arcaneDevice === true) {
-    const updates = [
-      { _id: item.id, "system.additionalStats.devicePP.value": `${newPP}` },
-    ];
-    // Updating the Arcane Device:
-    actor.updateEmbeddedDocuments("Item", updates);
-  } else {
-    const data_key = otherArcane
-      ? `system.powerPoints.${item.system.arcane}.value`
-      : "system.powerPoints.general.value";
-    const data = {};
-    data[data_key] = newPP;
-    actor.update(data);
-  }
-  const text = {
-    reload: game.i18n.format("BRSW.RechargePPText", {
-      name: actor.name,
-      number: -number,
-      newPP: newPP,
-    }),
-    spend: game.i18n.format("BRSW.ExpendPPText", {
-      name: actor.name,
-      number: number,
-      newPP: newPP,
-    }),
-    benny_reload: game.i18n.format("BRSW.RechargePPBennyText", {
-      name: actor.name,
-      newPP: newPP,
-    }),
-    soul_drain: game.i18n.format("BRSW.RechargePPSoulDrainText", {
-      name: actor.name,
-      newPP: newPP,
-    }),
-  };
-  ChatMessage.create({
-    speaker: { alias: actor.name },
-    content: text[mode],
-  });
-  Hooks.call("BRSW-ManualPPManagement", actor, item);
-}
-
-/**
- * Function to manually manage power points © SalieriC
- * @param {SwadeActor} actor
- * @param {function} actor.update
- * @param {Item} item
- */
-async function manual_pp(actor, item) {
-  const amount_pp = game.i18n.localize("BRSW.AmountPP");
-  await foundry.applications.api.DialogV2.wait({
-    window: { title: "BRSW.Settings.PPManagement.Name" },
-    content: `<form> <div class="form-group">
-            <label for="num" style="flex:unset">${amount_pp}: </label>
-             <input id="brsw2-num" name="num" type="number" min="0" value="5">
-              </div> </form><script>$("#brsw2-num").focus()</script>`,
-    default: "one",
-    buttons: [
-      {
-        label: game.i18n.localize("BRSW.ExpendPP"),
-        action: "one",
-        callback: (event, target, dialog) =>
-          modify_power_points(
-            Number(dialog.element.querySelector("#brsw2-num").value),
-            "spend",
-            actor,
-            item,
-          ),
-      },
-      {
-        label: game.i18n.localize("BRSW.RechargePP"),
-        action: "two",
-        callback: (event, target, dialog) =>
-          modify_power_points(
-            -Number(dialog.element.querySelector("#brsw2-num").value),
-            "reload",
-            actor,
-            item,
-          ),
-      },
-      {
-        label: game.i18n.localize("BRSW.PPBennieRecharge"),
-        action: "three",
-        callback: () => {
-          //Button 3: Benny Recharge (spends a benny and increases the data.powerPoints.value by 5 but does not increase it above the number given in data.powerPoints.max)
-          if (actor.system.bennies.value < 1) {
-            ui.notifications.notify(game.i18n.localize("BRSW.NoBennies"));
-            return;
-          }
-          modify_power_points(-5, "benny_reload", actor, item);
-          actor.spendBenny();
-        },
-      },
-      {
-        label: game.i18n.localize("BRSW.SoulDrain"),
-        action: "four",
-        callback: () => {
-          //Button 4: Soul Drain (increases data.fatigue.value by 1 and increases the data.powerPoints.value by 5 but does not increase it above the number given in data.powerPoints.max)
-          const fv = actor.system.fatigue.value;
-          const fm = actor.system.fatigue.max;
-          const newFV = fv + 1;
-          if (item.system.additionalStats?.devicePP) {
-            ui.notifications.notify(
-              "You cannot use Soul Drain to recharge Arcane Devices.",
-            );
-            return;
-          }
-          if (newFV > fm) {
-            ui.notifications.notify(
-              "You cannot exceed your maximum Fatigue using Soul Drain.",
-            );
-            return;
-          }
-          actor.update({ "system.fatigue.value": fv + 1 });
-          modify_power_points(-5, "soul_drain", actor, item);
-        },
-      },
-    ],
-  });
 }
 
 /**

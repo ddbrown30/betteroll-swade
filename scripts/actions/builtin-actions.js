@@ -112,7 +112,7 @@ export const SYSTEM_GLOBAL_ACTION = [
     and_selector: [
       {
         selector_type: "actor_has_edge",
-        selector_value: "BRSW.EdgeName.Steady-Hands",
+        selector_value: "BRSW.EdgeName.SteadyHands",
       },
       { selector_type: "all" },
     ],

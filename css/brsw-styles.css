@@ -291,6 +291,7 @@
     border: none;
     vertical-align: text-bottom;
     max-width: 100%;
+    max-height: 80%;
 }
 
 .brsw-small-dice-image {
@@ -503,35 +504,35 @@
 
 /* PP Management */
 
-.brsw-pp-popup .mods-form {
+.brsw-pp-dialog .mods-form {
     margin-bottom: 10px;
 }
 
-.brsw-pp-popup .pp-mod-selection {
+.brsw-pp-dialog .pp-mod-selection {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
     overflow-y: auto;
 }
 
-.brsw-pp-popup .pp-mod {
+.brsw-pp-dialog .pp-mod {
     --button-size: unset;
 }
 
-.brsw-pp-popup .pp-mod:focus {
+.brsw-pp-dialog .pp-mod:focus {
     outline: none;
     box-shadow: none;
 }
 
-.brsw-pp-popup .pp-mod:hover {
+.brsw-pp-dialog .pp-mod:hover {
     background: #6f6c66;
 }
 
-.brsw-pp-popup .pp-mod.selected {
+.brsw-pp-dialog .pp-mod.selected {
     background: red;
     color: white;
 }
 
-.brsw-pp-popup .form-group input {
+.brsw-pp-dialog .form-group input {
     flex: 1;
 }

@@ -415,10 +415,12 @@ export class BrCommonCard {
           for (const action of modsGroup.actions) {
             const nameSimilarity = Utils.actionNameSimilarity(itemAction.name, action.name);
             const codeSimilarity = Utils.actionNameSimilarity(itemAction.name, action.code.name);
-            if (nameSimilarity == 1 || codeSimilarity == 1) {
+            if (nameSimilarity === 1 || codeSimilarity === 1) {
               const name = action.name;
+              const codeName = action.code.name;
               Object.assign(action, foundry.utils.deepClone(itemAction));
               action.name = name; //Keep the BR2 action name since it will be localized
+              action.code.name = codeName; //Keep the BR2 code name since we use it to compare elsewhere
               item_actions.splice(i, 1);
               break;
             }
@@ -759,9 +761,8 @@ export class BrCommonCard {
       this.damage
     );
     data.show_popup_button = SettingsUtils.getUserSetting("popout_chat_button");
-    data.shots_pp_info = SettingsUtils.getWorldSetting("show_pp_shots_info")
-      ? this.item_shots
-      : "";
+    data.showShotsPPInfo = SettingsUtils.getWorldSetting("show_pp_shots_info");
+    data.shots_pp_info = data.showShotsPPInfo ? this.item_shots : "";
     data.applicable_effects = this.applicable_effects;
     return data;
   }
@@ -788,7 +789,9 @@ export class BrCommonCard {
     const localLower = game.i18n.localize(action_name).toLowerCase();
     return Utils.forEachActionGroup(this, group => {
       for (const action of group.actions) {
-        if (action.code.name.toLowerCase().includes(lowerName) || game.i18n.localize(action.code.name).toLowerCase().includes(localLower)) {
+        const nameSimilarity = Utils.actionNameSimilarity(action.code.name, lowerName);
+        const locSimilarity = Utils.actionNameSimilarity(game.i18n.localize(action.name), localLower);
+        if (nameSimilarity === 1 || locSimilarity === 1) {
           return action;
         }
       }
