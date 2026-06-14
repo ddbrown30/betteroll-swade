@@ -13,7 +13,7 @@ import {
   Utils,
 } from "./utils.js";
 import {
-  discount_pp,
+  spendPP,
   get_item_trait,
   roll_item,
   run_macros,
@@ -1058,7 +1058,7 @@ async function old_roll_clicked(event, br_card) {
     !isNaN(parseInt(br_card.item.system.pp)) &&
     br_card.render_data.used_pp
   ) {
-    br_card.render_data.used_pp = await discount_pp(
+    br_card.render_data.used_pp = await spendPP(
       br_card,
       0,
       br_card.render_data.used_pp,

@@ -33,6 +33,7 @@ import {
   broofa,
   addEventListenerAll,
   Utils,
+  getAuthor,
 } from "./utils.js";
 import { create_damage_card } from "./damage_card.js";
 import { ATTRIBUTES_TRANSLATION_KEYS } from "./attribute_card.js";
@@ -211,7 +212,7 @@ function get_pp_mods(item) {
     additionalRecipientsMod: {},
     extraCost: 0,
   };
-  pp_mods.genericMods = get_current_generic_mods().map(mod => ({...mod, selected: false}));
+  pp_mods.genericMods = get_current_generic_mods().map(mod => ({ ...mod, selected: false }));
 
   const toTitleCase = str => str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
 
@@ -242,33 +243,33 @@ function get_pp_mods(item) {
     })
     .filter(Boolean);
 
-    if (modifiers.length) {
-      for (let mod of modifiers) {
-        for (let cost of mod.costs) {
-          if (cost !== "+0") {
-            pp_mods.powerMods.push({
-              name: toTitleCase(mod.name),
-              cost: cost,
-              isEpic: mod.isEpic,
-              selected: false,
-            });
-          }
+  if (modifiers.length) {
+    for (let mod of modifiers) {
+      for (let cost of mod.costs) {
+        if (cost !== "+0") {
+          pp_mods.powerMods.push({
+            name: toTitleCase(mod.name),
+            cost: cost,
+            isEpic: mod.isEpic,
+            selected: false,
+          });
         }
       }
-
-      pp_mods.powerMods.sort((a, b) => {
-        const nameA = a.name.toLowerCase();
-        const nameB = b.name.toLowerCase();
-        if (nameA < nameB) {
-          return -1;
-        }
-        if (nameA > nameB) {
-          return 1;
-        }
-
-        return a.cost - b.cost;
-      });
     }
+
+    pp_mods.powerMods.sort((a, b) => {
+      const nameA = a.name.toLowerCase();
+      const nameB = b.name.toLowerCase();
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+
+      return a.cost - b.cost;
+    });
+  }
 
   return pp_mods;
 }
@@ -394,7 +395,7 @@ async function item_click_listener(ev, target, currentTarget) {
     target instanceof Actor
       ? target
       : target instanceof foundry.canvas.placeables.Token ||
-          target instanceof TokenDocument
+        target instanceof TokenDocument
         ? target.actor
         : null;
   const item_action = ev.currentTarget.dataset.action;
@@ -454,11 +455,11 @@ export function activate_item_listeners(app, html) {
   addEventListenerAll(
     html,
     ".item-image, .item-img, .name.item-show, span.item>.item-control.item-edit," +
-      " .gear-card .card-header>.item-name, .damage-roll, .item-name>h4," +
-      " .power-header>.item-name, .card-button, .item-control.item-show," +
-      " .power button.item-show, .weapon button.item-show, .edge-hindrance>.item-control" +
-      " .item-control.item-edit, .item-control.item-show, .item.edge-hindrance>.item-show," +
-      " .item>.item-show",
+    " .gear-card .card-header>.item-name, .damage-roll, .item-name>h4," +
+    " .power-header>.item-name, .card-button, .item-control.item-show," +
+    " .power button.item-show, .weapon button.item-show, .edge-hindrance>.item-control" +
+    " .item-control.item-edit, .item-control.item-show, .item.edge-hindrance>.item-show," +
+    " .item>.item-show",
     "click",
     async (ev) => {
       await item_click_listener(ev, target, ev.currentTarget);
@@ -787,7 +788,7 @@ export function trait_from_string(actor, trait_name) {
   let skill = actor.items.find((skill) => {
     return (
       skill.name.toLowerCase().replace("★ ", "") ===
-        trait_name.toLowerCase().replace("★ ", "") && skill.type === "skill"
+      trait_name.toLowerCase().replace("★ ", "") && skill.type === "skill"
     );
   });
   if (!skill) {
@@ -832,17 +833,21 @@ function check_skill_in_actor(actor, possible_skills) {
   return skill_found;
 }
 
-async function displayRemainingCard(content) {
-  const show_card = SettingsUtils.getWorldSetting("remaining_card_behaviour");
+export async function displayPPChangeCard(actor, chatData) {
+  const show_card = SettingsUtils.getWorldSetting("pp_change_card_behaviour");
   if (show_card !== "none") {
-    const chat_data = { content: content };
+    chatData.author = getAuthor(actor);
+    chatData.speaker = { alias: actor.name };
+
     if (show_card === "master_and_gm") {
-      chat_data.whisper = [ChatMessage.getWhisperRecipients("GM")[0]];
+      chatData.whisper = ChatMessage.getWhisperRecipients("GM");
     }
+
     if (show_card === "master_only") {
-      chat_data.whisper = [""];
+      chatData.whisper = [""];
     }
-    await ChatMessage.create(chat_data);
+
+    await ChatMessage.create(chatData);
   }
 }
 
@@ -854,78 +859,87 @@ async function displayRemainingCard(content) {
  * @param old_pp PPs expended in the current selected roll of this option
  * @param pp_modifier A number to be added or subtracted from PPs
  */
-export async function discount_pp(br_card, old_pp) {
+export async function spendPP(br_card, old_pp) {
+  const actor = br_card.actor;
+  const item = br_card.item;
+
   if (SettingsUtils.isOptionalRuleEnabled("InnatePowersDontConsume") && item.system.innate) {
     return 0;
   }
+
   let success = false;
+  let raise = false;
   for (const roll of br_card.trait_roll.current_roll.dice) {
-    if (roll.result !== null && roll.result >= 0) {
-      success = true;
+    success = success || (roll.result !== null && roll.result >= 0);
+    raise = raise || (roll.result !== null && roll.result >= 4);
+  }
+
+  let ppCost = success ? calc_pp_cost(br_card) : 1;
+  if (ppCost === 0) {
+    //Power is free so nothing to do
+    return;
+  }
+
+  if (raise) {
+    const channelingName = game.i18n.localize("BRSW.EdgeName.Channeling").toLowerCase();
+    const hasChanneling = !!actor.items.find((i) => {
+      return (i.type === "edge" && (i.name.toLowerCase().includes(channelingName) || i.name.toLowerCase().includes("channeling")));
+    });
+
+    if (hasChanneling) {
+      ppCost = Math.max(ppCost - 1, 0);
     }
   }
-  const pp = success ? br_card.pp_cost : 1;
-  br_card.render_data.used_pp = pp;
+
+  br_card.render_data.used_pp = ppCost;
   await br_card.save();
-  let current_pp;
-  // If devicePP is found, it will be treated as an Arcane Device:
-  let arcaneDevice = false;
-  if (br_card.item.system.additionalStats.devicePP) {
-    // Get the devices PP:
-    current_pp = br_card.item.system.additionalStats.devicePP.value;
-    arcaneDevice = true;
-  } else if (
-    br_card.actor.system.powerPoints.hasOwnProperty(
-      br_card.item.system.arcane,
-    ) &&
-    br_card.actor.system.powerPoints[br_card.item.system.arcane].max
-  ) {
-    // Specific power points
-    current_pp =
-      br_card.actor.system.powerPoints[br_card.item.system.arcane].value;
-  } else {
-    // General pool
-    current_pp = br_card.actor.system.powerPoints.general.value;
+
+  if (ppCost === 0) {
+    //Power wasn't free and now is so display a message
+    displayPPChangeCard(actor, {
+      content: game.i18n.localize("BRSW.PowerCostReducedFree")
+    });
+    return;
   }
-  const final_pp = Math.max(current_pp - pp + old_pp, 0);
-  let content = game.i18n.format("BRSW.ExpendedPoints", {
-    name: br_card.actor.name,
-    final_pp: final_pp,
-    pp: pp,
+
+  const arcaneDevice = item.system.additionalStats.devicePP;
+
+  const currentPP = arcaneDevice
+    ? item.system.additionalStats.devicePP.value
+    : actor.system.powerPoints.general.value;
+
+  const dataKey = arcaneDevice
+    ? "system.additionalStats.devicePP.value"
+    : "system.powerPoints.general.value";
+
+  if (actor.system.powerPoints.hasOwnProperty(item.system.arcane) && actor.system.powerPoints[item.system.arcane].max) {
+    //Use the specific PP for this arcane type
+    currentPP = actor.system.powerPoints[item.system.arcane].value;
+    dataKey = `system.powerPoints.${item.system.arcane}.value`;
+  }
+
+  const newPP = currentPP - ppCost;
+
+  if (newPP < 0) {
+    ui.notifications.warn(game.i18n.localize("BRSW.InsufficientPP"));
+    return;
+  }
+
+  if (arcaneDevice) {
+    actor.updateEmbeddedDocuments("Item", { _id: item.id, [dataKey]: newPP });
+  } else {
+    actor.update({ [dataKey]: newPP });
+  }
+
+  displayPPChangeCard(actor, {
+    content: game.i18n.format("BRSW.ExpendedPoints", {
+      name: actor.name,
+      final_pp: newPP,
+      pp: ppCost,
+    })
   });
-  if (current_pp < pp) {
-    const message_text = game.i18n.localize("BRSW.NotEnoughPP");
-    content = `<p class="brsw-fumble-row">${message_text}</p> ${content}`;
-    ui.notifications.warn(message_text);
-  }
-  const data = {};
-  if (arcaneDevice === true) {
-    const updates = [
-      {
-        _id: br_card.item.id,
-        "system.additionalStats.devicePP.value": `${final_pp}`,
-      },
-    ];
-    // Updating the Arcane Device:
-    br_card.actor.updateEmbeddedDocuments("Item", updates);
-  } else if (
-    br_card.actor.system.powerPoints.hasOwnProperty(
-      br_card.item.system.arcane,
-    ) &&
-    br_card.actor.system.powerPoints[br_card.item.system.arcane].max
-  ) {
-    data["system.powerPoints." + br_card.item.system.arcane + ".value"] =
-      final_pp;
-  } else {
-    data["system.powerPoints.general.value"] = final_pp;
-  }
-  if (arcaneDevice === false) {
-    await br_card.actor.update(data);
-  }
-  if (pp !== old_pp) {
-    await displayRemainingCard(content);
-  }
-  return pp;
+
+  return ppCost;
 }
 
 /**
@@ -1053,7 +1067,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
       let first_char = "";
       try {
         first_char = shots_used.charAt(0);
-      } catch {}
+      } catch { }
       if (first_char !== "+" && first_char !== "-") {
         shots_override = parseInt(shots_used);
       }
@@ -1089,7 +1103,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
       (item) =>
         item.type === "edge" &&
         item.name.toLowerCase() ===
-          game.i18n.localize("BRSW.EdgeName.Ambidextrous").toLowerCase(),
+        game.i18n.localize("BRSW.EdgeName.Ambidextrous").toLowerCase(),
     );
     is_ambidextrous =
       is_ambidextrous || br_message.actor.getFlag("swade", "ambidextrous");
@@ -1153,7 +1167,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
       br_message.item.type === "power") &&
     pp_selected
   ) {
-    br_message.render_data.used_pp = await discount_pp(
+    br_message.render_data.used_pp = await spendPP(
       br_message,
       previous_pp,
     );
@@ -1207,7 +1221,7 @@ function get_target_defense(
       //Get the armor of the location we're targeting
       defense_values.armor =
         location === "torso" ? objective.actor.system.stats.toughness.armor :
-        objective.actor.armorPerLocation[location] ?? objective.actor.system.stats.toughness.armor;
+          objective.actor.armorPerLocation[location] ?? objective.actor.system.stats.toughness.armor;
       //Add that armor to the base toughness to get the correct toughness
       defense_values.toughness = base_toughness + defense_values.armor;
       defense_values.name = objective.name;

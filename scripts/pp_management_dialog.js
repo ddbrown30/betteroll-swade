@@ -1,4 +1,4 @@
-import { calc_pp_cost } from "./item_card.js";
+import { calc_pp_cost, displayPPChangeCard } from "./item_card.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -95,8 +95,8 @@ export class PPManagementDialog extends HandlebarsApplicationMixin(ApplicationV2
     const bennyImage = game.settings.get("swade", "bennyImage3DFront") || "/systems/swade/assets/benny/benny-chip-front.png";
     const isArcaneDevice = item.system.additionalStats.devicePP;
 
-    const soulDrainName = game.i18n.localize("BRSW.EdgeName.SoulDrain");
-    const hasSoulDrain = !!actor.items.find((item) => { return (item.type === "edge" && item.name.toLowerCase().includes(soulDrainName.toLowerCase())); });
+    const soulDrainName = game.i18n.localize("BRSW.EdgeName.SoulDrain").toLowerCase();
+    const hasSoulDrain = !!actor.items.find((item) => { return (item.type === "edge" && item.name.toLowerCase().includes(soulDrainName)); });
 
     const ppCost = calc_pp_cost(this.brCard);
 
@@ -228,8 +228,7 @@ export class PPManagementDialog extends HandlebarsApplicationMixin(ApplicationV2
     actor.update({ [dataKey]: newPP });
     actor.spendBenny();
 
-    ChatMessage.create({
-      speaker: { alias: actor.name },
+    displayPPChangeCard(actor, {
       content: game.i18n.format("BRSW.RechargePPBennyText", {
         name: actor.name,
         newPP,
@@ -271,8 +270,7 @@ export class PPManagementDialog extends HandlebarsApplicationMixin(ApplicationV2
     let newPP = Math.min(currentPP + 5, maxPP);
     actor.update({ [dataKey]: newPP });
 
-    ChatMessage.create({
-      speaker: { alias: actor.name },
+    displayPPChangeCard(actor, {
       content: game.i18n.format("BRSW.PPManagement.RechargePPSoulDrainText", {
         name: actor.name,
         newPP,
@@ -319,8 +317,7 @@ export class PPManagementDialog extends HandlebarsApplicationMixin(ApplicationV2
       actor.update({ [dataKey]: newPP });
     }
 
-    ChatMessage.create({
-      speaker: { alias: actor.name },
+    displayPPChangeCard(actor, {
       content: game.i18n.format("BRSW.PPManagement.SpendPPText", {
         name: actor.name,
         ppCost,

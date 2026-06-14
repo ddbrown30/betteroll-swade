@@ -414,10 +414,10 @@ function register_world_settings() {
     default: false,
     type: Boolean,
   });
-  SettingsUtils.registerBR2WorldSetting("remaining_card_behaviour", {
-    name: game.i18n.localize("BRSW.Settings.RemainingBehaviour.Name"),
-    hint: game.i18n.localize("BRSW.Settings.RemainingBehaviour.Hint"),
-    default: "everybody",
+  SettingsUtils.registerBR2WorldSetting("pp_change_card_behaviour", {
+    name: game.i18n.localize("BRSW.Settings.PPChangeCardBehaviour.Name"),
+    hint: game.i18n.localize("BRSW.Settings.PPChangeCardBehaviour.Hint"),
+    default: "master_only",
     type: String,
     choices: {
       none: game.i18n.localize("BRSW.NoOne"),
