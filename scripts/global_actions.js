@@ -208,6 +208,11 @@ export function check_selector(type, value, item, actor) {
     selected = true;
   } else if (type === "item_type") {
     selected = item.type === value;
+  } else if (type === "item_is_weapon_or_bolt") {
+    selected = item.type === "weapon" || (item.type === "power" && item.name.toLowerCase().includes("bolt"));
+    if (value === "false") {
+      selected = !selected;
+    }
   } else if (type === "actor_name") {
     selected = actor.name.toLowerCase().includes(value.toLowerCase());
   } else if (type === "actor_has_skill") {
