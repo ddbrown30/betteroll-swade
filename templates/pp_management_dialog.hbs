@@ -1,0 +1,53 @@
+<form class="standard-form">
+    <fieldset>
+        <legend>{{{localize "BRSW.PPManagement.GenericMods"}}}</legend>
+        <div class="pp-mod-selection" name="generic-mods">
+            {{#each genericMods}}
+                <button class="pp-mod {{#if selected}}selected{{/if}}" type="button" data-action="toggleMod" data-modName="{{name}}">
+                    {{{localize name}}} [{{cost}}PP]
+                </button>
+            {{/each}}
+        </div>
+    </fieldset>
+    {{#if powerMods.length}}
+        <fieldset>
+            <legend>{{localize "BRSW.PPManagement.PowerMods"}}</legend>
+            <div class="pp-mod-selection" name="power-mods">
+                {{#each powerMods}}
+                    <button class="pp-mod {{#if selected}}selected{{/if}}" type="button" data-action="toggleMod" data-modName="{{name}}">
+                        {{#if isEpic}}<i class="fas fa-star" style="color: #db8f26;"></i>{{/if}}{{name}} [{{cost}}PP]
+                    </button>
+                {{/each}}
+            </div>
+        </fieldset>
+    {{/if}}
+    {{#if additionalRecipientsMod.name}}
+        <div class="form-group">
+            <label for="additional-recipients">
+                {{#if isEpic}}<i class="fas fa-star" style="color: #db8f26;"></i>{{/if}}
+                {{localize additionalRecipientsMod.name}} [{{additionalRecipientsMod.cost}}PP]
+            </label>
+            <input type='number' id='additional-recipients' value='{{additionalRecipientsMod.count}}' />
+        </div>
+    {{/if}}
+    <div class="form-group">
+        <label for="extra-pp">
+            {{localize "Extra PP Costs"}}
+        </label>
+        <input type='number' id='extra-pp' value='{{extraCost}}' />
+    </div>
+    <footer class="form-footer">
+        <button type="button" data-action="set">{{localize "BRSW.PPManagement.Set"}}</button>
+        <button type="button" id="ppCost" data-action="spendPP">{{localize "BRSW.PPManagement.Spend" ppCost=ppCost}}</button>
+        {{#unless isArcaneDevice}}
+            <button type="button" data-action="recharge">
+                <img src="{{{bennyImage}}}" class="brsw-button-image">
+                {{localize "BRSW.PPManagement.BennyRecharge"}}
+            </button>
+            {{#if hasSoulDrain}}
+                <button type="button" data-action="soulDrain">{{localize "BRSW.PPManagement.SoulDrain"}}</button>
+            {{/if}}
+        {{/unless}}
+        <button type="button" data-action="cancel">{{localize "Cancel"}}</button>
+    </footer>
+</form>

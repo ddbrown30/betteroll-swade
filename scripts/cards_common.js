@@ -13,7 +13,7 @@ import {
   Utils,
 } from "./utils.js";
 import {
-  discount_pp,
+  spendPP,
   get_item_trait,
   roll_item,
   run_macros,
@@ -45,9 +45,9 @@ export const BRSW_CONST = {
   TYPE_UNSTUN_CARD: 14,
   TYPE_RESULT_CARD: 100,
   ARCANE_MASTERY_EDGES: [
-    "BRSW.EdgeName-Arcane-Mastery",
-    "BRSW.EdgeName-Divine-Mastery",
-    "BRSW.EdgeName-Epic-Mastery",
+    "BRSW.EdgeName.ArcaneMastery",
+    "BRSW.EdgeName.DivineMastery",
+    "BRSW.EdgeName.Epic-Mastery",
   ],
 };
 
@@ -818,10 +818,7 @@ async function get_new_roll_options(
     );
   }
   // Encumbrance
-  const npc_avoid_encumbrance =
-    SettingsUtils.getSetting("optional_rules_enabled").indexOf(
-      "NPCDontUseEncumbrance",
-    ) > -1;
+  const npc_avoid_encumbrance = SettingsUtils.isOptionalRuleEnabled("NPCDontUseEncumbrance");
   if (
     (br_card.actor.type === "character" || !npc_avoid_encumbrance) &&
     br_card.actor.system.encumbered &&
@@ -1037,6 +1034,8 @@ export async function roll_trait(br_card, trait_dice, dice_label, extra_data) {
     br_card.trait_roll.tn = extra_data.tn;
     br_card.trait_roll.tn_reason = extra_data.tn_reason;
   }
+  br_card.trait_roll.arcaneActivationOffset = extra_data.arcaneActivationOffset;
+
   const roll = new Roll(roll_string);
   await roll.evaluate();
   await br_card.trait_roll.add_roll(roll);
@@ -1061,11 +1060,9 @@ async function old_roll_clicked(event, br_card) {
     !isNaN(parseInt(br_card.item.system.pp)) &&
     br_card.render_data.used_pp
   ) {
-    br_card.render_data.used_pp = await discount_pp(
+    br_card.render_data.used_pp = await spendPP(
       br_card,
-      0,
       br_card.render_data.used_pp,
-      0,
     );
   }
   await br_card.render();
@@ -1311,6 +1308,12 @@ export function process_common_actions(action, extra_data, macros, actor) {
       extra_data.total_aiming_ignorable_penalties =
         extra_data.total_aiming_ignorable_penalties ?? 0;
       extra_data.total_aiming_ignorable_penalties += Math.abs(modifier.value);
+    }
+
+    const skillModValue = Number(action.skillMod);
+    if (action.ignoresArcaneActivation && !isNaN(skillModValue)) {
+      extra_data.arcaneActivationOffset ??= 0;
+      extra_data.arcaneActivationOffset += skillModValue;
     }
   }
   if (action.rerollSkillMod) {

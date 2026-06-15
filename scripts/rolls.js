@@ -30,7 +30,7 @@ class Die {
       return game.i18n.localize("BRSW.Raise");
     } else {
       const raises = Math.floor(this.result / 4);
-      return game.i18n.localize("BRSW.Raise_plural") + " " + raises;
+      return game.i18n.localize("BRSW.RaisePlural") + " " + raises;
     }
   }
 

@@ -70,9 +70,12 @@ Hooks.on(`ready`, () => {
     game.user,
     USER_FLAGS.user_settings,
   );
-  foundry.utils.mergeObject(USER_SETTINGS, user_settings, {
-    insertKeys: false,
-  });
+
+  for (const key in USER_SETTINGS) {
+    if (user_settings[key] !== undefined) {
+      USER_SETTINGS[key].value = user_settings[key].value;
+    }
+  }
   // Create a base object to hook functions
   attribute_card_hooks();
   skill_card_hooks();
@@ -323,161 +326,173 @@ Hooks.once("diceSoNiceReady", () => {
 
 function register_world_settings() {
   const br_choices = {
-    system: game.i18n.localize("BRSW.Default_system_roll"),
-    card: game.i18n.localize("BRSW.Show_Betterrolls_card"),
-    dialog: game.i18n.localize("BRSW.Show_dialog"),
-    trait: game.i18n.localize("BRSW.Show_card_and_trait"),
-    trait_damage: game.i18n.localize("BRSW.Show_card_damage"),
+    system: game.i18n.localize("BRSW.ClickActionTypes.DefaultSystemRoll"),
+    card: game.i18n.localize("BRSW.ClickActionTypes.ShowBetterrollsCard"),
+    dialog: game.i18n.localize("BRSW.ClickActionTypes.ShowDialog"),
+    trait: game.i18n.localize("BRSW.ClickActionTypes.ShowCardAndTrait"),
+    trait_damage: game.i18n.localize("BRSW.ClickActionTypes.ShowCardDamage"),
   };
   SettingsUtils.registerBR2WorldSetting("click", {
-    name: game.i18n.localize("BRSW.Single_click_action"),
-    hint: game.i18n.localize("BRSW.Single_click_hint"),
+    name: game.i18n.localize("BRSW.Settings.SingleClickAction.Name"),
+    hint: game.i18n.localize("BRSW.Settings.SingleClickAction.Hint"),
     default: "card",
     type: String,
     choices: br_choices,
   });
   SettingsUtils.registerBR2WorldSetting("shift_click", {
-    name: game.i18n.localize("BRSW.Shift_click_action"),
-    hint: game.i18n.localize("BRSW.Shit_click_hint"),
+    name: game.i18n.localize("BRSW.Settings.ShiftClickAction.Name"),
+    hint: game.i18n.localize("BRSW.Settings.ShiftClickAction.Hint"),
     default: "system",
     type: String,
     choices: br_choices,
   });
   SettingsUtils.registerBR2WorldSetting("ctrl_click", {
-    name: game.i18n.localize("BRSW.Control_click_action"),
-    hint: game.i18n.localize("BRSW.Control_click_hint"),
+    name: game.i18n.localize("BRSW.Settings.ControlClickAction.Name"),
+    hint: game.i18n.localize("BRSW.Settings.ControlClickAction.Hint"),
     default: "trait",
     type: String,
     choices: br_choices,
   });
   SettingsUtils.registerBR2WorldSetting("alt_click", {
-    name: game.i18n.localize("BRSW.Alt_click_action"),
-    hint: game.i18n.localize("BRSW.Alt_click_hint"),
+    name: game.i18n.localize("BRSW.Settings.AltClickAction.Name"),
+    hint: game.i18n.localize("BRSW.Settings.AltClickAction.Hint"),
     default: "system",
     type: String,
     choices: br_choices,
   });
   SettingsUtils.registerBR2WorldSetting("no-action-message", {
-    name: game.i18n.localize("BRSW.No_Action_Message"),
-    hint: game.i18n.localize("BRSW.No_Action_MessageHint"),
+    name: game.i18n.localize("BRSW.Settings.NoActionMessage.Name"),
+    hint: game.i18n.localize("BRSW.Settings.NoActionMessage.Hint"),
     default: game.i18n.localize("BRSW.NoActionsSelected"),
     type: String,
   });
   SettingsUtils.registerBR2WorldSetting("result-card", {
-    name: game.i18n.localize("BRSW.See_result_card"),
-    hint: game.i18n.localize("BRSW.See_result_hint"),
+    name: game.i18n.localize("BRSW.Settings.ResultCardVisibility.Name"),
+    hint: game.i18n.localize("BRSW.Settings.ResultCardVisibility.Hint"),
     default: "all",
     type: String,
     choices: {
-      master: game.i18n.localize("BRSW.Master_only_result_card"),
-      all: game.i18n.localize("BRSW.Everybody"),
+      master: game.i18n.localize("BRSW.VisibilityTypes.Owners"),
+      all: game.i18n.localize("BRSW.VisibilityTypes.Everybody"),
     },
   });
   SettingsUtils.registerBR2WorldSetting("default-ammo-management", {
-    name: game.i18n.localize("BRSW.AmmoManagement"),
-    hint: game.i18n.localize("BRSW.AmmoManagementHint"),
+    name: game.i18n.localize("BRSW.Settings.AmmoManagement.Name"),
+    hint: game.i18n.localize("BRSW.Settings.AmmoManagement.Hint"),
     default: true,
     scope: "world",
     type: Boolean,
     config: true,
   });
   SettingsUtils.registerBR2WorldSetting("default-pp-management", {
-    name: game.i18n.localize("BRSW.PPManagement"),
-    hint: game.i18n.localize("BRSW.PPManagementHint"),
+    name: game.i18n.localize("BRSW.Settings.PPManagement.Name"),
+    hint: game.i18n.localize("BRSW.Settings.PPManagement.Hint"),
     default: true,
     type: Boolean,
   });
+  const modifiers_source_choices = {
+    swade: game.i18n.localize("BRSW.PPModSources.DefaultSWADE"),
+    fc: game.i18n.localize("BRSW.PPModSources.FantasyCompanion"),
+    swpf: game.i18n.localize("BRSW.PPModSources.Pathfinder"),
+  };
+  SettingsUtils.registerBR2WorldSetting("generic-pp-modifiers-source", {
+    name: game.i18n.localize("BRSW.Settings.PowerModifiersSource.Name"),
+    hint: game.i18n.localize("BRSW.Settings.PowerModifiersSource.Hint"),
+    default: "swade",
+    type: String,
+    choices: modifiers_source_choices,
+  });
   SettingsUtils.registerBR2WorldSetting("hide-weapon-actions", {
-    name: game.i18n.localize("BRSW.HideWeaponActions"),
-    hint: game.i18n.localize("BRSW.HideWeaponActionsHint"),
+    name: game.i18n.localize("BRSW.Settings.HideWeaponActions.Name"),
+    hint: game.i18n.localize("BRSW.Settings.HideWeaponActions.Hint"),
     default: false,
     type: Boolean,
   });
   SettingsUtils.registerBR2WorldSetting("disable-gang-up", {
-    name: game.i18n.localize("BRSW.DisableGangUp"),
-    hint: game.i18n.localize("BRSW.DisableGangUpHint"),
+    name: game.i18n.localize("BRSW.Settings.DisableGangUp.Name"),
+    hint: game.i18n.localize("BRSW.Settings.DisableGangUp.Hint"),
     default: false,
     type: Boolean,
   });
-  SettingsUtils.registerBR2WorldSetting("remaining_card_behaviour", {
-    name: game.i18n.localize("BRSW.RemainingBehaviour"),
-    hint: game.i18n.localize("BRSW.RemainingBehaviour_hint"),
-    default: "everybody",
+  SettingsUtils.registerBR2WorldSetting("pp_change_card_behaviour", {
+    name: game.i18n.localize("BRSW.Settings.PPChangeCardBehaviour.Name"),
+    hint: game.i18n.localize("BRSW.Settings.PPChangeCardBehaviour.Hint"),
+    default: "none",
     type: String,
     choices: {
       none: game.i18n.localize("BRSW.NoOne"),
-      master_only: game.i18n.localize("BRSW.MasterOnly"),
-      master_and_gm: game.i18n.localize("BRSW.MasterAndGM"),
-      everybody: game.i18n.localize("BRSW.Everybody"),
+      master_only: game.i18n.localize("BRSW.VisibilityTypes.Owners"),
+      master_and_gm: game.i18n.localize("BRSW.VisibilityTypes.OwnersAndGM"),
+      everybody: game.i18n.localize("BRSW.VisibilityTypes.Everybody"),
     },
   });
   SettingsUtils.registerBR2WorldSetting("swd-unshake", {
-    name: game.i18n.localize("BRSW.SWD-Unshake"),
-    hint: game.i18n.localize("BRSW.SWD-UnshakeHint"),
+    name: game.i18n.localize("BRSW.Settings.SWDUnshake.Name"),
+    hint: game.i18n.localize("BRSW.Settings.SWDUnshake.Hint"),
     default: false,
     type: Boolean,
   });
   SettingsUtils.registerBR2WorldSetting("auto-status-cards", {
-    name: game.i18n.localize("BRSW.Auto-status-cards"),
-    hint: game.i18n.localize("BRSW.Auto-status-cardsHint"),
+    name: game.i18n.localize("BRSW.Settings.AutoStatusCards.Name"),
+    hint: game.i18n.localize("BRSW.Settings.AutoStatusCards.Hint"),
     default: true,
     type: Boolean,
     requiresReload: true,
   });
   SettingsUtils.registerBR2WorldSetting("range_calc_grid", {
-    name: game.i18n.localize("BRSW.RangeCalcUseGrid"),
-    hint: game.i18n.localize("BRSW.RangeCalcUseGridHint"),
+    name: game.i18n.localize("BRSW.Settings.RangeCalcUseGrid.Name"),
+    hint: game.i18n.localize("BRSW.Settings.RangeCalcUseGrid.Hint"),
     default: false,
     scope: "world",
     type: Boolean,
   });
   SettingsUtils.registerBR2WorldSetting("undeadIgnoresIllumination", {
-    name: game.i18n.localize("BRSW.undeadIgnoresIllumination"),
-    hint: game.i18n.localize("BRSW.undeadIgnoresIlluminationHint"),
+    name: game.i18n.localize("BRSW.Settings.UndeadIgnoresIllumination.Name"),
+    hint: game.i18n.localize("BRSW.Settings.UndeadIgnoresIllumination.Hint"),
     default: false,
     type: Boolean,
   });
   SettingsUtils.registerBR2WorldSetting("meleeDistance", {
-    name: game.i18n.localize("BRSW.MeleeDistance"),
-    hint: game.i18n.localize("BRSW.MeleeDistanceHint"),
+    name: game.i18n.localize("BRSW.Settings.MeleeDistance.Name"),
+    hint: game.i18n.localize("BRSW.Settings.MeleeDistance.Hint"),
     default: 1,
     type: Number,
   });
   SettingsUtils.registerBR2WorldSetting("disable_for_actions", {
-    name: game.i18n.localize("BRSW.DisableActions"),
-    hint: game.i18n.localize("BRSW.DisableActionsHint"),
+    name: game.i18n.localize("BRSW.Settings.DisableActions.Name"),
+    hint: game.i18n.localize("BRSW.Settings.DisableActions.Hint"),
     default: false,
     type: Boolean,
   });
   SettingsUtils.registerBR2WorldSetting("use_system_injury_table", {
-    name: game.i18n.localize("BRSW.UseSystemInjuryTable"),
-    hint: game.i18n.localize("BRSW.UseSystemInjuryTableHint"),
+    name: game.i18n.localize("BRSW.Settings.UseSystemInjuryTable.Name"),
+    hint: game.i18n.localize("BRSW.Settings.UseSystemInjuryTable.Hint"),
     default: false,
     type: Boolean,
   });
   SettingsUtils.registerBR2WorldSetting("max_tooltip_length", {
-    name: "BRSW.MaxTooltipLength",
-    label: "BRSW.MaxTooltipLengthLabel",
-    hint: "BRSW.MaxTooltipLengthHint",
+    name: "BRSW.Settings.MaxTooltipLength.Name",
+    label: "BRSW.Settings.MaxTooltipLength.Label",
+    hint: "BRSW.Settings.MaxTooltipLength.Hint",
     type: Number,
     default: 500,
   });
   SettingsUtils.registerBR2WorldSetting("show_pp_shots_info", {
-    name: "BRSW.ShowPPShotsSetting",
-    label: "BRSW.ShowPPShotsSettingLabel",
-    hint: "BRSW.ShowPPShotsSettingHint",
+    name: "BRSW.Settings.ShowPPShots.Name",
+    label: "BRSW.Settings.ShowPPShots.Label",
+    hint: "BRSW.Settings.ShowPPShots.Hint",
     type: Boolean,
-    default: false,
+    default: true,
   });
   SettingsUtils.registerBR2WorldSetting(SETTING_KEYS.auto_check_extra_fumbles, {
-    name: "BRSW.AutoCheckFumbles",
-    hint: "BRSW.AutoCheckFumblesHint",
+    name: "BRSW.Settings.AutoCheckFumbles.Name",
+    hint: "BRSW.Settings.AutoCheckFumbles.Hint",
     type: Boolean,
     default: true,
   });
   SettingsUtils.registerBR2WorldSetting("measure_from_edge", {
-    name: "BRSW.MeasureFromEdge",
-    hint: "BRSW.MeasureFromEdgeHint",
+    name: "BRSW.Settings.MeasureFromEdge.Name",
+    hint: "BRSW.Settings.MeasureFromEdge.Hint",
     type: Boolean,
     default: false,
     type: Boolean,
@@ -494,27 +509,27 @@ function register_settings_version2() {
     type: SettingsConfig,
   });
   SettingsUtils.registerMenu("system_global_actions", {
-    name: "BRSW.SystemGlobalMenu",
-    label: "BRSW.SystemGlobalMenuLabel",
-    hint: "BRSW.SystemGlobalMenuHint",
+    name: "BRSW.Settings.SystemGlobalMenu.Name",
+    label: "BRSW.Settings.SystemGlobalMenu.Label",
+    hint: "BRSW.Settings.SystemGlobalMenu.Hint",
     type: SystemGlobalConfiguration,
   });
   SettingsUtils.registerMenu("world_global-Menus", {
-    name: "BRSW.WorldGlobalMenu",
-    label: "BRSW.WorldGlobalMenuLabel",
-    hint: "BRSW.WorldGlobalMenuHint",
+    name: "BRSW.Settings.WorldGlobalMenu.Name",
+    label: "BRSW.Settings.WorldGlobalMenu.Label",
+    hint: "BRSW.Settings.WorldGlobalMenu.Hint",
     type: WorldGlobalActions,
   });
   SettingsUtils.registerMenu("optional_rules", {
-    name: "BRSW.OptionalRules",
-    label: "BRSW.OptionalRulesLabel",
-    hint: "BRSW.OptionalRulesHint",
+    name: "BRSW.Settings.OptionalRules.Name",
+    label: "BRSW.Settings.OptionalRules.Label",
+    hint: "BRSW.Settings.OptionalRules.Hint",
     type: OptionalRulesConfiguration,
   });
   SettingsUtils.registerMenu("chat_modifiers_menu", {
-    name: "BRSW.ChatModifiersMenu",
-    label: "BRSW.ChatModifiersMenu",
-    hint: "BRSW.ChatModifiersMenuHint",
+    name: "BRSW.Settings.ChatModifiersMenu.Name",
+    label: "BRSW.Settings.ChatModifiersMenu.Name",
+    hint: "BRSW.Settings.ChatModifiersMenu.Hint",
     type: ModifierSettingsConfiguration,
   });
 
@@ -558,55 +573,57 @@ function register_settings_version2() {
   register_world_settings();
   //Register BR2 user settings
   SettingsUtils.registerBR2UserSetting("default_rate_of_fire", {
-    name: game.i18n.localize("BRSW.Default_rate_of_fire"),
-    hint: game.i18n.localize("BRSW.Default_rate_of_fire_hint"),
+    name: game.i18n.localize("BRSW.Settings.DefaultRateOfFire.Name"),
+    hint: game.i18n.localize("BRSW.Settings.DefaultRateOfFire.Hint"),
     default: "single_shot",
     type: String,
     choices: {
-      single_shot: game.i18n.localize("BRSW.Single_shot"),
-      max_rof: game.i18n.localize("BRSW.Max_rate_of_fire"),
+      single_shot: game.i18n.localize("BRSW.ROFTypes.SingleShot"),
+      max_rof: game.i18n.localize("BRSW.ROFTypes.Max"),
     },
   });
   SettingsUtils.registerBR2UserSetting("expand-results", {
-    name: game.i18n.localize("BRSW.expand-results"),
-    hint: game.i18n.localize("BRSW.expand-results_hint"),
+    name: game.i18n.localize("BRSW.Settings.ExpandResults.Name"),
+    hint: game.i18n.localize("BRSW.Settings.ExpandResults.Hint"),
     default: false,
     type: Boolean,
   });
   SettingsUtils.registerBR2UserSetting("expand-rolls", {
-    name: game.i18n.localize("BRSW.expand-rolls"),
-    hint: game.i18n.localize("BRSW.expand-rolls_hint"),
+    name: game.i18n.localize("BRSW.Settings.ExpandRolls.Name"),
+    hint: game.i18n.localize("BRSW.Settings.ExpandRolls.Hint"),
     default: false,
     scope: "world",
     type: Boolean,
     config: true,
   });
   SettingsUtils.registerBR2UserSetting("expand-descriptions", {
-    name: game.i18n.localize("BRSW.expand-descriptions"),
-    hint: game.i18n.localize("BRSW.expand-descriptions_hint"),
+    name: game.i18n.localize("BRSW.Settings.ExpandDescriptions.Name"),
+    hint: game.i18n.localize("BRSW.Settings.ExpandDescriptions.Hint"),
     default: false,
     scope: "world",
     type: Boolean,
     config: true,
   });
   SettingsUtils.registerBR2UserSetting("auto_popout_chat", {
-    name: "BRSW.PopoutChat",
-    hint: "BRSW.PopoutChatHint",
+    name: "BRSW.Settings.PopoutChat.Name",
+    hint: "BRSW.Settings.PopoutChat.Hint",
     default: false,
     type: Boolean,
   });
   SettingsUtils.registerBR2UserSetting("popout_chat_button", {
-    name: "BRSW.PopoutChatButton",
-    hint: "BRSW.PopoutChatButtonHint",
+    name: "BRSW.Settings.PopoutChatButton.Name",
+    hint: "BRSW.Settings.PopoutChatButton.Hint",
     default: false,
     type: Boolean,
   });
 
   //Update our cached world settings with our saved data
   const world_settings = SettingsUtils.getSetting(SETTING_KEYS.world_settings);
-  foundry.utils.mergeObject(WORLD_SETTINGS, world_settings, {
-    insertKeys: false,
-  });
+  for (const key in WORLD_SETTINGS) {
+    if (world_settings[key] !== undefined) {
+      WORLD_SETTINGS[key].value = world_settings[key].value;
+    }
+  }
 }
 
 // Settings related to Dice So Nice.
@@ -621,8 +638,8 @@ function register_dsn_settings() {
   const damage_theme_choice = Object.assign({}, theme_choice);
   damage_theme_choice.None = "None";
   SettingsUtils.registerBR2UserSetting("damageDieTheme", {
-    name: game.i18n.localize("BRSW.DamageDiceTheme"),
-    hint: game.i18n.localize("BRSW.DamageDiceThemeHint"),
+    name: game.i18n.localize("BRSW.Settings.DamageDiceTheme.Name"),
+    hint: game.i18n.localize("BRSW.Settings.DamageDiceTheme.Hint"),
     default: "None",
     type: String,
     choices: damage_theme_choice,

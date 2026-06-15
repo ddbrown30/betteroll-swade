@@ -1,3 +1,83 @@
+const ILLUMINATION_SKILLS_SELECTORS =
+{
+  or_selector: [
+    {
+      selector_type: "skill",
+      selector_value: "Alchemy"
+    },
+    {
+      selector_type: "skill",
+      selector_value: "Athletics"
+    },
+    {
+      selector_type: "skill",
+      selector_value: "Boating"
+    },
+    {
+      selector_type: "skill",
+      selector_value: "Driving"
+    },
+    {
+      selector_type: "skill",
+      selector_value: "Faith"
+    },
+    {
+      selector_type: "skill",
+      selector_value: "Fighting"
+    },
+    {
+      selector_type: "skill",
+      selector_value: "Focus"
+    },
+    {
+      selector_type: "skill",
+      selector_value: "Notice"
+    },
+    {
+      selector_type: "skill",
+      selector_value: "Piloting"
+    },
+    {
+      selector_type: "skill",
+      selector_value: "Psionics"
+    },
+    {
+      selector_type: "skill",
+      selector_value: "Riding"
+    },
+    {
+      selector_type: "skill",
+      selector_value: "Shooting"
+    },
+    {
+      selector_type: "skill",
+      selector_value: "Spellcasting"
+    },
+    {
+      selector_type: "skill",
+      selector_value: "Unskilled Attempt"
+    },
+    {
+      selector_type: "skill",
+      selector_value: "Weird Science"
+    },
+  ]
+};
+
+const NIGHTDARKVISION_SELECTORS = [
+  {
+    selector_type: "actor_has_ability",
+    selector_value: "BRSW.AbilityName.NightVision",
+  },
+  {
+    selector_type: "actor_has_ability",
+    selector_value: "BRSW.AbilityName.Darkvision",
+  },
+  {
+    selector_type: "actor_has_ability",
+    selector_value: "BRSW.AbilityName.DarkVision",
+  },
+];
 
 export const COMMON_ACTIONS = [
   {
@@ -39,21 +119,24 @@ export const COMMON_ACTIONS = [
     id: "1LDim",
     name: "BRSW.IlluminationDim",
     button_name: "BRSW.IlluminationDim",
-    not_selector: [
+    and_selector: [
+      ILLUMINATION_SKILLS_SELECTORS,
       {
-        or_selector: [
+        not_selector: [
           {
-            selector_type: "actor_has_ability",
-            selector_value: "BRSW.AbilityName-LowLightVision",
-          },
-          {
-            selector_type: "actor_has_ability",
-            selector_value: "BRSW.AbilityName-NightVision",
+            or_selector: [
+              {
+                selector_type: "actor_has_ability",
+                selector_value: "BRSW.AbilityName.LowLightVision",
+              },
+              ...NIGHTDARKVISION_SELECTORS,
+            ],
           },
         ],
-      },
+      }
     ],
     skillMod: "-2",
+    ignoresArcaneActivation: true,
     section: "common",
     group: "BRSW.Illumination",
     group_single: true,
@@ -66,21 +149,24 @@ export const COMMON_ACTIONS = [
     id: "2LDark",
     name: "BRSW.IlluminationDark",
     button_name: "BRSW.IlluminationDark",
-    not_selector: [
+    and_selector: [
+      ILLUMINATION_SKILLS_SELECTORS,
       {
-        or_selector: [
+        not_selector: [
           {
-            selector_type: "actor_has_ability",
-            selector_value: "BRSW.AbilityName-LowLightVision",
-          },
-          {
-            selector_type: "actor_has_ability",
-            selector_value: "BRSW.AbilityName-NightVision",
+            or_selector: [
+              {
+                selector_type: "actor_has_ability",
+                selector_value: "BRSW.AbilityName.LowLightVision",
+              },
+              ...NIGHTDARKVISION_SELECTORS,
+            ],
           },
         ],
-      },
+      }
     ],
     skillMod: "-4",
+    ignoresArcaneActivation: true,
     section: "common",
     group: "BRSW.Illumination",
     group_single: true,
@@ -93,17 +179,20 @@ export const COMMON_ACTIONS = [
     id: "3LPitch",
     name: "BRSW.IlluminationPitch",
     button_name: "BRSW.IlluminationPitch",
-    not_selector: [
+    and_selector: [
+      ILLUMINATION_SKILLS_SELECTORS,
       {
-        or_selector: [
+        not_selector: [
           {
-            selector_type: "actor_has_ability",
-            selector_value: "BRSW.AbilityName-NightVision",
+            or_selector: [
+              ...NIGHTDARKVISION_SELECTORS,
+            ],
           },
         ],
-      },
+      }
     ],
     skillMod: "-6",
+    ignoresArcaneActivation: true,
     section: "common",
     group: "BRSW.Illumination",
     group_single: true,
@@ -114,7 +203,7 @@ export const COMMON_ACTIONS = [
   },
   {
     id: "UNSTABLEPLATFORM",
-    name: "BRSW.UnstablePlatform",
+    name: "BRSW.UnstablePlatformName",
     button_name: "BRSW.UnstablePlatform",
     skillMod: "-2",
     and_selector: [
@@ -131,7 +220,7 @@ export const COMMON_ACTIONS = [
         not_selector: [
           {
             selector_type: "actor_has_edge",
-            selector_value: "BRSW.EdgeName-Steady-Hands",
+            selector_value: "BRSW.EdgeName.SteadyHands",
           },
         ],
       },
@@ -145,13 +234,13 @@ export const COMMON_ACTIONS = [
   },
   {
     id: "RAN",
-    name: "BRSW.Ran",
+    name: "BRSW.RanName",
     button_name: "BRSW.Ran",
     skillMod: "-2",
     not_selector: [
       {
         selector_type: "actor_has_edge",
-        selector_value: "BRSW.EdgeName-Steady-Hands",
+        selector_value: "BRSW.EdgeName.SteadyHands",
       },
     ],
     section: "common",

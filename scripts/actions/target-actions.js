@@ -27,58 +27,20 @@ export const TARGET_ACTIONS = [
   // TODO ... Look at how a skillMod -2 affects the activation, as the Bolt power should activate on a 4 result, ignoring the -2 imposed by Dodge.
   //      ... So on a 4 or 5, it will cost the full Power Points to activate, but still fail to hit the target.
   {
-    id: "TARGET-HAS-DODGE-BOLT",
-    name: "Dodge vs Bolt",
-    button_name: "has Dodge vs Bolt",
-    //skillMod: "0",  //TODO this was so the power in the card Rolls section, but "0" seems to cause an error, so leave out for now.
-    and_selector: [
-      {
-        selector_type: "target_has_edge",
-        selector_value: "BRSW.EdgeName-Dodge", // NOTE This works because the global_actions.js expects ... value.includes("BRSW.EdgeName-")
-      },
-      {
-        selector_type: "item_type",
-        selector_value: "power"
-      },
-      {
-        selector_type: "item_name",
-        selector_value: "Bolt"
-      }
-    ],
-    defaultChecked: "on",
-    section: "attack",
-    group: "BRSW.Target",
-  },
-  {
-    id: "TARGET-HAS-DODGE-WEAPONS",
-    name: "Dodge vs Ranged",
-    button_name: "has Dodge vs Ranged",
+    id: "TARGET-HAS-DODGE",
+    name: "Dodge",
+    button_name: "has Dodge",
     skillMod: "-2",
+    ignoresArcaneActivation: true,
     and_selector: [
       {
         selector_type: "target_has_edge",
-        selector_value: "BRSW.EdgeName-Dodge",
+        selector_value: "BRSW.EdgeName.Dodge",
       },
       {
-        selector_type: "item_type",
-        selector_value: "weapon"
-      },
-      {
-        or_selector: [
-          {
-            selector_type: "skill",
-            selector_value: "BRSW.SkillName-UnskilledAttempt"
-          },
-          {
-            selector_type: "skill",
-            selector_value: "BRSW.SkillName-Shooting"
-          },
-          {
-            selector_type: "skill",
-            selector_value: "BRSW.SkillName-Athletics"
-          },
-        ],
-      },
+        selector_type: "item_is_weapon_or_bolt",
+        selector_value: "true"
+      }
     ],
     defaultChecked: "on",
     section: "attack",
@@ -89,8 +51,8 @@ export const TARGET_ACTIONS = [
   // TODO ... How to handle melee attacks when the attacker does NOT have "Fighting", so uses "Unskilled Attempt"
   {
     id: "TARGET-HAS-DEFLECTION-MELEE",
-    name: "Deflection (melee)",
-    button_name: "has Deflection (melee)",
+    name: "BRSW.StatusEffect.DeflectionMelee",
+    button_name: "BRSW.StatusEffect.HasDeflectionMelee",
     skillMod: -2,
     and_selector: [
       {
@@ -127,8 +89,8 @@ export const TARGET_ACTIONS = [
   //      ... It will just fail to hit the target.
   {
     id: "TARGET-HAS-DEFLECTION-RANGED",
-    name: "TargetHasDeflectionRanged",
-    button_name: "has Deflection (ranged)",
+    name: "BRSW.StatusEffect.DeflectionRanged",
+    button_name: "BRSW.StatusEffect.HasDeflectionRanged",
     skillMod: -2,
     and_selector: [
       {
@@ -143,16 +105,16 @@ export const TARGET_ACTIONS = [
         or_selector: [
           {
             selector_type: "skill",
-            selector_value: "BRSW.SkillName-Athletics"
+            selector_value: "BRSW.SkillName.Athletics"
           },
           {
             selector_type: "skill",
-            selector_value: "BRSW.SkillName-Shooting"
+            selector_value: "BRSW.SkillName.Shooting"
           },
           // TODO ... How to handle ranged attacks when the attacker does NOT have "Shooting" or "Athletics", so uses "Unskilled Attempt"
           // {
           //   selector_type: "skill",
-          //   selector_value: "BRSW.SkillName-UnskilledAttempt"
+          //   selector_value: "BRSW.SkillName.UnskilledAttempt"
           // },
         ],
       },
@@ -163,8 +125,8 @@ export const TARGET_ACTIONS = [
   },
   {
     id: "TARGET-HAS-DEFLECTION-BOTH",
-    name: "TargetHasDeflectionBoth",
-    button_name: "has Deflection",
+    name: "BRSW.StatusEffect.Deflection",
+    button_name: "BRSW.StatusEffect.HasDeflection",
     skillMod: -2,
     and_selector: [
       {
@@ -195,11 +157,11 @@ export const TARGET_ACTIONS = [
         or_selector: [
           {
             selector_type: "skill",
-            selector_value: "BRSW.SkillName-Athletics"
+            selector_value: "BRSW.SkillName.Athletics"
           },
           {
             selector_type: "skill",
-            selector_value: "BRSW.SkillName-Shooting"
+            selector_value: "BRSW.SkillName.Shooting"
           },
           {
             selector_type: "skill",
@@ -208,7 +170,7 @@ export const TARGET_ACTIONS = [
           // TODO ... How to handle ranged attacks when the attacker does NOT have "Shooting" or "Athletics", so uses "Unskilled Attempt"
           // {
           //   selector_type: "skill",
-          //   selector_value: "BRSW.SkillName-UnskilledAttempt"
+          //   selector_value: "BRSW.SkillName.UnskilledAttempt"
           // },
         ],
       },
@@ -222,8 +184,8 @@ export const TARGET_ACTIONS = [
   // TODO ... Work out what the "attacks against her suffer a -1 penalty" actually covers, i.e. is it just weapons (melee & ranged), or also powers?
   {
     id: "TARGET-HAS-SHROUD-WEAPONS",
-    name: "TargetHasShroudWeapon",
-    button_name: "has Shroud",
+    name: "BRSW.HasShroudName",
+    button_name: "BRSW.HasShroud",
     skillMod: "-1",
     and_selector: [
       {
@@ -246,5 +208,39 @@ export const TARGET_ACTIONS = [
     section: "attack",
     group: "BRSW.Target",
   },
-
+  {
+      id: "ArcaneResistance",
+      name: "BRSW.EdgeName.ArcaneResistance",
+      button_name: "BRSW.HasArcaneResistance",
+      skillMod: "-2",
+      ignoresArcaneActivation: true,
+      dmgMod: "-2",
+      defaultChecked: "on",
+      and_selector: [
+          { selector_type: "target_has_edge", selector_value: "BRSW.EdgeName.ArcaneResistance" },
+          { selector_type: "item_type", selector_value: "power" },
+          {
+              not_selector: [
+                  { selector_type: "target_has_edge", selector_value: "BRSW.EdgeName.ImprovedArcaneResistance" }
+              ]
+          }
+      ],
+      section: "attack",
+      group: "BRSW.Target"
+  },
+  {
+      id: "ImpArcaneResistance",
+      name: "BRSW.EdgeName.ImprovedArcaneResistance",
+      button_name: "BRSW.HasImprovedArcaneResistance",
+      skillMod: "-4",
+      ignoresArcaneActivation: true,
+      dmgMod: "-4",
+      defaultChecked: "on",
+      and_selector: [
+          { selector_type: "target_has_edge", selector_value: "BRSW.EdgeName.ImprovedArcaneResistance" },
+          { selector_type: "item_type", selector_value: "power" }
+      ],
+      section: "attack",
+      group: "BRSW.Target"
+  },
 ];

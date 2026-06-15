@@ -20,7 +20,7 @@ import {
 } from "./cards_common.js";
 import {
   FIGHTING_SKILLS,
-  is_shooting_skill,
+  isShootingSkill,
   SHOOTING_SKILLS,
   THROWING_SKILLS,
 } from "./skill_card.js";
@@ -33,12 +33,15 @@ import {
   broofa,
   addEventListenerAll,
   Utils,
+  getAuthor,
 } from "./utils.js";
 import { create_damage_card } from "./damage_card.js";
 import { ATTRIBUTES_TRANSLATION_KEYS } from "./attribute_card.js";
 import { BrCommonCard } from "./BrCommonCard.js";
 import { DamageModifier, TraitModifier } from "./modifiers.js";
 import { brAction } from "./actions.js";
+import { PPManagementDialog } from "./pp_management_dialog.js";
+import { get_current_generic_mods } from "../config/generic_pp_modifiers.js";
 
 const ARCANE_SKILLS = [
   "faith",
@@ -152,8 +155,7 @@ export async function create_item_card(
   let damage = item.system.damage;
   let possible_default_dmg_action;
   const ammon_enabled = parseInt(item.system.shots) || item.system.ammo;
-  const power_points =
-    !isNaN(parseFloat(item.system.pp)) || item.type === "power";
+  const is_power = !isNaN(parseFloat(item.system.pp)) || item.type === "power";
   const subtract_select = ammon_enabled
     ? SettingsUtils.getWorldSetting("default-ammo-management")
     : false;
@@ -171,11 +173,11 @@ export async function create_item_card(
       trait_id: trait ? trait.id || trait : false,
       ammo: ammon_enabled,
       subtract_selected: subtract_select,
-      subtract_pp: power_points
+      subtractPP: is_power
         ? SettingsUtils.getWorldSetting("default-pp-management")
         : false,
       damage_rolls: [],
-      powerpoints: power_points,
+      is_power: is_power,
       used_shots: 0,
       description: description,
       tooltip: create_item_card_tooltip(item),
@@ -187,6 +189,7 @@ export async function create_item_card(
   br_message.damage = damage;
   br_message.item_id = item_id;
   br_message.applicable_effects = get_applicable_effects(item);
+  br_message.pp_modifiers = is_power ? get_pp_mods(item) : {};
   br_message.check_warnings(br_message.render_data);
   await br_message.render(actions_stored);
   await br_message.save();
@@ -201,6 +204,102 @@ function get_applicable_effects(item) {
     effects.push({ id: effect.id, name: effect.name, uuid: effect.uuid });
   }
   return effects;
+}
+
+function get_pp_mods(item) {
+  const pp_mods = {
+    powerMods: [],
+    additionalRecipientsMod: {},
+    extraCost: 0,
+  };
+  pp_mods.genericMods = get_current_generic_mods().map(mod => ({ ...mod, selected: false }));
+
+  const toTitleCase = str => str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+
+  const descriptionDoc = new DOMParser().parseFromString(item.system.description, "text/html");
+  const modifiers = Array.from(descriptionDoc.querySelectorAll("li"))
+    .map(li => {
+      const text = li.textContent.trim();
+      const match = text.match(/^(.+?)\s*\(([+-]?\d+(?:\/[+-]?\d+)*)\):/);
+      if (!match) return null;
+
+      const mod = {
+        name: match[1],
+        costs: match[2].split("/"),
+        isEpic: li.classList.contains("star-icon"),
+      };
+
+      if (mod.name.toLowerCase() == "additional recipients") {
+        pp_mods.additionalRecipientsMod = {
+          name: toTitleCase(mod.name),
+          cost: mod.costs[0],
+          isEpic: mod.isEpic,
+          count: 0,
+        };
+        return null;
+      }
+
+      return mod;
+    })
+    .filter(Boolean);
+
+  if (modifiers.length) {
+    for (let mod of modifiers) {
+      for (let cost of mod.costs) {
+        if (cost !== "+0") {
+          pp_mods.powerMods.push({
+            name: toTitleCase(mod.name),
+            cost: cost,
+            isEpic: mod.isEpic,
+            selected: false,
+          });
+        }
+      }
+    }
+
+    pp_mods.powerMods.sort((a, b) => {
+      const nameA = a.name.toLowerCase();
+      const nameB = b.name.toLowerCase();
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+
+      return a.cost - b.cost;
+    });
+  }
+
+  return pp_mods;
+}
+
+export function calc_pp_cost(br_card) {
+  if (SettingsUtils.isOptionalRuleEnabled("InnatePowersDontConsume") && br_card.item.system.innate) {
+    return 0;
+  }
+
+  let ppCost = br_card.item.system.pp;
+
+  ppCost += br_card.pp_modifiers.extraCost;
+
+  if (br_card.pp_modifiers.additionalRecipientsMod.name) {
+    ppCost += br_card.pp_modifiers.additionalRecipientsMod.cost * br_card.pp_modifiers.additionalRecipientsMod.count;
+  }
+
+  const modGroups = [br_card.pp_modifiers.genericMods, br_card.pp_modifiers.powerMods];
+  for (const group of modGroups) {
+    for (const mod of group) {
+      if (mod.selected) {
+        const cost = parseInt(mod.cost);
+        if (!isNaN(cost)) {
+          ppCost += cost;
+        }
+      }
+    }
+  }
+
+  return ppCost;
 }
 
 export function check_for_actions_with_damage(item) {
@@ -296,7 +395,7 @@ async function item_click_listener(ev, target, currentTarget) {
     target instanceof Actor
       ? target
       : target instanceof foundry.canvas.placeables.Token ||
-          target instanceof TokenDocument
+        target instanceof TokenDocument
         ? target.actor
         : null;
   const item_action = ev.currentTarget.dataset.action;
@@ -356,11 +455,11 @@ export function activate_item_listeners(app, html) {
   addEventListenerAll(
     html,
     ".item-image, .item-img, .name.item-show, span.item>.item-control.item-edit," +
-      " .gear-card .card-header>.item-name, .damage-roll, .item-name>h4," +
-      " .power-header>.item-name, .card-button, .item-control.item-show," +
-      " .power button.item-show, .weapon button.item-show, .edge-hindrance>.item-control" +
-      " .item-control.item-edit, .item-control.item-show, .item.edge-hindrance>.item-show," +
-      " .item>.item-show",
+    " .gear-card .card-header>.item-name, .damage-roll, .item-name>h4," +
+    " .power-header>.item-name, .card-button, .item-control.item-show," +
+    " .power button.item-show, .weapon button.item-show, .edge-hindrance>.item-control" +
+    " .item-control.item-edit, .item-control.item-show, .item.edge-hindrance>.item-show," +
+    " .item>.item-show",
     "click",
     async (ev) => {
       await item_click_listener(ev, target, ev.currentTarget);
@@ -435,12 +534,17 @@ export function activate_item_card_listeners(br_card, html) {
   html
     .querySelector(".brsw-pp-manual")
     ?.addEventListener("click", async (ev) => {
-      await manual_pp(actor, item);
-      //Update the pp text of the card we just clicked on.
-      //This won't affect change the popout or vice versa,
-      //but doing that would require an update to the chat message which would refresh the render which is disruptive
-      ev.target.parentElement.querySelector(".brsw-shots-pp").innerText =
-        br_card.item_shots;
+      await new PPManagementDialog({ brCard: br_card }).wait({ force: true });
+
+      if (SettingsUtils.getWorldSetting("show_pp_shots_info")) {
+        //Update the pp text of the card we just clicked on.
+        //This won't affect change the popout or vice versa,
+        //but doing that would require an update to the chat message which would refresh the render which is disruptive
+        const pp_remaining = ev.target.parentElement.parentElement.querySelector(".brsw-shots-pp");
+        pp_remaining.innerText = br_card.item_shots;
+        const pp_cost = ev.target.parentElement.parentElement.querySelector(".brsw-pp-cost");
+        pp_cost.innerText = calc_pp_cost(br_card);
+      }
     });
   addEventListenerAll(html, ".brsw-apply-damage", "click", (ev) => {
     create_damage_card(
@@ -494,9 +598,10 @@ export function activate_item_card_listeners(br_card, html) {
     ev.currentTarget.classList.toggle("twbr:bg-red-700");
     ev.currentTarget.classList.toggle("twbr:bg-gray-500");
   });
-  html.querySelector(".brsw-pp-toggle")?.addEventListener("click", (ev) => {
-    ev.currentTarget.classList.toggle("twbr:bg-red-700");
-    ev.currentTarget.classList.toggle("twbr:bg-gray-500");
+  html.querySelector(".brsw-pp-toggle")?.addEventListener("click", async (ev) => {
+    br_card.render_data.subtractPP = !br_card.render_data.subtractPP;
+    await br_card.render();
+    await br_card.save();
   });
   html
     .querySelector(".brsw-use-consumable-button")
@@ -649,25 +754,25 @@ export function get_item_trait(item, actor) {
       if (item.system.damage.includes("str")) {
         skill = check_skill_in_actor(actor, [
           ...THROWING_SKILLS,
-          game.i18n.localize("BRSW.SkillName-Athletics").toLowerCase(), // add localization
+          game.i18n.localize("BRSW.SkillName.Athletics").toLowerCase(), // add localization
         ]);
       } else {
         skill = check_skill_in_actor(actor, [
           ...SHOOTING_SKILLS,
-          game.i18n.localize("BRSW.SkillName-Shooting").toLowerCase(), // add localization
+          game.i18n.localize("BRSW.SkillName.Shooting").toLowerCase(), // add localization
         ]);
       }
     } else {
       skill = check_skill_in_actor(actor, [
         ...FIGHTING_SKILLS,
-        game.i18n.localize("BRSW.SkillName-fighting").toLowerCase(), // bag add localization
+        game.i18n.localize("BRSW.SkillName.Fighting").toLowerCase(), // bag add localization
       ]);
     }
   }
   if (skill === undefined) {
     skill = check_skill_in_actor(actor, [
       ...UNTRAINED_SKILLS,
-      game.i18n.localize("BRSW.SkillName-untrained").toLowerCase(),
+      game.i18n.localize("BRSW.SkillName.UnskilledAttempt").toLowerCase(),
     ]);
   }
   return skill;
@@ -684,7 +789,7 @@ export function trait_from_string(actor, trait_name) {
   let skill = actor.items.find((skill) => {
     return (
       skill.name.toLowerCase().replace("★ ", "") ===
-        trait_name.toLowerCase().replace("★ ", "") && skill.type === "skill"
+      trait_name.toLowerCase().replace("★ ", "") && skill.type === "skill"
     );
   });
   if (!skill) {
@@ -703,7 +808,7 @@ export function trait_from_string(actor, trait_name) {
     // No skill was found, we try to find untrained
     skill = check_skill_in_actor(actor, [
       ...UNTRAINED_SKILLS,
-      game.i18n.localize("BRSW.SkillName-untrained").toLowerCase(),
+      game.i18n.localize("BRSW.SkillName.UnskilledAttempt").toLowerCase(),
     ]);
   }
   return skill;
@@ -729,17 +834,21 @@ function check_skill_in_actor(actor, possible_skills) {
   return skill_found;
 }
 
-async function displayRemainingCard(content) {
-  const show_card = SettingsUtils.getWorldSetting("remaining_card_behaviour");
+export async function displayPPChangeCard(actor, chatData) {
+  const show_card = SettingsUtils.getWorldSetting("pp_change_card_behaviour");
   if (show_card !== "none") {
-    const chat_data = { content: content };
+    chatData.author = getAuthor(actor);
+    chatData.speaker = { alias: actor.name };
+
     if (show_card === "master_and_gm") {
-      chat_data.whisper = [ChatMessage.getWhisperRecipients("GM")[0]];
+      chatData.whisper = ChatMessage.getWhisperRecipients("GM");
     }
+
     if (show_card === "master_only") {
-      chat_data.whisper = [""];
+      chatData.whisper = [""];
     }
-    await ChatMessage.create(chat_data);
+
+    await ChatMessage.create(chatData);
   }
 }
 
@@ -747,91 +856,90 @@ async function displayRemainingCard(content) {
  * Discount pps from an actor © Javier or Arcane Device © Salieri
  *
  * @param {BrCommonCard} br_card
- * @param pp_override
- * @param old_pp PPs expended in the current selected roll of this option
- * @param pp_modifier A number to be added or subtracted from PPs
+ * @param prevSpentPP PP we already spent on a previous roll
  */
-export async function discount_pp(br_card, pp_override, old_pp, pp_modifier) {
-  if (
-    SettingsUtils.getSetting("optional_rules_enabled").indexOf(
-      "InnatePowersDontConsume",
-    ) > -1 &&
-    br_card.item.system.innate
-  ) {
+export async function spendPP(br_card, prevSpentPP) {
+  prevSpentPP ??= 0;
+  const actor = br_card.actor;
+  const item = br_card.item;
+
+  if (SettingsUtils.isOptionalRuleEnabled("InnatePowersDontConsume") && item.system.innate) {
     return 0;
   }
+
   let success = false;
+  let raise = false;
   for (const roll of br_card.trait_roll.current_roll.dice) {
-    if (roll.result !== null && roll.result >= 0) {
-      success = true;
+    if (roll.result === null) continue;
+
+    //Subtract any arcaneActivationOffset from the roll result to get the activation roll
+    //This is for cases like missing with bolt due to cover but the power still activates
+    const rollResult = roll.result - (br_card.trait_roll.arcaneActivationOffset ?? 0);
+    success = success || rollResult >= 0;
+    raise = raise || rollResult >= 4;
+  }
+
+  const arcaneDevice = item.system.additionalStats.devicePP;
+
+  let currentPP = arcaneDevice
+    ? item.system.additionalStats.devicePP.value
+    : actor.system.powerPoints.general.value;
+
+  let dataKey = arcaneDevice
+    ? "system.additionalStats.devicePP.value"
+    : "system.powerPoints.general.value";
+
+  if (actor.system.powerPoints.hasOwnProperty(item.system.arcane) && actor.system.powerPoints[item.system.arcane].max) {
+    //Use the specific PP for this arcane type
+    currentPP = actor.system.powerPoints[item.system.arcane].value;
+    dataKey = `system.powerPoints.${item.system.arcane}.value`;
+  }
+
+  const basePPCost = success ? calc_pp_cost(br_card) : 1;
+  let ppCost = basePPCost;
+
+  if (raise) {
+    const channelingName = game.i18n.localize("BRSW.EdgeName.Channeling").toLowerCase();
+    const hasChanneling = !!actor.items.find((i) => {
+      return (i.type === "edge" && (i.name.toLowerCase().includes(channelingName) || i.name.toLowerCase().includes("channeling")));
+    });
+
+    if (hasChanneling) {
+      ppCost = Math.max(ppCost - 1, 0);
     }
   }
-  let base_pp_expended = pp_override
-    ? parseInt(pp_override)
-    : parseInt(br_card.item.system.pp);
-  base_pp_expended += pp_modifier;
-  const pp = success ? base_pp_expended : 1;
-  br_card.render_data.used_pp = pp;
+
+  br_card.render_data.used_pp = ppCost;
   await br_card.save();
-  let current_pp;
-  // If devicePP is found, it will be treated as an Arcane Device:
-  let arcaneDevice = false;
-  if (br_card.item.system.additionalStats.devicePP) {
-    // Get the devices PP:
-    current_pp = br_card.item.system.additionalStats.devicePP.value;
-    arcaneDevice = true;
-  } else if (
-    br_card.actor.system.powerPoints.hasOwnProperty(
-      br_card.item.system.arcane,
-    ) &&
-    br_card.actor.system.powerPoints[br_card.item.system.arcane].max
-  ) {
-    // Specific power points
-    current_pp =
-      br_card.actor.system.powerPoints[br_card.item.system.arcane].value;
+
+  const newPP = currentPP - ppCost + prevSpentPP;
+  if (newPP < 0) {
+    ui.notifications.warn(game.i18n.localize("BRSW.InsufficientPP"));
+    return;
   } else {
-    // General pool
-    current_pp = br_card.actor.system.powerPoints.general.value;
+    if (arcaneDevice) {
+      await actor.updateEmbeddedDocuments("Item", { _id: item.id, [dataKey]: newPP });
+    } else {
+      await actor.update({ [dataKey]: newPP });
+    }
   }
-  const final_pp = Math.max(current_pp - pp + old_pp, 0);
-  let content = game.i18n.format("BRSW.ExpendedPoints", {
-    name: br_card.actor.name,
-    final_pp: final_pp,
-    pp: pp,
-  });
-  if (current_pp < pp) {
-    const message_text = game.i18n.localize("BRSW.NotEnoughPP");
-    content = `<p class="brsw-fumble-row">${message_text}</p> ${content}`;
-    ui.notifications.warn(message_text);
+
+  if (ppCost > 0) {
+    displayPPChangeCard(actor, {
+      content: game.i18n.format("BRSW.ExpendedPoints", {
+        name: actor.name,
+        final_pp: newPP,
+        pp: ppCost,
+      })
+    });
+  } else if (basePPCost > 0) {
+    //Power wasn't free and now is so display a message
+    displayPPChangeCard(actor, {
+      content: game.i18n.localize("BRSW.PowerCostReducedFree")
+    });
   }
-  const data = {};
-  if (arcaneDevice === true) {
-    const updates = [
-      {
-        _id: br_card.item.id,
-        "system.additionalStats.devicePP.value": `${final_pp}`,
-      },
-    ];
-    // Updating the Arcane Device:
-    br_card.actor.updateEmbeddedDocuments("Item", updates);
-  } else if (
-    br_card.actor.system.powerPoints.hasOwnProperty(
-      br_card.item.system.arcane,
-    ) &&
-    br_card.actor.system.powerPoints[br_card.item.system.arcane].max
-  ) {
-    data["system.powerPoints." + br_card.item.system.arcane + ".value"] =
-      final_pp;
-  } else {
-    data["system.powerPoints.general.value"] = final_pp;
-  }
-  if (arcaneDevice === false) {
-    await br_card.actor.update(data);
-  }
-  if (pp !== old_pp) {
-    await displayRemainingCard(content);
-  }
-  return pp;
+
+  return ppCost;
 }
 
 /**
@@ -954,19 +1062,13 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
       );
       br_message.skill_id = trait.id;
     }
-    if (action.code.shotsUsed || action.code.resourcesUsed) {
-      const shots_used = action.code.shotsUsed || action.code.resourcesUsed;
+    if (action.code.resourcesUsed) {
+      const shots_used = action.code.resourcesUsed;
       let first_char = "";
       try {
         first_char = shots_used.charAt(0);
-      } catch {}
-      if (first_char === "+" || first_char === "-") {
-        // If we are using PP and the modifier starts with + or -
-        // we use it as a relative number.
-        if (parseInt(br_message.item.system.pp)) {
-          shots_modifier += parseInt(shots_used);
-        }
-      } else {
+      } catch { }
+      if (first_char !== "+" && first_char !== "-") {
         shots_override = parseInt(shots_used);
       }
     }
@@ -975,7 +1077,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
   // Check for minimum strength
   if (
     br_message.item.system.minStr &&
-    is_shooting_skill(get_item_trait(br_message.item, br_message.actor))
+    isShootingSkill(get_item_trait(br_message.item, br_message.actor))
   ) {
     const penalty = process_minimum_str_modifiers(
       br_message.item,
@@ -1001,7 +1103,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
       (item) =>
         item.type === "edge" &&
         item.name.toLowerCase() ===
-          game.i18n.localize("BRSW.EdgeName-Ambidextrous").toLowerCase(),
+        game.i18n.localize("BRSW.EdgeName.Ambidextrous").toLowerCase(),
     );
     is_ambidextrous =
       is_ambidextrous || br_message.actor.getFlag("swade", "ambidextrous");
@@ -1054,22 +1156,12 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
     }
   }
   // Power points management
-  const pp_selected = html
-    ? html.querySelector(".twbr\\:bg-red-700.brsw-pp-toggle")
-    : SettingsUtils.getWorldSetting("default-pp-management");
-  const previous_pp = br_message.trait_roll.old_rolls.length
-    ? br_message.render_data.used_pp
-    : 0;
-  if (
-    (!isNaN(parseInt(br_message.item.system.pp)) ||
-      br_message.item.type === "power") &&
-    pp_selected
-  ) {
-    br_message.render_data.used_pp = await discount_pp(
+  const subtractPP = br_message.render_data.subtractPP;
+  const previous_pp = br_message.trait_roll.old_rolls.length ? br_message.render_data.used_pp : 0;
+  if (subtractPP && !isNaN(parseInt(br_message.item.system.pp)) && br_message.item.type === "power") {
+    br_message.render_data.used_pp = await spendPP(
       br_message,
-      shots_override,
       previous_pp,
-      shots_modifier,
     );
   }
   await br_message.render();
@@ -1121,7 +1213,7 @@ function get_target_defense(
       //Get the armor of the location we're targeting
       defense_values.armor =
         location === "torso" ? objective.actor.system.stats.toughness.armor :
-        objective.actor.armorPerLocation[location] ?? objective.actor.system.stats.toughness.armor;
+          objective.actor.armorPerLocation[location] ?? objective.actor.system.stats.toughness.armor;
       //Add that armor to the base toughness to get the correct toughness
       defense_values.toughness = base_toughness + defense_values.armor;
       defense_values.name = objective.name;
@@ -1305,7 +1397,7 @@ function calc_min_str_penalty(item, actor, damage_formulas, damage_roll) {
   }
   if (
     min_str_die_size &&
-    !is_shooting_skill(get_item_trait(item, actor)) &&
+    !isShootingSkill(get_item_trait(item, actor)) &&
     min_str_die_size > str_die_size
   ) {
     damage_formulas.damage = adjust_dmg_str(
@@ -1702,169 +1794,6 @@ async function edit_toughness(br_card, index) {
     calculate_damage_results(damage_rolls);
   // noinspection JSIgnoredPromiseFromCall
   await update_message(br_card, render_data);
-}
-
-/**
- * Expends power points, called when the first button in the dialog is clicked.
- * @param {Number} number Number ot power points to remove
- * @param {string} mode 'reload' to recharge pp
- * @param {SwadeActor} actor The actor that casts the power
- * @param {Item} item The power itself
- */
-function modify_power_points(number, mode, actor, item) {
-  const arcaneDevice = item.system.additionalStats.devicePP;
-  let ppv = arcaneDevice
-    ? item.system.additionalStats.devicePP.value
-    : actor.system.powerPoints.general.value;
-  let ppm = arcaneDevice
-    ? item.system.additionalStats.devicePP.max
-    : actor.system.powerPoints.general.max;
-  let otherArcane = false;
-  if (
-    actor.system.powerPoints.hasOwnProperty(item.system.arcane) &&
-    actor.system.powerPoints[item.system.arcane].max
-  ) {
-    // Specific power points
-    otherArcane = true;
-    ppv = actor.system.powerPoints[item.system.arcane].value;
-    ppm = actor.system.powerPoints[item.system.arcane].max;
-  }
-  if (ppv - number < 0) {
-    ui.notifications.notify(game.i18n.localize("BRSW.InsufficientPP"));
-    return;
-  }
-  let newPP = Math.max(ppv - number, 0);
-  if (newPP > ppm) {
-    const rechargedPP = -number - (newPP - ppm);
-    newPP = ppm;
-    ChatMessage.create({
-      speaker: { alias: name },
-      content: game.i18n.format("BRSW.RechargePPTextHitMax", {
-        name: actor.name,
-        rechargedPP: rechargedPP,
-        ppm: ppm,
-      }),
-    });
-  }
-  newPP = Math.min(newPP, ppm);
-  if (arcaneDevice === true) {
-    const updates = [
-      { _id: item.id, "system.additionalStats.devicePP.value": `${newPP}` },
-    ];
-    // Updating the Arcane Device:
-    actor.updateEmbeddedDocuments("Item", updates);
-  } else {
-    const data_key = otherArcane
-      ? `system.powerPoints.${item.system.arcane}.value`
-      : "system.powerPoints.general.value";
-    const data = {};
-    data[data_key] = newPP;
-    actor.update(data);
-  }
-  const text = {
-    reload: game.i18n.format("BRSW.RechargePPText", {
-      name: actor.name,
-      number: -number,
-      newPP: newPP,
-    }),
-    spend: game.i18n.format("BRSW.ExpendPPText", {
-      name: actor.name,
-      number: number,
-      newPP: newPP,
-    }),
-    benny_reload: game.i18n.format("BRSW.RechargePPBennyText", {
-      name: actor.name,
-      newPP: newPP,
-    }),
-    soul_drain: game.i18n.format("BRSW.RechargePPSoulDrainText", {
-      name: actor.name,
-      newPP: newPP,
-    }),
-  };
-  ChatMessage.create({
-    speaker: { alias: actor.name },
-    content: text[mode],
-  });
-  Hooks.call("BRSW-ManualPPManagement", actor, item);
-}
-
-/**
- * Function to manually manage power points © SalieriC
- * @param {SwadeActor} actor
- * @param {function} actor.update
- * @param {Item} item
- */
-async function manual_pp(actor, item) {
-  const amount_pp = game.i18n.localize("BRSW.AmountPP");
-  await foundry.applications.api.DialogV2.wait({
-    window: { title: "BRSW.PPManagement" },
-    content: `<form> <div class="form-group">
-            <label for="num" style="flex:unset">${amount_pp}: </label>
-             <input id="brsw2-num" name="num" type="number" min="0" value="5">
-              </div> </form><script>$("#brsw2-num").focus()</script>`,
-    default: "one",
-    buttons: [
-      {
-        label: game.i18n.localize("BRSW.ExpendPP"),
-        action: "one",
-        callback: (event, target, dialog) =>
-          modify_power_points(
-            Number(dialog.element.querySelector("#brsw2-num").value),
-            "spend",
-            actor,
-            item,
-          ),
-      },
-      {
-        label: game.i18n.localize("BRSW.RechargePP"),
-        action: "two",
-        callback: (event, target, dialog) =>
-          modify_power_points(
-            -Number(dialog.element.querySelector("#brsw2-num").value),
-            "reload",
-            actor,
-            item,
-          ),
-      },
-      {
-        label: game.i18n.localize("BRSW.PPBennieRecharge"),
-        action: "three",
-        callback: () => {
-          //Button 3: Benny Recharge (spends a benny and increases the data.powerPoints.value by 5 but does not increase it above the number given in data.powerPoints.max)
-          if (actor.system.bennies.value < 1) {
-            ui.notifications.notify(game.i18n.localize("BRSW.NoBennies"));
-            return;
-          }
-          modify_power_points(-5, "benny_reload", actor, item);
-          actor.spendBenny();
-        },
-      },
-      {
-        label: game.i18n.localize("BRSW.SoulDrain"),
-        action: "four",
-        callback: () => {
-          //Button 4: Soul Drain (increases data.fatigue.value by 1 and increases the data.powerPoints.value by 5 but does not increase it above the number given in data.powerPoints.max)
-          const fv = actor.system.fatigue.value;
-          const fm = actor.system.fatigue.max;
-          const newFV = fv + 1;
-          if (item.system.additionalStats?.devicePP) {
-            ui.notifications.notify(
-              "You cannot use Soul Drain to recharge Arcane Devices.",
-            );
-            return;
-          }
-          if (newFV > fm) {
-            ui.notifications.notify(
-              "You cannot exceed your maximum Fatigue using Soul Drain.",
-            );
-            return;
-          }
-          actor.update({ "system.fatigue.value": fv + 1 });
-          modify_power_points(-5, "soul_drain", actor, item);
-        },
-      },
-    ],
-  });
 }
 
 /**

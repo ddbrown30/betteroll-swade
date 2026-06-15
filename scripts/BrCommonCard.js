@@ -4,7 +4,7 @@
 
 import { TraitRoll } from "./rolls.js";
 import { broofa, getAuthor, getWhisperData, SettingsUtils, Utils } from "./utils.js";
-import { get_item_trait, trait_from_string } from "./item_card.js";
+import { calc_pp_cost, get_item_trait, trait_from_string } from "./item_card.js";
 import { get_actions, check_selector } from "./global_actions.js";
 import { brAction } from "./actions.js";
 import { are_bennies_available, trait_to_string } from "./cards_common.js";
@@ -57,6 +57,7 @@ export class BrCommonCard {
     this.popup_shown = false;
     this.manual_mods = {};
     this.applicable_effects = [];
+    this.pp_modifiers = {};
     if (message) {
       const data = this.message.getFlag("betterrolls-swade2", "br_data");
       if (data) {
@@ -146,6 +147,8 @@ export class BrCommonCard {
       popup_shown: this.popup_shown,
       manual_mods: this.manual_mods,
       applicable_effects: this.applicable_effects,
+      pp_modifiers: this.pp_modifiers,
+      pp_cost: this.pp_cost,
     };
   }
 
@@ -170,6 +173,8 @@ export class BrCommonCard {
       "popup_shown",
       "manual_mods",
       "applicable_effects",
+      "pp_modifiers",
+      "pp_cost",
     ];
     for (const field of FIELDS) {
       this[field] = data[field];
@@ -364,6 +369,7 @@ export class BrCommonCard {
           single_choice: group_single,
         };
       }
+
       const new_action = new brAction(name, global_action);
       if (global_action.hasOwnProperty("defaultChecked")) {
         if (global_action.defaultChecked == "on") {
@@ -397,14 +403,41 @@ export class BrCommonCard {
         item_actions.push(br_action);
       }
     }
+
+    //For power item actions, check if any of them match power modifiers
+    //If so, use the item action instead
+    if (this.item.type === "power" && this.action_sections.hasOwnProperty("power")) {
+      const modsGroupName = "BRSW.PowerModifiers.PowerModifiers".split(".").join("");
+      const modsGroup = this.action_sections["power"].action_groups[modsGroupName];
+      if (modsGroup) {
+        for (let i = item_actions.length - 1; i >= 0; --i) {
+          const itemAction = item_actions[i];
+          for (const action of modsGroup.actions) {
+            const nameSimilarity = Utils.actionNameSimilarity(itemAction.name, action.name);
+            const codeSimilarity = Utils.actionNameSimilarity(itemAction.name, action.code.name);
+            if (nameSimilarity === 1 || codeSimilarity === 1) {
+              const name = action.name;
+              const codeName = action.code.name;
+              Object.assign(action, foundry.utils.deepClone(itemAction));
+              action.name = name; //Keep the BR2 action name since it will be localized
+              action.code.name = codeName; //Keep the BR2 code name since we use it to compare elsewhere
+              item_actions.splice(i, 1);
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    const section = "none";
     if (item_actions.length) {
-      if (!this.action_sections.hasOwnProperty("none")) {
-        this.action_sections["none"] = {
+      if (!this.action_sections.hasOwnProperty(section)) {
+        this.action_sections[section] = {
           action_groups: {},
         };
       }
       const name = game.i18n.localize("BRSW.ItemActions");
-      this.action_sections["none"].action_groups[name] = {
+      this.action_sections[section].action_groups[name] = {
         name: name,
         actions: item_actions,
         id: broofa(),
@@ -534,6 +567,28 @@ export class BrCommonCard {
         action.selected = actions.includes(action.code.id);
       }
     });
+  }
+
+  refreshPPModsFromActions(actions) {
+    if (this.pp_modifiers.genericMods) {
+      for (const mod of this.pp_modifiers.genericMods) {
+        if (mod.actionId) {
+          const action = this.get_action_by_id(mod.actionId);
+          if (action) {
+            mod.selected = action.selected;
+          }
+        }
+      }
+    }
+
+    if (this.pp_modifiers.powerMods) {
+      for (const mod of this.pp_modifiers.powerMods) {
+        const action = this.get_action_by_name(mod.name);
+        if (action) {
+          mod.selected = action.selected;
+        }
+      }
+    }
   }
 
   /**
@@ -669,6 +724,8 @@ export class BrCommonCard {
       this.populate_macro_buttons();
     }
     this.get_trait();
+
+    this.pp_cost = this.render_data.is_power ? calc_pp_cost(this) : 0;
     const new_content = await foundry.applications.handlebars.renderTemplate(
       this.render_data.template,
       this.get_data_render(),
@@ -708,20 +765,37 @@ export class BrCommonCard {
       this.damage
     );
     data.show_popup_button = SettingsUtils.getUserSetting("popout_chat_button");
-    data.shots_pp_info = SettingsUtils.getWorldSetting("show_pp_shots_info")
-      ? this.item_shots
-      : "";
+    data.showShotsPPInfo = SettingsUtils.getWorldSetting("show_pp_shots_info");
+    data.shots_pp_info = data.showShotsPPInfo ? this.item_shots : "";
     data.applicable_effects = this.applicable_effects;
     return data;
   }
 
+
   /**
-   * Returns an action from an id
+   * Returns an action by name
    */
-  get_action_from_id(action_id) {
+  get_action_by_id(action_id) {
     return Utils.forEachActionGroup(this, group => {
       for (const action of group.actions) {
         if (action.code.name === action_id) {
+          return action;
+        }
+      }
+    });
+  }
+
+  /**
+   * Returns an action by both localized and un-localized partial name
+   */
+  get_action_by_name(action_name) {
+    const lowerName = action_name.toLowerCase();
+    const localLower = game.i18n.localize(action_name).toLowerCase();
+    return Utils.forEachActionGroup(this, group => {
+      for (const action of group.actions) {
+        const nameSimilarity = Utils.actionNameSimilarity(action.code.name, lowerName);
+        const locSimilarity = Utils.actionNameSimilarity(game.i18n.localize(action.name), localLower);
+        if (nameSimilarity === 1 || locSimilarity === 1) {
           return action;
         }
       }

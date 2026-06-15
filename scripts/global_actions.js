@@ -176,22 +176,11 @@ export function check_selector(type, value, item, actor) {
     } else {
       const skill = item.type === "skill" ? item : get_item_trait(item, actor);
       if (skill) {
+        value = game.i18n.localize(value);
         if (type === "skill") {
-          if (value.slice(0, 5) === "BRSW.") {
-            selected = skill.name
-              .toLowerCase()
-              .includes(game.i18n.localize(value).toLowerCase());
-          } else {
-            selected =
-              skill.name.toLowerCase().includes(value.toLowerCase()) ||
-              skill.name
-                .toLowerCase()
-                .includes(
-                  game.i18n
-                    .localize("BRSW.SkillName-" + value.toLowerCase())
-                    .toLowerCase(),
-                );
-          }
+          selected =
+            skill.name.toLowerCase().includes(value.toLowerCase()) ||
+            skill.name.toLowerCase().includes(game.i18n.localize("BRSW.SkillName." + value).toLowerCase(),);
         } else {
           value = game.i18n.localize(value);
           selected = skill.system.attribute
@@ -208,6 +197,11 @@ export function check_selector(type, value, item, actor) {
     selected = true;
   } else if (type === "item_type") {
     selected = item.type === value;
+  } else if (type === "item_is_weapon_or_bolt") {
+    selected = item.type === "weapon" || (item.type === "power" && item.name.toLowerCase().includes("bolt"));
+    if (value === "false") {
+      selected = !selected;
+    }
   } else if (type === "actor_name") {
     selected = actor.name.toLowerCase().includes(value.toLowerCase());
   } else if (type === "actor_has_skill") {
@@ -249,9 +243,7 @@ export function check_selector(type, value, item, actor) {
     );
     selected = effect ? !effect.disabled : false;
   } else if (type === "actor_has_edge") {
-    const edge_name = value.includes("BRSW.EdgeName-")
-      ? game.i18n.localize(value)
-      : value;
+    const edge_name = game.i18n.localize(value);
     // noinspection AnonymousFunctionJS
     const edge = actor.items.find((item) => {
       return (
@@ -261,9 +253,7 @@ export function check_selector(type, value, item, actor) {
     });
     selected = !!edge;
   } else if (type === "actor_has_ability") {
-    const ability_name = value.includes("BRSW.AbilityName-")
-      ? game.i18n.localize(value)
-      : value;
+    const ability_name = game.i18n.localize(value);
     // noinspection AnonymousFunctionJS
     const ability = actor.items.find((item) => {
       return (
@@ -273,9 +263,7 @@ export function check_selector(type, value, item, actor) {
     });
     selected = !!ability;
   } else if (type === "actor_has_hindrance") {
-    const hindrance_name = value.includes("BRSW.EdgeName-")
-      ? game.i18n.localize(value)
-      : value;
+    const hindrance_name = game.i18n.localize(value);
     // noinspection AnonymousFunctionJS
     const hindrance = actor.items.find((item) => {
       return (
@@ -285,9 +273,7 @@ export function check_selector(type, value, item, actor) {
     });
     selected = !!hindrance;
   } else if (type === "actor_has_major_hindrance") {
-    const hindrance_name = value.includes("BRSW.EdgeName-")
-      ? game.i18n.localize(value)
-      : value;
+    const hindrance_name = game.i18n.localize(value);
     // noinspection AnonymousFunctionJS
     const hindrance = actor.items.find((item) => {
       return (
@@ -320,9 +306,7 @@ export function check_selector(type, value, item, actor) {
   } else if (type === "actor_has_joker") {
     selected = actor.hasJoker;
   } else if (type === "target_has_edge") {
-    const edge_name = value.includes("BRSW.EdgeName-")
-      ? game.i18n.localize(value)
-      : value;
+    const edge_name = game.i18n.localize(value);
     for (const targeted_token of game.user.targets) {
       const edge = targeted_token.actor?.items.find((item) => {
         return (
@@ -342,9 +326,7 @@ export function check_selector(type, value, item, actor) {
     });
     selected = !!edge == value;
   } else if (type === "target_has_hindrance") {
-    const hindrance_name = value.includes("BRSW.EdgeName-")
-      ? game.i18n.localize(value)
-      : value;
+    const hindrance_name = game.i18n.localize(value);
     for (const targeted_token of game.user.targets) {
       const hindrance = targeted_token.actor?.items.find((item) => {
         return (
@@ -355,9 +337,7 @@ export function check_selector(type, value, item, actor) {
       selected = selected || !!hindrance;
     }
   } else if (type === "target_has_major_hindrance") {
-    const hindrance_name = value.includes("BRSW.EdgeName-")
-      ? game.i18n.localize(value)
-      : value;
+    const hindrance_name = game.i18n.localize(value);
     // noinspection AnonymousFunctionJS
     for (const targeted_token of game.user.targets) {
       const hindrance = targeted_token.actor?.items.find((item) => {
@@ -370,9 +350,7 @@ export function check_selector(type, value, item, actor) {
       selected = selected || !!hindrance;
     }
   } else if (type === "target_has_ability") {
-    const ability_name = value.includes("BRSW.EdgeName-")
-      ? game.i18n.localize(value)
-      : value;
+    const ability_name = game.i18n.localize(value);
     for (const targeted_token of game.user.targets) {
       const ability = targeted_token.actor?.items.find((item) => {
         return (
@@ -504,13 +482,21 @@ export class SystemGlobalConfiguration extends HandlebarsApplicationMixin(
       disable_actions = disable_actions[0];
     }
     for (const action of SYSTEM_GLOBAL_ACTION) {
+      if (action.selector_type === "gm_action") {
+        continue;
+      }
+
       if (!groups.hasOwnProperty(action.group)) {
         groups[action.group] = { name: action.group, actions: [] };
       }
       groups[action.group].actions.push({
         id: action.id,
-        name: game.i18n.localize(action.button_name),
+        name: game.i18n.localize(action.name),
         enabled: !disable_actions.includes(action.id),
+      });
+
+      groups[action.group].actions.sort((a, b) => {
+        return a.name > b.name ? 1 : -1;
       });
     }
     return { groups: groups };
@@ -702,7 +688,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(
         "and_selector",
         "section",
         "group",
-        "shotsUsed",
+        "resourcesUsed",
         "or_selector",
         "rof",
         "self_add_status",

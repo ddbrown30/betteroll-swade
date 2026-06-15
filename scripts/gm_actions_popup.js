@@ -4,7 +4,7 @@ import { manage_selectable_gm } from "./gm_actions.js";
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 /**
- * Dialog for configuring and executing a shape change
+ * Popup for configuring GM actions
  */
 export class GmActionsPopup extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
