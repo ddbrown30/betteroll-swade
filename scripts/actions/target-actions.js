@@ -208,5 +208,39 @@ export const TARGET_ACTIONS = [
     section: "attack",
     group: "BRSW.Target",
   },
-
+  {
+      id: "ArcaneResistance",
+      name: "BRSW.EdgeName.ArcaneResistance",
+      button_name: "BRSW.HasArcaneResistance",
+      skillMod: "-2",
+      ignoresArcaneActivation: true,
+      dmgMod: "-2",
+      defaultChecked: "on",
+      and_selector: [
+          { selector_type: "target_has_edge", selector_value: "BRSW.EdgeName.ArcaneResistance" },
+          { selector_type: "item_type", selector_value: "power" },
+          {
+              not_selector: [
+                  { selector_type: "target_has_edge", selector_value: "BRSW.EdgeName.ImprovedArcaneResistance" }
+              ]
+          }
+      ],
+      section: "attack",
+      group: "BRSW.Target"
+  },
+  {
+      id: "ImpArcaneResistance",
+      name: "BRSW.EdgeName.ImprovedArcaneResistance",
+      button_name: "BRSW.HasImprovedArcaneResistance",
+      skillMod: "-4",
+      ignoresArcaneActivation: true,
+      dmgMod: "-4",
+      defaultChecked: "on",
+      and_selector: [
+          { selector_type: "target_has_edge", selector_value: "BRSW.EdgeName.ImprovedArcaneResistance" },
+          { selector_type: "item_type", selector_value: "power" }
+      ],
+      section: "attack",
+      group: "BRSW.Target"
+  },
 ];
