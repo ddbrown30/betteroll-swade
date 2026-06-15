@@ -1034,6 +1034,8 @@ export async function roll_trait(br_card, trait_dice, dice_label, extra_data) {
     br_card.trait_roll.tn = extra_data.tn;
     br_card.trait_roll.tn_reason = extra_data.tn_reason;
   }
+  br_card.trait_roll.arcaneActivationOffset = extra_data.arcaneActivationOffset;
+
   const roll = new Roll(roll_string);
   await roll.evaluate();
   await br_card.trait_roll.add_roll(roll);
@@ -1060,9 +1062,7 @@ async function old_roll_clicked(event, br_card) {
   ) {
     br_card.render_data.used_pp = await spendPP(
       br_card,
-      0,
       br_card.render_data.used_pp,
-      0,
     );
   }
   await br_card.render();
@@ -1308,6 +1308,12 @@ export function process_common_actions(action, extra_data, macros, actor) {
       extra_data.total_aiming_ignorable_penalties =
         extra_data.total_aiming_ignorable_penalties ?? 0;
       extra_data.total_aiming_ignorable_penalties += Math.abs(modifier.value);
+    }
+
+    const skillModValue = Number(action.skillMod);
+    if (action.ignoresArcaneActivation && !isNaN(skillModValue)) {
+      extra_data.arcaneActivationOffset ??= 0;
+      extra_data.arcaneActivationOffset += skillModValue;
     }
   }
   if (action.rerollSkillMod) {

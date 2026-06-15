@@ -3,6 +3,8 @@
 * Big pass on string IDs
 * We now check for Darkvision with illumination actions
 * Illumination actions now only appear for a subset of skills. It's still pretty liberal but removes obvious things like knowledge skills.
+* Added item_is_weapon_or_bolt selector
+* Added ignoresArcaneActivation which determines if the skillMod on an action affects successful power activation e.g. bolt missing due to cover but still activating
 
 # Version 5.1.0
 * Big overhaul of the actions menu UI

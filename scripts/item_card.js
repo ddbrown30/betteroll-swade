@@ -20,7 +20,7 @@ import {
 } from "./cards_common.js";
 import {
   FIGHTING_SKILLS,
-  is_shooting_skill,
+  isShootingSkill,
   SHOOTING_SKILLS,
   THROWING_SKILLS,
 } from "./skill_card.js";
@@ -173,7 +173,7 @@ export async function create_item_card(
       trait_id: trait ? trait.id || trait : false,
       ammo: ammon_enabled,
       subtract_selected: subtract_select,
-      subtract_pp: is_power
+      subtractPP: is_power
         ? SettingsUtils.getWorldSetting("default-pp-management")
         : false,
       damage_rolls: [],
@@ -598,9 +598,10 @@ export function activate_item_card_listeners(br_card, html) {
     ev.currentTarget.classList.toggle("twbr:bg-red-700");
     ev.currentTarget.classList.toggle("twbr:bg-gray-500");
   });
-  html.querySelector(".brsw-pp-toggle")?.addEventListener("click", (ev) => {
-    ev.currentTarget.classList.toggle("twbr:bg-red-700");
-    ev.currentTarget.classList.toggle("twbr:bg-gray-500");
+  html.querySelector(".brsw-pp-toggle")?.addEventListener("click", async (ev) => {
+    br_card.render_data.subtractPP = !br_card.render_data.subtractPP;
+    await br_card.render();
+    await br_card.save();
   });
   html
     .querySelector(".brsw-use-consumable-button")
@@ -855,11 +856,10 @@ export async function displayPPChangeCard(actor, chatData) {
  * Discount pps from an actor © Javier or Arcane Device © Salieri
  *
  * @param {BrCommonCard} br_card
- * @param pp_override
- * @param old_pp PPs expended in the current selected roll of this option
- * @param pp_modifier A number to be added or subtracted from PPs
+ * @param prevSpentPP PP we already spent on a previous roll
  */
-export async function spendPP(br_card, old_pp) {
+export async function spendPP(br_card, prevSpentPP) {
+  prevSpentPP ??= 0;
   const actor = br_card.actor;
   const item = br_card.item;
 
@@ -870,15 +870,33 @@ export async function spendPP(br_card, old_pp) {
   let success = false;
   let raise = false;
   for (const roll of br_card.trait_roll.current_roll.dice) {
-    success = success || (roll.result !== null && roll.result >= 0);
-    raise = raise || (roll.result !== null && roll.result >= 4);
+    if (roll.result === null) continue;
+
+    //Subtract any arcaneActivationOffset from the roll result to get the activation roll
+    //This is for cases like arcane resistance where the power still activates but the target is unaffected
+    const rollResult = roll.result - (br_card.trait_roll.arcaneActivationOffset ?? 0);
+    success = success || rollResult >= 0;
+    raise = raise || rollResult >= 4;
   }
 
-  let ppCost = success ? calc_pp_cost(br_card) : 1;
-  if (ppCost === 0) {
-    //Power is free so nothing to do
-    return;
+  const arcaneDevice = item.system.additionalStats.devicePP;
+
+  let currentPP = arcaneDevice
+    ? item.system.additionalStats.devicePP.value
+    : actor.system.powerPoints.general.value;
+
+  let dataKey = arcaneDevice
+    ? "system.additionalStats.devicePP.value"
+    : "system.powerPoints.general.value";
+
+  if (actor.system.powerPoints.hasOwnProperty(item.system.arcane) && actor.system.powerPoints[item.system.arcane].max) {
+    //Use the specific PP for this arcane type
+    currentPP = actor.system.powerPoints[item.system.arcane].value;
+    dataKey = `system.powerPoints.${item.system.arcane}.value`;
   }
+
+  const basePPCost = success ? calc_pp_cost(br_card) : 1;
+  let ppCost = basePPCost;
 
   if (raise) {
     const channelingName = game.i18n.localize("BRSW.EdgeName.Channeling").toLowerCase();
@@ -894,50 +912,32 @@ export async function spendPP(br_card, old_pp) {
   br_card.render_data.used_pp = ppCost;
   await br_card.save();
 
-  if (ppCost === 0) {
+  const newPP = currentPP - ppCost + prevSpentPP;
+  if (newPP < 0) {
+    ui.notifications.warn(game.i18n.localize("BRSW.InsufficientPP"));
+    return;
+  } else {
+    if (arcaneDevice) {
+      await actor.updateEmbeddedDocuments("Item", { _id: item.id, [dataKey]: newPP });
+    } else {
+      await actor.update({ [dataKey]: newPP });
+    }
+  }
+
+  if (ppCost > 0) {
+    displayPPChangeCard(actor, {
+      content: game.i18n.format("BRSW.ExpendedPoints", {
+        name: actor.name,
+        final_pp: newPP,
+        pp: ppCost,
+      })
+    });
+  } else if (basePPCost > 0) {
     //Power wasn't free and now is so display a message
     displayPPChangeCard(actor, {
       content: game.i18n.localize("BRSW.PowerCostReducedFree")
     });
-    return;
   }
-
-  const arcaneDevice = item.system.additionalStats.devicePP;
-
-  const currentPP = arcaneDevice
-    ? item.system.additionalStats.devicePP.value
-    : actor.system.powerPoints.general.value;
-
-  const dataKey = arcaneDevice
-    ? "system.additionalStats.devicePP.value"
-    : "system.powerPoints.general.value";
-
-  if (actor.system.powerPoints.hasOwnProperty(item.system.arcane) && actor.system.powerPoints[item.system.arcane].max) {
-    //Use the specific PP for this arcane type
-    currentPP = actor.system.powerPoints[item.system.arcane].value;
-    dataKey = `system.powerPoints.${item.system.arcane}.value`;
-  }
-
-  const newPP = currentPP - ppCost;
-
-  if (newPP < 0) {
-    ui.notifications.warn(game.i18n.localize("BRSW.InsufficientPP"));
-    return;
-  }
-
-  if (arcaneDevice) {
-    actor.updateEmbeddedDocuments("Item", { _id: item.id, [dataKey]: newPP });
-  } else {
-    actor.update({ [dataKey]: newPP });
-  }
-
-  displayPPChangeCard(actor, {
-    content: game.i18n.format("BRSW.ExpendedPoints", {
-      name: actor.name,
-      final_pp: newPP,
-      pp: ppCost,
-    })
-  });
 
   return ppCost;
 }
@@ -1077,7 +1077,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
   // Check for minimum strength
   if (
     br_message.item.system.minStr &&
-    is_shooting_skill(get_item_trait(br_message.item, br_message.actor))
+    isShootingSkill(get_item_trait(br_message.item, br_message.actor))
   ) {
     const penalty = process_minimum_str_modifiers(
       br_message.item,
@@ -1156,17 +1156,9 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
     }
   }
   // Power points management
-  const pp_selected = html
-    ? html.querySelector(".twbr\\:bg-red-700.brsw-pp-toggle")
-    : SettingsUtils.getWorldSetting("default-pp-management");
-  const previous_pp = br_message.trait_roll.old_rolls.length
-    ? br_message.render_data.used_pp
-    : 0;
-  if (
-    (!isNaN(parseInt(br_message.item.system.pp)) ||
-      br_message.item.type === "power") &&
-    pp_selected
-  ) {
+  const subtractPP = br_message.render_data.subtractPP;
+  const previous_pp = br_message.trait_roll.old_rolls.length ? br_message.render_data.used_pp : 0;
+  if (subtractPP && !isNaN(parseInt(br_message.item.system.pp)) && br_message.item.type === "power") {
     br_message.render_data.used_pp = await spendPP(
       br_message,
       previous_pp,
@@ -1405,7 +1397,7 @@ function calc_min_str_penalty(item, actor, damage_formulas, damage_roll) {
   }
   if (
     min_str_die_size &&
-    !is_shooting_skill(get_item_trait(item, actor)) &&
+    !isShootingSkill(get_item_trait(item, actor)) &&
     min_str_die_size > str_die_size
   ) {
     damage_formulas.damage = adjust_dmg_str(
