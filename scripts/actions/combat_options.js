@@ -35,7 +35,7 @@ export const COMBAT_OPTIONS = [
   },
   {
     id: "DROP",
-    name: "BRSW.TheDrop",
+    name: "BRSW.TheDropName",
     button_name: "BRSW.TheDrop",
     skillMod: 4,
     dmgMod: 4,
@@ -156,7 +156,7 @@ export const COMBAT_OPTIONS = [
   },
   {
     id: "TOUCHATTACK",
-    name: "BRSW.TouchAttack",
+    name: "BRSW.TouchAttackName",
     button_name: "BRSW.TouchAttack",
     skillMod: "+2",
     dmgOverride: "0",
@@ -167,7 +167,7 @@ export const COMBAT_OPTIONS = [
   },
   {
     id: "NONLETHALDAMAGE",
-    name: "BRSW.NonlethalDamage",
+    name: "BRSW.NonlethalDamageName",
     button_name: "BRSW.NonlethalDamage",
     skillMod: "-1",
     selector_type: "skill",

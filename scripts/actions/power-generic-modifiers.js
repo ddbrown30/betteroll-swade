@@ -44,7 +44,7 @@ export const GENERIC_POWER_MODIFIERS = [
   },
   {
     id: "HEAVYWEAPON",
-    name: "BRSW.PowerModifiers.Generic.HeavyWeaponModifier",
+    name: "BRSW.PowerModifiers.Generic.HeavyWeapon",
     button_name: "BRSW.PowerModifiers.Generic.HeavyWeapon",
     isHeavyWeapon: true,
     and_selector: [

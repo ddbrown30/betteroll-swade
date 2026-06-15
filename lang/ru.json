@@ -202,7 +202,7 @@
     "BRSW.AbilityDie": "Кубик способности",
     "BRSW.AllSoaked": "<p>Но прошел проверку на прочность поглотив все ранения, избавляясь от шока</p>",
     "BRSW.AmmunitionStatus": "{actor_name} выпускает {number} снарядов из {weapon_name}, и у него осталось {newCharges}",
-    "BRSW.ApplyFreeRunner": "Лазанье или пешие погони",
+    "BRSW.FreeRunner": "Лазанье или пешие погони",
     "BRSW.ApShort": "ББ",
     "BRSW.AttackOptionCalledShot": "Варианты атаки [Прицельная атака]",
     "BRSW.Settings.AmmoManagement.Hint": "Если отмечено «Вычесть боеприпасы», будет установлено по умолчанию (Мир)",

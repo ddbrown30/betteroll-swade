@@ -203,7 +203,7 @@ export const COMMON_ACTIONS = [
   },
   {
     id: "UNSTABLEPLATFORM",
-    name: "BRSW.UnstablePlatform",
+    name: "BRSW.UnstablePlatformName",
     button_name: "BRSW.UnstablePlatform",
     skillMod: "-2",
     and_selector: [
@@ -234,7 +234,7 @@ export const COMMON_ACTIONS = [
   },
   {
     id: "RAN",
-    name: "BRSW.Ran",
+    name: "BRSW.RanName",
     button_name: "BRSW.Ran",
     skillMod: "-2",
     not_selector: [

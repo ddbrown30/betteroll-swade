@@ -19,7 +19,7 @@
     "BRSW.AmmunitionStatus": "{actor_name} disparou {number} tiro(s) de uma(a) {weapon_name} e tem {newCharges} munições",
     "BRSW.AmountPP": "Quantidade de Pontos de Poder",
     "BRSW.ApplyDamage": "Aplicar dano",
-    "BRSW.ApplyFreeRunner": "Escaladas ou perseguições a pé",
+    "BRSW.FreeRunner": "Escaladas ou perseguições a pé",
     "BRSW.ApShort": "PA",
     "BRSW.Arm": "Braço",
     "BRSW.AttackInanimate": "Ataque Objeto Inanimado",

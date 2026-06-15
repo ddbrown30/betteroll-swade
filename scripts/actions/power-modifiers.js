@@ -24,7 +24,7 @@ export const POWER_MODIFIERS = [
   // BARRIER (S)
   {
     id: "POWERBARRIERDAMAGE",
-    name: "Damage (2d4)",
+    name: "BRSW.PowerModifiers.BarrierDamageName",
     button_name: "BRSW.PowerModifiers.BarrierDamage",
     dmgOverride: "2d4x",
     and_selector: [
@@ -36,7 +36,7 @@ export const POWER_MODIFIERS = [
   },
   {
     id: "POWERBARRIERDEADLY",
-    name: "Deadly (2d6)",
+    name: "BRSW.PowerModifiers.BarrierDeadlyName",
     button_name: "BRSW.PowerModifiers.BarrierDeadly",
     dmgOverride: "2d6x",
     and_selector: [
@@ -51,7 +51,7 @@ export const POWER_MODIFIERS = [
   // BLAST (S)
   {
     id: "POWERBLASTMOD1DAMAGE",
-    name: "Damage",
+    name: "BRSW.PowerModifiers.BlastDamageName",
     button_name: "BRSW.PowerModifiers.BlastDamage",
     dmgOverride: "3d6x",
     and_selector: [
@@ -63,7 +63,7 @@ export const POWER_MODIFIERS = [
   },
   {
     id: "POWERBLASTMOD3GREATERBLAST",
-    name: "Greater Blast",
+    name: "BRSW.PowerModifiers.BlastGreaterBlastName",
     button_name: "BRSW.PowerModifiers.BlastGreaterBlast",
     dmgOverride: "4d6x",
     isHeavyWeapon: true,
@@ -79,7 +79,7 @@ export const POWER_MODIFIERS = [
   // BOLT
   {
     id: "POWERBOLTMOD1DAMAGE",
-    name: "Damage",
+    name: "BRSW.PowerModifiers.BoltDamageName",
     button_name: "BRSW.PowerModifiers.BoltDamage",
     dmgOverride: "3d6x",
     and_selector: [
@@ -91,7 +91,7 @@ export const POWER_MODIFIERS = [
   },
   {
     id: "POWERBOLTMOD2GREATERBOLT",
-    name: "Greater Bolt",
+    name: "BRSW.PowerModifiers.BoltGreaterBoltName",
     button_name: "BRSW.PowerModifiers.BoltGreaterBolt",
     dmgOverride: "4d6x",
     isHeavyWeapon: true,
@@ -105,7 +105,7 @@ export const POWER_MODIFIERS = [
   },
   {
     id: "POWERBOLTMOD4RATEOFFIRE",
-    name: "Rate of Fire",
+    name: "BRSW.PowerModifiers.BoltRateOfFireName",
     button_name: "BRSW.PowerModifiers.BoltRateOfFire",
     rof: "2",
     and_selector: [
@@ -120,7 +120,7 @@ export const POWER_MODIFIERS = [
   // BURST
   {
     id: "POWERBURSTMOD1DAMAGE",
-    name: "Damage (3d6)",
+    name: "BRSW.PowerModifiers.BurstDamageName",
     button_name: "BRSW.PowerModifiers.BurstDamage",
     dmgMod: "3d6x",
     and_selector: [
@@ -132,7 +132,7 @@ export const POWER_MODIFIERS = [
   },
   {
     id: "POWERBURSTMOD3GREATERBURST",
-    name: "Greater Burst (4d6)",
+    name: "BRSW.PowerModifiers.BurstGreaterBurstName",
     button_name: "BRSW.PowerModifiers.BurstGreaterBurst",
     dmgMod: "4d6x",
     isHeavyWeapon: true,
@@ -148,7 +148,7 @@ export const POWER_MODIFIERS = [
   // DAMAGE FIELD (S)
   {
     id: "POWERDAMAGEFIELD1DAMAGE",
-    name: "Damage",
+    name: "BRSW.PowerModifiers.DamageFieldDamageName",
     button_name: "BRSW.PowerModifiers.DamageFieldDamage",
     dmgOverride: "2d6x",
     and_selector: [
@@ -160,7 +160,7 @@ export const POWER_MODIFIERS = [
   },
   {
     id: "POWERDAMAGEFIELD3GREATERDAMAGEFIELD",
-    name: "Greater Damage Field",
+    name: "BRSW.PowerModifiers.DamageFieldGreaterDamageFieldName",
     button_name: "BRSW.PowerModifiers.DamageFieldGreaterDamageField",
     dmgOverride: "3d6x",
     isHeavyWeapon: true,
@@ -176,7 +176,7 @@ export const POWER_MODIFIERS = [
   // ENTANGLE
   {
     id: "POWERENTANGLEMOD4DAMAGE",
-    name: "Damage",
+    name: "BRSW.PowerModifiers.EntangleDamageName",
     button_name: "BRSW.PowerModifiers.EntangleDamage",
     dmgOverride: "2d4x",
     and_selector: [
@@ -188,7 +188,7 @@ export const POWER_MODIFIERS = [
   },
   {
     id: "POWERENTANGLEMOD5DEADLY",
-    name: "Deadly",
+    name: "BRSW.PowerModifiers.EntangleDeadlyName",
     button_name: "BRSW.PowerModifiers.EntangleDeadly",
     dmgOverride: "2d6x",
     and_selector: [
@@ -203,7 +203,7 @@ export const POWER_MODIFIERS = [
   // HAVOC
   {
     id: "POWERHAVOCMODGREATER",
-    name: "Greater Havoc",
+    name: "BRSW.PowerModifiers.HavocGreaterHavocName",
     button_name: "BRSW.PowerModifiers.HavocGreaterHavoc",
     dmgOverride: "2d6x",
     and_selector: [

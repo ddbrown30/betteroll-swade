@@ -19,7 +19,7 @@
     "BRSW.AmmunitionStatus": "{actor_name} feuert mit {weapon_name}, um {number} Munition abzufeuern und hat noch {newCharges} Munition übrig.",
     "BRSW.AmountPP": "Anzahl Machtpunkte",
     "BRSW.ApplyDamage": "Schaden anwenden",
-    "BRSW.ApplyFreeRunner": "Parkour",
+    "BRSW.FreeRunner": "Parkour",
     "BRSW.ApShort": "PB",
     "BRSW.Arm": "Arm",
     "BRSW.AttackInanimate": "Dinge zerstören",

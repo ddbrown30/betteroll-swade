@@ -19,7 +19,7 @@
     "BRSW.AmmunitionStatus": "{actor_name} tire {number} munition(s) de son/sa {weapon_name} et n'en a plus que {newCharges} restantes",
     "BRSW.AmountPP": "Nombre de Points de pouvoir",
     "BRSW.ApplyDamage": "Appliquer dégâts",
-    "BRSW.ApplyFreeRunner": "Escalade et poursuites à pied",
+    "BRSW.FreeRunner": "Escalade et poursuites à pied",
     "BRSW.ApShort": "PA",
     "BRSW.Arm": "Bras",
     "BRSW.AttackOption": "Options d'attaque",

@@ -19,7 +19,7 @@
     "BRSW.AmmunitionStatus": "{actor_name} dispara {number} de trets de {weapon_name} i li queden {newCharges}",
     "BRSW.AmountPP": "Nombre de punts de poder",
     "BRSW.ApplyDamage": "Aplica el mal",
-    "BRSW.ApplyFreeRunner": "Escalant o en persecució a peu",
+    "BRSW.FreeRunner": "Escalant o en persecució a peu",
     "BRSW.ApShort": "PA",
     "BRSW.Arm": "Braç",
     "BRSW.AttackInanimate": "Atacar objecte inanimat",

@@ -19,7 +19,7 @@
     "BRSW.AmmunitionStatus": "{actor_name} dispara {number} de tiros de {weapon_name} y le quedan {newCharges}",
     "BRSW.AmountPP": "Nombre de punts de poder",
     "BRSW.ApplyDamage": "Aplicar daño",
-    "BRSW.ApplyFreeRunner": "Trepando o en persecución a pié",
+    "BRSW.FreeRunner": "Trepando o en persecución a pié",
     "BRSW.ApShort": "PA",
     "BRSW.Arm": "Brazo",
     "BRSW.AttackOption": "Opciones de ataque",

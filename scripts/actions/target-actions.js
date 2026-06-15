@@ -51,8 +51,8 @@ export const TARGET_ACTIONS = [
   // TODO ... How to handle melee attacks when the attacker does NOT have "Fighting", so uses "Unskilled Attempt"
   {
     id: "TARGET-HAS-DEFLECTION-MELEE",
-    name: "Deflection (melee)",
-    button_name: "has Deflection (melee)",
+    name: "BRSW.StatusEffect.DeflectionMelee",
+    button_name: "BRSW.StatusEffect.HasDeflectionMelee",
     skillMod: -2,
     and_selector: [
       {
@@ -89,8 +89,8 @@ export const TARGET_ACTIONS = [
   //      ... It will just fail to hit the target.
   {
     id: "TARGET-HAS-DEFLECTION-RANGED",
-    name: "TargetHasDeflectionRanged",
-    button_name: "has Deflection (ranged)",
+    name: "BRSW.StatusEffect.DeflectionRanged",
+    button_name: "BRSW.StatusEffect.HasDeflectionRanged",
     skillMod: -2,
     and_selector: [
       {
@@ -125,8 +125,8 @@ export const TARGET_ACTIONS = [
   },
   {
     id: "TARGET-HAS-DEFLECTION-BOTH",
-    name: "TargetHasDeflectionBoth",
-    button_name: "has Deflection",
+    name: "BRSW.StatusEffect.Deflection",
+    button_name: "BRSW.StatusEffect.HasDeflection",
     skillMod: -2,
     and_selector: [
       {
@@ -184,8 +184,8 @@ export const TARGET_ACTIONS = [
   // TODO ... Work out what the "attacks against her suffer a -1 penalty" actually covers, i.e. is it just weapons (melee & ranged), or also powers?
   {
     id: "TARGET-HAS-SHROUD-WEAPONS",
-    name: "TargetHasShroudWeapon",
-    button_name: "has Shroud",
+    name: "BRSW.HasShroudName",
+    button_name: "BRSW.HasShroud",
     skillMod: "-1",
     and_selector: [
       {
