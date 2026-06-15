@@ -71,9 +71,11 @@ Hooks.on(`ready`, () => {
     USER_FLAGS.user_settings,
   );
 
-  for (const key in USER_SETTINGS) {
-    if (user_settings[key] !== undefined) {
-      USER_SETTINGS[key].value = user_settings[key].value;
+  if (user_settings) {
+    for (const key in USER_SETTINGS) {
+      if (user_settings[key] !== undefined) {
+        USER_SETTINGS[key].value = user_settings[key].value;
+      }
     }
   }
   // Create a base object to hook functions
@@ -619,9 +621,11 @@ function register_settings_version2() {
 
   //Update our cached world settings with our saved data
   const world_settings = SettingsUtils.getSetting(SETTING_KEYS.world_settings);
-  for (const key in WORLD_SETTINGS) {
-    if (world_settings[key] !== undefined) {
-      WORLD_SETTINGS[key].value = world_settings[key].value;
+  if (world_settings) {
+    for (const key in WORLD_SETTINGS) {
+      if (world_settings[key] !== undefined) {
+        WORLD_SETTINGS[key].value = world_settings[key].value;
+      }
     }
   }
 }
