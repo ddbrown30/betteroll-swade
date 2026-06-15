@@ -6,6 +6,8 @@
 * Added item_is_weapon_or_bolt selector
 * Added ignoresArcaneActivation which determines if the skillMod on an action affects successful power activation e.g. bolt missing due to cover but still activating
 * Scale now only applies to rolls where appropriate
+* Added Sneak Attack
+* Added Arcane Resistance
 
 # Version 5.1.0
 * Big overhaul of the actions menu UI
