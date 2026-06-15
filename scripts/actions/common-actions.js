@@ -136,6 +136,7 @@ export const COMMON_ACTIONS = [
       }
     ],
     skillMod: "-2",
+    ignoresArcaneActivation: true,
     section: "common",
     group: "BRSW.Illumination",
     group_single: true,
@@ -165,6 +166,7 @@ export const COMMON_ACTIONS = [
       }
     ],
     skillMod: "-4",
+    ignoresArcaneActivation: true,
     section: "common",
     group: "BRSW.Illumination",
     group_single: true,
@@ -190,6 +192,7 @@ export const COMMON_ACTIONS = [
       }
     ],
     skillMod: "-6",
+    ignoresArcaneActivation: true,
     section: "common",
     group: "BRSW.Illumination",
     group_single: true,

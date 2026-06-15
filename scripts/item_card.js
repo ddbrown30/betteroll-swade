@@ -873,7 +873,7 @@ export async function spendPP(br_card, prevSpentPP) {
     if (roll.result === null) continue;
 
     //Subtract any arcaneActivationOffset from the roll result to get the activation roll
-    //This is for cases like arcane resistance where the power still activates but the target is unaffected
+    //This is for cases like missing with bolt due to cover but the power still activates
     const rollResult = roll.result - (br_card.trait_roll.arcaneActivationOffset ?? 0);
     success = success || rollResult >= 0;
     raise = raise || rollResult >= 4;

@@ -1,47 +1,5 @@
 /// Actions for combat options in the core rulebook
 
-const CALLED_SHOT_SELECTOR = {
-  or_selector: [
-    {
-      and_selector: [
-        {
-          selector_type: "item_type",
-          selector_value: "power",
-        },
-        {
-          selector_type: "item_name",
-          selector_value: "Bolt",
-        },
-      ]
-    },
-    {
-      selector_type: "item_type",
-      selector_value: "weapon",
-    },
-  ]
-};
-
-const COVER_SELECTOR = {
-  or_selector: [
-    {
-      and_selector: [
-        {
-          selector_type: "item_type",
-          selector_value: "power",
-        },
-        {
-          selector_type: "item_name",
-          selector_value: "Bolt",
-        },
-      ]
-    },
-    {
-      selector_type: "item_type",
-      selector_value: "weapon",
-    },
-  ]
-};
-
 export const COMBAT_OPTIONS = [
   {
     id: "AIM",
@@ -91,7 +49,9 @@ export const COMBAT_OPTIONS = [
     name: "BRSW.CalledArm",
     button_name: "BRSW.CalledArm",
     skillMod: -2,
-    ...CALLED_SHOT_SELECTOR,
+    ignoresArcaneActivation: true,
+    selector_type: "is_weapon_or_bolt",
+    selector_value: "true",
     change_location: "arms",
     section: "attack",
     group: "BRSW.AttackOptionCalledShot",
@@ -103,7 +63,9 @@ export const COMBAT_OPTIONS = [
     name: "BRSW.CalledHand",
     button_name: "BRSW.CalledHand",
     skillMod: -4,
-    ...CALLED_SHOT_SELECTOR,
+    ignoresArcaneActivation: true,
+    selector_type: "is_weapon_or_bolt",
+    selector_value: "true",
     change_location: "arms",
     section: "attack",
     group: "BRSW.AttackOptionCalledShot",
@@ -115,9 +77,11 @@ export const COMBAT_OPTIONS = [
     name: "BRSW.CalledHead",
     button_name: "BRSW.CalledHead",
     skillMod: -4,
+    ignoresArcaneActivation: true,
     dmgMod: +4,
     dmgOverride: "",
-    ...CALLED_SHOT_SELECTOR,
+    selector_type: "is_weapon_or_bolt",
+    selector_value: "true",
     change_location: "head",
     section: "attack",
     group: "BRSW.AttackOptionCalledShot",
@@ -129,7 +93,9 @@ export const COMBAT_OPTIONS = [
     name: "BRSW.CalledLeg",
     button_name: "BRSW.CalledLeg",
     skillMod: -2,
-    ...CALLED_SHOT_SELECTOR,
+    ignoresArcaneActivation: true,
+    selector_type: "is_weapon_or_bolt",
+    selector_value: "true",
     change_location: "legs",
     section: "attack",
     group: "BRSW.AttackOptionCalledShot",
@@ -141,7 +107,9 @@ export const COMBAT_OPTIONS = [
     name: "BRSW.LightCover",
     button_name: "BRSW.LightCover",
     skillMod: "-2",
-    ...COVER_SELECTOR,
+    ignoresArcaneActivation: true,
+    selector_type: "is_weapon_or_bolt",
+    selector_value: "true",
     section: "attack",
     group: "BRSW.Cover",
     group_single: true,
@@ -152,7 +120,9 @@ export const COMBAT_OPTIONS = [
     name: "BRSW.MediumCover",
     button_name: "BRSW.MediumCover",
     skillMod: "-4",
-    ...COVER_SELECTOR,
+    ignoresArcaneActivation: true,
+    selector_type: "is_weapon_or_bolt",
+    selector_value: "true",
     section: "attack",
     group: "BRSW.Cover",
     group_single: true,
@@ -163,7 +133,9 @@ export const COMBAT_OPTIONS = [
     name: "BRSW.HeavyCover",
     button_name: "BRSW.HeavyCover",
     skillMod: "-6",
-    ...COVER_SELECTOR,
+    ignoresArcaneActivation: true,
+    selector_type: "is_weapon_or_bolt",
+    selector_value: "true",
     section: "attack",
     group: "BRSW.Cover",
     group_single: true,
@@ -174,7 +146,9 @@ export const COMBAT_OPTIONS = [
     name: "BRSW.NearTotalCover",
     button_name: "BRSW.NearTotalCover",
     skillMod: "-8",
-    ...COVER_SELECTOR,
+    ignoresArcaneActivation: true,
+    selector_type: "is_weapon_or_bolt",
+    selector_value: "true",
     section: "attack",
     group: "BRSW.Cover",
     group_single: true,
