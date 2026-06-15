@@ -96,7 +96,7 @@ export const SYSTEM_GLOBAL_ACTION = [
   },
   {
     id: "UNARMEDDEFENDER",
-    name: "BRSW.UnarmedDefender",
+    name: "BRSW.UnarmedDefenderName",
     button_name: "BRSW.UnarmedDefender",
     skillMod: "+2",
     selector_type: "skill",
@@ -106,7 +106,7 @@ export const SYSTEM_GLOBAL_ACTION = [
   },
   {
     id: "RANSTEADY",
-    name: "BRSW.RanSteady",
+    name: "BRSW.RanSteadyName",
     button_name: "BRSW.RanSteady",
     skillMod: "-1",
     and_selector: [
@@ -306,8 +306,8 @@ export const SYSTEM_GLOBAL_ACTION = [
   },
   {
     id: "Free runner",
-    name: "BRSW.ApplyFreeRunner",
-    button_name: "BRSW.ApplyFreeRunner",
+    name: "BRSW.FreeRunner",
+    button_name: "BRSW.FreeRunner",
     skillMod: "+2",
     and_selector: [
       {
@@ -385,19 +385,46 @@ export const SYSTEM_GLOBAL_ACTION = [
     button_name: "BRSW.EdgeName.Assassin",
     dmgMod: "+2",
     and_selector: [
+      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName.Assassin" },
+      { selector_type: "item_has_damage", selector_value: "true" },
       {
-        selector_type: "actor_has_edge",
-        selector_value: "BRSW.EdgeName.Assassin",
-      },
-      {
-        or_selector: [
-          { selector_type: "item_type", selector_value: "weapon" },
-          { selector_type: "item_type", selector_value: "power" },
-        ],
-      },
+        not_selector: [
+          {
+            or_selector: [
+              { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName.SneakAttack" },
+              { selector_type: "actor_has_ability", selector_value: "BRSW.EdgeName.SneakAttack" },
+            ]
+          }
+        ]
+      }
     ],
     section: "character",
     group: "BRSW.Edges",
+    defaultChecked: {
+      selector_type: "target_has_effect",
+      selector_value: "BRSW.StatusEffect.Vulnerable",
+    },
+  },
+  {
+    id: "Sneak Attack",
+    name: "Sneak Attack",
+    button_name: "Sneak Attack",
+    dmgMod: "+1d6x",
+    and_selector: [
+      {
+        or_selector: [
+          { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName.SneakAttack" },
+          { selector_type: "actor_has_ability", selector_value: "BRSW.EdgeName.SneakAttack" },
+        ]
+      },
+      { selector_type: "item_has_damage", selector_value: "true" },
+    ],
+    section: "character",
+    group: "BRSW.Edges",
+    defaultChecked: {
+      selector_type: "target_has_effect",
+      selector_value: "BRSW.StatusEffect.Vulnerable",
+    },
   },
   {
     id: "Investigator",
