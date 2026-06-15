@@ -1291,12 +1291,19 @@ async function get_damage_mods_from_actions(
             damage_formulas.heavy_weapon = true;
         }
         if (action.code.dmgMod) {
-            const action_name = action.code.name.includes("BRSW.")
-                ? game.i18n.localize(action.code.name)
-                : action.code.name;
+            let dmgMod = action.code.dmgMod;
+            if (action.code.isWildAttack) {
+                const newDamage = br_card.actor?.getFlag('swade', 'wildAttackDamage');
+                if (newDamage != undefined) {
+                    //wildAttackDamage replaces the default mod
+                    dmgMod = newDamage;
+                }
+            }
+
+            const action_name = game.i18n.localize(action.code.name);
             const new_modifier = new DamageModifier(
                 action_name,
-                action.code.dmgMod,
+                dmgMod,
                 br_card.actor?.getRollData(),
             );
             await new_modifier.evaluate();
