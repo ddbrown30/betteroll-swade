@@ -14,18 +14,7 @@ import {
 import { run_macros } from "./item_card.js";
 import { BrCommonCard } from "./BrCommonCard.js";
 import { addEventListenerAll } from "./utils.js";
-
-/**
-/ Translation map for attributes
-*/
-
-export const ATTRIBUTES_TRANSLATION_KEYS = {
-  agility: "SWADE.AttrAgi",
-  smarts: "SWADE.AttrSma",
-  spirit: "SWADE.AttrSpr",
-  strength: "SWADE.AttrStr",
-  vigor: "SWADE.AttrVig",
-};
+import { ATTRIBUTES_TRANSLATION_KEYS } from "./brsw2-config.js";
 
 /**
  * Creates a chat card for an attribute

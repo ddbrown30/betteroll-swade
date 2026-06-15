@@ -1,5 +1,5 @@
 //
-// target actions, i.e. where the target has some sort of effect, such as Dodge edge, Deflection power, or Shroud generic power modifier
+// target actions, i.e. where the target has some sort of effect, such as Dodge edge or Shroud generic power modifier
 //
 
 /*
@@ -15,10 +15,6 @@
 //
 // NOTE: The actions using the "target_has_effect" selector are opinionated in the name of the effect.
 // NOTE: The suffixes of "weapon" and "power" refer to the source of the "attack" on the target, i.e. physical weapons and arcane powers.
-// NOTE: There is a question on the logic for actions where the skillMod of a power is reduced.
-//       Currently this means the activation fails, so the cost is 1 PP.
-//       But in the rules, the power is activated,
-//       e.g., a Bolt that misses because the target has Deflection, is still activated on a 4 or greater, it just needs a 6 or greater to hit the target.
 // NOTE: There are likely to be conflicts with the SWIM module, as it adds some world actions in its brsw_actions_setup.js, but if we take a dependency on SWIM, we end up with a circular dependency
 //
 
@@ -42,140 +38,10 @@ export const TARGET_ACTIONS = [
         selector_value: "true"
       }
     ],
-    defaultChecked: "on",
-    section: "attack",
-    group: "BRSW.Target",
-  },
-
-  // DEFLECTION POWER ... Subtracts 2 from either melee or ranged attacks
-  // TODO ... How to handle melee attacks when the attacker does NOT have "Fighting", so uses "Unskilled Attempt"
-  {
-    id: "TARGET-HAS-DEFLECTION-MELEE",
-    name: "BRSW.StatusEffect.DeflectionMelee",
-    button_name: "BRSW.StatusEffect.HasDeflectionMelee",
-    skillMod: -2,
-    and_selector: [
-      {
-        selector_type: "target_has_effect",
-        selector_value: "Deflection (melee)"
-      },
-      {
-        selector_type: "item_type",
-        selector_value: "weapon"
-      },
-      {
-        selector_type: "skill",
-        selector_value: "Fighting"
-      },
-      // TODO ... How to handle Unskilled Attempt melee attacks
-      // {
-      //   or_selector: [
-      //     {
-      //       selector_type: "skill",
-      //       selector_value: "Fighting"
-      //     },
-      //     {
-      //       selector_type: "skill",
-      //       selector_value: "Unskilled Attempt"
-      //     },
-      //   ],
-      // },
-    ],
-    defaultChecked: "on",
-    section: "attack",
-    group: "BRSW.Target",
-  },
-  // TODO ... Look at how a skillMod -2/-4 affects the power activation, really just Bolt, as it will activate on a 4 result, ignoring the -2/-4 imposed by Deflection.
-  //      ... It will just fail to hit the target.
-  {
-    id: "TARGET-HAS-DEFLECTION-RANGED",
-    name: "BRSW.StatusEffect.DeflectionRanged",
-    button_name: "BRSW.StatusEffect.HasDeflectionRanged",
-    skillMod: -2,
-    and_selector: [
-      {
-        selector_type: "target_has_effect",
-        selector_value: "Deflection (ranged)"
-      },
-      {
-        selector_type: "item_type",
-        selector_value: "weapon"
-      },
-      {
-        or_selector: [
-          {
-            selector_type: "skill",
-            selector_value: "BRSW.SkillName.Athletics"
-          },
-          {
-            selector_type: "skill",
-            selector_value: "BRSW.SkillName.Shooting"
-          },
-          // TODO ... How to handle ranged attacks when the attacker does NOT have "Shooting" or "Athletics", so uses "Unskilled Attempt"
-          // {
-          //   selector_type: "skill",
-          //   selector_value: "BRSW.SkillName.UnskilledAttempt"
-          // },
-        ],
-      },
-    ],
-    defaultChecked: "on",
-    section: "attack",
-    group: "BRSW.Target",
-  },
-  {
-    id: "TARGET-HAS-DEFLECTION-BOTH",
-    name: "BRSW.StatusEffect.Deflection",
-    button_name: "BRSW.StatusEffect.HasDeflection",
-    skillMod: -2,
-    and_selector: [
-      {
-        selector_type: "target_has_effect",
-        selector_value: "Deflection"
-      },
-      {
-        not_selector: [
-          {
-            or_selector: [
-              {
-                selector_type: "target_has_effect",
-                selector_value: "Deflection (melee)"
-              },
-              {
-                selector_type: "target_has_effect",
-                selector_value: "Deflection (ranged)"
-              },
-            ]
-          }
-        ]
-      },
-      {
-        selector_type: "item_type",
-        selector_value: "weapon"
-      },
-      {
-        or_selector: [
-          {
-            selector_type: "skill",
-            selector_value: "BRSW.SkillName.Athletics"
-          },
-          {
-            selector_type: "skill",
-            selector_value: "BRSW.SkillName.Shooting"
-          },
-          {
-            selector_type: "skill",
-            selector_value: "Fighting"
-          },
-          // TODO ... How to handle ranged attacks when the attacker does NOT have "Shooting" or "Athletics", so uses "Unskilled Attempt"
-          // {
-          //   selector_type: "skill",
-          //   selector_value: "BRSW.SkillName.UnskilledAttempt"
-          // },
-        ],
-      },
-    ],
-    defaultChecked: "on",
+    defaultChecked: {
+      selector_type: "is_ranged_attack",
+      selector_value: "true",
+    },
     section: "attack",
     group: "BRSW.Target",
   },

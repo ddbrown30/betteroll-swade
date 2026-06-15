@@ -22,7 +22,7 @@ export const COMBAT_OPTIONS = [
     button_name: "BRSW.WildAttack",
     skillMod: 2,
     dmgMod: 2,
-    dmgOverride: "",
+    isWildAttack: true,
     selector_type: "skill",
     selector_value: "fighting",
     self_add_status: "vulnerable",
@@ -30,7 +30,7 @@ export const COMBAT_OPTIONS = [
     group: "BRSW.AttackOption",
     defaultChecked: {
       selector_type: "actor_has_effect",
-      selector_value: "BRSW.WildAttackEffect",
+      selector_value: "BRSW.StatusEffect.WildAttack",
     },
   },
   {

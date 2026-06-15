@@ -14,7 +14,6 @@ import {
 } from "./utils.js";
 import {
   spendPP,
-  get_item_trait,
   roll_item,
   run_macros,
 } from "./item_card.js";
@@ -641,7 +640,7 @@ export function calculate_damage_results(rolls) {
  */
 export async function update_message(br_message, render_data) {
   if (br_message.type === BRSW_CONST.TYPE_ITEM_CARD) {
-    render_data.skill = get_item_trait(br_message.item, br_message.actor);
+    render_data.skill = Utils.getItemTrait(br_message.item, br_message.actor);
   }
   br_message.generate_render_data(render_data, undefined);
   await br_message.render();
