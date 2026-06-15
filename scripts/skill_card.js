@@ -236,7 +236,7 @@ export async function roll_skill(br_card, expend_bennie) {
  * @param skill
  * @return {boolean}
  */
-export function is_skill_fighting(skill) {
+export function isFightingSkill(skill) {
   const configured_skill_swid = game.settings
     .get("swade", "parryBaseSwid")
     .toLowerCase();
@@ -246,9 +246,9 @@ export function is_skill_fighting(skill) {
   const configured_skill_name = game.settings
     .get("swade", "parryBaseSkill")
     .toLowerCase();
-  const fighting_names = FIGHTING_SKILLS;
-  fighting_names.push(configured_skill_name);
-  return fighting_names.includes(skill.name.toLowerCase());
+  const fightingNames = FIGHTING_SKILLS;
+  fightingNames.push(configured_skill_name);
+  return fightingNames.includes(skill.name.toLowerCase());
 }
 
 /***
@@ -256,11 +256,28 @@ export function is_skill_fighting(skill) {
  * @param skill
  * @return {boolean}
  */
-export function is_shooting_skill(skill) {
+export function isShootingSkill(skill) {
   if (!skill) return false;
-  const shooting_names = SHOOTING_SKILLS;
-  shooting_names.push(game.i18n.localize("BRSW.ShootingSkill"));
-  for (const name of shooting_names) {
+  const shootingNames = SHOOTING_SKILLS;
+  shootingNames.push(game.i18n.localize("BRSW.SkillName.Shooting"));
+  for (const name of shootingNames) {
+    if (skill.name.toLowerCase().includes(name.toLowerCase())) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/***
+ * Checks if a skill is throwing.
+ * @param skill
+ * @return {boolean}
+ */
+export function isThrowingSkill(skill) {
+  if (!skill) return false;
+  const throwingNames = THROWING_SKILLS;
+  throwingNames.push(game.i18n.localize("BRSW.SkillName.Athletics"));
+  for (const name of throwingNames) {
     if (skill.name.toLowerCase().includes(name.toLowerCase())) {
       return true;
     }
@@ -296,7 +313,7 @@ function calculate_generic_distance_modifier(
   }
   let distance_penalty = 0;
   let rangeEffects;
-  if (!is_shooting_skill(skill)) {
+  if (!isShootingSkill(skill)) {
     // Throwing skill them
     rangeEffects = origin_token.actor.appliedEffects.find((e) =>
       e.changes.find((ch) => ch.key === "brsw.thrown-range-modifier"),
@@ -436,7 +453,7 @@ export async function get_tn_from_token(
     value: 4,
     modifiers: [],
   };
-  const is_fighting = is_skill_fighting(skill);
+  const is_fighting = isFightingSkill(skill);
   let use_parry_as_tn = is_fighting;
   if (origin_token) {
     if (is_fighting) {
@@ -464,10 +481,8 @@ export async function get_tn_from_token(
     }
   }
   // Size modifiers
-  if (origin_actor && target_token) {
-    if (!(item?.system?.isVehicular && origin_actor.type !== "vehicle")) {
-      getScaleModifier(origin_actor, target_token.actor, tn, extra_data);
-    }
+  if (shouldUseScale(origin_actor, target_token, item, skill)) {
+    getScaleModifier(origin_actor, target_token.actor, item, tn, extra_data);
   }
   if (
     target_token.actor.system.status.isVulnerable ||
@@ -483,47 +498,78 @@ export async function get_tn_from_token(
   return tn;
 }
 
+function shouldUseScale(origin_actor, target_token, item, skill) {
+  if (!origin_actor || !target_token) return false;
+  if (item?.system?.isVehicular || origin_actor.type === "vehicle") return false;
+
+  if (!item) {
+    return isFightingSkill(skill) || isShootingSkill(skill) || isThrowingSkill(skill);
+  }
+
+  if (item.type === "weapon") return true;
+  if (item.type === "power" && item.name.toLowerCase().includes("bolt")) return true;
+
+  return false;
+}
+
 /**
  * Get the scale modifier
  **/
 
-function getScaleModifier(origin_actor, target_actor, tn, extra_data) {
-  const origin_scale_mod = sizeToScale(origin_actor?.system?.stats?.size || 1);
-  const target_scale_mod = sizeToScale(
+function getScaleModifier(origin_actor, target_actor, item, tn, extra_data) {
+
+  const originScaleMod = sizeToScale(origin_actor?.system?.stats?.size || 1);
+  const targetScaleMod = sizeToScale(
     target_actor?.system?.size || // Vehicles
       target_actor?.system?.stats?.size ||
       1,
   ); // actor or default
-  if (origin_scale_mod !== target_scale_mod) {
-    const scale_mod = target_scale_mod - origin_scale_mod;
-    tn.modifiers.push(
-      new TraitModifier(game.i18n.localize("BRSW.Scale"), scale_mod),
-    );
-    // If the scale mod is negative, check if the attacking actor has the swat ability
-    if (scale_mod < 0 && origin_actor) {
-      let unignored_penalty = scale_mod * -1;
-      const swat = origin_actor.items.find((item) => {
-        return (
-          item.type === "ability" &&
-          item.name
-            .toLowerCase()
-            .includes(game.i18n.localize("BRSW.Swat").toLowerCase())
-        );
-      });
-      if (swat) {
-        // The swat ability ignores up to 4 points of scale penalties
-        const swat_mod = scale_mod < -4 ? 4 : scale_mod * -1;
-        unignored_penalty -= swat_mod;
-        tn.modifiers.push(
-          new TraitModifier(game.i18n.localize("BRSW.Swat"), swat_mod),
-        );
-      }
-      if (unignored_penalty > 0) {
-        //Scale penalties can be ignored by aiming so add it to the total
-        extra_data.total_aiming_ignorable_penalties =
-          extra_data.total_aiming_ignorable_penalties ?? 0;
-        extra_data.total_aiming_ignorable_penalties += unignored_penalty;
-      }
+
+  if (originScaleMod === targetScaleMod) {
+    //Actors are the same scale so there is no mod
+    return;
+  }
+
+  const scaleMod = targetScaleMod - originScaleMod;
+  if (scaleMod > 0 && item.type === "power" && item.name.toLowerCase().includes("bolt")) {
+    //Bolt is only affected by scale penalties, not bonuses
+    return;
+  }
+
+  tn.modifiers.push(
+    new TraitModifier(game.i18n.localize("BRSW.Scale"), scaleMod),
+  );
+
+  //Scale does not affect arcane activation
+  extra_data.arcaneActivationOffset += scaleMod;
+
+  // If the scale mod is negative, check if the attacking actor has the swat ability
+  if (scaleMod < 0 && origin_actor) {
+    let unignoredPenalty = scaleMod * -1;
+
+    const swat = origin_actor.items.find((item) => {
+      return (
+        item.type === "ability" &&
+        item.name
+          .toLowerCase()
+          .includes(game.i18n.localize("BRSW.Swat").toLowerCase())
+      );
+    });
+
+    if (swat) {
+      // The swat ability ignores up to 4 points of scale penalties
+      const swatMod = scaleMod < -4 ? 4 : scaleMod * -1;
+      unignoredPenalty -= swatMod;
+      tn.modifiers.push(
+        new TraitModifier(game.i18n.localize("BRSW.Swat"), swatMod),
+      );
+    }
+
+    if (unignoredPenalty > 0) {
+      //Scale penalties can be ignored by aiming so add it to the total
+      extra_data.total_aiming_ignorable_penalties =
+        extra_data.total_aiming_ignorable_penalties ?? 0;
+      extra_data.total_aiming_ignorable_penalties += unignoredPenalty;
     }
   }
 }
