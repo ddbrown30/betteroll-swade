@@ -609,7 +609,7 @@ function register_settings_version2() {
   SettingsUtils.registerBR2UserSetting("auto_popout_chat", {
     name: "BRSW.Settings.PopoutChat.Name",
     hint: "BRSW.Settings.PopoutChat.Hint",
-    default: false,
+    default: true,
     type: Boolean,
   });
   SettingsUtils.registerBR2UserSetting("popout_chat_button", {
