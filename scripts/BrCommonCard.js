@@ -412,9 +412,19 @@ export class BrCommonCard {
       if (modsGroup) {
         for (let i = item_actions.length - 1; i >= 0; --i) {
           const itemAction = item_actions[i];
+          let isInGlobal = false;
+          for (const globalAction of game.brsw.GLOBAL_ACTIONS) {
+            const nameSimilarity = Utils.actionNameSimilarity(itemAction.name, game.i18n.localize(globalAction.name));
+            if (nameSimilarity === 1) {
+              isInGlobal = true;
+              break;
+            }
+          }
+
+          let foundAction = false;
           for (const action of modsGroup.actions) {
             const nameSimilarity = Utils.actionNameSimilarity(itemAction.name, action.name);
-            const codeSimilarity = Utils.actionNameSimilarity(itemAction.name, action.code.name);
+            const codeSimilarity = Utils.actionNameSimilarity(itemAction.name, game.i18n.localize(action.code.name));
             if (nameSimilarity === 1 || codeSimilarity === 1) {
               const name = action.name;
               const codeName = action.code.name;
@@ -422,8 +432,15 @@ export class BrCommonCard {
               action.name = name; //Keep the BR2 action name since it will be localized
               action.code.name = codeName; //Keep the BR2 code name since we use it to compare elsewhere
               item_actions.splice(i, 1);
+              foundAction = true;
               break;
             }
+          }
+
+          if (isInGlobal && !foundAction) {
+            //We have an action for this but it wasn't in our current actions
+            //This means that the selector determined it shouldn't be available, so remove the item action too
+            item_actions.splice(i, 1);
           }
         }
       }
