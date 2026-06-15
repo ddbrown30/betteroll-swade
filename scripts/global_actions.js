@@ -2,7 +2,7 @@
   readTextFromFile, renderTemplate, foundry, canvas, $ */
 /* jshint -W089 */
 
-import { get_item_trait, check_for_actions_with_damage } from "./item_card.js";
+import { check_for_actions_with_damage } from "./item_card.js";
 import { SYSTEM_GLOBAL_ACTION } from "./actions/builtin-actions.js";
 import { BRSW_CONST, get_roll_options } from "./cards_common.js";
 import {
@@ -174,7 +174,7 @@ export function check_selector(type, value, item, actor) {
     if (item.type === "attribute") {
       selected = false;
     } else {
-      const skill = item.type === "skill" ? item : get_item_trait(item, actor);
+      const skill = item.type === "skill" ? item : Utils.getItemTrait(item, actor);
       if (skill) {
         value = game.i18n.localize(value);
         if (type === "skill") {
@@ -198,7 +198,7 @@ export function check_selector(type, value, item, actor) {
   } else if (type === "item_type") {
     selected = item.type === value;
   } else if (type === "item_is_weapon_or_bolt") {
-    selected = item.type === "weapon" || (item.type === "power" && item.name.toLowerCase().includes("bolt"));
+    selected = Utils.isWeaponOrBolt(item);
     if (value === "false") {
       selected = !selected;
     }
@@ -411,6 +411,11 @@ export function check_selector(type, value, item, actor) {
     }
   } else if (type === "item_has_damage") {
     selected = !!item?.system && (!!item.system.damage || check_for_actions_with_damage(item));
+    if (value === "false") {
+      selected = !selected;
+    }
+  } else if (type === "is_ranged_attack") {
+    selected = Utils.isRangedAttack(item, actor);
     if (value === "false") {
       selected = !selected;
     }

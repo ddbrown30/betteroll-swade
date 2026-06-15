@@ -2,8 +2,9 @@
 /* globals Token, game, ui, fromUuid, fromUuidSync */
 
 import { get_action_from_click } from "./cards_common.js";
-import { trait_from_string, create_item_card } from "./item_card.js";
+import { create_item_card } from "./item_card.js";
 import { roll_skill } from "./skill_card.js";
+import { Utils } from "./utils.js";
 
 /**
  * Creates a card after an event.
@@ -38,7 +39,7 @@ async function vehicle_click_listener(ev, target) {
     return;
   }
 
-  const skill = trait_from_string(driver_actor.actor, skill_id);
+  const skill = Utils.traitFromString(driver_actor.actor, skill_id);
   if (!skill) {
     ui.notifications.warn(
       game.i18n.localize("BRSW.VehicleCharacterSkillMissingError"),

@@ -14,39 +14,12 @@ import {
 import { run_macros } from "./item_card.js";
 import {
   SettingsUtils,
+  Utils,
   addEventListenerAll,
   measureDistance,
 } from "./utils.js";
 import { BrCommonCard } from "./BrCommonCard.js";
 import { TraitModifier } from "./modifiers.js";
-
-export const FIGHTING_SKILLS = [
-  "fighting",
-  "kämpfen",
-  "pelear",
-  "combat",
-  "lutar",
-  "combattere",
-];
-// noinspection SpellCheckingInspection
-export const SHOOTING_SKILLS = [
-  "shooting",
-  "schiessen",
-  "disparar",
-  "tir",
-  "atirar",
-  "sparare",
-];
-// noinspection SpellCheckingInspection
-export const THROWING_SKILLS = [
-  "athletics",
-  "athletik",
-  "atletismo",
-  "athletisme",
-  "athlétisme",
-  "★ athletics",
-  "atletica",
-];
 
 /**
  * Creates a chat card for a skill
@@ -230,61 +203,6 @@ export async function roll_skill(br_card, expend_bennie) {
   await run_macros(macros, br_card.actor, null, br_card);
 }
 
-/***
- * Checks if a skill is fighting, likely not the best way
- *
- * @param skill
- * @return {boolean}
- */
-export function isFightingSkill(skill) {
-  const configured_skill_swid = game.settings
-    .get("swade", "parryBaseSwid")
-    .toLowerCase();
-  if (skill.system.swid === configured_skill_swid) {
-    return true;
-  }
-  const configured_skill_name = game.settings
-    .get("swade", "parryBaseSkill")
-    .toLowerCase();
-  const fightingNames = FIGHTING_SKILLS;
-  fightingNames.push(configured_skill_name);
-  return fightingNames.includes(skill.name.toLowerCase());
-}
-
-/***
- * Checks if a skill is shooting.
- * @param skill
- * @return {boolean}
- */
-export function isShootingSkill(skill) {
-  if (!skill) return false;
-  const shootingNames = SHOOTING_SKILLS;
-  shootingNames.push(game.i18n.localize("BRSW.SkillName.Shooting"));
-  for (const name of shootingNames) {
-    if (skill.name.toLowerCase().includes(name.toLowerCase())) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/***
- * Checks if a skill is throwing.
- * @param skill
- * @return {boolean}
- */
-export function isThrowingSkill(skill) {
-  if (!skill) return false;
-  const throwingNames = THROWING_SKILLS;
-  throwingNames.push(game.i18n.localize("BRSW.SkillName.Athletics"));
-  for (const name of throwingNames) {
-    if (skill.name.toLowerCase().includes(name.toLowerCase())) {
-      return true;
-    }
-  }
-  return false;
-}
-
 /**
  * Calculates the distance modifier for normal weapons
  * @param item
@@ -313,7 +231,7 @@ function calculate_generic_distance_modifier(
   }
   let distance_penalty = 0;
   let rangeEffects;
-  if (!isShootingSkill(skill)) {
+  if (!Utils.isShootingSkill(skill)) {
     // Throwing skill them
     rangeEffects = origin_token.actor.appliedEffects.find((e) =>
       e.changes.find((ch) => ch.key === "brsw.thrown-range-modifier"),
@@ -453,7 +371,7 @@ export async function get_tn_from_token(
     value: 4,
     modifiers: [],
   };
-  const is_fighting = isFightingSkill(skill);
+  const is_fighting = Utils.isFightingSkill(skill);
   let use_parry_as_tn = is_fighting;
   if (origin_token) {
     if (is_fighting) {
@@ -503,7 +421,7 @@ function shouldUseScale(origin_actor, target_token, item, skill) {
   if (item?.system?.isVehicular || origin_actor.type === "vehicle") return false;
 
   if (!item) {
-    return isFightingSkill(skill) || isShootingSkill(skill) || isThrowingSkill(skill);
+    return Utils.isFightingSkill(skill) || Utils.isShootingSkill(skill) || Utils.isThrowingSkill(skill);
   }
 
   if (item.type === "weapon") return true;

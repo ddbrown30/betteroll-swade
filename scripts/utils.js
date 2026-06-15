@@ -335,6 +335,222 @@ export class Utils {
 
     return union === 0 ? 1 : intersection / union;
   }
+
+  /**
+   * Get a skill or attribute from an actor and the skill name
+   * @param {SwadeActor} actor Where search for the skill
+   * @param {Object} actor.data
+   * @param {Array} actor.items
+   * @param {string} trait_name
+   */
+  static traitFromString(actor, trait_name) {
+      let skill = actor.items.find((skill) => {
+          return (
+              skill.name.toLowerCase().replace("★ ", "") ===
+              trait_name.toLowerCase().replace("★ ", "") && skill.type === "skill"
+          );
+      });
+      if (!skill) {
+          // Time to check for an attribute
+          for (const attribute of ATTRIBUTES) {
+              const translation = game.i18n.localize(
+                  BRSW2_CONFIG.ATTRIBUTES_TRANSLATION_KEYS[attribute],
+              );
+              if (trait_name.toLowerCase() === translation.toLowerCase()) {
+                  skill = { system: structuredClone(actor.system.attributes[attribute]) };
+                  skill.name = translation;
+              }
+          }
+      }
+      if (!skill) {
+          // No skill was found, we try to find untrained
+          skill = Utils.findFirstSkillInActor(actor, [
+              ...BRSW2_CONFIG.UNTRAINED_SKILLS,
+              game.i18n.localize("BRSW.SkillName.UnskilledAttempt").toLowerCase(),
+          ]);
+      }
+      return skill;
+  }
+
+  /**
+   * Guess the skill/attribute that should be rolled for an item
+   * @param {Item} item The item.
+   * @param {string} item.system.arcane
+   * @param {Object} item.data
+   * @param {Object} item.system.actions
+   * @param {string} item.system.range
+   * @param {SwadeActor} actor The owner of the item
+   */
+  static getItemTrait(item, actor) {
+      // First, if the item has a skill in actions tab, we use it
+      if (item.system.actions && item.system.actions.trait) {
+          return Utils.traitFromString(actor, item.system.actions.trait);
+      }
+      // Now check for a skill in additional actions.
+      if (item.system.actions) {
+          for (const action in item.system.actions.additional) {
+              if (
+                  item.system.actions.additional[action].type === "trait" &&
+                  item.system.actions.additional[action].override // name => override (use override if we really want to check for action trait name)
+              ) {
+                  return Utils.traitFromString(
+                      actor,
+                      item.system.actions.additional[action].override, // name => override  (use override if we really want to check for action trait name)
+                  );
+              }
+          }
+      }
+      // Some types of items don't have an associated skill
+      if (
+          [
+              "armor",
+              "shield",
+              "gear",
+              "edge",
+              "hindrance",
+              "ability",
+              "consumable",
+          ].includes(item.type.toLowerCase())
+      ) {
+          return "";
+      }
+
+      // Now check if there is something in the Arcane field
+      if (item.system.arcane) {
+          return Utils.traitFromString(actor, item.system.arcane);
+      }
+
+      // If there is no skill anyway, we are left to guessing
+      let skill;
+      if (item.type === "power") {
+          skill = Utils.findFirstSkillInActor(actor, BRSW2_CONFIG.ARCANE_SKILLS);
+      } else if (item.type === "weapon") {
+          if (parseInt(item.system.range) > 0) {
+              // noinspection JSUnresolvedVariable
+              if (item.system.damage.includes("str")) {
+                  skill = Utils.findFirstSkillInActor(actor, [
+                      ...BRSW2_CONFIG.THROWING_SKILLS,
+                      game.i18n.localize("BRSW.SkillName.Athletics").toLowerCase(), // add localization
+                  ]);
+              } else {
+                  skill = Utils.findFirstSkillInActor(actor, [
+                      ...BRSW2_CONFIG.SHOOTING_SKILLS,
+                      game.i18n.localize("BRSW.SkillName.Shooting").toLowerCase(), // add localization
+                  ]);
+              }
+          } else {
+              skill = Utils.findFirstSkillInActor(actor, [
+                  ...BRSW2_CONFIG.FIGHTING_SKILLS,
+                  game.i18n.localize("BRSW.SkillName.Fighting").toLowerCase(), // bag add localization
+              ]);
+          }
+      }
+
+      if (skill === undefined) {
+          skill = Utils.findFirstSkillInActor(actor, [
+              ...BRSW2_CONFIG.UNTRAINED_SKILLS,
+              game.i18n.localize("BRSW.SkillName.UnskilledAttempt").toLowerCase(),
+          ]);
+      }
+
+      return skill;
+  }
+
+  /**
+   * Check if an actor has a skill in a list
+   * @param {SwadeActor} actor
+   * @param {[string]} possibleSkills List of skills to check
+   * @return {Item} found skill or undefined
+   */
+  static findFirstSkillInActor(actor, possibleSkills) {
+    let skillFound;
+    actor.items.forEach((skill) => {
+      if (possibleSkills.some((v) => skill.name.toLowerCase().includes(v)) && skill.type === "skill") {
+        skillFound = skill;
+      }
+    });
+    return skillFound;
+  }
+
+  /***
+   * Checks if a skill is fighting, likely not the best way
+   *
+   * @param skill
+   * @return {boolean}
+   */
+  static isFightingSkill(skill) {
+    const configured_skill_swid = game.settings.get("swade", "parryBaseSwid").toLowerCase();
+    if (skill.system.swid === configured_skill_swid) {
+      return true;
+    }
+
+    const configured_skill_name = game.settings.get("swade", "parryBaseSkill").toLowerCase();
+    const fightingNames = BRSW2_CONFIG.FIGHTING_SKILLS;
+    fightingNames.push(configured_skill_name);
+    return fightingNames.includes(skill.name.toLowerCase());
+  }
+
+  /***
+   * Checks if a skill is shooting.
+   * @param skill
+   * @return {boolean}
+   */
+  static isShootingSkill(skill) {
+    if (!skill) return false;
+    if (skill.system.swid === "shooting") return true;
+
+    const shootingNames = BRSW2_CONFIG.SHOOTING_SKILLS;
+    shootingNames.push(game.i18n.localize("BRSW.SkillName.Shooting"));
+    return shootingNames.includes(skill.name.toLowerCase());
+  }
+
+  /***
+   * Checks if a skill is throwing.
+   * @param skill
+   * @return {boolean}
+   */
+  static isThrowingSkill(skill) {
+    if (!skill) return false;
+    if (skill.system.swid === "athletics") return true;
+
+    const throwingNames = BRSW2_CONFIG.THROWING_SKILLS;
+    throwingNames.push(game.i18n.localize("BRSW.SkillName.Athletics"));
+    return throwingNames.includes(skill.name.toLowerCase());
+  }
+
+  static isWeapon(item) {
+    return item.type === "weapon";
+  }
+
+  static isBolt(item) {
+    return item.type === "power" && (item.system.swid === "bolt" || item.name.toLowerCase().includes("bolt"));
+  }
+
+  static isWeaponOrBolt(item) {
+    return Utils.isWeapon(item) || Utils.isBolt(item);
+  }
+
+  static isMeleeAttack(item, actor, trait) {
+    if (Utils.isBolt(item) || !Utils.isWeapon(item)) {
+      return false;
+    }
+
+    trait = trait ?? Utils.getItemTrait(item, actor);
+    return item.system.isMelee && (!item.system.isRanged || trait?.system.swid === 'fighting');
+  }
+
+  static isRangedAttack(item, actor, trait) {
+    if (Utils.isBolt(item)) {
+      return true;
+    }
+
+    if (!Utils.isWeapon(item)) {
+      return false;
+    }
+
+    trait = trait ?? Utils.getItemTrait(item, actor);
+    return item.system.isRanged && (!item.system.isMelee || trait?.system.swid !== 'fighting');
+  }
 }
 
 export class SettingsUtils {
