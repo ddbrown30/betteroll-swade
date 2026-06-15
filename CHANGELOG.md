@@ -1,5 +1,10 @@
 # Changelog
 
+# Version 5.3.0
+* Added support for targetAttack and wildAttackDamage support
+* Removed Deflection action as it's now covered by targetAttack
+* Improved the item actions/power mods logic
+
 # Version 5.2.1
 * We now remove power item actions if the corresponding BR2 power mod action is not active
 * Fixed error in new worlds
