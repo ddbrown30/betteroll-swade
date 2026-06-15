@@ -1,3 +1,9 @@
+# Changelog
+
+# Version 5.2.1
+* We now remove power item actions if the corresponding BR2 power mod action is not active
+* Fixed error in new worlds
+
 # Version 5.2.0
 * Complete rework of PP management
 * Big pass on string IDs
