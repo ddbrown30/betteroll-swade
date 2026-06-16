@@ -449,7 +449,7 @@ function getScaleModifier(origin_actor, target_actor, item, tn, extra_data) {
     }
 
     const scaleMod = targetScaleMod - originScaleMod;
-    if (scaleMod > 0 && item.type === "power" && item.name.toLowerCase().includes("bolt")) {
+    if (scaleMod > 0 && Utils.isBolt(item)) {
         //Bolt is only affected by scale penalties, not bonuses
         return;
     }
@@ -458,8 +458,10 @@ function getScaleModifier(origin_actor, target_actor, item, tn, extra_data) {
         new TraitModifier(game.i18n.localize("BRSW.Scale"), scaleMod),
     );
 
-    //Scale does not affect arcane activation
-    extra_data.arcaneActivationOffset += scaleMod;
+    if (extra_data.arcaneActivationOffset !== undefined) {
+        //Scale does not affect arcane activation
+        extra_data.arcaneActivationOffset += scaleMod;
+    }
 
     // If the scale mod is negative, check if the attacking actor has the swat ability
     if (scaleMod < 0 && origin_actor) {
