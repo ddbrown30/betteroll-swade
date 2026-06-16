@@ -121,7 +121,7 @@
     "BRSW.Failure": "Fehlschlag",
     "BRSW.Free_reroll": "Freier Wiederholungswurf",
     "BRSW.Fumble": "KRITISCHER FEHLSCHLAG!",
-    "BRSW.Gangup": "Überzahl",
+    "BRSW.GangUp": "Überzahl",
     "BRSW.GlobalTab": "Global",
     "BRSW.GMModifier": "SL Modifikator",
     "BRSW.GroupRoll": "Gruppenwurf",
