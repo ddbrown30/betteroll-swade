@@ -1479,7 +1479,7 @@ export async function roll_dmg(
     // Gang Up on Damage
     if (Utils.isMeleeAttack(item, actor, br_card.skill) && actor?.system.stats?.gangUpDamage && targets[0]) {
         const gangUp = calculateGangUp(br_card.token, targets[0]);
-        if (gangUp.bonus > 0) {
+        if (gangUp.bonus) {
             damage_roll.brswroll.modifiers.push(
                 new DamageModifier(gangUp.name, gangUp.bonus)
             );
