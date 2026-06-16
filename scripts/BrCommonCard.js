@@ -282,7 +282,10 @@ export class BrCommonCard {
   get targets() {
     const target_array = [];
     for (const target_id of this.target_ids) {
-      target_array.push(fromUuidSync(target_id));
+      const tokenDoc = fromUuidSync(target_id);
+      if (tokenDoc) {
+        target_array.push(tokenDoc.object);
+      }
     }
     return target_array;
   }

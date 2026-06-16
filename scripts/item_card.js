@@ -35,6 +35,7 @@ import { DamageModifier, TraitModifier } from "./modifiers.js";
 import { brAction } from "./actions.js";
 import { PPManagementDialog } from "./pp_management_dialog.js";
 import { get_current_generic_mods } from "../config/generic_pp_modifiers.js";
+import { calculateGangUp } from "./skill_card.js";
 
 const ATTRIBUTES = ["agility", "smarts", "spirit", "strength", "vigor"];
 
@@ -1405,20 +1406,25 @@ export async function roll_dmg(
         heavy_weapon: false,
         location: "torso",
     };
+
     const macros = [];
     if (expend_bennie) {
         await spend_bennie(actor);
     }
+
     // Calculate modifiers
     const options = get_roll_options(default_options, br_card);
+
     // Shotgun
     if (damage_formulas.damage === "1-3d6" && item.type === "weapon") {
         // Bet that this is a shotgun
         damage_formulas.damage = "3d6";
     }
+
     const damage_roll = { label: "---", brswroll: new BRWSRoll(), raise: raise };
     get_chat_dmg_modifiers(options, damage_roll);
     joker_modifiers(br_card, damage_roll);
+
     // Item properties tab
     if (item.system.actions.dmgMod) {
         const new_modifier = new DamageModifier(
@@ -1429,10 +1435,12 @@ export async function roll_dmg(
         await new_modifier.evaluate();
         damage_roll.brswroll.modifiers.push(new_modifier);
     }
+
     // Minimum strength
     if (item.system.minStr) {
         calc_min_str_penalty(item, actor, damage_formulas, damage_roll);
     }
+
     // Actions
     await get_damage_mods_from_actions(
         br_card,
@@ -1441,16 +1449,20 @@ export async function roll_dmg(
         macros,
         expend_bennie,
     );
+
     if (!damage_formulas.damage) {
         // Damage is empty and damage action has not been selected...
         damage_formulas.damage = get_any_damage_from_actions(br_card);
     }
+
     //Conviction
     const conviction_modifier = await check_and_roll_conviction(actor);
     if (conviction_modifier) {
         damage_roll.brswroll.modifiers.push(conviction_modifier);
     }
+
     get_global_modifiers(expend_bennie, actor, damage_roll, damage_formulas);
+
     // Roll
     if (damage_formulas.explodes) {
         damage_formulas.damage = makeExplotable(damage_formulas.damage);
@@ -1458,14 +1470,27 @@ export async function roll_dmg(
         damage_formulas.damage = damage_formulas.damage.replace("x", "");
         damage_formulas.raise = damage_formulas.raise.replace("x", "");
     }
+
     const targets = await get_dmg_targets(target_token_id, br_card);
     if (!raise) {
         damage_formulas.raise = "";
     }
+
+    // Gang Up on Damage
+    if (Utils.isMeleeAttack(item, actor, br_card.skill) && actor?.system.stats?.gangUpDamage && targets[0]) {
+        const gangUp = calculateGangUp(br_card.token, targets[0]);
+        if (gangUp.bonus) {
+            damage_roll.brswroll.modifiers.push(
+                new DamageModifier(gangUp.name, gangUp.bonus)
+            );
+        }
+    }
+
     let total_modifiers = 0;
     for (const modifier of damage_roll.brswroll.modifiers) {
         total_modifiers += modifier.value;
     }
+
     let first_roll = true;
     for (const target of targets) {
         if (target || first_roll) {
@@ -1481,9 +1506,12 @@ export async function roll_dmg(
             first_roll = false; // Only roll once without targets.
         }
     }
+
     await update_message(br_card, render_data);
+
     // Run macros
     await run_macros(macros, actor, item, br_card);
+
     Hooks.call("BRSW-RollDamage", br_card, html);
 }
 
