@@ -334,18 +334,15 @@ export function calculate_distance(
 async function get_vehicle_tn(tn, target_token) {
     tn.reason = `Veh - ${target_token.name}`;
     //lookup the vehicle operator and get their maneuveringSkill
-    let operator_skill;
+    let operator_skill = 0;
     const target_operator_id = target_token.actor.system.driver.id;
     const target_operator = await fromUuid(target_operator_id);
     const operatorItems = target_operator ? target_operator.items : [];
     const maneuveringSkill = target_token.actor.system.driver.skill;
     for (const value of operatorItems) {
         if (value.name === maneuveringSkill) {
-            operator_skill = value.system.die.sides;
+            operator_skill = value.system.die.sides || 0;
         }
-    }
-    if (operator_skill === null) {
-        operator_skill = 0;
     }
     tn.value = operator_skill / 2 + 2 + target_token.actor.system.handling;
 }
