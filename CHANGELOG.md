@@ -1,5 +1,9 @@
 # Changelog
 
+# Version 5.4.0
+* Added support for gangUpDamage
+* Cleaned up the gang up calculation logic
+
 # Version 5.3.0
 * Added support for targetAttack and wildAttackDamage support
 * Removed Deflection action as it's now covered by targetAttack
