@@ -3,6 +3,7 @@
 # Version 5.5.0
 * Updated the gang up calculation to match the system
 * Added pre-release support for the new gang up flags
+* Removed meleeDistance setting
 
 # Version 5.4.0
 * Added support for gangUpDamage
