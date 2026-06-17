@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.6.2
+* Updated rollMode to the v14 messageMode
+
 # Version 5.6.1
 * Fixed error when rolling attributes
 
