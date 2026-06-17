@@ -167,8 +167,6 @@
     "BRSW.ROFTypes.Max": "Feuerrate (Waffe)",
     "BRSW.MediumCover": "Mittlere Deckung (-4)",
     "BRSW.MediumTemplate": "Mittlere Flächenschablone",
-    "BRSW.Settings.MeleeDistance.Name": "Nahkampfdistanz",
-    "BRSW.Settings.MeleeDistance.Hint": "Die Entfernung, ab der ein Charakter als im Nahkampf befindlich angesehen wird. Entweder in Zoll oder Rastereinheiten.",
     "BRSW.MinStr": "Min. Stärke",
     "BRSW.MissingJSON": "Fehlendes Element ",
     "BRSW.Modifier": "Modifikator",

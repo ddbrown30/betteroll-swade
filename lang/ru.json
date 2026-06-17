@@ -157,8 +157,6 @@
     "BRSW.Settings.MaxTooltipLength.Label": "Максимальная длина подсказки",
     "BRSW.MediumCover": "Среднее (-4)",
     "BRSW.MediumTemplate": "Средний шаблон взрыва",
-    "BRSW.Settings.MeleeDistance.Name": "Расстояние ближнего боя",
-    "BRSW.Settings.MeleeDistance.Hint": "Расстояние, на котором персонаж считается находящимся в ближнем бою. Либо в дюймах, либо в единицах сетки.",
     "BRSW.MinStr": "Мин. Сила",
     "BRSW.MissingJSON": "Отсутствует элемент ",
     "BRSW.Modifier": "Модификатор",

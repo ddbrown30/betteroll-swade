@@ -167,8 +167,6 @@
     "BRSW.ROFTypes.Max": "El valor de CdF de l'arma",
     "BRSW.MediumCover": "Cobertura mitjana (-4)",
     "BRSW.MediumTemplate": "plantilla d'àrea mitjana",
-    "BRSW.Settings.MeleeDistance.Name": "Cuerpo a cuerpo",
-    "BRSW.Settings.MeleeDistance.Hint": "La distancia a la que se considera que el personaje está en cuerpo a cuerpo. En pulgadas o en unidades de cuadrícula.",
     "BRSW.MinStr": "Força mínima",
     "BRSW.MissingJSON": "Falta un element ",
     "BRSW.Modifier": "Modificador",

@@ -454,12 +454,6 @@ function register_world_settings() {
     default: false,
     type: Boolean,
   });
-  SettingsUtils.registerBR2WorldSetting("meleeDistance", {
-    name: game.i18n.localize("BRSW.Settings.MeleeDistance.Name"),
-    hint: game.i18n.localize("BRSW.Settings.MeleeDistance.Hint"),
-    default: 1,
-    type: Number,
-  });
   SettingsUtils.registerBR2WorldSetting("disable_for_actions", {
     name: game.i18n.localize("BRSW.Settings.DisableActions.Name"),
     hint: game.i18n.localize("BRSW.Settings.DisableActions.Hint"),

@@ -167,8 +167,6 @@
     "BRSW.ROFTypes.Max": "Valor da CdT da arma",
     "BRSW.MediumCover": "Cobertura média",
     "BRSW.MediumTemplate": "modelo médio de explosão",
-    "BRSW.Settings.MeleeDistance.Name": "Distância corpo-a-corpo",
-    "BRSW.Settings.MeleeDistance.Hint": "A distância a qual o personagem é considerado em combate corpo a corpo. Seja em polegadas, metros ou em unidades de grade.",
     "BRSW.MinStr": "Força Mínima",
     "BRSW.MissingJSON": "Elemento ausente ",
     "BRSW.Modifier": "Modificador",
