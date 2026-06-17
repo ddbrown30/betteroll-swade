@@ -84,7 +84,12 @@ export const POWER_MODIFIERS = [
     dmgOverride: "3d6x",
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
-      { selector_type: "item_name", selector_value: "Bolt" }
+      { selector_type: "item_name", selector_value: "Bolt" },
+      {
+          not_selector: [
+              { selector_type: "item_name", selector_value: "Minor Bolt" }
+          ]
+      },
     ],
     section: "power",
     group: "BRSW.PowerModifiers.PowerModifiers"
@@ -98,6 +103,11 @@ export const POWER_MODIFIERS = [
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Bolt" },
+      {
+          not_selector: [
+              { selector_type: "item_name", selector_value: "Minor Bolt" }
+          ]
+      },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     section: "power",
@@ -111,6 +121,11 @@ export const POWER_MODIFIERS = [
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Bolt" },
+      {
+          not_selector: [
+              { selector_type: "item_name", selector_value: "Minor Bolt" }
+          ]
+      },
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     section: "power",
