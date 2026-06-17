@@ -101,6 +101,8 @@ export const ARCANE_MASTERY_EDGES = [
   "BRSW.EdgeName.Epic-Mastery",
 ];
 
+export const MAX_NOPP_PENALTY_ACTION = 6;
+
 /**
 / Translation map for attributes
 */

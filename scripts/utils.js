@@ -563,6 +563,22 @@ export class Utils {
 
     return !!edge;
   }
+
+  static getNoPPPenaltySelections(ppCost) {
+    const result = [];
+    if (ppCost === 0) return result;
+
+    let penalty = Math.ceil(ppCost / 2);
+
+    for (let p = BRSW2_CONFIG.MAX_NOPP_PENALTY_ACTION; p >= 1 && penalty > 0; --p) {
+      if (penalty >= p) {
+        result.push(p);
+        penalty -= p;
+      }
+    }
+
+    return result;
+  }
 }
 
 export class SettingsUtils {

@@ -2,6 +2,7 @@
 /* globals game, ChatPopout, console, canvas, Hooks, renderTemplate, TextEditor, ChatMessage,
      Roll, CONST */
 
+import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { TraitRoll } from "./rolls.js";
 import { broofa, getAuthor, getWhisperData, SettingsUtils, Utils } from "./utils.js";
 import { calc_pp_cost } from "./item_card.js";
@@ -589,20 +590,23 @@ export class BrCommonCard {
     ) {
       return;
     }
+    const ppCost = calc_pp_cost(this);
+    const penaltySelections = Utils.getNoPPPenaltySelections(ppCost);
+
     const action_array = [];
-    for (let penalty = -1; penalty > -7; penalty--) {
+    for (let penalty = 1; penalty <= BRSW2_CONFIG.MAX_NOPP_PENALTY_ACTION; ++penalty) {
       const new_action = new brAction(
-        `PP ${penalty}`,
+        `PP ${-penalty}`,
         {
-          name: `${game.i18n.localize("BRSW.NoPP")} ${penalty}`,
-          id: `no_pp_${-penalty}`,
-          skillMod: penalty,
+          name: `${game.i18n.localize("BRSW.NoPP")} ${-penalty}`,
+          id: `no_pp_${penalty}`,
+          skillMod: -penalty,
         },
         "no_pp",
       );
-      if (penalty === -Math.ceil(this.item.system.pp / 2)) {
-        new_action.selected = true;
-      }
+
+      new_action.selected = penaltySelections.includes(penalty);
+
       action_array.push(new_action);
     }
     this.action_sections["power"] ??= { action_groups: {} };
@@ -610,7 +614,6 @@ export class BrCommonCard {
       name: game.i18n.localize("BRSW.NoPP"),
       actions: action_array,
       id: broofa(),
-      single_choice: true,
     };
   }
 
@@ -823,6 +826,8 @@ export class BrCommonCard {
     );
     data.show_popup_button = SettingsUtils.getUserSetting("popout_chat_button");
     data.showShotsPPInfo = SettingsUtils.getWorldSetting("show_pp_shots_info");
+    data.noPowerPoints = game.settings.get("swade", "noPowerPoints");
+    data.ppPenalty = -Math.ceil(this.pp_cost / 2);
     data.shots_pp_info = data.showShotsPPInfo ? this.item_shots : "";
     data.applicable_effects = this.applicable_effects;
     return data;
