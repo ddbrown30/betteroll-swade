@@ -1,5 +1,9 @@
 # Changelog
 
+# Version 5.5.1
+* Bolt mods no longer show up on minor bolt
+* PP management no longer shows epic mods if the actor does not have the edge
+
 # Version 5.5.0
 * Updated the gang up calculation to match the system
 * Added pre-release support for the new gang up flags
