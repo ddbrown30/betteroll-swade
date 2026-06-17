@@ -5,17 +5,17 @@ import * as BRSW2_CONFIG from "./brsw2-config.js";
 
 export function getWhisperData() {
   let whisper, blind;
-  const rollMode = game.settings.get("core", "rollMode");
-  if (["gmroll", "blindroll"].includes(rollMode)) {
+  const messageMode = game.settings.get("core", "messageMode");
+  if (["gm", "blind"].includes(messageMode)) {
     whisper = ChatMessage.getWhisperRecipients("GM");
   }
-  if (rollMode === "blindroll") {
+  if (messageMode === "blind") {
     blind = true;
-  } else if (rollMode === "selfroll") {
+  } else if (messageMode === "self") {
     whisper = [game.user._id];
   }
   return {
-    rollMode: rollMode,
+    messageMode: messageMode,
     whisper: whisper,
     blind: blind,
   };

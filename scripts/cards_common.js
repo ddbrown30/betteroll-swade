@@ -909,15 +909,14 @@ async function show_3d_dice(message, brswroll, roll) {
   if (message.whisper.length > 0) {
     users = message.whisper;
   }
-  const { blind } = message;
   // Dice buried in modifiers.
   for (const modifier of brswroll.modifiers) {
     if (modifier.dice && modifier.dice instanceof Roll) {
       // noinspection ES6MissingAwait
-      game.dice3d.showForRoll(modifier.dice, game.user, true, users, blind);
+      game.dice3d.showForRoll(modifier.dice, game.user, true, users);
     }
   }
-  await game.dice3d.showForRoll(roll, game.user, true, users, blind);
+  await game.dice3d.showForRoll(roll, game.user, true, users);
 }
 
 function set_wild_die_theme(wildDie) {
