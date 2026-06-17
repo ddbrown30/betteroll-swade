@@ -519,11 +519,11 @@ export class Utils {
   }
 
   static isWeapon(item) {
-    return item.type === "weapon";
+    return item && item.type === "weapon";
   }
 
   static isBolt(item) {
-    return item.type === "power" && (item.system.swid === "bolt" || item.name.toLowerCase().includes("bolt"));
+    return item && item.type === "power" && (item.system.swid === "bolt" || item.name.toLowerCase().includes("bolt"));
   }
 
   static isWeaponOrBolt(item) {
