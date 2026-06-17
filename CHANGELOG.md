@@ -1,7 +1,7 @@
 # Changelog
 
 # Version 5.6.0
-* Added better support of the no power points setting
+* Added better support for the no power points setting
 * Bolt mods no longer show up on minor bolt
 * PP management no longer shows epic mods if the actor does not have the edge
 
