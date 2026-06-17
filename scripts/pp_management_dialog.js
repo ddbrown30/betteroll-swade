@@ -1,4 +1,5 @@
 import { calc_pp_cost, displayPPChangeCard } from "./item_card.js";
+import { Utils } from "./utils.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -98,11 +99,17 @@ export class PPManagementDialog extends HandlebarsApplicationMixin(ApplicationV2
     const soulDrainName = game.i18n.localize("BRSW.EdgeName.SoulDrain").toLowerCase();
     const hasSoulDrain = !!actor.items.find((item) => { return (item.type === "edge" && item.name.toLowerCase().includes(soulDrainName)); });
 
+    const hasArcaneMastery = Utils.actorHasArcaneMastery(actor);
+    const powerMods =
+      hasArcaneMastery ?
+        this.brCard.pp_modifiers.powerMods :
+        this.brCard.pp_modifiers.powerMods.filter((m) => !m.isEpic);
+
     const ppCost = calc_pp_cost(this.brCard);
 
     return {
       genericMods: this.brCard.pp_modifiers.genericMods,
-      powerMods: this.brCard.pp_modifiers.powerMods,
+      powerMods: powerMods,
       additionalRecipientsMod: this.brCard.pp_modifiers.additionalRecipientsMod,
       extraCost: this.brCard.pp_modifiers.extraCost,
       bennyImage,

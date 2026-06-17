@@ -418,8 +418,7 @@ function shouldUseScale(origin_actor, target_token, item, skill) {
         return Utils.isFightingSkill(skill) || Utils.isShootingSkill(skill) || Utils.isThrowingSkill(skill);
     }
 
-    if (item.type === "weapon") return true;
-    if (item.type === "power" && item.name.toLowerCase().includes("bolt")) return true;
+    if (Utils.isWeaponOrBolt(item)) return true;
 
     return false;
 }

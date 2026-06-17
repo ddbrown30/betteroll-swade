@@ -551,6 +551,18 @@ export class Utils {
     trait = trait ?? Utils.getItemTrait(item, actor);
     return item.system.isRanged && (!item.system.isMelee || trait?.system.swid !== 'fighting');
   }
+
+  static actorHasArcaneMastery(actor) {
+    const edgeNames = BRSW2_CONFIG.ARCANE_MASTERY_EDGES.map((edge) => game.i18n.localize(edge).toLowerCase());
+    const edge = actor.items.find((item) => {
+      return (
+        item.type === "edge" &&
+        edgeNames.some((edgeName) => item.name.toLowerCase().includes(edgeName))
+      );
+    });
+
+    return !!edge;
+  }
 }
 
 export class SettingsUtils {
