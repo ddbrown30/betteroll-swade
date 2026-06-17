@@ -38,7 +38,9 @@
     </div>
     <footer class="form-footer">
         <button type="button" data-action="set">{{localize "BRSW.PPManagement.Set"}}</button>
-        <button type="button" id="ppCost" data-action="spendPP">{{localize "BRSW.PPManagement.Spend" ppCost=ppCost}}</button>
+        {{#unless noPowerPoints}}
+            <button type="button" id="ppCost" data-action="spendPP">{{localize "BRSW.PPManagement.Spend" ppCost=ppCost}}</button>
+        {{/unless}}
         {{#unless isArcaneDevice}}
             <button type="button" data-action="recharge">
                 <img src="{{{bennyImage}}}" class="brsw-button-image">

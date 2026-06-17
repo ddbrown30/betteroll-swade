@@ -317,14 +317,8 @@ export function check_selector(type, value, item, actor) {
       selected = selected || !!edge;
     }
   } else if (type === "actor_has_arcane_mastery") {
-    const edge_names = BRSW_CONST.ARCANE_MASTERY_EDGES.map((edge) => game.i18n.localize(edge).toLowerCase());
-    const edge = actor.items.find((item) => {
-      return (
-        item.type === "edge" &&
-        edge_names.some((edge_name) => item.name.toLowerCase().includes(edge_name))
-      );
-    });
-    selected = !!edge == value;
+    const hasMastery = Utils.actorHasArcaneMastery(actor);
+    selected = hasMastery == value;
   } else if (type === "target_has_hindrance") {
     const hindrance_name = game.i18n.localize(value);
     for (const targeted_token of game.user.targets) {

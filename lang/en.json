@@ -267,6 +267,7 @@
   "BRSW.PP": "Power Points",
   "BRSW.PPCost": "Cost",
   "BRSW.PPCurrent": "Current PP",
+  "BRSW.PPPenalty": "PP Penalty",
   "BRSW.PPManagement.BennyRecharge": "Recharge",
   "BRSW.PPManagement.Button": "PP Management",
   "BRSW.PPManagement.GenericMods": "Generic",

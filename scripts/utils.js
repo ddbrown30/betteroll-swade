@@ -551,6 +551,34 @@ export class Utils {
     trait = trait ?? Utils.getItemTrait(item, actor);
     return item.system.isRanged && (!item.system.isMelee || trait?.system.swid !== 'fighting');
   }
+
+  static actorHasArcaneMastery(actor) {
+    const edgeNames = BRSW2_CONFIG.ARCANE_MASTERY_EDGES.map((edge) => game.i18n.localize(edge).toLowerCase());
+    const edge = actor?.items.find((item) => {
+      return (
+        item.type === "edge" &&
+        edgeNames.some((edgeName) => item.name.toLowerCase().includes(edgeName))
+      );
+    });
+
+    return !!edge;
+  }
+
+  static getNoPPPenaltySelections(ppCost) {
+    const result = [];
+    if (ppCost === 0) return result;
+
+    let penalty = Math.ceil(ppCost / 2);
+
+    for (let p = BRSW2_CONFIG.MAX_NOPP_PENALTY_ACTION; p >= 1 && penalty > 0; --p) {
+      if (penalty >= p) {
+        result.push(p);
+        penalty -= p;
+      }
+    }
+
+    return result;
+  }
 }
 
 export class SettingsUtils {

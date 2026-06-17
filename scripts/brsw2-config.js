@@ -95,6 +95,14 @@ export const UNTRAINED_SKILLS = [
   "(unskilled)",
 ];
 
+export const ARCANE_MASTERY_EDGES = [
+  "BRSW.EdgeName.ArcaneMastery",
+  "BRSW.EdgeName.DivineMastery",
+  "BRSW.EdgeName.Epic-Mastery",
+];
+
+export const MAX_NOPP_PENALTY_ACTION = 6;
+
 /**
 / Translation map for attributes
 */

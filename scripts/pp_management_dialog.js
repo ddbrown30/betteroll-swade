@@ -1,4 +1,6 @@
+import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { calc_pp_cost, displayPPChangeCard } from "./item_card.js";
+import { Utils } from "./utils.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -57,6 +59,16 @@ export class PPManagementDialog extends HandlebarsApplicationMixin(ApplicationV2
         this.refreshPPCost();
       },
       set: async function (event, button) {
+        if (game.settings.get("swade", "noPowerPoints")) {
+          const ppCost = calc_pp_cost(this.brCard);
+          const penaltySelections = Utils.getNoPPPenaltySelections(ppCost);
+
+          const noPPActionGroup = this.brCard.action_sections["power"].action_groups[game.i18n.localize("BRSW.NoPP")];
+          for (let penalty = 0; penalty < BRSW2_CONFIG.MAX_NOPP_PENALTY_ACTION; ++penalty) {
+            noPPActionGroup.actions[penalty].selected = penaltySelections.includes(penalty + 1);
+          }
+        }
+
         await this.brCard.render();
         await this.brCard.save();
         this.close({ revertChanges: false });
@@ -98,17 +110,25 @@ export class PPManagementDialog extends HandlebarsApplicationMixin(ApplicationV2
     const soulDrainName = game.i18n.localize("BRSW.EdgeName.SoulDrain").toLowerCase();
     const hasSoulDrain = !!actor.items.find((item) => { return (item.type === "edge" && item.name.toLowerCase().includes(soulDrainName)); });
 
+    const hasArcaneMastery = Utils.actorHasArcaneMastery(actor);
+    const powerMods =
+      hasArcaneMastery ?
+        this.brCard.pp_modifiers.powerMods :
+        this.brCard.pp_modifiers.powerMods.filter((m) => !m.isEpic);
+
     const ppCost = calc_pp_cost(this.brCard);
+    const noPowerPoints = game.settings.get("swade", "noPowerPoints");
 
     return {
       genericMods: this.brCard.pp_modifiers.genericMods,
-      powerMods: this.brCard.pp_modifiers.powerMods,
+      powerMods: powerMods,
       additionalRecipientsMod: this.brCard.pp_modifiers.additionalRecipientsMod,
       extraCost: this.brCard.pp_modifiers.extraCost,
       bennyImage,
       isArcaneDevice,
       hasSoulDrain,
       ppCost,
+      noPowerPoints,
     };
   };
 
@@ -204,7 +224,7 @@ export class PPManagementDialog extends HandlebarsApplicationMixin(ApplicationV2
       currentPP,
       maxPP,
       dataKey
-    }
+    };
   }
 
   bennyRechargePP() {

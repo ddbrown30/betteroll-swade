@@ -464,6 +464,7 @@ export function activate_item_card_listeners(br_card, html) {
             ev.target.parentElement.querySelector(".brsw-shots-pp").innerText =
                 br_card.item_shots;
         });
+
     html
         .querySelector(".brsw-pp-manual")
         ?.addEventListener("click", async (ev) => {
@@ -471,14 +472,21 @@ export function activate_item_card_listeners(br_card, html) {
 
             if (SettingsUtils.getWorldSetting("show_pp_shots_info")) {
                 //Update the pp text of the card we just clicked on.
-                //This won't affect change the popout or vice versa,
+                //This won't affect the popout or vice versa,
                 //but doing that would require an update to the chat message which would refresh the render which is disruptive
-                const pp_remaining = ev.target.parentElement.parentElement.querySelector(".brsw-shots-pp");
-                pp_remaining.innerText = br_card.item_shots;
-                const pp_cost = ev.target.parentElement.parentElement.querySelector(".brsw-pp-cost");
-                pp_cost.innerText = calc_pp_cost(br_card);
+                if (game.settings.get("swade", "noPowerPoints")) {
+                    const ppPenalty = ev.target.parentElement.parentElement.querySelector(".brsw-pp-penalty");
+                    ppPenalty.innerText = -Math.ceil(calc_pp_cost(br_card) / 2);
+                } else {
+                    const ppRemaining = ev.target.parentElement.parentElement.querySelector(".brsw-shots-pp");
+                    ppRemaining.innerText = br_card.item_shots;
+
+                    const ppCost = ev.target.parentElement.parentElement.querySelector(".brsw-pp-cost");
+                    ppCost.innerText = calc_pp_cost(br_card);
+                }
             }
         });
+
     addEventListenerAll(html, ".brsw-apply-damage", "click", (ev) => {
         create_damage_card(
             ev.currentTarget.dataset.token,
@@ -656,6 +664,10 @@ export async function displayPPChangeCard(actor, chatData) {
  * @param prevSpentPP PP we already spent on a previous roll
  */
 export async function spendPP(br_card, prevSpentPP) {
+    if (game.settings.get("swade", "noPowerPoints")) {
+        return 0;
+    }
+
     prevSpentPP ??= 0;
     const actor = br_card.actor;
     const item = br_card.item;

@@ -20,6 +20,16 @@
 
 */
 
+const BOLT_SELECTOR = [
+  { selector_type: "item_type", selector_value: "power" },
+  { selector_type: "item_name", selector_value: "Bolt" },
+  {
+      not_selector: [
+          { selector_type: "item_name", selector_value: "Minor Bolt" }
+      ]
+  },
+];
+
 export const POWER_MODIFIERS = [
   // BARRIER (S)
   {
@@ -83,8 +93,7 @@ export const POWER_MODIFIERS = [
     button_name: "BRSW.PowerModifiers.BoltDamage",
     dmgOverride: "3d6x",
     and_selector: [
-      { selector_type: "item_type", selector_value: "power" },
-      { selector_type: "item_name", selector_value: "Bolt" }
+      ...BOLT_SELECTOR
     ],
     section: "power",
     group: "BRSW.PowerModifiers.PowerModifiers"
@@ -96,8 +105,7 @@ export const POWER_MODIFIERS = [
     dmgOverride: "4d6x",
     isHeavyWeapon: true,
     and_selector: [
-      { selector_type: "item_type", selector_value: "power" },
-      { selector_type: "item_name", selector_value: "Bolt" },
+      ...BOLT_SELECTOR,
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     section: "power",
@@ -109,8 +117,7 @@ export const POWER_MODIFIERS = [
     button_name: "BRSW.PowerModifiers.BoltRateOfFire",
     rof: "2",
     and_selector: [
-      { selector_type: "item_type", selector_value: "power" },
-      { selector_type: "item_name", selector_value: "Bolt" },
+      ...BOLT_SELECTOR,
       { selector_type: "actor_has_arcane_mastery", selector_value: true }
     ],
     section: "power",
