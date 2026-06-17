@@ -554,7 +554,7 @@ export class Utils {
 
   static actorHasArcaneMastery(actor) {
     const edgeNames = BRSW2_CONFIG.ARCANE_MASTERY_EDGES.map((edge) => game.i18n.localize(edge).toLowerCase());
-    const edge = actor.items.find((item) => {
+    const edge = actor?.items.find((item) => {
       return (
         item.type === "edge" &&
         edgeNames.some((edgeName) => item.name.toLowerCase().includes(edgeName))
