@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.6.1
+* Fixed error when rolling attributes
+
 # Version 5.6.0
 * Added better support for the no power points setting
 * Bolt mods no longer show up on minor bolt
