@@ -595,14 +595,10 @@ export function calculateGangUp(attackerToken, targetToken) {
             return withinRange(targetToken, t, 1);
         });
 
-    //Of the defender allies, count how many are also next to the attacker or his allies
+    //Of the defender allies, count how many are also next to the attacker
     const numDefenderAllies =
         defenderAllies.filter((t) => {
-            if (withinRange(attackerToken, t, 1)) return true;
-            for (const attackerAlly of attackerAllies) {
-                return withinRange(attackerAlly, t, 1);
-            }
-            return false;
+            return withinRange(attackerToken, t, 1);
         }).length ?? 0;
 
     let gangUpBonus = totalAttackerAllyBonus - numDefenderAllies;
