@@ -164,8 +164,6 @@
     "BRSW.ROFTypes.Max": "Cadence de tir de l'arme",
     "BRSW.MediumCover": "Couvert moyen",
     "BRSW.MediumTemplate": "gabarit moyen",
-    "BRSW.Settings.MeleeDistance.Name": "Distance de mêlée",
-    "BRSW.Settings.MeleeDistance.Hint": "La distance à laquelle le personnage est considéré comme étant en mêlée. Elle peut être exprimée en pouces ou en unités de grille.",
     "BRSW.MinStr": "Force min",
     "BRSW.MissingJSON": "Élément manquant ",
     "BRSW.Modifier": "Modificateur",

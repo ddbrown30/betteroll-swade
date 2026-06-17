@@ -298,10 +298,7 @@ export function calculate_distance(
     const grid_unit = canvas.grid.distance;
     let use_parry_as_tn = false;
     let distance = measureDistance(origin_token, target_token);
-    if (
-        distance / grid_unit < SettingsUtils.getWorldSetting("meleeDistance") + 1 &&
-        item
-    ) {
+    if (distance / grid_unit < 1 && item) {
         use_parry_as_tn = item.type !== "power";
     } else if (item) {
         if (grid_unit % 5 === 0) {
@@ -519,114 +516,160 @@ function sizeToScale(size) {
 
 /**
  *  Calculates gangup modifier, by Bruno Calado
- * @param {Token|TokenDocument} attacker
- * @param {Token|TokenDocument} target
+ * @param {Token|TokenDocument} attackerToken
+ * @param {Token|TokenDocument} targetToken
  * @return {number} modifier
  * pg 101 swade core
  * - Each additional adjacent foe (who is not Stunned)
  * - adds +1 to all the attackers’ Fighting rolls, up to a maximum of +4.
  * - Each ally adjacent to the defender cancels out one point of Gang Up bonus from an attacker adjacent to both.
  */
-export function calculateGangUp(attacker, target) {
+export function calculateGangUp(attackerToken, targetToken) {
     if (SettingsUtils.getWorldSetting("disable-gang-up")) {
         return { name: "NoGangup", bonus: 0 };
     }
 
-    if (!attacker || !target) {
+    if (!attackerToken || !targetToken) {
         console.warn(
             "BetterRolls 2: Trying to calculate gangup with no token",
-            attacker,
-            target,
+            attackerToken,
+            targetToken,
         );
         return 0;
     }
 
-    if (attacker.document.disposition === target.document.disposition) {
+    if (attackerToken.document.disposition * targetToken.document.disposition !== -1) {
         return 0;
     }
 
-    let attackerAllies = 0;
-    let targetAllies = 0;
-    if (attacker.document.disposition === 1 || attacker.document.disposition === -1) {
-        const item_range = SettingsUtils.getWorldSetting("meleeDistance") + 1;
+    const attackerActor = attackerToken.actor;
+    const targetActor = targetToken.actor;
+    if (!attackerActor) return 0;
 
-        // disposition -1 means NPC (hostile) is attacking PCs (friendly)
-        // disposition 1 means PC (friendly) is attacking NPC (hostile)
-        const attackerAlliesWithinRangeOfTarget = canvas.tokens.placeables.filter(
-            (t) =>
-                t.id !== attacker.id &&
-                t.document.disposition === attacker.document.disposition &&
-                t.visible &&
-                withinRange(target, t, item_range) &&
-                combatant_gives_gangup(t.combatant, t.actor),
-        );
+    const scene = targetToken.scene;
+    if (!scene) return 0;
 
-        const targetAlliesWithinRangeOfTarget = canvas.tokens.placeables.filter(
-            (t) =>
-                t.id !== target.id &&
-                t.document.disposition === attacker.document.disposition * -1 &&
-                withinRange(target, t, item_range) &&
-                combatant_gives_gangup(t.combatant, t.actor),
-        );
+    const formationFighterName = game.i18n.localize("BRSW.EdgeName.FormationFighter").toLowerCase();
 
-        //alliedWithinRangeOfTargetAndAttacker intersection with attacker and target
-        const targetAlliesWithinRangeOfBoth = targetAlliesWithinRangeOfTarget.filter(
-            (t) =>
-                t.document.disposition === attacker.document.disposition * -1 &&
-                withinRange(attacker, t, item_range) &&
-                combatant_gives_gangup(t.combatant, t.actor),
-        );
-
-        targetAllies = targetAlliesWithinRangeOfBoth.length;
-
-        const formationFighterName = game.i18n.localize("BRSW.EdgeName.FormationFighter").toLowerCase();
-
-        const attackerHasFormationFighter = attacker.actor?.items.find((item) => {
-            return item.name.toLowerCase().includes(formationFighterName);
+    //Get all the attacker allies that are next to the target
+    const attackerAllies =
+        scene.tokens?.filter((t) => {
+            if (t === attackerToken.document) return false;
+            if (t.disposition !== attackerToken.document.disposition) return false;
+            if (isIgnoredForGangUp(t)) return false;
+            return withinRange(targetToken, t, 1);
         });
 
-        const attackerAlliesWithFormationFighter = attackerAlliesWithinRangeOfTarget.filter(
-            (t) =>
-                // no need to check for all the things that attackerAlliesWithinRangeOfTarget
-                // is already filtered for
-                t.actor?.items.find((item) => {
-                    return item.name.toLowerCase().includes(formationFighterName);
-                }),
-        );
+    //We can only benefit from gang up if we have at least one ally
+    if (attackerAllies.length === 0) return 0;
 
-        attackerAllies = attackerAlliesWithinRangeOfTarget.length + attackerAlliesWithFormationFighter.length;
-        if (attackerAllies > 0 && attackerHasFormationFighter) {
-            attackerAllies += 1;
-        }
+    //Get the total bonus of all attacker allies
+    const totalAttackerAllyBonus =
+        attackerAllies.reduce((accumulator, t) => {
+            let gangUpContribution = 1;
+
+            //TODO: Remove once system as been updated
+            const hasFormationFighter = !!t.actor?.items.find((item) => { return item.name.toLowerCase().includes(formationFighterName); });
+            if (hasFormationFighter) {
+                gangUpContribution += 1;
+            }
+
+            //gangUpAttack applies both when attacking and as an ally during an attack
+            const tGlobalMods = foundry.utils.getProperty(t.actor, 'system.stats.globalMods');
+            if (tGlobalMods?.gangUpAttack && Array.isArray(tGlobalMods.gangUpAttack)) {
+              tGlobalMods.gangUpAttack.forEach((m) => {
+                if (!m.ignore) {
+                  gangUpContribution += Number(m.value);
+                }
+              });
+            }
+            return accumulator + gangUpContribution;
+        }, 0) ?? 0;
+
+    //Get all the defender allies that are next to the target
+    const defenderAllies =
+        scene.tokens?.filter((t) => {
+            if (t === targetToken.document) return false;
+            if (t.disposition !== targetToken.document.disposition) return false;
+            if (isIgnoredForGangUp(t)) return false;
+            return withinRange(targetToken, t, 1);
+        });
+
+    //Of the defender allies, count how many are also next to the attacker or his allies
+    const numDefenderAllies =
+        defenderAllies.filter((t) => {
+            if (withinRange(attackerToken, t, 1)) return true;
+            for (const attackerAlly of attackerAllies) {
+                return withinRange(attackerAlly, t, 1);
+            }
+            return false;
+        }).length ?? 0;
+
+    let gangUpBonus = totalAttackerAllyBonus - numDefenderAllies;
+
+    const attackerGlobalMods = foundry.utils.getProperty(attackerActor, 'system.stats.globalMods');
+
+    if (attackerGlobalMods?.gangUpAttack && Array.isArray(attackerGlobalMods.gangUpAttack)) {
+        attackerGlobalMods.gangUpAttack.forEach((m) => {
+            if (!m.ignore) {
+                gangUpBonus += Number(m.value);
+            }
+        });
     }
 
-    const reduction = gang_up_reduction(target.actor);
-    const addition = gang_up_addition(attacker.actor);
+    //TODO: Remove once system as been updated
+    const attackerHasFormationFighter = attackerActor.items.find((item) => {
+        return item.name.toLowerCase().includes(formationFighterName);
+    });
 
-    let modifier = Math.max(0, attackerAllies - targetAllies - reduction + addition);
+    if (attackerHasFormationFighter) {
+        gangUpBonus += 1;
+    }
 
+    //TODO: Remove once system as been updated
+    gangUpBonus += gang_up_addition(attackerActor);
+
+    if (gangUpBonus <= 0) return 0;
+
+    gangUpBonus = Math.min(4, gangUpBonus);
+
+    //TODO: Remove once system as been updated
     const blockName = game.i18n.localize("BRSW.EdgeName.Block").toLowerCase();
     const impBlockName = game.i18n.localize("BRSW.EdgeName.ImprovedBlock").toLowerCase();
 
-    if (target.actor) {
-        const blockEffects = target.actor.appliedEffects.filter((e) =>
-            e.name.toLowerCase().includes(blockName) &&
-            !e.changes.find(c => c.key === "brsw-ac.gangup-reduction")
+    if (targetActor) {
+        gangUpBonus -= gang_up_reduction(targetActor);
+
+        const blockEffects = targetActor.appliedEffects.filter((e) =>
+            e.name.toLowerCase().includes(blockName)
         );
 
-        const impBlockEffects = target.actor.appliedEffects.filter((e) =>
-            e.name.toLowerCase().includes(impBlockName) &&
-            !e.changes.find(c => c.key === "brsw-ac.gangup-reduction")
+        const impBlockEffects = targetActor.appliedEffects.filter((e) =>
+            e.name.toLowerCase().includes(impBlockName)
         );
 
         if (impBlockEffects.length) {
-            modifier = Math.max(0, modifier - 2);
+            gangUpBonus -= 2;
         } else if (blockEffects.length) {
-            modifier = Math.max(0, modifier - 1);
+            gangUpBonus -= 1;
         }
     }
 
-    return { name: game.i18n.localize("BRSW.GangUp"), bonus: Math.min(4, modifier) };
+    const targetGlobalMods = targetActor
+        ? (foundry.utils.getProperty(targetActor, 'system.stats.globalMods'))
+        : {};
+
+    if (targetGlobalMods?.gangUpDefend && Array.isArray(targetGlobalMods.gangUpDefend)) {
+        targetGlobalMods.gangUpDefend.forEach((m) => {
+            if (!m.ignore) {
+                gangUpBonus -= Number(m.value);
+            }
+        });
+    }
+
+    if (gangUpBonus < 0) return 0;
+
+    return { name: game.i18n.localize("BRSW.GangUp"), bonus: gangUpBonus };
 }
 
 /**
@@ -667,25 +710,37 @@ function gang_up_addition(attacker) {
 
 // function from Kekilla
 function withinRange(origin, target, range) {
+    origin = origin instanceof TokenDocument ? origin.object : origin;
+    target = target instanceof TokenDocument ? target.object : target;
     if (Math.abs(origin.document.elevation - target.document.elevation) >= 1) {
         return false;
     }
     const grid_unit = canvas.grid.distance;
     let distance = measureDistance(origin, target);
     distance /= grid_unit;
-    return range > distance;
+    return distance <= range;
 }
 
 /**
  * Check if a combatant is able to contribute to gang-up
- * @param {Combatant} combatant
- * @param {SwadeActor} actor
+ * @param {Token} token
  */
-function combatant_gives_gangup(combatant, actor) {
-    let unable_to_contribute =
-        actor.system.status.isStunned || actor.statuses.has("incapacitated");
-    if (combatant) {
-        unable_to_contribute = unable_to_contribute || combatant.defeated;
+function isIgnoredForGangUp(token) {
+    const ignoreStatuses = ['defeated', 'dead', 'incapacitated', 'stunned'];
+    if (ignoreStatuses.some((status) => token.hasStatusEffect(status))) {
+        return true;
     }
-    return !unable_to_contribute;
+
+    if (token.combatant?.defeated || token.combatant?.isDefeated) {
+        return true;
+    }
+
+    if (!token.actor) {
+        //skip if the token has no actor
+        console.warn(`Token ${token.uuid} has no actor!`);
+        return true;
+    }
+
+    const actorIncapacitated = foundry.utils.getProperty(token.actor, 'system.status.isIncapacitated');
+    return !!actorIncapacitated;
 }
