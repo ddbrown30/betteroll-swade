@@ -109,17 +109,29 @@ export function broofa() {
 
 export async function cacheSkillData() {
     game.brsw.SKILLS_DATA = {};
-    for (const pack of game.packs) {
-        if (pack.metadata.type === "Item") {
-            let packIndex = await pack.getIndex({ fields: ["system"] });
-            const skills = packIndex.filter(i => i.type === "skill");
-            for (const skill of skills) {
-                if (skill.system.swid && !game.brsw.SKILLS_DATA[skill.system.swid] && skill.system.attribute) {
-                    game.brsw.SKILLS_DATA[skill.system.swid] = {
-                        name: skill.name,
-                        attribute: skill.system.attribute,
-                    }
+
+    const skillPacks = game.packs.filter((pack) =>
+    pack.metadata.type === "Item" &&
+    pack.metadata.name.toLowerCase().includes("skill"));
+
+    for (const pack of skillPacks) {
+        let packIndex = await pack.getIndex({ fields: ["system"] });
+        const skills = packIndex.filter(i => i.type === "skill");
+        for (const skill of skills) {
+            if (skill.system.swid && !game.brsw.SKILLS_DATA[skill.system.swid] && skill.system.attribute) {
+                game.brsw.SKILLS_DATA[skill.system.swid] = {
+                    name: skill.name,
+                    attribute: skill.system.attribute,
                 }
+            }
+        }
+    }
+
+    for (const item of game.items) {
+        if (item.type === "skill" && item.system.swid && !game.brsw.SKILLS_DATA[item.system.swid] && item.system.attribute) {
+            game.brsw.SKILLS_DATA[item.system.swid] = {
+                name: item.name,
+                attribute: item.system.attribute,
             }
         }
     }
