@@ -143,8 +143,6 @@ function get_pp_mods(item) {
     };
     pp_mods.genericMods = get_current_generic_mods().map(mod => ({ ...mod, selected: false }));
 
-    const toTitleCase = str => str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
-
     const descriptionDoc = new DOMParser().parseFromString(item.system.description, "text/html");
     const modifiers = Array.from(descriptionDoc.querySelectorAll("li"))
         .map(li => {
@@ -160,7 +158,7 @@ function get_pp_mods(item) {
 
             if (mod.name.toLowerCase() == "additional recipients") {
                 pp_mods.additionalRecipientsMod = {
-                    name: toTitleCase(mod.name),
+                    name: Utils.toTitleCase(mod.name),
                     cost: mod.costs[0],
                     isEpic: mod.isEpic,
                     count: 0,
@@ -177,7 +175,7 @@ function get_pp_mods(item) {
             for (let cost of mod.costs) {
                 if (cost !== "+0") {
                     pp_mods.powerMods.push({
-                        name: toTitleCase(mod.name),
+                        name: Utils.toTitleCase(mod.name),
                         cost: cost,
                         isEpic: mod.isEpic,
                         selected: false,
