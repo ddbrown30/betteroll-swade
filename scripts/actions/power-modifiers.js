@@ -129,7 +129,7 @@ export const POWER_MODIFIERS = [
     id: "POWERBURSTMOD1DAMAGE",
     name: "BRSW.PowerModifiers.BurstDamageName",
     button_name: "BRSW.PowerModifiers.BurstDamage",
-    dmgMod: "3d6x",
+    dmgOverride: "3d6x",
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
       { selector_type: "item_name", selector_value: "Burst" }
@@ -141,7 +141,7 @@ export const POWER_MODIFIERS = [
     id: "POWERBURSTMOD3GREATERBURST",
     name: "BRSW.PowerModifiers.BurstGreaterBurstName",
     button_name: "BRSW.PowerModifiers.BurstGreaterBurst",
-    dmgMod: "4d6x",
+    dmgOverride: "4d6x",
     isHeavyWeapon: true,
     and_selector: [
       { selector_type: "item_type", selector_value: "power" },
