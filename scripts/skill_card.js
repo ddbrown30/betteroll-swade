@@ -621,9 +621,6 @@ export function calculateGangUp(attackerToken, targetToken) {
         gangUpBonus += 1;
     }
 
-    //TODO: Remove once system as been updated
-    gangUpBonus += gang_up_addition(attackerActor);
-
     if (gangUpBonus <= 0) return 0;
 
     gangUpBonus = Math.min(4, gangUpBonus);
@@ -633,8 +630,6 @@ export function calculateGangUp(attackerToken, targetToken) {
     const impBlockName = game.i18n.localize("BRSW.EdgeName.ImprovedBlock").toLowerCase();
 
     if (targetActor) {
-        gangUpBonus -= gang_up_reduction(targetActor);
-
         const blockEffects = targetActor.appliedEffects.filter((e) =>
             e.name.toLowerCase().includes(blockName)
         );
@@ -665,42 +660,6 @@ export function calculateGangUp(attackerToken, targetToken) {
     if (gangUpBonus < 0) return 0;
 
     return { name: game.i18n.localize("BRSW.GangUp"), bonus: gangUpBonus };
-}
-
-/**
- * Gets the gangup reduction from an actor (using a custom AE
- * @param {Actor} target
- */
-function gang_up_reduction(target) {
-    let reduction = 0;
-    for (const effect of target.appliedEffects) {
-        if (!effect.disabled) {
-            for (const change of effect.changes) {
-                if (change.key === "brsw-ac.gangup-reduction") {
-                    reduction += parseInt(change.value) || 0;
-                }
-            }
-        }
-    }
-    return reduction;
-}
-
-/**
- * Gets the gangup addition from an actor (using a custom AE)
- * @param {Actor} attacker
- */
-function gang_up_addition(attacker) {
-    let addition = 0;
-    for (const effect of attacker.appliedEffects) {
-        if (!effect.disabled) {
-            for (const change of effect.changes) {
-                if (change.key === "brsw-ac.gangup-addition") {
-                    addition += parseInt(change.value) ? change.value : 0;
-                }
-            }
-        }
-    }
-    return addition;
 }
 
 // function from Kekilla
