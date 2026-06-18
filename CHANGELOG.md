@@ -1,8 +1,10 @@
 # Changelog
 
 # Version 5.7.0
-* Changed the skill and skill_linked_attribute to use the requested skill not the used skill
+* Changed the skill and skill_linked_attribute to use the requested skill not the used skill. (Fixes issues with Unskilled checks.)
 * Fixed burst damage mods
+* Added Master of Magic and Master Psionics to the list of arcane mastery edges
+* Updated power mod parsing to support Mega Modifiers in Rifts
 
 # Version 5.6.4
 * Fixed items being broken due to a bad submission
