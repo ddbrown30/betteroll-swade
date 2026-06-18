@@ -145,26 +145,47 @@ Hooks.on("renderChatMessageHTML", (message, html, options) => {
     // This chat card is one of ours
     const card = new BrCommonCard(message);
     activateCardListeners(card, html, message);
+
     // Hide forms to non-master, non owner
     if (!message.isOwner) {
       html
         .querySelectorAll(".brsw-form")
         .forEach((e) => e.classList.add("brsw-collapsed"));
     }
+
     // Hide master only sections
     if (!game.user.isGM) {
       html.querySelectorAll(".brsw-master-only").forEach((e) => e.remove());
     }
+
     // Hide save macro button from non-owner, non-trusted players
     if (!message.isOwner && !game.user.isTrusted) {
       html
         .querySelectorAll(".brsw-owner-trusted-only")
         .forEach((e) => e.remove());
     }
+
     if (Object.keys(message.apps).length < 1) {
       // Don't create popout when rendering popouts.
       card.create_popout();
     }
+
+    const headerTitle = html.querySelector(".brsw-header-title");
+    if (headerTitle) {
+      function measureTextWidth(text, font) {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        ctx.font = font;
+        return ctx.measureText(text).width;
+      }
+
+      const width = measureTextWidth(headerTitle.textContent, "18px Signika");
+      const maxWidth = 168;
+      const defaultFontSize = 18;
+      const fontSize = width > 0 ? Math.min(defaultFontSize, defaultFontSize * (maxWidth / width)) : defaultFontSize;
+      headerTitle.style.setProperty("font-size", `${fontSize}px`);
+    }
+
     // Scroll the chat to the bottom if this is the last message
     if (game.messages.contents[game.messages.contents.length - 1] === message) {
       const chat_bar = document.querySelector(".chat-log");
