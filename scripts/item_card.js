@@ -184,9 +184,9 @@ function get_pp_mods(item) {
         //Walk through all the nodes saving our lis
         //Once we hit the mega mods text, start putting the lis into a different array
         while ((node = walker.nextNode())) {
-            if (!afterMegaMods && node.textContent.includes(megaModsText)) {
-                //We've hit the Mega Mods text. Treat all lis after this points as mega mods
-                afterMegaMods = true;
+            if (!afterMegaMods && (node.tagName === "H2" || node.tagName === "H3")) {
+                //If we hit the Mega Mods text, treat all lis after this point as mega mods
+                afterMegaMods = node.textContent.includes(megaModsText);
                 continue;
             }
 
