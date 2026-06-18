@@ -2,6 +2,7 @@
 /* globals Token, TokenDocument, game, CONST, canvas, console, CONFIG, ChatMessage, ui, Hooks, Roll, succ, structuredClone, $, fromUuid */
 // noinspection JSCheckFunctionSignatures
 
+import * as BRSW2_CONFIG from "./brsw2-config.js";
 import {
     BRSW_CONST,
     BRWSRoll,
@@ -37,8 +38,6 @@ import { PPManagementDialog } from "./pp_management_dialog.js";
 import { get_current_generic_mods } from "../config/generic_pp_modifiers.js";
 import { calculateGangUp } from "./skill_card.js";
 
-const ATTRIBUTES = ["agility", "smarts", "spirit", "strength", "vigor"];
-
 const ROF_BULLETS = { 1: 1, 2: 5, 3: 10, 4: 20, 5: 40, 6: 50 };
 
 /**
@@ -56,55 +55,44 @@ export async function create_item_card(
     item_id,
     { actions_stored = {} } = {},
 ) {
-    let actor;
-    if (
-        origin instanceof TokenDocument ||
-        origin instanceof foundry.canvas.placeables.Token
-    ) {
+    let actor = origin;
+    if (origin instanceof TokenDocument || origin instanceof foundry.canvas.placeables.Token) {
         actor = origin.actor;
-    } else {
-        actor = origin;
     }
-    let item = actor.items.find((item) => {
-        return item.id === item_id;
-    });
-    if (!item) {
-        item = await fromUuid(item_id);
-    }
-    if (
-        item.type === "action" &&
-        SettingsUtils.getWorldSetting("disable_for_actions")
-    ) {
+
+    let item = await fromUuid(item_id);
+    if (item.type === "action" && SettingsUtils.getWorldSetting("disable_for_actions")) {
         // Disable actions
         item.show();
         return;
     }
-    const trait = Utils.getItemTrait(item, actor);
+
     let notes = "";
     if (item.system.notes && item.system.notes.length < 50) {
         notes = item.system.notes;
     }
+
     const description = item.system.description;
     let damage = item.system.damage;
-    let possible_default_dmg_action;
-    const ammon_enabled = parseInt(item.system.shots) || item.system.ammo;
+    const ammoEnabled = parseInt(item.system.shots) || item.system.ammo;
     const is_power = !isNaN(parseFloat(item.system.pp)) || item.type === "power";
-    const subtract_select = ammon_enabled
+    const subtract_select = ammoEnabled
         ? SettingsUtils.getWorldSetting("default-ammo-management")
         : false;
+
     if (!damage && item.system.actions) {
         damage = check_for_actions_with_damage(item);
     }
-    if (!damage && possible_default_dmg_action) {
-        damage = possible_default_dmg_action;
-    }
+
+    const trait = Utils.getItemTrait(item, actor);
+
     const br_message = create_common_card(
         origin,
         {
             header: { type: "Item", title: item.name, img: item.img },
             notes: notes,
             trait_id: trait ? trait.id || trait : false,
-            ammo: ammon_enabled,
+            ammo: ammoEnabled,
             subtract_selected: subtract_select,
             subtractPP: is_power
                 ? SettingsUtils.getWorldSetting("default-pp-management")
@@ -582,7 +570,7 @@ async function roll_resist(trait, br_card, trait_mod) {
     for (const token of canvas.tokens.controlled) {
         const trait_lower = trait.toLowerCase();
         let new_card;
-        if (ATTRIBUTES.includes(trait_lower)) {
+        if (BRSW2_CONFIG.ATTRIBUTES.includes(trait_lower)) {
             new_card = await game.brsw.create_atribute_card(
                 token,
                 trait.toLowerCase(),

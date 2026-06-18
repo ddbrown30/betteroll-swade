@@ -203,6 +203,7 @@
   "BRSW.NoAmmunition": "You have insufficient ammunition.",
   "BRSW.NoBennies": "You have no Bennies left.",
   "BRSW.NoGroup": "No group",
+  "BRSW.NoGunner": "The vehicle has no gunner assigned to that weapon and no operator assigned to the vehicle.",
   "BRSW.none": "none",
   "BRSW.NonlethalDamage": "Nonlethal damage (-1)",
   "BRSW.NonlethalDamageName": "Nonlethal damage",

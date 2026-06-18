@@ -5,6 +5,8 @@ export const MODULE_NAME = "betterrolls-swade2";
 //export const MODULE_SHORT_TITLE = "BR2";
 //export const MODULE_PATH = "modules/betterrolls-swade2";
 
+export const ATTRIBUTES = ["agility", "smarts", "spirit", "strength", "vigor"];
+
 export const ARCANE_SKILLS = [
   "faith",
   "focus",
