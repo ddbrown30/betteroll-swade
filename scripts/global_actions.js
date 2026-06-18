@@ -212,7 +212,8 @@ export function check_selector(type, value, item, actor) {
                     } else {
                         for (const skillData of Object.values(game.brsw.SKILLS_DATA)) {
                             if (skillData.name.toLowerCase() == itemSkillName) {
-                                attribute = game.brsw.SKILLS_DATA[itemSkillName].attribute;
+                                attribute = skillData.attribute;
+                                break;
                             }
                         }
                     }
