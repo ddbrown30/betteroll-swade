@@ -345,10 +345,18 @@ export function expose_item_functions() {
  * @param {HTMLElement} currentTarget the element that was clicked
  */
 async function item_click_listener(ev, target, currentTarget) {
-    const action = get_action_from_click(ev);
+    let action = get_action_from_click(ev);
     if (action === "system") {
         return;
     }
+
+    if ((action === "trait" || action === "trait_damage") &&
+        ev.target.classList.contains("damage-roll")) {
+        //If we clicked the damage button and we have auto-roll turned on, just show the card
+        //This will ensure we only roll damage
+        action = "card";
+    }
+
     ev.stopImmediatePropagation();
     ev.preventDefault();
     ev.stopPropagation();
@@ -1085,8 +1093,8 @@ function get_target_defense(
                 objective.actor.system.stats.toughness.armor;
             //Get the armor of the location we're targeting
             defense_values.armor =
-                location === "torso" ? objective.actor.system.stats.toughness.armor :
-                    objective.actor.armorPerLocation[location] ?? objective.actor.system.stats.toughness.armor;
+            location === "torso" ? objective.actor.system.stats.toughness.armor :
+                objective.actor.armorPerLocation[location] ?? objective.actor.system.stats.toughness.armor;
             //Add that armor to the base toughness to get the correct toughness
             defense_values.toughness = base_toughness + defense_values.armor;
             defense_values.name = objective.name;
