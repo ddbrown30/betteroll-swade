@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.7.2
+* We now only roll damage when clicking the damage button
+
 # Version 5.7.1
 * Fixed a typo that was breaking a bunch of selectors
 
