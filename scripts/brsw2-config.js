@@ -100,7 +100,8 @@ export const UNTRAINED_SKILLS = [
 export const ARCANE_MASTERY_EDGES = [
   "BRSW.EdgeName.ArcaneMastery",
   "BRSW.EdgeName.DivineMastery",
-  "BRSW.EdgeName.Epic-Mastery",
+  "BRSW.EdgeName.EpicMastery",
+  "BRSW.EdgeName.MasterOfMagic",
 ];
 
 export const MAX_NOPP_PENALTY_ACTION = 6;
