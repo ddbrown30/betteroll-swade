@@ -102,6 +102,7 @@ export const ARCANE_MASTERY_EDGES = [
   "BRSW.EdgeName.DivineMastery",
   "BRSW.EdgeName.EpicMastery",
   "BRSW.EdgeName.MasterOfMagic",
+  "BRSW.EdgeName.MasterPsionics",
 ];
 
 export const MAX_NOPP_PENALTY_ACTION = 6;
