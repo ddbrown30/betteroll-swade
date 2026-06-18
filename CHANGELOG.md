@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.7.1
+* Fixed a typo that was breaking a bunch of selectors
+
 # Version 5.7.0
 * Changed the skill and skill_linked_attribute to use the requested skill not the used skill. (Fixes issues with Unskilled checks.)
 * Fixed burst damage mods
