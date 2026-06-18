@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.6.4
+* Fixed items being broken due to a bad submission
+
 # Version 5.6.3
 * Fixed using items from vehicles
 
