@@ -30,7 +30,7 @@ Please at the very least, tell me what you expect and why do you believe your ap
 
 ## Documentation
 
-In the [Wiki for this repository](https://github.com/javierriveracastro/betteroll-swade/wiki) you will find detailed documentation concerning the critical elements and functionality of Better Rolls fo SWADE.
+In the [Wiki for this repository](https://github.com/ddbrown30/betteroll-swade/wiki) you will find detailed documentation concerning the critical elements and functionality of Better Rolls fo SWADE.
 If you find outdated or missing information please feel free to create an issue to inform me about it.
 
 
