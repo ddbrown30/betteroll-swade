@@ -240,7 +240,7 @@ export function check_selector(type, value, item, actor) {
         selected = true;
     } else if (type === "item_type") {
         selected = item.type === value;
-    } else if (type === "item_is_weapon_or_bolt") {
+    } else if (type === "is_weapon_or_bolt") {
         selected = Utils.isWeaponOrBolt(item);
         if (value === "false") {
             selected = !selected;
