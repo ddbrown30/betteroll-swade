@@ -60,7 +60,15 @@ export async function create_item_card(
         actor = origin.actor;
     }
 
-    let item = await fromUuid(item_id);
+
+    let item = actor.items.find((item) => {
+        return item.id === item_id;
+    });
+
+    if (!item) {
+        item = await fromUuid(item_id);
+    }
+
     if (item.type === "action" && SettingsUtils.getWorldSetting("disable_for_actions")) {
         // Disable actions
         item.show();
