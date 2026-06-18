@@ -41,7 +41,7 @@ import { activate_remove_status_card_listeners } from "./remove_status_cards.js"
 import { create_unshaken_wrapper, create_unstun_wrapper } from "./combat.js";
 import { ModifierSettingsConfiguration } from "./chat_modifers_names.js";
 import { setup_dialog } from "./card-dialog.js";
-import { SettingsUtils, measureDistance } from "./utils.js";
+import { SettingsUtils, cacheSkillData, measureDistance } from "./utils.js";
 import {
   SETTING_KEYS,
   USER_FLAGS,
@@ -64,7 +64,7 @@ Hooks.on(`init`, () => {
 });
 
 // Base Hook
-Hooks.on(`ready`, () => {
+Hooks.on(`ready`, async () => {
   //Update our cached user settings from the user's flags
   const user_settings = SettingsUtils.getModuleFlag(
     game.user,
@@ -86,6 +86,7 @@ Hooks.on(`ready`, () => {
   expose_card_class();
   incapacitation_card_hooks();
   setup_chat_button();
+  await cacheSkillData();
   // Load partials.
   const templatePaths = [
     "modules/betterrolls-swade2/templates/common_card_header.hbs",

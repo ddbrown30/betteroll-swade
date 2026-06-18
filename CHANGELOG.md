@@ -1,5 +1,9 @@
 # Changelog
 
+# Version 5.7.0
+* Changed the skill and skill_linked_attribute to use the requested skill not the used skill
+* Fixed burst damage mods
+
 # Version 5.6.4
 * Fixed items being broken due to a bad submission
 
