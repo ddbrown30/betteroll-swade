@@ -143,32 +143,66 @@ function get_pp_mods(item) {
     };
     pp_mods.genericMods = get_current_generic_mods().map(mod => ({ ...mod, selected: false }));
 
-    const descriptionDoc = new DOMParser().parseFromString(item.system.description, "text/html");
-    const modifiers = Array.from(descriptionDoc.querySelectorAll("li"))
-        .map(li => {
-            const text = li.textContent.trim();
-            const match = text.match(/^(.+?)\s*\(([+-]?\d+(?:\/[+-]?\d+)*)\):/);
-            if (!match) return null;
+    const processLis = (li) => {
+        const text = li.textContent.trim();
+        const match = text.match(/^(.+?)\s*\(([+-]?\d+(?:\/[+-]?\d+)*)\):/);
+        if (!match) return null;
 
-            const mod = {
-                name: match[1],
-                costs: match[2].split("/"),
-                isEpic: li.classList.contains("star-icon"),
+        const mod = {
+            name: match[1],
+            costs: match[2].split("/"),
+            isEpic: li.classList.contains("star-icon"),
+        };
+
+        if (mod.name.toLowerCase() == "additional recipients") {
+            pp_mods.additionalRecipientsMod = {
+                name: Utils.toTitleCase(mod.name),
+                cost: mod.costs[0],
+                isEpic: mod.isEpic,
+                count: 0,
             };
+            return null;
+        }
 
-            if (mod.name.toLowerCase() == "additional recipients") {
-                pp_mods.additionalRecipientsMod = {
-                    name: Utils.toTitleCase(mod.name),
-                    cost: mod.costs[0],
-                    isEpic: mod.isEpic,
-                    count: 0,
-                };
-                return null;
+        return mod;
+    };
+
+    let modifiers = [];
+
+    const descriptionDoc = new DOMParser().parseFromString(item.system.description, "text/html");
+
+    //If we have the Mega Modifiers text in our descriptions, we need to process the lis differently
+    const megaModsText = game.i18n.localize("BRSW.PowerModifiers.MegaModifiers");
+    if (descriptionDoc.documentElement.textContent.includes(megaModsText)) {
+        const normalModLis = [];
+        const megaModLis = [];
+
+        let afterMegaMods = false;
+        let node;
+        const walker = descriptionDoc.createTreeWalker(descriptionDoc.body, NodeFilter.SHOW_ELEMENT);
+
+        //Walk through all the nodes saving our lis
+        //Once we hit the mega mods text, start putting the lis into a different array
+        while ((node = walker.nextNode())) {
+            if (!afterMegaMods && (node.tagName === "H2" || node.tagName === "H3")) {
+                //If we hit the Mega Mods text, treat all lis after this point as mega mods
+                afterMegaMods = node.textContent.includes(megaModsText);
+                continue;
             }
 
-            return mod;
-        })
-        .filter(Boolean);
+            if (node.tagName === "LI") {
+                if (afterMegaMods) megaModLis.push(node);
+                else normalModLis.push(node);
+            }
+        }
+
+        modifiers = Array.from(normalModLis).map(processLis).filter(Boolean);
+        const megaMods = Array.from(megaModLis).map(processLis).filter(Boolean);
+        megaMods.forEach(m => m.isEpic = true); //Set all mega mods as epic since processLis doesn't
+        modifiers = modifiers.concat(megaMods);
+    } else {
+        modifiers = Array.from(descriptionDoc.querySelectorAll("li")).map(processLis).filter(Boolean);
+    }
 
     if (modifiers.length) {
         for (let mod of modifiers) {
