@@ -4,7 +4,7 @@
   "description": "A module to make rolling in SWADE easier for experienced players.",
   "compatibility": {
     "minimum": "14",
-    "verified": "14.361",
+    "verified": "14.364",
     "maximum": "14"
   },
   "languages": [
@@ -70,8 +70,7 @@
     "hotReload": {
       "extensions": [
         "css",
-        "hbs",
-        "html"
+        "hbs"
       ]
     }
   },
@@ -83,7 +82,7 @@
   "media": [
     {
       "type": "screenshot",
-      "url": "https://raw.githubusercontent.com/javierriveracastro/betteroll-swade/version_2/docs/Weapon_Card_Damage_v1-119.jpg",
+      "url": "https://raw.githubusercontent.com/ddbrown30/betteroll-swade/version_2/docs/Weapon_Card_Damage_v1-119.jpg",
       "loop": false,
       "flags": {}
     }
