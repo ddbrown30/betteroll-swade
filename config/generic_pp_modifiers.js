@@ -16,17 +16,20 @@ const DEFAULT_SWADE_GENERIC_POWER_MODIFIERS = [
     {
         name: "BRSW.PowerModifiers.Generic.ArmorPiercing2",
         actionId: "ARMORPIERCING2",
-        cost: "+1"
+        cost: "+1",
+        exclusiveGroup: "AP"
     },
     {
         name: "BRSW.PowerModifiers.Generic.ArmorPiercing4",
         actionId: "ARMORPIERCING4",
-        cost: "+2"
+        cost: "+2",
+        exclusiveGroup: "AP"
     },
     {
         name: "BRSW.PowerModifiers.Generic.ArmorPiercing6",
         actionId: "ARMORPIERCING6",
-        cost: "+3"
+        cost: "+3",
+        exclusiveGroup: "AP"
     },
     {
         name: "BRSW.PowerModifiers.Generic.Fatigue",
@@ -51,11 +54,13 @@ const DEFAULT_SWADE_GENERIC_POWER_MODIFIERS = [
     },
     {
         name: "BRSW.PowerModifiers.Generic.Range2",
-        cost: "+1"
+        cost: "+1",
+        exclusiveGroup: "Range"
     },
     {
         name: "BRSW.PowerModifiers.Generic.Range3",
-        cost: "+2"
+        cost: "+2",
+        exclusiveGroup: "Range"
     },
     {
         name: "BRSW.PowerModifiers.Generic.Selective",

@@ -22,40 +22,18 @@ export class PPManagementDialog extends HandlebarsApplicationMixin(ApplicationV2
         const mods = isGeneric ? this.brCard.pp_modifiers.genericMods : this.brCard.pp_modifiers.powerMods;
         const modName = button.dataset.modname;
         const mod = mods.find(m => m.name == modName);
-        if (mod.selected) {
-          //Deselect
-          button.classList.remove("selected");
-          if (isGeneric) {
-            if (mod.actionId) {
-              const action = this.brCard.get_action_by_id(mod.actionId);
-              if (action) {
-                action.selected = false;
-              }
-            }
-          } else {
-            const action = this.brCard.get_action_by_name(mod.name);
-            if (action) {
-              action.selected = false;
-            }
-          }
-        } else {
-          //Select
-          button.classList.add("selected");
-          if (isGeneric) {
-            if (mod.actionId) {
-              const action = this.brCard.get_action_by_id(mod.actionId);
-              if (action) {
-                action.selected = true;
-              }
-            }
-          } else {
-            const action = this.brCard.get_action_by_name(mod.name);
-            if (action) {
-              action.selected = true;
-            }
-          }
+
+        if (mod.exclusiveGroup) {
+          const groupMods = mods.filter(m => m != mod && m.exclusiveGroup === mod.exclusiveGroup);
+          groupMods.forEach(m => this.deselectMod(m, isGeneric));
         }
-        mod.selected = !mod.selected;
+
+        if (mod.selected) {
+          this.deselectMod(mod, isGeneric);
+        } else {
+          this.selectMod(mod, isGeneric);
+        }
+
         this.refreshPPCost();
       },
       set: async function (event, button) {
@@ -225,6 +203,44 @@ export class PPManagementDialog extends HandlebarsApplicationMixin(ApplicationV2
       maxPP,
       dataKey
     };
+  }
+
+  selectMod(mod, isGeneric) {
+    const button = this.element.querySelector(`[data-modName="${mod.name}"`);
+    button.classList.add("selected");
+    if (isGeneric) {
+      if (mod.actionId) {
+        const action = this.brCard.getActionById(mod.actionId);
+        if (action) {
+          action.selected = true;
+        }
+      }
+    } else {
+      const action = this.brCard.getActionByName(mod.name);
+      if (action) {
+        action.selected = true;
+      }
+    }
+    mod.selected = true;
+  }
+
+  deselectMod(mod, isGeneric) {
+    const button = this.element.querySelector(`[data-modName="${mod.name}"`);
+    button.classList.remove("selected");
+    if (isGeneric) {
+      if (mod.actionId) {
+        const action = this.brCard.getActionById(mod.actionId);
+        if (action) {
+          action.selected = false;
+        }
+      }
+    } else {
+      const action = this.brCard.getActionByName(mod.name);
+      if (action) {
+        action.selected = false;
+      }
+    }
+    mod.selected = false;
   }
 
   bennyRechargePP() {
