@@ -633,7 +633,7 @@ export class BrCommonCard {
         if (this.pp_modifiers.genericMods) {
             for (const mod of this.pp_modifiers.genericMods) {
                 if (mod.actionId) {
-                    const action = this.get_action_by_id(mod.actionId);
+                    const action = this.getActionById(mod.actionId);
                     if (action) {
                         mod.selected = action.selected;
                     }
@@ -643,7 +643,7 @@ export class BrCommonCard {
 
         if (this.pp_modifiers.powerMods) {
             for (const mod of this.pp_modifiers.powerMods) {
-                const action = this.get_action_by_name(mod.name);
+                const action = this.getActionByName(mod.name);
                 if (action) {
                     mod.selected = action.selected;
                 }
@@ -837,10 +837,10 @@ export class BrCommonCard {
     /**
      * Returns an action by name
      */
-    get_action_by_id(action_id) {
+    getActionById(actionId) {
         return Utils.forEachActionGroup(this, group => {
             for (const action of group.actions) {
-                if (action.code.name === action_id) {
+                if (action.code.id === actionId) {
                     return action;
                 }
             }
@@ -850,9 +850,9 @@ export class BrCommonCard {
     /**
      * Returns an action by both localized and un-localized partial name
      */
-    get_action_by_name(action_name) {
-        const lowerName = action_name.toLowerCase();
-        const localLower = game.i18n.localize(action_name).toLowerCase();
+    getActionByName(actionName) {
+        const lowerName = actionName.toLowerCase();
+        const localLower = game.i18n.localize(actionName).toLowerCase();
         return Utils.forEachActionGroup(this, group => {
             for (const action of group.actions) {
                 const nameSimilarity = Utils.actionNameSimilarity(action.code.name, lowerName);
