@@ -1,5 +1,9 @@
 # Changelog
 
+# Version 5.8.0
+* Added exclusiveGroup to generic PP mods
+* Fixed getActionById to actually check the id
+
 # Version 5.7.2
 * We now only roll damage when clicking the damage button
 
