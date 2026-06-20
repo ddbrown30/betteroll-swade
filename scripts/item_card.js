@@ -544,7 +544,7 @@ export function activate_item_card_listeners(br_card, html) {
         half_damage(br_card, ev.currentTarget.dataset.index);
     });
     addEventListenerAll(html, ".brsw-add-damage-number", "click", (ev) => {
-        show_fixed_damage_dialog(ev, br_card.message);
+        show_fixed_damage_dialog(ev, br_card);
     });
     addEventListenerAll(html, ".brsw-template-button", "click", (ev) => {
         preview_template(ev, br_card);
@@ -1654,7 +1654,7 @@ async function add_damage_dice(br_card, index) {
     await update_message(br_card, render_data);
 }
 
-function show_fixed_damage_dialog(event, message) {
+function show_fixed_damage_dialog(event, br_card) {
     // noinspection AnonymousFunctionJS
     const target = event.currentTarget;
     simple_form(
@@ -1664,7 +1664,7 @@ function show_fixed_damage_dialog(event, message) {
             { label: "Value", default_value: 0 },
         ],
         (values) => {
-            add_fixed_damage(target, message, values);
+            add_fixed_damage(target, br_card, values);
         },
     );
 }
@@ -1674,20 +1674,20 @@ function show_fixed_damage_dialog(event, message) {
  * @param event
  * @param form_results
  */
-async function add_fixed_damage(target, message, form_results) {
+async function add_fixed_damage(target, br_card, form_results) {
     const modifier = parseInt(form_results.Value);
     if (!modifier) {
         return;
     }
     const { index } = target.dataset;
-    const render_data = message.getFlag("betterrolls-swade2", "render_data");
+    const render_data = br_card.message.getFlag("betterrolls-swade2", "render_data");
     const damage_rolls = render_data.damage_rolls[index].brswroll;
     damage_rolls.modifiers.push({ value: modifier, name: form_results.Label });
     damage_rolls.rolls[0].result += modifier;
     render_data.damage_rolls[index].damage_result = calculate_damage_results(
         damage_rolls.rolls,
     );
-    await update_message(message, render_data);
+    await update_message(br_card, render_data);
 }
 
 /**

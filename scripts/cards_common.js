@@ -79,10 +79,7 @@ export function expose_card_class() {
  */
 export function create_common_card(origin, render_data, template) {
   let actor;
-  if (
-    origin instanceof TokenDocument ||
-    origin instanceof foundry.canvas.placeables.Token
-  ) {
+  if (origin instanceof TokenDocument ||origin instanceof foundry.canvas.placeables.Token) {
     actor = origin.actor;
   } else {
     actor = origin;
