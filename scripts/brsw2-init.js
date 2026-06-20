@@ -78,6 +78,7 @@ Hooks.on(`ready`, async () => {
       }
     }
   }
+
   // Create a base object to hook functions
   attribute_card_hooks();
   skill_card_hooks();
@@ -348,8 +349,8 @@ Hooks.once("diceSoNiceReady", () => {
 
 // Settings
 
-function register_world_settings() {
-  const br_choices = {
+function registerWorldSettings() {
+  const clickActionChoices = {
     system: game.i18n.localize("BRSW.ClickActionTypes.DefaultSystemRoll"),
     card: game.i18n.localize("BRSW.ClickActionTypes.ShowBetterrollsCard"),
     dialog: game.i18n.localize("BRSW.ClickActionTypes.ShowDialog"),
@@ -361,28 +362,28 @@ function register_world_settings() {
     hint: game.i18n.localize("BRSW.Settings.SingleClickAction.Hint"),
     default: "card",
     type: String,
-    choices: br_choices,
+    choices: clickActionChoices,
   });
   SettingsUtils.registerBR2WorldSetting("shift_click", {
     name: game.i18n.localize("BRSW.Settings.ShiftClickAction.Name"),
     hint: game.i18n.localize("BRSW.Settings.ShiftClickAction.Hint"),
     default: "system",
     type: String,
-    choices: br_choices,
+    choices: clickActionChoices,
   });
   SettingsUtils.registerBR2WorldSetting("ctrl_click", {
     name: game.i18n.localize("BRSW.Settings.ControlClickAction.Name"),
     hint: game.i18n.localize("BRSW.Settings.ControlClickAction.Hint"),
     default: "trait",
     type: String,
-    choices: br_choices,
+    choices: clickActionChoices,
   });
   SettingsUtils.registerBR2WorldSetting("alt_click", {
     name: game.i18n.localize("BRSW.Settings.AltClickAction.Name"),
     hint: game.i18n.localize("BRSW.Settings.AltClickAction.Hint"),
     default: "system",
     type: String,
-    choices: br_choices,
+    choices: clickActionChoices,
   });
   SettingsUtils.registerBR2WorldSetting("no-action-message", {
     name: game.i18n.localize("BRSW.Settings.NoActionMessage.Name"),
@@ -515,6 +516,64 @@ function register_world_settings() {
     default: false,
     type: Boolean,
   });
+
+  //Update our cached world settings with our saved data
+  const world_settings = SettingsUtils.getSetting(SETTING_KEYS.world_settings);
+  if (world_settings) {
+    for (const key in WORLD_SETTINGS) {
+      if (world_settings[key] !== undefined) {
+        WORLD_SETTINGS[key].value = world_settings[key].value;
+      }
+    }
+  }
+}
+
+function registerUserSettings() {
+  //Register BR2 user settings
+  SettingsUtils.registerBR2UserSetting("default_rate_of_fire", {
+    name: game.i18n.localize("BRSW.Settings.DefaultRateOfFire.Name"),
+    hint: game.i18n.localize("BRSW.Settings.DefaultRateOfFire.Hint"),
+    default: "single_shot",
+    type: String,
+    choices: {
+      single_shot: game.i18n.localize("BRSW.ROFTypes.SingleShot"),
+      max_rof: game.i18n.localize("BRSW.ROFTypes.Max"),
+    },
+  });
+  SettingsUtils.registerBR2UserSetting("expand-results", {
+    name: game.i18n.localize("BRSW.Settings.ExpandResults.Name"),
+    hint: game.i18n.localize("BRSW.Settings.ExpandResults.Hint"),
+    default: false,
+    type: Boolean,
+  });
+  SettingsUtils.registerBR2UserSetting("expand-rolls", {
+    name: game.i18n.localize("BRSW.Settings.ExpandRolls.Name"),
+    hint: game.i18n.localize("BRSW.Settings.ExpandRolls.Hint"),
+    default: false,
+    scope: "world",
+    type: Boolean,
+    config: true,
+  });
+  SettingsUtils.registerBR2UserSetting("expand-descriptions", {
+    name: game.i18n.localize("BRSW.Settings.ExpandDescriptions.Name"),
+    hint: game.i18n.localize("BRSW.Settings.ExpandDescriptions.Hint"),
+    default: false,
+    scope: "world",
+    type: Boolean,
+    config: true,
+  });
+  SettingsUtils.registerBR2UserSetting("auto_popout_chat", {
+    name: "BRSW.Settings.PopoutChat.Name",
+    hint: "BRSW.Settings.PopoutChat.Hint",
+    default: true,
+    type: Boolean,
+  });
+  SettingsUtils.registerBR2UserSetting("popout_chat_button", {
+    name: "BRSW.Settings.PopoutChatButton.Name",
+    hint: "BRSW.Settings.PopoutChatButton.Hint",
+    default: false,
+    type: Boolean,
+  });
 }
 
 function register_settings_version2() {
@@ -588,62 +647,9 @@ function register_settings_version2() {
     type: Object,
     config: false,
   });
-  register_world_settings();
-  //Register BR2 user settings
-  SettingsUtils.registerBR2UserSetting("default_rate_of_fire", {
-    name: game.i18n.localize("BRSW.Settings.DefaultRateOfFire.Name"),
-    hint: game.i18n.localize("BRSW.Settings.DefaultRateOfFire.Hint"),
-    default: "single_shot",
-    type: String,
-    choices: {
-      single_shot: game.i18n.localize("BRSW.ROFTypes.SingleShot"),
-      max_rof: game.i18n.localize("BRSW.ROFTypes.Max"),
-    },
-  });
-  SettingsUtils.registerBR2UserSetting("expand-results", {
-    name: game.i18n.localize("BRSW.Settings.ExpandResults.Name"),
-    hint: game.i18n.localize("BRSW.Settings.ExpandResults.Hint"),
-    default: false,
-    type: Boolean,
-  });
-  SettingsUtils.registerBR2UserSetting("expand-rolls", {
-    name: game.i18n.localize("BRSW.Settings.ExpandRolls.Name"),
-    hint: game.i18n.localize("BRSW.Settings.ExpandRolls.Hint"),
-    default: false,
-    scope: "world",
-    type: Boolean,
-    config: true,
-  });
-  SettingsUtils.registerBR2UserSetting("expand-descriptions", {
-    name: game.i18n.localize("BRSW.Settings.ExpandDescriptions.Name"),
-    hint: game.i18n.localize("BRSW.Settings.ExpandDescriptions.Hint"),
-    default: false,
-    scope: "world",
-    type: Boolean,
-    config: true,
-  });
-  SettingsUtils.registerBR2UserSetting("auto_popout_chat", {
-    name: "BRSW.Settings.PopoutChat.Name",
-    hint: "BRSW.Settings.PopoutChat.Hint",
-    default: true,
-    type: Boolean,
-  });
-  SettingsUtils.registerBR2UserSetting("popout_chat_button", {
-    name: "BRSW.Settings.PopoutChatButton.Name",
-    hint: "BRSW.Settings.PopoutChatButton.Hint",
-    default: false,
-    type: Boolean,
-  });
 
-  //Update our cached world settings with our saved data
-  const world_settings = SettingsUtils.getSetting(SETTING_KEYS.world_settings);
-  if (world_settings) {
-    for (const key in WORLD_SETTINGS) {
-      if (world_settings[key] !== undefined) {
-        WORLD_SETTINGS[key].value = world_settings[key].value;
-      }
-    }
-  }
+  registerWorldSettings();
+  registerUserSettings();
 }
 
 // Settings related to Dice So Nice.
