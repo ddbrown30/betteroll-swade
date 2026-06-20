@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.8.1
+* Fixed adding fixed damage
+
 # Version 5.8.0
 * Added exclusiveGroup to generic PP mods
 * Fixed getActionById to actually check the id
