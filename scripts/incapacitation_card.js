@@ -136,7 +136,7 @@ export function activate_incapacitation_card_listeners(message, html) {
   });
   html.querySelector(".brsw-injury-button")?.addEventListener("click", (ev) => {
     // noinspection JSIgnoredPromiseFromCall
-    br_card.close_popout(); //We assume we're done with the card at this point so close any popouts
+    br_card.closePopout(); //We assume we're done with the card at this point so close any popouts
     create_injury_card(
       br_card.token_id,
       ev.currentTarget.dataset.injuryType,
@@ -276,7 +276,7 @@ export async function create_injury_card(token_id, reason) {
   );
   br_message.update_list = { ...br_message.update_list, ...{ user: user.id } };
   br_message.type = BRSW_CONST.TYPE_INJ_CARD;
-  br_message.popup_shown = true; //The injury result has no action, so we don't show the popout
+  br_message.popoutShown = true; //The injury result has no action, so we don't show the popout
   await br_message.render();
   await br_message.save();
   Hooks.call("BRSW-InjuryAEApplied", br_message, injury_effect, reason);

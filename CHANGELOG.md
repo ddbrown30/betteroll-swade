@@ -1,7 +1,8 @@
 # Changelog
 
 # Version 5.8.1
-* Fixed adding fixed damage
+* Fixed popout showing when disconnected users connect
+* Fixed error when adding fixed damage
 
 # Version 5.8.0
 * Added exclusiveGroup to generic PP mods

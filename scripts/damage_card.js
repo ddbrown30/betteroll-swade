@@ -68,7 +68,7 @@ export async function create_damage_card(
   );
   if (wounds === 0) {
     //If we're not dealing any wounds, don't bother popping out the card since there's no action required
-    br_message.popup_shown = true;
+    br_message.popoutShown = true;
   }
   br_message.update_list = { ...br_message.update_list, ...{ user: user.id } };
   br_message.type = BRSW_CONST.TYPE_DMG_CARD;
@@ -234,7 +234,7 @@ export function activate_damage_card_listeners(message, html) {
   });
   html.querySelector(".brsw-show-incapacitation")?.addEventListener("click", () => {
     // noinspection JSIgnoredPromiseFromCall
-    br_card.close_popout(); //We assume we're done with the card at this point so close any popouts
+    br_card.closePopout(); //We assume we're done with the card at this point so close any popouts
     create_incapacitation_card(br_card.token_id).catch(() => {
       console.error("Error creating incapacitation card");
     });
