@@ -84,6 +84,7 @@ export function create_common_card(origin, render_data, template) {
   } else {
     actor = origin;
   }
+
   if (render_data.tooltip) {
     render_data.tooltip = // Limit tooltip size.
       render_data.tooltip.length <
@@ -91,13 +92,16 @@ export function create_common_card(origin, render_data, template) {
         ? render_data.tooltip
         : null;
   }
+
   const br_message = new BrCommonCard(undefined);
   br_message.actor_id = actor.id;
+
   if (actor !== origin) {
     br_message.token_id = origin.id;
   } else if (actor.isToken) {
     br_message.token_id = actor.token.id;
   }
+
   br_message.generate_render_data(render_data, template);
   return br_message;
 }
@@ -380,7 +384,7 @@ export function activate_common_listeners(br_card, html) {
     });
   // Popout card
   html.querySelector(".brsw-popout-button")?.addEventListener("click", () => {
-    br_card.show_popup();
+    br_card.showPopout();
   });
 }
 

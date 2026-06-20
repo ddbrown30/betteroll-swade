@@ -55,7 +55,7 @@ export class BrCommonCard {
         this.update_list = {}; // List of properties pending to be updated
         this.resist_buttons = [];
         this.trait_roll = new TraitRoll();
-        this.popup_shown = false;
+        this.popoutShown = false;
         this.manual_mods = {};
         this.applicable_effects = [];
         this.pp_modifiers = {};
@@ -87,35 +87,38 @@ export class BrCommonCard {
         this.update_list = {};
     }
 
-    create_popout() {
-        if (game.user.id !== this.message.author.id || this.popup_shown) {
+    createPopout() {
+        if (game.user.id !== this.message.author.id || this.popoutShown) {
             return;
         }
+
         if (SettingsUtils.getUserSetting("auto_popout_chat")) {
-            this.show_popup();
+            this.showPopout();
         }
     }
 
-    show_popup() {
-        const top =
-            cascade_starting_left + game.brsw.cascade_count * cascade_left_increment;
-        const left =
-            cascade_starting_top + game.brsw.cascade_count * cascade_top_increment;
+    showPopout() {
+        const top = cascade_starting_left + game.brsw.cascade_count * cascade_left_increment;
+        const left = cascade_starting_top + game.brsw.cascade_count * cascade_top_increment;
+
         game.brsw.cascade_count =
             game.brsw.cascade_count + 1 < cascade_max_cascades
                 ? game.brsw.cascade_count + 1
                 : 0;
+
         new CONFIG.ChatMessage.popoutClass({
             message: this.message,
             position: { top: top, left: left },
         }).render(true);
-        this.popup_shown = true;
+
+        this.popoutShown = true;
+
         this.save().catch(() => {
-            console.error("Error saving card data after popup rendering");
+            console.error("Error saving card data after popout rendering");
         });
     }
 
-    close_popout() {
+    closePopout() {
         for (const app of Object.values(this.message.apps)) {
             if (app.constructor.name === "ChatPopout") {
                 app.close();
@@ -145,7 +148,7 @@ export class BrCommonCard {
             trait_roll: this.trait_roll,
             resist_buttons: this.resist_buttons,
             damage: this.damage,
-            popup_shown: this.popup_shown,
+            popoutShown: this.popoutShown,
             manual_mods: this.manual_mods,
             applicable_effects: this.applicable_effects,
             pp_modifiers: this.pp_modifiers,
@@ -171,7 +174,7 @@ export class BrCommonCard {
             "macro_buttons",
             "resist_buttons",
             "damage",
-            "popup_shown",
+            "popoutShown",
             "manual_mods",
             "applicable_effects",
             "pp_modifiers",
@@ -188,8 +191,8 @@ export class BrCommonCard {
             );
         }
         //Backwards compatibility so that we don't show a bunch of old popouts
-        if (data.popup_shown_to?.length > 0) {
-            data.popup_shown = true;
+        if (data.popup_shown !== undefined) {
+            this.popoutShown = true;
         }
     }
 
@@ -797,6 +800,14 @@ export class BrCommonCard {
             this.update_list.content = new_content;
         } else {
             await this.create_foundry_message(new_content);
+
+            //If auto-popout is disabled, mark our popout as shown so that we won't show a bunch of old popouts if it's later enabled
+            this.popoutShown = !SettingsUtils.getUserSetting("auto_popout_chat");
+
+            if (!this.message.author.active) {
+                //If the author isn't connected, mark the popout as shown so that we don't pop it out when they connect
+                this.popoutShown = true;
+            }
         }
     }
 
@@ -824,7 +835,7 @@ export class BrCommonCard {
             this.skill ||
             this.damage
         );
-        data.show_popup_button = SettingsUtils.getUserSetting("popout_chat_button");
+        data.showPopoutButton = SettingsUtils.getUserSetting("popout_chat_button");
         data.showShotsPPInfo = SettingsUtils.getWorldSetting("show_pp_shots_info");
         data.noPowerPoints = game.settings.get("swade", "noPowerPoints");
         data.ppPenalty = -Math.ceil(this.pp_cost / 2);

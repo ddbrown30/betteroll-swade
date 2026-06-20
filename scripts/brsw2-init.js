@@ -167,8 +167,8 @@ Hooks.on("renderChatMessageHTML", (message, html, options) => {
     }
 
     if (Object.keys(message.apps).length < 1) {
-      // Don't create popout when rendering popouts.
-      card.create_popout();
+      // Don't create a popout when rendering popouts
+      card.createPopout();
     }
 
     const headerTitle = html.querySelector(".brsw-header-title");
