@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.9.0
+* Added Tamil
+
 # Version 5.8.1
 * Fixed popout showing when disconnected users connect
 * Fixed error when adding fixed damage
