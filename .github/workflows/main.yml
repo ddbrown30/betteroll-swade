@@ -13,7 +13,7 @@ jobs:
     # Substitute the Manifest and Download URLs in the module.json
     - name: Substitute Manifest and Download Links For Versioned Ones
       id: sub_manifest_link_version
-      uses: qetza.replacetokens.replacetokens-task.replacetokens@7
+      uses: qetza/replacetokens-action@v2.0.0
       with:
         files: 'module.json'
       env:
