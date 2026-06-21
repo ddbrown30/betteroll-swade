@@ -55,6 +55,12 @@
       "name": "Russian",
       "path": "lang/ru.json",
       "flags": {}
+    },
+    {
+      "lang": "ta",
+      "name": "Tamil",
+      "path": "lang/ta.json",
+      "flags": {}
     }
   ],
   "esmodules": ["scripts/brsw2-init.js"],
