@@ -14,8 +14,8 @@ jobs:
     - name: Substitute Manifest and Download Links For Versioned Ones
       id: sub_manifest_link_version
       uses: qetza/replacetokens-action@v2.0.0
-      with:
-        files: 'module.json'
+      inputs:
+        sources: 'module.json'
       env:
         version: ${{github.event.release.tag_name}}
         url: https://github.com/${{github.repository}}
