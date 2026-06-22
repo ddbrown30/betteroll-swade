@@ -1,5 +1,9 @@
 # Changelog
 
+# Version 5.10.0
+* Removed the hard-coded checks in the gang up calculation now that gangUpAttack/gangUpDefend is available
+* Fixed called shots armor calculation
+
 # Version 5.9.0
 * Fixed gang up range check for diagonals
 * Improved edge measurement
