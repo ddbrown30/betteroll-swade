@@ -2,6 +2,7 @@
 
 # Version 5.9.0
 * Added Tamil
+* Fixed gang up range check for diagonals
 
 # Version 5.8.1
 * Fixed popout showing when disconnected users connect
