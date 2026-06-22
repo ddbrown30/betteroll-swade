@@ -297,12 +297,23 @@ export function measureDistance(tokenA, tokenB) {
             }
         }
     }
+
     let measured_distance = measurePath([
         closestPair.a.coords,
         closestPair.b.coords,
     ]);
+
     if (SettingsUtils.getWorldSetting("measure_from_edge")) {
-        measured_distance -= game.scenes.current.grid.distance;
+        //If we're measuring from the edge, we need to offset from the center of the grid space to the edge
+        //To do this, we need to find the intersection distance from center to edge based on the angle between the two tokens
+        const dist = Math.sqrt(closestPair.dist);
+        const dir = {
+            x: (closestPair.b.coords.x - closestPair.a.coords.x) / dist,
+            y: (closestPair.b.coords.y - closestPair.a.coords.y) / dist,
+        };
+
+        const distanceToEdge = (game.scenes.current.grid.distance / 2) / Math.max(Math.abs(dir.x), Math.abs(dir.y));
+        measured_distance -= (distanceToEdge * 2); //Times 2 because we're offsetting the distance for both tokens
     }
     return measured_distance;
 }
