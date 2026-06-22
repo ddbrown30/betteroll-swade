@@ -552,7 +552,7 @@ export function calculateGangUp(attackerToken, targetToken) {
         0 : //0 when using edge distance since edges have to be touching
         Math.SQRT2; //Range is SQRT2 to account for diagonals
 
-    if (game.scenes.current.grid.isGridless) {
+    if (scene.grid.isGridless) {
         //If we're gridless, give a bit of extra buffer so placement doesn't have to be so exact
         meleeRange += 0.5;
     }
