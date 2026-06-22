@@ -77,15 +77,15 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
     switch (partId) {
       case 'world':
         context.can_modify_world = game.user.hasPermission("SETTINGS_MODIFY");
-        context.world_settings = [];
+        context.worldSettings = [];
         for (let setting of Object.values(WORLD_SETTINGS)) {
-          context.world_settings.push(this.get_setting_data(setting));
+          context.worldSettings.push(this.get_setting_data(setting));
         }
         break;
       case 'user':
-        context.user_settings = [];
+        context.userSettings = [];
         for (let setting of Object.values(USER_SETTINGS)) {
-          context.user_settings.push(this.get_setting_data(setting));
+          context.userSettings.push(this.get_setting_data(setting));
         }
         break;
       case 'footer':
@@ -135,15 +135,15 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
 
     if (can_modify_world) {
       await SettingsUtils.setSetting(
-        SETTING_KEYS.world_settings,
+        SETTING_KEYS.worldSettings,
         WORLD_SETTINGS,
       );
     }
 
-    await game.user.unsetFlag(MODULE_NAME, USER_FLAGS.user_settings);
+    await game.user.unsetFlag(MODULE_NAME, USER_FLAGS.userSettings);
     await game.user.setFlag(
       MODULE_NAME,
-      USER_FLAGS.user_settings,
+      USER_FLAGS.userSettings,
       USER_SETTINGS,
     );
 
@@ -246,10 +246,10 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
 
     await SettingsUtils.setSetting(SETTING_KEYS.world_settings, WORLD_SETTINGS);
 
-    await game.user.unsetFlag(MODULE_NAME, USER_FLAGS.user_settings);
+    await game.user.unsetFlag(MODULE_NAME, USER_FLAGS.userSettings);
     await game.user.setFlag(
       MODULE_NAME,
-      USER_FLAGS.user_settings,
+      USER_FLAGS.userSettings,
       USER_SETTINGS,
     );
 

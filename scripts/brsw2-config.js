@@ -120,12 +120,13 @@ export const ATTRIBUTES_TRANSLATION_KEYS = {
 };
 
 export const SETTING_KEYS = {
-  world_settings: "world_settings",
+  enabledOptionalRules: "optional_rules_enabled",
+  worldSettings: "world_settings",
   auto_check_extra_fumbles: "auto_check_extra_fumbles",
 };
 
 export const USER_FLAGS = {
-  user_settings: "user_settings",
+  userSettings: "user_settings",
 };
 
 export const WORLD_SETTINGS = {};

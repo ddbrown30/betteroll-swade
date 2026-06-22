@@ -111,8 +111,8 @@ export async function cacheSkillData() {
     game.brsw.SKILLS_DATA = {};
 
     const skillPacks = game.packs.filter((pack) =>
-    pack.metadata.type === "Item" &&
-    pack.metadata.name.toLowerCase().includes("skill"));
+        pack.metadata.type === "Item" &&
+        pack.metadata.name.toLowerCase().includes("skill"));
 
     for (const pack of skillPacks) {
         let packIndex = await pack.getIndex({ fields: ["system"] });
@@ -122,7 +122,7 @@ export async function cacheSkillData() {
                 game.brsw.SKILLS_DATA[skill.system.swid] = {
                     name: skill.name,
                     attribute: skill.system.attribute,
-                }
+                };
             }
         }
     }
@@ -132,7 +132,7 @@ export async function cacheSkillData() {
             game.brsw.SKILLS_DATA[item.system.swid] = {
                 name: item.name,
                 attribute: item.system.attribute,
-            }
+            };
         }
     }
 }
@@ -751,5 +751,73 @@ export class SettingsUtils {
         return BRSW2_CONFIG.USER_SETTINGS[key].value !== undefined
             ? BRSW2_CONFIG.USER_SETTINGS[key].value
             : BRSW2_CONFIG.USER_SETTINGS[key].default;
+    }
+}
+
+export class TelemetryUtils {
+    static POSTHOG_API_KEY = "phc_pTRr4oK26yQDbmFSkPuCNswLTtZABEHktpn9cNqYuAnr";
+
+    static async getInstallId() {
+        let id = SettingsUtils.getSetting("telemetry_install_id");
+
+        if (!id) {
+            id = foundry.utils.randomID();
+            await SettingsUtils.setSetting("telemetry_install_id", id);
+        }
+
+        return id;
+    }
+
+    static async sendTelemetry(event, includeUserId, properties = {}) {
+        const installId = await TelemetryUtils.getInstallId();
+        const distinctId = includeUserId ? `${installId}:${game.user.id}` : installId;
+
+        properties = {
+            ...properties,
+            moduleVersion: game.modules.get(BRSW2_CONFIG.MODULE_NAME).version,
+            foundryVersion: game.version,
+        }
+
+        await fetch("https://us.i.posthog.com/capture/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                api_key: TelemetryUtils.POSTHOG_API_KEY,
+                event,
+                distinct_id: distinctId,
+                properties
+            })
+        });
+    }
+
+    static sendModuleReadyEvent() {
+        const worldSettings = {};
+
+        Object.entries(BRSW2_CONFIG.WORLD_SETTINGS).forEach(([k, v]) => {
+            worldSettings[k] = v.value;
+            worldSettings[`${k}_is_default`] = v.value === v.default;
+        });
+
+        TelemetryUtils.sendTelemetry("module_ready", false, {
+            ...worldSettings,
+            enabledOptionalRules: SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.enabledOptionalRules),
+        });
+    }
+
+    static sendUserReadyEvent() {
+        const userSettings = {};
+
+        Object.entries(BRSW2_CONFIG.USER_SETTINGS).forEach(([k, v]) => {
+            userSettings[k] = v.value;
+            userSettings[`${k}_is_default`] = v.value === v.default;
+        });
+
+        TelemetryUtils.sendTelemetry("user_ready", true, {
+            isGM: game.user.isGM,
+            lang:game.i18n.lang,
+            ...userSettings,
+        });
     }
 }
