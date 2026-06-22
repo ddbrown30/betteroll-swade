@@ -557,8 +557,6 @@ export function calculateGangUp(attackerToken, targetToken) {
         meleeRange += 0.5;
     }
 
-    const formationFighterName = game.i18n.localize("BRSW.EdgeName.FormationFighter").toLowerCase();
-
     //Get all the attacker allies that are next to the target
     const attackerAllies =
         scene.tokens?.filter((t) => {
@@ -575,12 +573,6 @@ export function calculateGangUp(attackerToken, targetToken) {
     const totalAttackerAllyBonus =
         attackerAllies.reduce((accumulator, t) => {
             let gangUpContribution = 1;
-
-            //TODO: Remove once system as been updated
-            const hasFormationFighter = !!t.actor?.items.find((item) => { return item.name.toLowerCase().includes(formationFighterName); });
-            if (hasFormationFighter) {
-                gangUpContribution += 1;
-            }
 
             //gangUpAttack applies both when attacking and as an ally during an attack
             const tGlobalMods = foundry.utils.getProperty(t.actor, 'system.stats.globalMods');
@@ -621,38 +613,9 @@ export function calculateGangUp(attackerToken, targetToken) {
         });
     }
 
-    //TODO: Remove once system as been updated
-    const attackerHasFormationFighter = attackerActor.items.find((item) => {
-        return item.name.toLowerCase().includes(formationFighterName);
-    });
-
-    if (attackerHasFormationFighter) {
-        gangUpBonus += 1;
-    }
-
     if (gangUpBonus <= 0) return 0;
 
     gangUpBonus = Math.min(4, gangUpBonus);
-
-    //TODO: Remove once system as been updated
-    const blockName = game.i18n.localize("BRSW.EdgeName.Block").toLowerCase();
-    const impBlockName = game.i18n.localize("BRSW.EdgeName.ImprovedBlock").toLowerCase();
-
-    if (targetActor) {
-        const blockEffects = targetActor.appliedEffects.filter((e) =>
-            e.name.toLowerCase().includes(blockName)
-        );
-
-        const impBlockEffects = targetActor.appliedEffects.filter((e) =>
-            e.name.toLowerCase().includes(impBlockName)
-        );
-
-        if (impBlockEffects.length) {
-            gangUpBonus -= 2;
-        } else if (blockEffects.length) {
-            gangUpBonus -= 1;
-        }
-    }
 
     const targetGlobalMods = targetActor
         ? (foundry.utils.getProperty(targetActor, 'system.stats.globalMods'))
