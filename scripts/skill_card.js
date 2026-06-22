@@ -548,7 +548,14 @@ export function calculateGangUp(attackerToken, targetToken) {
     const scene = targetToken.scene;
     if (!scene) return 0;
 
-    const meleeRange = Math.SQRT2; //Range is SQRT2 to account for diagonals
+    let meleeRange = SettingsUtils.getWorldSetting("measure_from_edge") ?
+        0 : //0 when using edge distance since edges have to be touching
+        Math.SQRT2; //Range is SQRT2 to account for diagonals
+
+    if (scene.grid.isGridless) {
+        //If we're gridless, give a bit of extra buffer so placement doesn't have to be so exact
+        meleeRange += 0.5;
+    }
 
     const formationFighterName = game.i18n.localize("BRSW.EdgeName.FormationFighter").toLowerCase();
 
