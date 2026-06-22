@@ -548,6 +548,8 @@ export function calculateGangUp(attackerToken, targetToken) {
     const scene = targetToken.scene;
     if (!scene) return 0;
 
+    const meleeRange = Math.SQRT2; //Range is SQRT2 to account for diagonals
+
     const formationFighterName = game.i18n.localize("BRSW.EdgeName.FormationFighter").toLowerCase();
 
     //Get all the attacker allies that are next to the target
@@ -556,7 +558,7 @@ export function calculateGangUp(attackerToken, targetToken) {
             if (t === attackerToken.document) return false;
             if (t.disposition !== attackerToken.document.disposition) return false;
             if (isIgnoredForGangUp(t)) return false;
-            return withinRange(targetToken, t, 1);
+            return withinRange(targetToken, t, meleeRange);
         });
 
     //We can only benefit from gang up if we have at least one ally
@@ -591,13 +593,13 @@ export function calculateGangUp(attackerToken, targetToken) {
             if (t === targetToken.document) return false;
             if (t.disposition !== targetToken.document.disposition) return false;
             if (isIgnoredForGangUp(t)) return false;
-            return withinRange(targetToken, t, 1);
+            return withinRange(targetToken, t, meleeRange);
         });
 
     //Of the defender allies, count how many are also next to the attacker
     const numDefenderAllies =
         defenderAllies.filter((t) => {
-            return withinRange(attackerToken, t, 1);
+            return withinRange(attackerToken, t, meleeRange);
         }).length ?? 0;
 
     let gangUpBonus = totalAttackerAllyBonus - numDefenderAllies;
@@ -662,8 +664,7 @@ export function calculateGangUp(attackerToken, targetToken) {
     return { name: game.i18n.localize("BRSW.GangUp"), bonus: gangUpBonus };
 }
 
-// function from Kekilla
-function withinRange(origin, target, range) {
+function withinRange(origin, target, range, epsilon = Number.EPSILON) {
     origin = origin instanceof TokenDocument ? origin.object : origin;
     target = target instanceof TokenDocument ? target.object : target;
     if (Math.abs(origin.document.elevation - target.document.elevation) >= 1) {
@@ -672,7 +673,7 @@ function withinRange(origin, target, range) {
     const grid_unit = canvas.grid.distance;
     let distance = measureDistance(origin, target);
     distance /= grid_unit;
-    return distance <= range;
+    return distance <= (range + epsilon);
 }
 
 /**
