@@ -1091,10 +1091,10 @@ function get_target_defense(
             const base_toughness =
                 objective.actor.system.stats.toughness.value -
                 objective.actor.system.stats.toughness.armor;
+
             //Get the armor of the location we're targeting
-            defense_values.armor =
-            location === "torso" ? objective.actor.system.stats.toughness.armor :
-                objective.actor.armorPerLocation[location] ?? objective.actor.system.stats.toughness.armor;
+            defense_values.armor = objective.actor.calcArmor(location);
+
             //Add that armor to the base toughness to get the correct toughness
             defense_values.toughness = base_toughness + defense_values.armor;
             defense_values.name = objective.name;
