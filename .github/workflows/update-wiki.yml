@@ -1,6 +1,12 @@
 name: Update Wiki
 
 on:
+  workflow_dispatch:
+    paths:
+      - 'docs/**'
+    branches:
+      - version_2
+
   push:
     paths:
       - 'docs/**'
