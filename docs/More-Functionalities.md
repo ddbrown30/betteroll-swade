@@ -4,7 +4,7 @@ The **Better Rolls 2 for Savage Worlds** module has some additional functionalit
 
 You can also use the weapon or power icon to drag it over the actor you want to target. It will execute the "Show card and trait roll" action.
 
-![Drag and Drop](https://github.com/javierriveracastro/betteroll-swade/blob/version_2/docs/img/drag_and_drop_v-1-2-10.gif?raw=true)
+![Drag and Drop](https://github.com/ddbrown30/betteroll-swade/blob/version_2/docs/img/drag_and_drop_v-1-2-10.gif?raw=true)
 
 For easier accessibility, instead of dragging the icon on an actor, you can also drag it to the macro bar, creating an automatic macro instead.
 
@@ -16,7 +16,7 @@ Currently, it ships with some classical roman and greek coins.
 
 ## Global actions
 
-The module let's you define your own actions, see this [GLOBAL ACTIONS](https://github.com/javierriveracastro/betteroll-swade/wiki/Global-Actions):
+The module let's you define your own actions, see this [GLOBAL ACTIONS](https://github.com/ddbrown30/betteroll-swade/wiki/Global-Actions):
 
 ## Macros and API
 
@@ -31,9 +31,9 @@ game.brsw.add_actions(actions)
  * The array is cleared when reloading and should be set again
  * @param {Array} actions
  */
-```    
+```
 
-You can learn more about this at: [GLOBAL ACTIONS API](https://github.com/javierriveracastro/betteroll-swade/wiki/Global-Actions#api).
+You can learn more about this at: [GLOBAL ACTIONS API](https://github.com/ddbrown30/betteroll-swade/wiki/Global-Actions#api).
 
 ```js
 game.brsw.create_attribute_card()

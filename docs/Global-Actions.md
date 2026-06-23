@@ -2,19 +2,19 @@ The **Better Rolls 2 for Savage Worlds** module has both pre-defined and custom 
 
 ## Pre-defined Global Actions
 
-![Global Actions](https://github.com/javierriveracastro/betteroll-swade/blob/version_2/docs/img/global-actions.jpg?raw=true)
+![Global Actions](https://github.com/ddbrown30/betteroll-swade/blob/version_2/docs/img/global-actions.jpg?raw=true)
 
 Global actions are pre-defined global actions that are ready to use. You can choose to disable them, if they should not
 be available in your setting.
 
 ## Custom Global Actions
 
-![World Global Actions](https://github.com/javierriveracastro/betteroll-swade/blob/version_2/docs/img/world-global-actions.jpg?raw=true)
+![World Global Actions](https://github.com/ddbrown30/betteroll-swade/blob/version_2/docs/img/world-global-actions.jpg?raw=true)
 
 With the World global actions functionality, you can define your own global actions for this world. You need to provide
 a JSON file to add them:
 
-![Add a new World Global Action](https://github.com/javierriveracastro/betteroll-swade/blob/version_2/docs/img/new-world-global-action.jpg?raw=true)
+![Add a new World Global Action](https://github.com/ddbrown30/betteroll-swade/blob/version_2/docs/img/new-world-global-action.jpg?raw=true)
 
 Global actions are a json encoded set of instructions that allow the user to customize how **Better Rolls** works.
 

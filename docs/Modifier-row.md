@@ -4,13 +4,13 @@ If you prefer this section to start hidden, you can find an option to collapse i
 
 ## Player's view
 
-![Chat Window](https://github.com/javierriveracastro/betteroll-swade/blob/version_2/docs/img/chat_modifiers.png?raw=true)
+![Chat Window](https://github.com/ddbrown30/betteroll-swade/blob/version_2/docs/img/chat_modifiers.png?raw=true)
 
 The Player's Chat Window has the same functionality as the GM's Character Chat Window, but limited to just the players trait and damage rolls.
 
 ## GM's view
 
-![GM Character Chat Window](https://github.com/javierriveracastro/betteroll-swade/blob/version_2/docs/img/chat_modifiers_gm_character.png?raw=true)
+![GM Character Chat Window](https://github.com/ddbrown30/betteroll-swade/blob/version_2/docs/img/chat_modifiers_gm_character.png?raw=true)
 
 You can use this to quickly add modifiers to a roll. Note that it adds all the selected modifiers, that way you can click on 2 and 1 or 4 and -1 to get add 3 to a roll.
 
@@ -22,7 +22,7 @@ Use "Number of trait dice" to use multiple trait dice on a skill roll, either fr
 
 Finally, the "Damage roll modifier" adds the selected number to damage rolls.
 
-![GM Global Chat Window](https://github.com/javierriveracastro/betteroll-swade/blob/version_2/docs/img/chat_modifiers_gm_global.png?raw=true)
+![GM Global Chat Window](https://github.com/ddbrown30/betteroll-swade/blob/version_2/docs/img/chat_modifiers_gm_global.png?raw=true)
 
 The Master's mod line will turn red with one click and will stay on red until you click it again. It will add the modifier to all the rolls (trait or damage) of every actor, either player or GM controlled. Note that this selection survives reloads and the closing of the world.
 
