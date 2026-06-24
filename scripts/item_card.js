@@ -2,41 +2,40 @@
 /* globals Token, TokenDocument, game, CONST, canvas, console, CONFIG, ChatMessage, ui, Hooks, Roll, succ, structuredClone, $, fromUuid */
 // noinspection JSCheckFunctionSignatures
 
-import * as BRSW2_CONFIG from "./brsw2-config.js";
+import { get_current_generic_mods } from "../config/generic_pp_modifiers.js";
+import { BrCommonCard } from "./BrCommonCard.js";
+import { brAction } from "./actions.js";
+import { BRSW2_CONST } from "./brsw2-const.js";
 import {
-    BRSW_CONST,
     BRWSRoll,
     calculate_damage_results,
     check_and_roll_conviction,
     create_common_card,
     get_action_from_click,
     get_roll_options,
-    roll_trait,
-    spend_bennie,
-    update_message,
     has_joker,
     process_common_actions,
     process_minimum_str_modifiers,
     roll_dice,
+    roll_trait,
+    spend_bennie,
+    update_message,
 } from "./cards_common.js";
+import { create_damage_card } from "./damage_card.js";
+import { DamageModifier, TraitModifier } from "./modifiers.js";
+import { PPManagementDialog } from "./pp_management_dialog.js";
+import { calculateGangUp } from "./skill_card.js";
 import {
     SettingsUtils,
+    Utils,
+    addEventListenerAll,
+    broofa,
+    getAuthor,
     get_targeted_token,
     makeExplotable,
     set_or_update_condition,
     simple_form,
-    broofa,
-    addEventListenerAll,
-    Utils,
-    getAuthor,
 } from "./utils.js";
-import { create_damage_card } from "./damage_card.js";
-import { BrCommonCard } from "./BrCommonCard.js";
-import { DamageModifier, TraitModifier } from "./modifiers.js";
-import { brAction } from "./actions.js";
-import { PPManagementDialog } from "./pp_management_dialog.js";
-import { get_current_generic_mods } from "../config/generic_pp_modifiers.js";
-import { calculateGangUp } from "./skill_card.js";
 
 const ROF_BULLETS = { 1: 1, 2: 5, 3: 10, 4: 20, 5: 40, 6: 50 };
 
@@ -114,7 +113,7 @@ export async function create_item_card(
         },
         "modules/betterrolls-swade2/templates/item_card.hbs",
     );
-    br_message.type = BRSW_CONST.TYPE_ITEM_CARD;
+    br_message.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD;
     br_message.damage = damage;
     br_message.item_id = item_id;
     br_message.applicable_effects = get_applicable_effects(item);
@@ -618,7 +617,7 @@ async function roll_resist(trait, br_card, trait_mod) {
     for (const token of canvas.tokens.controlled) {
         const trait_lower = trait.toLowerCase();
         let new_card;
-        if (BRSW2_CONFIG.ATTRIBUTES.includes(trait_lower)) {
+        if (BRSW2_CONST.ATTRIBUTES.includes(trait_lower)) {
             new_card = await game.brsw.create_atribute_card(
                 token,
                 trait.toLowerCase(),

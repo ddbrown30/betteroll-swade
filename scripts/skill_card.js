@@ -1,25 +1,25 @@
 // Functions for cards representing skills
 /* globals TokenDocument, Token, game, CONST, canvas, console, Ray, succ, fromUuid, ui, $ */
 
+import { BrCommonCard } from "./BrCommonCard.js";
+import { BRSW2_CONST } from "./brsw2-const.js";
 import {
-    BRSW_CONST,
     create_common_card,
     get_action_from_click,
     get_actor_from_ids,
+    process_common_actions,
     roll_trait,
     spend_bennie,
     trait_to_string,
-    process_common_actions,
 } from "./cards_common.js";
 import { run_macros } from "./item_card.js";
+import { TraitModifier } from "./modifiers.js";
 import {
     SettingsUtils,
     Utils,
     addEventListenerAll,
     measureDistance,
 } from "./utils.js";
-import { BrCommonCard } from "./BrCommonCard.js";
-import { TraitModifier } from "./modifiers.js";
 
 /**
  * Creates a chat card for a skill
@@ -62,7 +62,7 @@ async function create_skill_card(
         },
         "modules/betterrolls-swade2/templates/skill_card.hbs",
     );
-    br_message.type = BRSW_CONST.TYPE_SKILL_CARD;
+    br_message.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_SKILL_CARD;
     br_message.skill_id = skill.id;
     if (vehicle) {
         br_message.vehicle_actor_id = vehicle.actor?.id || vehicle.id;

@@ -1,20 +1,19 @@
 // Functions for cards representing attributes
 /* global TokenDocument, Token, game, CONST, $ */
 
+import { BrCommonCard } from "./BrCommonCard.js";
+import { BRSW2_CONST } from "./brsw2-const.js";
 import {
-  BRSW_CONST,
-  get_action_from_click,
-  spend_bennie,
-  get_actor_from_ids,
-  trait_to_string,
   create_common_card,
-  roll_trait,
+  get_action_from_click,
+  get_actor_from_ids,
   process_common_actions,
+  roll_trait,
+  spend_bennie,
+  trait_to_string,
 } from "./cards_common.js";
 import { run_macros } from "./item_card.js";
-import { BrCommonCard } from "./BrCommonCard.js";
 import { addEventListenerAll } from "./utils.js";
-import { ATTRIBUTES_TRANSLATION_KEYS } from "./brsw2-config.js";
 
 /**
  * Creates a chat card for an attribute
@@ -39,7 +38,7 @@ async function create_attribute_card(
   } else {
     actor = origin;
   }
-  const translated_name = game.i18n.localize(ATTRIBUTES_TRANSLATION_KEYS[name]);
+  const translated_name = game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS[name]);
   const title =
     translated_name +
     " " +
@@ -54,7 +53,7 @@ async function create_attribute_card(
   );
   // We always set the actor (as a fallback, and the token if possible)
   br_message.attribute_name = name;
-  br_message.type = BRSW_CONST.TYPE_ATTRIBUTE_CARD;
+  br_message.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ATTRIBUTE_CARD;
   await br_message.render(actions_stored);
   await br_message.save();
   return br_message;

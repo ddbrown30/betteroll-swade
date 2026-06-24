@@ -33,18 +33,6 @@ import { TraitModifier } from "./modifiers.js";
 import { SETTING_KEYS } from "./brsw2-config.js";
 import { ManualModifiersPopup } from "./manual_mods_popup.js";
 
-export const BRSW_CONST = {
-  TYPE_ATTRIBUTE_CARD: 1,
-  TYPE_SKILL_CARD: 2,
-  TYPE_ITEM_CARD: 3,
-  TYPE_DMG_CARD: 10,
-  TYPE_INC_CARD: 11,
-  TYPE_INJ_CARD: 12,
-  TYPE_UNSHAKE_CARD: 13,
-  TYPE_UNSTUN_CARD: 14,
-  TYPE_RESULT_CARD: 100,
-};
-
 /**
  * A constructor for our own roll object, this code is here just for legacy
  * support, please use the new classes in rolls.js
@@ -565,7 +553,7 @@ export async function detect_fumble(has_wild_die, num_fumble_results, dice) {
       //The extra is only rolling a single trait die and it came up as 1
       //In this case, we need to roll an extra d6 to confirm if it's a fumble
       if (
-        !SettingsUtils.getWorldSetting(SETTING_KEYS.auto_check_extra_fumbles)
+        !SettingsUtils.getWorldSetting(SETTING_KEYS.autoCheckExtraCritFailures)
       ) {
         //The option to auto-check for fumbles on extras is disabled, so we can return false
         return false;
@@ -635,7 +623,7 @@ export function calculate_damage_results(rolls) {
  * @param render_data
  */
 export async function update_message(br_message, render_data) {
-  if (br_message.type === BRSW_CONST.TYPE_ITEM_CARD) {
+  if (br_message.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD) {
     render_data.skill = Utils.getItemTrait(br_message.item, br_message.actor);
   }
   br_message.generate_render_data(render_data, undefined);
@@ -1263,11 +1251,11 @@ async function duplicate_message(message, event) {
     // noinspection JSUnresolvedVariable
     const br_card = new BrCommonCard(message);
     const card_type = br_card.type;
-    if (card_type === BRSW_CONST.TYPE_ATTRIBUTE_CARD) {
+    if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ATTRIBUTE_CARD) {
       await roll_attribute(br_card, false);
-    } else if (card_type === BRSW_CONST.TYPE_SKILL_CARD) {
+    } else if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_SKILL_CARD) {
       await roll_skill(br_card, false);
-    } else if (card_type === BRSW_CONST.TYPE_ITEM_CARD) {
+    } else if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD) {
       const roll_damage = action.includes("damage");
       await roll_item(br_card, $(br_card.message.content), false, roll_damage);
     }

@@ -4,7 +4,7 @@
 
 import { check_for_actions_with_damage } from "./item_card.js";
 import { SYSTEM_GLOBAL_ACTION } from "./actions/builtin-actions.js";
-import { BRSW_CONST, get_roll_options } from "./cards_common.js";
+import { get_roll_options } from "./cards_common.js";
 import {
     SettingsUtils,
     measureDistance,

@@ -1,16 +1,16 @@
 // functions for the unshake and maybe un-stun card //
 /* globals canvas, game, CONST, Hooks, succ, console */
 
-import { get_owner } from "./damage_card.js";
+import { BrCommonCard } from "./BrCommonCard.js";
+import { BRSW2_CONST } from "./brsw2-const.js";
 import {
-  BRSW_CONST,
   create_common_card,
   roll_trait,
   spend_bennie,
 } from "./cards_common.js";
-import { SettingsUtils, addEventListenerAll } from "./utils.js";
-import { BrCommonCard } from "./BrCommonCard.js";
+import { get_owner } from "./damage_card.js";
 import { TraitModifier } from "./modifiers.js";
+import { SettingsUtils, addEventListenerAll } from "./utils.js";
 
 /**
  * Shows the unshaken card
@@ -33,13 +33,13 @@ async function create_remove_status_card(original_message, actor, type) {
   let user = get_owner(actor);
   // noinspection JSUnresolvedVariable
   const text =
-    type === BRSW_CONST.TYPE_UNSHAKE_CARD
+    type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_UNSHAKE_CARD
       ? game.i18n.format("BRSW.UnshakenText", { token_name: actor.name })
       : game.i18n.format("BRSW.UnstunText", { token_name: actor.name });
   let title_name =
-    type === BRSW_CONST.TYPE_UNSHAKE_CARD ? "BRSW.Unshake" : "BRSW.Unstun";
+    type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_UNSHAKE_CARD ? "BRSW.Unshake" : "BRSW.Unstun";
   const roll_title =
-    type === BRSW_CONST.TYPE_UNSHAKE_CARD
+    type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_UNSHAKE_CARD
       ? game.i18n.localize("BRSW.SpiritRoll")
       : game.i18n.localize("BRSW.VigorRoll");
   let br_message = await create_common_card(
@@ -69,7 +69,7 @@ export async function create_unshaken_card(original_message, token_id) {
   await create_remove_status_card(
     original_message,
     token_id,
-    BRSW_CONST.TYPE_UNSHAKE_CARD,
+    BRSW2_CONST.BRSW_CARD_TYPES.TYPE_UNSHAKE_CARD,
   );
 }
 
@@ -82,7 +82,7 @@ export async function create_unstun_card(original_message, token_id) {
   await create_remove_status_card(
     original_message,
     token_id,
-    BRSW_CONST.TYPE_UNSTUN_CARD,
+    BRSW2_CONST.BRSW_CARD_TYPES.TYPE_UNSTUN_CARD,
   );
 }
 
@@ -98,7 +98,7 @@ export function activate_remove_status_card_listeners(
   card_type,
 ) {
   const roll_function =
-    card_type === BRSW_CONST.TYPE_UNSHAKE_CARD ? roll_unshaken : roll_unstun;
+    card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_UNSHAKE_CARD ? roll_unshaken : roll_unstun;
   addEventListenerAll(html, ".brsw-spirit-button, .brsw-roll-button", "click", (ev) => {
     ev.stopPropagation();
     let spend_bennie = false;
