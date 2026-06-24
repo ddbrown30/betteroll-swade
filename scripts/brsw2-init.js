@@ -655,7 +655,7 @@ function register_settings_version2() {
         default: false,
         config: true,
     });
-    SettingsUtils.registerSetting("telemetry_install_id", {
+    SettingsUtils.registerSetting(SETTING_KEYS.telemetryWorldInstallId, {
         scope: "world",
         type: String,
         default: "",

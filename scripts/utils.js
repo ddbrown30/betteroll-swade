@@ -757,12 +757,12 @@ export class SettingsUtils {
 export class TelemetryUtils {
     static POSTHOG_API_KEY = "phc_pTRr4oK26yQDbmFSkPuCNswLTtZABEHktpn9cNqYuAnr";
 
-    static async getInstallId() {
-        let id = SettingsUtils.getSetting("telemetry_install_id");
+    static async getWorldInstallId() {
+        let id = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.telemetryWorldInstallId);
 
         if (!id) {
             id = foundry.utils.randomID();
-            await SettingsUtils.setSetting("telemetry_install_id", id);
+            await SettingsUtils.setSetting(BRSW2_CONFIG.SETTING_KEYS.telemetryWorldInstallId, id);
         }
 
         return id;
@@ -771,7 +771,7 @@ export class TelemetryUtils {
     static async sendTelemetry(event, includeUserId, properties = {}) {
         if (SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.telemetryOptOut)) return;
 
-        const installId = await TelemetryUtils.getInstallId();
+        const installId = await TelemetryUtils.getWorldInstallId();
         const distinctId = includeUserId ? `${installId}:${game.user.id}` : installId;
 
         const br2Version = game.modules.get(BRSW2_CONFIG.MODULE_NAME).version;
@@ -783,18 +783,22 @@ export class TelemetryUtils {
             isTest: br2Version === "0.0.0",
         }
 
-        await fetch("https://us.i.posthog.com/capture/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                api_key: TelemetryUtils.POSTHOG_API_KEY,
-                event,
-                distinct_id: distinctId,
-                properties
-            })
-        });
+        try {
+            await fetch("https://us.i.posthog.com/capture/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    api_key: TelemetryUtils.POSTHOG_API_KEY,
+                    event,
+                    distinct_id: distinctId,
+                    properties
+                })
+            });
+        } catch (error) {
+            console.warn("BR2 telemetry request failed: ", error);
+        }
     }
 
     static sendModuleReadyEvent() {

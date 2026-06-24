@@ -123,6 +123,7 @@ export const SETTING_KEYS = {
   auto_check_extra_fumbles: "auto_check_extra_fumbles",
   enabledOptionalRules: "optional_rules_enabled",
   telemetryOptOut: "telemetryOptOut",
+  telemetryWorldInstallId: "telemetryWorldInstallId",
   worldSettings: "world_settings",
 };
 
