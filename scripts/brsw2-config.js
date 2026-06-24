@@ -9,6 +9,7 @@ export const MAX_NOPP_PENALTY_ACTION = 6;
 
 export const SETTING_KEYS = {
     autoCheckExtraCritFailures: "auto_check_extra_fumbles",
+    disabledSystemActions: "system_action_disabled",
     enabledOptionalRules: "optional_rules_enabled",
     telemetryOptOut: "telemetryOptOut",
     telemetryWorldInstallId: "telemetryWorldInstallId",

@@ -55,8 +55,7 @@ export function registerSettings() {
         default: BRSW2_CONFIG.WORLD_SETTINGS,
     });
 
-    SettingsUtils.registerSetting("system_action_disabled", {
-        name: "System_Actions_disabled",
+    SettingsUtils.registerSetting(BRSW2_CONFIG.SETTING_KEYS.disabledSystemActions, {
         default: [],
         type: Array,
         scope: "world",

@@ -2,16 +2,17 @@
   readTextFromFile, renderTemplate, foundry, canvas, $ */
 /* jshint -W089 */
 
-import { check_for_actions_with_damage } from "./item_card.js";
 import { SYSTEM_GLOBAL_ACTION } from "./actions/builtin-actions.js";
+import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { get_roll_options } from "./cards_common.js";
+import { get_enabled_gm_actions } from "./gm_actions.js";
+import { check_for_actions_with_damage } from "./item_card.js";
 import {
     SettingsUtils,
-    measureDistance,
-    addEventListenerAll,
     Utils,
+    addEventListenerAll,
+    measureDistance,
 } from "./utils.js";
-import { get_enabled_gm_actions } from "./gm_actions.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -140,23 +141,22 @@ function process_action(action, item, actor) {
  * @param {SwadeActor} actor
  */
 export function get_actions(item, actor) {
-    const actions_avaliable = [];
-    let disabled_actions = SettingsUtils.getSetting("system_action_disabled");
-    if (disabled_actions && disabled_actions[0] instanceof Array) {
-        disabled_actions = disabled_actions[0];
+    const availableActions = [];
+
+    let disabledActions = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.disabledSystemActions);
+    if (disabledActions && disabledActions[0] instanceof Array) {
+        disabledActions = disabledActions[0];
     }
+
     for (const action of game.brsw.GLOBAL_ACTIONS) {
-        if (
-            !disabled_actions.includes(action.id) &&
-            process_action(action, item, actor)
-        ) {
-            actions_avaliable.push(action);
+        if (!disabledActions.includes(action.id) && process_action(action, item, actor)) {
+            availableActions.push(action);
         }
     }
-    actions_avaliable.sort((a, b) => {
-        return a.id < b.id ? -1 : 1;
-    });
-    return actions_avaliable;
+
+    availableActions.sort((a, b) => { return a.id < b.id ? -1 : 1; });
+
+    return availableActions;
 }
 
 // noinspection OverlyComplexFunctionJS,FunctionTooLongJS
@@ -519,7 +519,7 @@ export class SystemGlobalConfiguration extends HandlebarsApplicationMixin(
 
     async _prepareContext(options) {
         const groups = {};
-        let disable_actions = SettingsUtils.getSetting("system_action_disabled");
+        let disable_actions = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.disabledSystemActions);
         if (disable_actions && disable_actions[0] instanceof Array) {
             disable_actions = disable_actions[0];
         }
@@ -564,13 +564,13 @@ export class SystemGlobalConfiguration extends HandlebarsApplicationMixin(
     }
 
     static async formHandler(event, form, formData) {
-        const disabled_actions = [];
+        const disabledActions = [];
         for (const id in formData.object) {
             if (!formData.object[id]) {
-                disabled_actions.push(id);
+                disabledActions.push(id);
             }
         }
-        await SettingsUtils.setSetting("system_action_disabled", disabled_actions);
+        await SettingsUtils.setSetting(BRSW2_CONFIG.SETTING_KEYS.disabledSystemActions, disabledActions);
     }
 }
 
@@ -852,11 +852,11 @@ async function import_global_actions(app) {
  */
 function get_gm_actions() {
     const gm_actions = [];
-    const disabled_actions = SettingsUtils.getSetting("system_action_disabled");
+    const disabledActions = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.disabledSystemActions);
     for (const action of game.brsw.GLOBAL_ACTIONS) {
         if (
             action.selector_type === "gm_action" &&
-            !disabled_actions.includes(action.id)
+            !disabledActions.includes(action.id)
         ) {
             action.enable = false;
             gm_actions.push(action);
