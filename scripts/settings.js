@@ -69,15 +69,14 @@ export function registerSettings() {
         config: false,
     });
 
-    SettingsUtils.registerSetting("world_global_actions", {
-        name: "World global actions",
+    SettingsUtils.registerSetting(BRSW2_CONFIG.SETTING_KEYS.worldGlobalActions, {
         default: [],
         type: Array,
         config: false,
         scope: "world",
     });
 
-    SettingsUtils.registerSetting("chat_modifiers_names", {
+    SettingsUtils.registerSetting(BRSW2_CONFIG.SETTING_KEYS.chatModifiersName, {
         name: "Chat Modifiers Names",
         hint: "",
         default: { GM: "", Trait: "", Damage: "", ROF: "" },

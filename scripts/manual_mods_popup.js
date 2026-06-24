@@ -31,7 +31,7 @@ export class ManualModifiersPopup extends HandlebarsApplicationMixin(Application
   }
 
   async _prepareContext(_options) {
-    const chat_modifiers_names = SettingsUtils.getSetting("chat_modifiers_names");
+    const chat_modifiers_names = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.chatModifiersName);
     chat_modifiers_names.Damage ||= "BRSW.DmgModifier";
     chat_modifiers_names.ROF ||= "BRSW.Number_trait_dice";
     chat_modifiers_names.Trait ||= "BRSW.TraitModifier";

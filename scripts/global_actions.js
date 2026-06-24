@@ -21,7 +21,7 @@ const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
  * Registers all the available global actions
  */
 export function register_actions() {
-    let world_actions = SettingsUtils.getSetting("world_global_actions");
+    let world_actions = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.worldGlobalActions);
     if (world_actions && world_actions[0] instanceof Array) {
         world_actions = world_actions[0];
     }
@@ -630,7 +630,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(
     };
 
     async _prepareContext(options) {
-        let actions = SettingsUtils.getSetting("world_global_actions");
+        let actions = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.worldGlobalActions);
         if (actions && actions[0] instanceof Array) {
             actions = actions[0];
         }
@@ -660,7 +660,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(
                 new_world_actions.push(JSON.parse(action));
             }
         }
-        await SettingsUtils.setSetting("world_global_actions", new_world_actions);
+        await SettingsUtils.setSetting(BRSW2_CONFIG.SETTING_KEYS.worldGlobalActions, new_world_actions);
         register_actions();
     }
 
@@ -798,7 +798,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(
  * Exports custom global actions to a JSON file.
  */
 function export_global_actions() {
-    const actions = SettingsUtils.getSetting("world_global_actions");
+    const actions = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.worldGlobalActions);
     foundry.utils.saveDataToFile(
         JSON.stringify(actions),
         "json",
@@ -833,7 +833,7 @@ async function import_global_actions(app) {
                         return ui.notifications.error("You did not upload a data file!");
                     }
                     const jsonText = await foundry.utils.readTextFromFile(form.data.files[0]);
-                    await SettingsUtils.setSetting("world_global_actions", JSON.parse(jsonText));
+                    await SettingsUtils.setSetting(BRSW2_CONFIG.SETTING_KEYS.worldGlobalActions, JSON.parse(jsonText));
                     app.render(true);
                 },
             },

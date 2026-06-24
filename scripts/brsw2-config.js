@@ -9,10 +9,12 @@ export const MAX_NOPP_PENALTY_ACTION = 6;
 
 export const SETTING_KEYS = {
     autoCheckExtraCritFailures: "auto_check_extra_fumbles",
+    chatModifiersName: "chat_modifiers_names",
     disabledSystemActions: "system_action_disabled",
     enabledOptionalRules: "optional_rules_enabled",
     telemetryOptOut: "telemetryOptOut",
     telemetryWorldInstallId: "telemetryWorldInstallId",
+    worldGlobalActions: "world_global_actions",
     worldSettings: "world_settings",
 };
 
