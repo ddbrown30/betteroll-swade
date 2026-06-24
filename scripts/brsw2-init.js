@@ -12,7 +12,7 @@ import { setup_dialog } from "./card-dialog.js";
 import {
     activate_common_listeners,
     expose_card_class,
-    get_action_from_click,
+    getActionFromClick,
 } from "./cards_common.js";
 import { create_unshaken_wrapper, create_unstun_wrapper } from "./combat.js";
 import { activate_damage_card_listeners } from "./damage_card.js";
@@ -46,7 +46,7 @@ Hooks.on(`init`, () => {
     game.brsw = {};
     game.brsw.CONST = BRSW2_CONST;
     game.brsw.cascade_count = 0;
-    game.brsw.get_action_from_click = get_action_from_click;
+    game.brsw.get_action_from_click = getActionFromClick;
     game.brsw.measureDistance = measureDistance;
 
     registerSettings();

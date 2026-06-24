@@ -11,7 +11,7 @@ import {
     calculate_damage_results,
     check_and_roll_conviction,
     create_common_card,
-    get_action_from_click,
+    getActionFromClick,
     get_roll_options,
     has_joker,
     process_common_actions,
@@ -344,7 +344,7 @@ export function expose_item_functions() {
  * @param {HTMLElement} currentTarget the element that was clicked
  */
 async function item_click_listener(ev, target, currentTarget) {
-    let action = get_action_from_click(ev);
+    let action = getActionFromClick(ev);
     if (action === "system") {
         return;
     }

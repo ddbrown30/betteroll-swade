@@ -3,6 +3,26 @@
       duplicate, ChatMessage, ui, Macro */
 // noinspection JSUnusedAssignment
 
+import { roll_attribute } from "./attribute_card.js";
+import { BrCommonCard } from "./BrCommonCard.js";
+import { WORLD_SETTING_KEYS } from "./brsw2-config.js";
+import {
+  roll_item,
+  run_macros,
+  spendPP,
+} from "./item_card.js";
+import { ManualModifiersPopup } from "./manual_mods_popup.js";
+import { TraitModifier } from "./modifiers.js";
+import {
+  create_unshaken_card,
+  create_unstun_card,
+} from "./remove_status_cards.js";
+import { TraitRoll } from "./rolls.js";
+import {
+  calculate_distance,
+  get_tn_from_token,
+  roll_skill,
+} from "./skill_card.js";
 import {
   addEventListenerAll,
   get_targeted_token,
@@ -12,26 +32,6 @@ import {
   spendMastersBenny,
   Utils,
 } from "./utils.js";
-import {
-  spendPP,
-  roll_item,
-  run_macros,
-} from "./item_card.js";
-import {
-  calculate_distance,
-  get_tn_from_token,
-  roll_skill,
-} from "./skill_card.js";
-import { roll_attribute } from "./attribute_card.js";
-import {
-  create_unshaken_card,
-  create_unstun_card,
-} from "./remove_status_cards.js";
-import { TraitRoll } from "./rolls.js";
-import { BrCommonCard } from "./BrCommonCard.js";
-import { TraitModifier } from "./modifiers.js";
-import { SETTING_KEYS } from "./brsw2-config.js";
-import { ManualModifiersPopup } from "./manual_mods_popup.js";
 
 /**
  * A constructor for our own roll object, this code is here just for legacy
@@ -468,16 +468,17 @@ async function manage_sheet(actor) {
  * from a click event and the settings
  * @param {event} event
  */
-export function get_action_from_click(event) {
-  let setting_name = "click";
-  // noinspection JSUnresolvedVariable
+export function getActionFromClick(event) {
+  let setting_name = WORLD_SETTING_KEYS.clickActionKeys.click;
+
   if (event.shiftKey) {
-    setting_name = "shift_click";
+    setting_name = WORLD_SETTING_KEYS.clickActionKeys.shiftClick;
   } else if (event.ctrlKey) {
-    setting_name = "ctrl_click";
+    setting_name = WORLD_SETTING_KEYS.clickActionKeys.ctrlClick;
   } else if (event.altKey) {
-    setting_name = "alt_click";
+    setting_name = WORLD_SETTING_KEYS.clickActionKeys.altClick;
   }
+
   return SettingsUtils.getWorldSetting(setting_name);
 }
 
@@ -548,21 +549,22 @@ export async function detect_fumble(has_wild_die, num_fumble_results, dice) {
     //No dice came up as a 1 so it's not possible to fumble
     return false;
   }
+
   if (!has_wild_die) {
     if (dice.length === 1) {
       //The extra is only rolling a single trait die and it came up as 1
       //In this case, we need to roll an extra d6 to confirm if it's a fumble
-      if (
-        !SettingsUtils.getWorldSetting(SETTING_KEYS.autoCheckExtraCritFailures)
-      ) {
+      if (!SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.autoCheckExtraCritFailures)) {
         //The option to auto-check for fumbles on extras is disabled, so we can return false
         return false;
       }
+
       const test_fumble_roll = new Roll("1d6");
       await test_fumble_roll.roll();
       await test_fumble_roll.toMessage({
         flavor: game.i18n.localize("BRSW.Testing_fumbles"),
       });
+
       //If the new roll comes up as a 1, it's a fumble
       return test_fumble_roll.total === 1;
     }
@@ -1244,7 +1246,7 @@ async function duplicate_message(message, event) {
   br_card.render_data.damage_rolls = [];
   await br_card.render();
   await br_card.save();
-  const action = get_action_from_click(event);
+  const action = getActionFromClick(event);
   if (action.includes("dialog")) {
     game.brsw.dialog.show_card(br_card);
   } else if (action.includes("trait")) {

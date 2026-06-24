@@ -5,7 +5,7 @@ import { BrCommonCard } from "./BrCommonCard.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
 import {
     create_common_card,
-    get_action_from_click,
+    getActionFromClick,
     get_actor_from_ids,
     process_common_actions,
     roll_trait,
@@ -117,7 +117,7 @@ export function skill_card_hooks() {
  * @param {SwadeActor, Token} target token or actor from the char sheet
  */
 async function skill_click_listener(ev, target) {
-    const action = get_action_from_click(ev);
+    const action = getActionFromClick(ev);
     if (action === "system") {
         return;
     }

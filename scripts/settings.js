@@ -114,7 +114,7 @@ function registerWorldSettings() {
         trait_damage: game.i18n.localize("BRSW.ClickActionTypes.ShowCardDamage"),
     };
 
-    SettingsUtils.registerBR2WorldSetting("click", {
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.clickActionKeys.click, {
         name: game.i18n.localize("BRSW.Settings.SingleClickAction.Name"),
         hint: game.i18n.localize("BRSW.Settings.SingleClickAction.Hint"),
         default: "card",
@@ -122,7 +122,7 @@ function registerWorldSettings() {
         choices: clickActionChoices,
     });
 
-    SettingsUtils.registerBR2WorldSetting("shift_click", {
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.clickActionKeys.shiftClick, {
         name: game.i18n.localize("BRSW.Settings.ShiftClickAction.Name"),
         hint: game.i18n.localize("BRSW.Settings.ShiftClickAction.Hint"),
         default: "system",
@@ -130,7 +130,7 @@ function registerWorldSettings() {
         choices: clickActionChoices,
     });
 
-    SettingsUtils.registerBR2WorldSetting("ctrl_click", {
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.clickActionKeys.ctrlClick, {
         name: game.i18n.localize("BRSW.Settings.ControlClickAction.Name"),
         hint: game.i18n.localize("BRSW.Settings.ControlClickAction.Hint"),
         default: "trait",
@@ -138,7 +138,7 @@ function registerWorldSettings() {
         choices: clickActionChoices,
     });
 
-    SettingsUtils.registerBR2WorldSetting("alt_click", {
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.clickActionKeys.altClick, {
         name: game.i18n.localize("BRSW.Settings.AltClickAction.Name"),
         hint: game.i18n.localize("BRSW.Settings.AltClickAction.Hint"),
         default: "system",
@@ -146,14 +146,14 @@ function registerWorldSettings() {
         choices: clickActionChoices,
     });
 
-    SettingsUtils.registerBR2WorldSetting("no-action-message", {
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.noActionMessage, {
         name: game.i18n.localize("BRSW.Settings.NoActionMessage.Name"),
         hint: game.i18n.localize("BRSW.Settings.NoActionMessage.Hint"),
         default: game.i18n.localize("BRSW.NoActionsSelected"),
         type: String,
     });
 
-    SettingsUtils.registerBR2WorldSetting("result-card", {
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.resultCard, {
         name: game.i18n.localize("BRSW.Settings.ResultCardVisibility.Name"),
         hint: game.i18n.localize("BRSW.Settings.ResultCardVisibility.Hint"),
         default: "all",
@@ -164,7 +164,7 @@ function registerWorldSettings() {
         },
     });
 
-    SettingsUtils.registerBR2WorldSetting("default-ammo-management", {
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.defaultAmmoManagement, {
         name: game.i18n.localize("BRSW.Settings.AmmoManagement.Name"),
         hint: game.i18n.localize("BRSW.Settings.AmmoManagement.Hint"),
         default: true,
@@ -173,42 +173,42 @@ function registerWorldSettings() {
         config: true,
     });
 
-    SettingsUtils.registerBR2WorldSetting("default-pp-management", {
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.defaultPPManagement, {
         name: game.i18n.localize("BRSW.Settings.PPManagement.Name"),
         hint: game.i18n.localize("BRSW.Settings.PPManagement.Hint"),
         default: true,
         type: Boolean,
     });
 
-    const modifiers_source_choices = {
+    const modifiersSourceChoices = {
         swade: game.i18n.localize("BRSW.PPModSources.DefaultSWADE"),
         fc: game.i18n.localize("BRSW.PPModSources.FantasyCompanion"),
         swpf: game.i18n.localize("BRSW.PPModSources.Pathfinder"),
     };
 
-    SettingsUtils.registerBR2WorldSetting("generic-pp-modifiers-source", {
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.genericPPModifiersSource, {
         name: game.i18n.localize("BRSW.Settings.PowerModifiersSource.Name"),
         hint: game.i18n.localize("BRSW.Settings.PowerModifiersSource.Hint"),
         default: "swade",
         type: String,
-        choices: modifiers_source_choices,
+        choices: modifiersSourceChoices,
     });
 
-    SettingsUtils.registerBR2WorldSetting("hide-weapon-actions", {
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.hideWeaponActions, {
         name: game.i18n.localize("BRSW.Settings.HideWeaponActions.Name"),
         hint: game.i18n.localize("BRSW.Settings.HideWeaponActions.Hint"),
         default: false,
         type: Boolean,
     });
 
-    SettingsUtils.registerBR2WorldSetting("disable-gang-up", {
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.disableGangUp, {
         name: game.i18n.localize("BRSW.Settings.DisableGangUp.Name"),
         hint: game.i18n.localize("BRSW.Settings.DisableGangUp.Hint"),
         default: false,
         type: Boolean,
     });
 
-    SettingsUtils.registerBR2WorldSetting("pp_change_card_behaviour", {
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.ppChangeCardBehaviour, {
         name: game.i18n.localize("BRSW.Settings.PPChangeCardBehaviour.Name"),
         hint: game.i18n.localize("BRSW.Settings.PPChangeCardBehaviour.Hint"),
         default: "none",
@@ -221,14 +221,14 @@ function registerWorldSettings() {
         },
     });
 
-    SettingsUtils.registerBR2WorldSetting("swd-unshake", {
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.swdUnshake, {
         name: game.i18n.localize("BRSW.Settings.SWDUnshake.Name"),
         hint: game.i18n.localize("BRSW.Settings.SWDUnshake.Hint"),
         default: false,
         type: Boolean,
     });
 
-    SettingsUtils.registerBR2WorldSetting("auto-status-cards", {
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.autoStatusCards, {
         name: game.i18n.localize("BRSW.Settings.AutoStatusCards.Name"),
         hint: game.i18n.localize("BRSW.Settings.AutoStatusCards.Hint"),
         default: true,
@@ -236,7 +236,7 @@ function registerWorldSettings() {
         requiresReload: true,
     });
 
-    SettingsUtils.registerBR2WorldSetting("range_calc_grid", {
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.rangeCalcGrid, {
         name: game.i18n.localize("BRSW.Settings.RangeCalcUseGrid.Name"),
         hint: game.i18n.localize("BRSW.Settings.RangeCalcUseGrid.Hint"),
         default: false,
@@ -244,28 +244,28 @@ function registerWorldSettings() {
         type: Boolean,
     });
 
-    SettingsUtils.registerBR2WorldSetting("undeadIgnoresIllumination", {
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.undeadIgnoresIllumination, {
         name: game.i18n.localize("BRSW.Settings.UndeadIgnoresIllumination.Name"),
         hint: game.i18n.localize("BRSW.Settings.UndeadIgnoresIllumination.Hint"),
         default: false,
         type: Boolean,
     });
 
-    SettingsUtils.registerBR2WorldSetting("disable_for_actions", {
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.disableForActions, {
         name: game.i18n.localize("BRSW.Settings.DisableActions.Name"),
         hint: game.i18n.localize("BRSW.Settings.DisableActions.Hint"),
         default: false,
         type: Boolean,
     });
 
-    SettingsUtils.registerBR2WorldSetting("use_system_injury_table", {
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.useSystemInjuryTable, {
         name: game.i18n.localize("BRSW.Settings.UseSystemInjuryTable.Name"),
         hint: game.i18n.localize("BRSW.Settings.UseSystemInjuryTable.Hint"),
         default: false,
         type: Boolean,
     });
 
-    SettingsUtils.registerBR2WorldSetting("max_tooltip_length", {
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.maxTooltipLength, {
         name: "BRSW.Settings.MaxTooltipLength.Name",
         label: "BRSW.Settings.MaxTooltipLength.Label",
         hint: "BRSW.Settings.MaxTooltipLength.Hint",
@@ -273,7 +273,7 @@ function registerWorldSettings() {
         default: 500,
     });
 
-    SettingsUtils.registerBR2WorldSetting("show_pp_shots_info", {
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.showPPShotsInfo, {
         name: "BRSW.Settings.ShowPPShots.Name",
         label: "BRSW.Settings.ShowPPShots.Label",
         hint: "BRSW.Settings.ShowPPShots.Hint",
@@ -281,14 +281,14 @@ function registerWorldSettings() {
         default: true,
     });
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.SETTING_KEYS.autoCheckExtraCritFailures, {
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.autoCheckExtraCritFailures, {
         name: "BRSW.Settings.AutoCheckExtraCritFailures.Name",
         hint: "BRSW.Settings.AutoCheckExtraCritFailures.Hint",
         type: Boolean,
         default: true,
     });
 
-    SettingsUtils.registerBR2WorldSetting("measure_from_edge", {
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.measureFromEdge, {
         name: "BRSW.Settings.MeasureFromEdge.Name",
         hint: "BRSW.Settings.MeasureFromEdge.Hint",
         type: Boolean,
