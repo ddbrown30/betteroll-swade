@@ -310,7 +310,7 @@ function registerWorldSettings() {
 function registerUserSettings() {
 
     //Register BR2 user settings
-    SettingsUtils.registerBR2UserSetting("default_rate_of_fire", {
+    SettingsUtils.registerBR2UserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.defaultRateOfFire, {
         name: game.i18n.localize("BRSW.Settings.DefaultRateOfFire.Name"),
         hint: game.i18n.localize("BRSW.Settings.DefaultRateOfFire.Hint"),
         default: "single_shot",
@@ -321,14 +321,14 @@ function registerUserSettings() {
         },
     });
 
-    SettingsUtils.registerBR2UserSetting("expand-results", {
+    SettingsUtils.registerBR2UserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.expandResults, {
         name: game.i18n.localize("BRSW.Settings.ExpandResults.Name"),
         hint: game.i18n.localize("BRSW.Settings.ExpandResults.Hint"),
         default: false,
         type: Boolean,
     });
 
-    SettingsUtils.registerBR2UserSetting("expand-rolls", {
+    SettingsUtils.registerBR2UserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.expandRolls, {
         name: game.i18n.localize("BRSW.Settings.ExpandRolls.Name"),
         hint: game.i18n.localize("BRSW.Settings.ExpandRolls.Hint"),
         default: false,
@@ -337,7 +337,7 @@ function registerUserSettings() {
         config: true,
     });
 
-    SettingsUtils.registerBR2UserSetting("expand-descriptions", {
+    SettingsUtils.registerBR2UserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.expandDescriptions, {
         name: game.i18n.localize("BRSW.Settings.ExpandDescriptions.Name"),
         hint: game.i18n.localize("BRSW.Settings.ExpandDescriptions.Hint"),
         default: false,
@@ -346,14 +346,14 @@ function registerUserSettings() {
         config: true,
     });
 
-    SettingsUtils.registerBR2UserSetting("auto_popout_chat", {
+    SettingsUtils.registerBR2UserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.autoPopoutChat, {
         name: "BRSW.Settings.PopoutChat.Name",
         hint: "BRSW.Settings.PopoutChat.Hint",
         default: true,
         type: Boolean,
     });
 
-    SettingsUtils.registerBR2UserSetting("popout_chat_button", {
+    SettingsUtils.registerBR2UserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.popoutChatButton, {
         name: "BRSW.Settings.PopoutChatButton.Name",
         hint: "BRSW.Settings.PopoutChatButton.Hint",
         default: false,

@@ -44,6 +44,15 @@ export const WORLD_SETTING_KEYS = {
     useSystemInjuryTable: "use_system_injury_table",
 };
 
+export const USER_SETTING_KEYS = {
+    autoPopoutChat: "auto_popout_chat",
+    defaultRateOfFire: "default_rate_of_fire",
+    expandDescriptions: "expand-descriptions",
+    expandResults: "expand-results",
+    expandRolls: "expand-rolls",
+    popoutChatButton: "popout_chat_button",
+};
+
 export const USER_FLAGS = {
     userSettings: "user_settings",
 };
