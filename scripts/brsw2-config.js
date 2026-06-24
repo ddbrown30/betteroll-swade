@@ -120,12 +120,15 @@ export const ATTRIBUTES_TRANSLATION_KEYS = {
 };
 
 export const SETTING_KEYS = {
-  world_settings: "world_settings",
   auto_check_extra_fumbles: "auto_check_extra_fumbles",
+  enabledOptionalRules: "optional_rules_enabled",
+  telemetryOptOut: "telemetryOptOut",
+  telemetryWorldInstallId: "telemetryWorldInstallId",
+  worldSettings: "world_settings",
 };
 
 export const USER_FLAGS = {
-  user_settings: "user_settings",
+  userSettings: "user_settings",
 };
 
 export const WORLD_SETTINGS = {};

@@ -384,7 +384,7 @@
     "BRSW.Settings.ShowPPShots.Name": "கார்டில் சாட்கள் அல்லது பவர்பாயிண்ட்டைக் காட்டு",
     "BRSW.Settings.SingleClickAction.Hint": "ஒரு பெயரை (உலகம்) ஒருமுறை சொடுக்கு செய்தால் என்ன நடக்கும் என்பதைத் தேர்ந்தெடுக்கவும்",
     "BRSW.Settings.SingleClickAction.Name": "ஒற்றை சொடுக்கு செயல்",
-    "BRSW.Settings.SWDUnshake.Hint": "அசைக்க, சாவேச் வேர்ல்ட்ச் டீலக்ச் விதிகளைப் பயன்படுத்தவும் (உடனடியாகச் செயல்பட உயர்த்த வேண்டும்). (உலகம்)",
+    "BRSW.Settings.SWDUnshake.Hint": "அசைக்க, சாவேச் வேர்ல்ட்ச் டீலக்ச் விதிகளைப் பயன்படுத்தவும் (உடனடியாகச் செயல்பட உயர்த்த வேண்டும்).",
     "BRSW.Settings.SWDUnshake.Name": "அசைக்க SWD விதிகளைப் பயன்படுத்தவும்.",
     "BRSW.Settings.SystemGlobalMenu.Hint": "கணினி (உலகம்) வரையறுக்கப்பட்ட தனிப்பட்ட உலகளாவிய செயல்களை இயக்க அல்லது முடக்க இந்த சாளரத்தைப் பயன்படுத்தவும்",
     "BRSW.Settings.SystemGlobalMenu.Label": "உலகளாவிய நடவடிக்கைகள்",

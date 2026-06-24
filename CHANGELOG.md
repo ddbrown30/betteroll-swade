@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.11.0
+* Added simple, anonymous telemetry tracking. This tracks the settings that users are using so that I can better understand the way people are using the module.
+
 # Version 5.10.0
 * Removed the hard-coded checks in the gang up calculation now that gangUpAttack/gangUpDefend is available
 * Fixed called shots armor calculation
