@@ -769,13 +769,18 @@ export class TelemetryUtils {
     }
 
     static async sendTelemetry(event, includeUserId, properties = {}) {
+        if (SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.telemetryOptOut)) return;
+
         const installId = await TelemetryUtils.getInstallId();
         const distinctId = includeUserId ? `${installId}:${game.user.id}` : installId;
 
+        const br2Version = game.modules.get(BRSW2_CONFIG.MODULE_NAME).version;
+
         properties = {
             ...properties,
-            moduleVersion: game.modules.get(BRSW2_CONFIG.MODULE_NAME).version,
+            moduleVersion: br2Version,
             foundryVersion: game.version,
+            isTest: br2Version === "0.0.0",
         }
 
         await fetch("https://us.i.posthog.com/capture/", {

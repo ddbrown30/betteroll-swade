@@ -647,6 +647,14 @@ function register_settings_version2() {
         type: Object,
         config: false,
     });
+    SettingsUtils.registerSetting(SETTING_KEYS.telemetryOptOut, {
+        name: game.i18n.localize("BRSW.Settings.TelemetryOptOut.Name"),
+        hint: game.i18n.localize("BRSW.Settings.TelemetryOptOut.Hint"),
+        scope: "user",
+        type: Boolean,
+        default: false,
+        config: true,
+    });
     SettingsUtils.registerSetting("telemetry_install_id", {
         scope: "world",
         type: String,
