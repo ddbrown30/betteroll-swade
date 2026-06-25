@@ -32,7 +32,7 @@ export const WORLD_SETTING_KEYS = {
     disableForActions: "disable_for_actions",
     disableGangUp: "disable-gang-up",
     genericPPModifiersSource: "generic-pp-modifiers-source",
-    hideWeaponActions: "hide-weapon-actions",
+    hideItemActions: "hideItemActions",
     measureFromEdge: "measure_from_edge",
     ppChangeCardBehaviour: "pp_change_card_behaviour",
     rangeCalcGrid: "range_calc_grid",

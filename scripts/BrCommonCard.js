@@ -325,7 +325,7 @@ export class BrCommonCard {
     populate_actions(stored_selections) {
         this.action_sections = {};
         this.populate_world_actions();
-        if (this.item && !SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.hideWeaponActions)) {
+        if (this.item && !SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.hideItemActions)) {
             this.populate_item_actions();
         }
         this.populate_active_effect_actions();

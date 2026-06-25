@@ -187,9 +187,9 @@ function registerWorldSettings() {
         choices: modifiersSourceChoices,
     });
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.hideWeaponActions, {
-        name: game.i18n.localize("BRSW.Settings.HideWeaponActions.Name"),
-        hint: game.i18n.localize("BRSW.Settings.HideWeaponActions.Hint"),
+    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.hideItemActions, {
+        name: game.i18n.localize("BRSW.Settings.HideItemActions.Name"),
+        hint: game.i18n.localize("BRSW.Settings.HideItemActions.Hint"),
         default: false,
         type: Boolean,
     });
