@@ -76,8 +76,8 @@ export function create_common_card(origin, render_data, template) {
 
   if (render_data.tooltip) {
     render_data.tooltip = // Limit tooltip size.
-      render_data.tooltip.length <
-      SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.maxTooltipLength)
+      render_data.tooltip.length <=
+        BRSW2_CONFIG.MAX_TOOLTIP_LENGTH
         ? render_data.tooltip
         : null;
   }

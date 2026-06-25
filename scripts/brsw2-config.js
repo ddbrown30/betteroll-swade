@@ -6,6 +6,7 @@ export const MODULE_NAME = "betterrolls-swade2";
 //export const MODULE_PATH = "modules/betterrolls-swade2";
 
 export const MAX_NOPP_PENALTY_ACTION = 6;
+export const MAX_TOOLTIP_LENGTH = 500;
 
 export const SETTING_KEYS = {
     chatModifiersName: "chat_modifiers_names",
@@ -32,7 +33,6 @@ export const WORLD_SETTING_KEYS = {
     disableGangUp: "disable-gang-up",
     genericPPModifiersSource: "generic-pp-modifiers-source",
     hideWeaponActions: "hide-weapon-actions",
-    maxTooltipLength: "max_tooltip_length",
     measureFromEdge: "measure_from_edge",
     noActionMessage: "no-action-message",
     ppChangeCardBehaviour: "pp_change_card_behaviour",

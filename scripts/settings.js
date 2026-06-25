@@ -265,14 +265,6 @@ function registerWorldSettings() {
         type: Boolean,
     });
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.maxTooltipLength, {
-        name: "BRSW.Settings.MaxTooltipLength.Name",
-        label: "BRSW.Settings.MaxTooltipLength.Label",
-        hint: "BRSW.Settings.MaxTooltipLength.Hint",
-        type: Number,
-        default: 500,
-    });
-
     SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.showPPShotsInfo, {
         name: "BRSW.Settings.ShowPPShots.Name",
         label: "BRSW.Settings.ShowPPShots.Label",

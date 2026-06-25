@@ -278,7 +278,7 @@ export class BrCommonCard {
             return;
         }
         return this.skill.system.description.length <=
-            SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.maxTooltipLength)
+            BRSW2_CONFIG.MAX_TOOLTIP_LENGTH
             ? this.skill.system.description
             : "";
     }
