@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.11.4
+* Fixed bug with damage not working
+
 # Version 5.11.3
 * Fixed the default check for unset user settings
 
