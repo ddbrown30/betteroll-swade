@@ -3,6 +3,27 @@
       duplicate, ChatMessage, ui, Macro */
 // noinspection JSUnusedAssignment
 
+import { roll_attribute } from "./attribute_card.js";
+import { BrCommonCard } from "./BrCommonCard.js";
+import * as BRSW2_CONFIG from "./brsw2-config.js";
+import { WORLD_SETTING_KEYS } from "./brsw2-config.js";
+import {
+  roll_item,
+  run_macros,
+  spendPP,
+} from "./item_card.js";
+import { ManualModifiersPopup } from "./manual_mods_popup.js";
+import { TraitModifier } from "./modifiers.js";
+import {
+  create_unshaken_card,
+  create_unstun_card,
+} from "./remove_status_cards.js";
+import { TraitRoll } from "./rolls.js";
+import {
+  calculate_distance,
+  get_tn_from_token,
+  roll_skill,
+} from "./skill_card.js";
 import {
   addEventListenerAll,
   get_targeted_token,
@@ -12,38 +33,6 @@ import {
   spendMastersBenny,
   Utils,
 } from "./utils.js";
-import {
-  spendPP,
-  roll_item,
-  run_macros,
-} from "./item_card.js";
-import {
-  calculate_distance,
-  get_tn_from_token,
-  roll_skill,
-} from "./skill_card.js";
-import { roll_attribute } from "./attribute_card.js";
-import {
-  create_unshaken_card,
-  create_unstun_card,
-} from "./remove_status_cards.js";
-import { TraitRoll } from "./rolls.js";
-import { BrCommonCard } from "./BrCommonCard.js";
-import { TraitModifier } from "./modifiers.js";
-import { SETTING_KEYS } from "./brsw2-config.js";
-import { ManualModifiersPopup } from "./manual_mods_popup.js";
-
-export const BRSW_CONST = {
-  TYPE_ATTRIBUTE_CARD: 1,
-  TYPE_SKILL_CARD: 2,
-  TYPE_ITEM_CARD: 3,
-  TYPE_DMG_CARD: 10,
-  TYPE_INC_CARD: 11,
-  TYPE_INJ_CARD: 12,
-  TYPE_UNSHAKE_CARD: 13,
-  TYPE_UNSTUN_CARD: 14,
-  TYPE_RESULT_CARD: 100,
-};
 
 /**
  * A constructor for our own roll object, this code is here just for legacy
@@ -87,8 +76,8 @@ export function create_common_card(origin, render_data, template) {
 
   if (render_data.tooltip) {
     render_data.tooltip = // Limit tooltip size.
-      render_data.tooltip.length <
-      SettingsUtils.getWorldSetting("max_tooltip_length")
+      render_data.tooltip.length <=
+        BRSW2_CONFIG.MAX_TOOLTIP_LENGTH
         ? render_data.tooltip
         : null;
   }
@@ -102,7 +91,7 @@ export function create_common_card(origin, render_data, template) {
     br_message.token_id = actor.token.id;
   }
 
-  br_message.generate_render_data(render_data, template);
+  br_message.generateRenderData(render_data, template);
   return br_message;
 }
 
@@ -480,16 +469,17 @@ async function manage_sheet(actor) {
  * from a click event and the settings
  * @param {event} event
  */
-export function get_action_from_click(event) {
-  let setting_name = "click";
-  // noinspection JSUnresolvedVariable
+export function getActionFromClick(event) {
+  let setting_name = WORLD_SETTING_KEYS.clickActionKeys.click;
+
   if (event.shiftKey) {
-    setting_name = "shift_click";
+    setting_name = WORLD_SETTING_KEYS.clickActionKeys.shiftClick;
   } else if (event.ctrlKey) {
-    setting_name = "ctrl_click";
+    setting_name = WORLD_SETTING_KEYS.clickActionKeys.ctrlClick;
   } else if (event.altKey) {
-    setting_name = "alt_click";
+    setting_name = WORLD_SETTING_KEYS.clickActionKeys.altClick;
   }
+
   return SettingsUtils.getWorldSetting(setting_name);
 }
 
@@ -560,21 +550,22 @@ export async function detect_fumble(has_wild_die, num_fumble_results, dice) {
     //No dice came up as a 1 so it's not possible to fumble
     return false;
   }
+
   if (!has_wild_die) {
     if (dice.length === 1) {
       //The extra is only rolling a single trait die and it came up as 1
       //In this case, we need to roll an extra d6 to confirm if it's a fumble
-      if (
-        !SettingsUtils.getWorldSetting(SETTING_KEYS.auto_check_extra_fumbles)
-      ) {
+      if (!SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.autoCheckExtraCritFailures)) {
         //The option to auto-check for fumbles on extras is disabled, so we can return false
         return false;
       }
+
       const test_fumble_roll = new Roll("1d6");
       await test_fumble_roll.roll();
       await test_fumble_roll.toMessage({
         flavor: game.i18n.localize("BRSW.Testing_fumbles"),
       });
+
       //If the new roll comes up as a 1, it's a fumble
       return test_fumble_roll.total === 1;
     }
@@ -635,10 +626,10 @@ export function calculate_damage_results(rolls) {
  * @param render_data
  */
 export async function update_message(br_message, render_data) {
-  if (br_message.type === BRSW_CONST.TYPE_ITEM_CARD) {
+  if (br_message.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD) {
     render_data.skill = Utils.getItemTrait(br_message.item, br_message.actor);
   }
-  br_message.generate_render_data(render_data, undefined);
+  br_message.generateRenderData(render_data, undefined);
   await br_message.render();
   await br_message.save();
 }
@@ -1083,7 +1074,7 @@ async function override_die_result(br_card, die_index, new_value) {
   await br_card.render();
   await br_card.save();
   // Rerun macros.
-  const macro_actions = br_card.get_selected_actions().filter((action) => {
+  const macro_actions = br_card.getSelectedActions().filter((action) => {
     return action.code.hasOwnProperty("runSkillMacro");
   });
   if (macro_actions) {
@@ -1256,18 +1247,18 @@ async function duplicate_message(message, event) {
   br_card.render_data.damage_rolls = [];
   await br_card.render();
   await br_card.save();
-  const action = get_action_from_click(event);
+  const action = getActionFromClick(event);
   if (action.includes("dialog")) {
     game.brsw.dialog.show_card(br_card);
   } else if (action.includes("trait")) {
     // noinspection JSUnresolvedVariable
     const br_card = new BrCommonCard(message);
     const card_type = br_card.type;
-    if (card_type === BRSW_CONST.TYPE_ATTRIBUTE_CARD) {
+    if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ATTRIBUTE_CARD) {
       await roll_attribute(br_card, false);
-    } else if (card_type === BRSW_CONST.TYPE_SKILL_CARD) {
+    } else if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_SKILL_CARD) {
       await roll_skill(br_card, false);
-    } else if (card_type === BRSW_CONST.TYPE_ITEM_CARD) {
+    } else if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD) {
       const roll_damage = action.includes("damage");
       await roll_item(br_card, $(br_card.message.content), false, roll_damage);
     }

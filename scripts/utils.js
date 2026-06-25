@@ -1,4 +1,5 @@
 import * as BRSW2_CONFIG from "./brsw2-config.js";
+import { BRSW2_CONST } from "./brsw2-const.js";
 
 // Utility functions that can be used out of the module
 /* globals ChatMessage, game, console, foundry, ClientSetting, CONFIG */
@@ -65,7 +66,7 @@ export function getAuthor(actor) {
     return fallbackAuthor ?? game.user.id;
 }
 
-export function makeExplotable(expression) {
+export function makeExplodable(expression) {
     // Make all dice of a roll able to explode
     // Code from the SWADE system
     const reg_exp = /\d*d\d+[^kdrxc]/g;
@@ -227,7 +228,7 @@ export function addEventListenerAll(
 }
 
 function measurePath(waypoints) {
-    const use_grid_calc = SettingsUtils.getWorldSetting("range_calc_grid");
+    const use_grid_calc = SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.rangeCalcGrid);
     const path = canvas.grid.measurePath(waypoints);
     return use_grid_calc ? path.distance : path.euclidean;
 }
@@ -303,7 +304,7 @@ export function measureDistance(tokenA, tokenB) {
         closestPair.b.coords,
     ]);
 
-    if (SettingsUtils.getWorldSetting("measure_from_edge")) {
+    if (SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.measureFromEdge)) {
         //If we're measuring from the edge, we need to offset from the center of the grid space to the edge
         //To do this, we need to find the intersection distance from center to edge based on the angle between the two tokens
         const dist = Math.sqrt(closestPair.dist);
@@ -403,9 +404,9 @@ export class Utils {
 
         if (!trait) {
             // Time to check for an attribute
-            for (const attribute of BRSW2_CONFIG.ATTRIBUTES) {
+            for (const attribute of BRSW2_CONST.ATTRIBUTES) {
                 const translation = game.i18n.localize(
-                    BRSW2_CONFIG.ATTRIBUTES_TRANSLATION_KEYS[attribute],
+                    BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS[attribute],
                 );
                 if (traitLower === translation.toLowerCase()) {
                     trait = { system: structuredClone(actor.system.attributes[attribute]) };
@@ -417,7 +418,7 @@ export class Utils {
         if (!trait) {
             // No skill was found, we try to find untrained
             trait = Utils.findFirstSkillInActor(actor, [
-                ...BRSW2_CONFIG.UNTRAINED_SKILLS,
+                ...BRSW2_CONST.UNTRAINED_SKILLS,
                 game.i18n.localize("BRSW.SkillName.UnskilledAttempt").toLowerCase(),
             ]);
         }
@@ -476,24 +477,24 @@ export class Utils {
         // If there is no skill anyway, we are left to guessing
         let skill;
         if (item.type === "power") {
-            skill = Utils.findFirstSkillInActor(actor, BRSW2_CONFIG.ARCANE_SKILLS);
+            skill = Utils.findFirstSkillInActor(actor, BRSW2_CONST.ARCANE_SKILLS);
         } else if (item.type === "weapon") {
             if (parseInt(item.system.range) > 0) {
                 // noinspection JSUnresolvedVariable
                 if (item.system.damage.includes("str")) {
                     skill = Utils.findFirstSkillInActor(actor, [
-                        ...BRSW2_CONFIG.THROWING_SKILLS,
+                        ...BRSW2_CONST.THROWING_SKILLS,
                         game.i18n.localize("BRSW.SkillName.Athletics").toLowerCase(), // add localization
                     ]);
                 } else {
                     skill = Utils.findFirstSkillInActor(actor, [
-                        ...BRSW2_CONFIG.SHOOTING_SKILLS,
+                        ...BRSW2_CONST.SHOOTING_SKILLS,
                         game.i18n.localize("BRSW.SkillName.Shooting").toLowerCase(), // add localization
                     ]);
                 }
             } else {
                 skill = Utils.findFirstSkillInActor(actor, [
-                    ...BRSW2_CONFIG.FIGHTING_SKILLS,
+                    ...BRSW2_CONST.FIGHTING_SKILLS,
                     game.i18n.localize("BRSW.SkillName.Fighting").toLowerCase(), // bag add localization
                 ]);
             }
@@ -501,7 +502,7 @@ export class Utils {
 
         if (skill === undefined) {
             skill = Utils.findFirstSkillInActor(actor, [
-                ...BRSW2_CONFIG.UNTRAINED_SKILLS,
+                ...BRSW2_CONST.UNTRAINED_SKILLS,
                 game.i18n.localize("BRSW.SkillName.UnskilledAttempt").toLowerCase(),
             ]);
         }
@@ -538,7 +539,7 @@ export class Utils {
         }
 
         const configured_skill_name = game.settings.get("swade", "parryBaseSkill").toLowerCase();
-        const fightingNames = BRSW2_CONFIG.FIGHTING_SKILLS;
+        const fightingNames = BRSW2_CONST.FIGHTING_SKILLS;
         fightingNames.push(configured_skill_name);
         return fightingNames.includes(skill.name.toLowerCase());
     }
@@ -552,7 +553,7 @@ export class Utils {
         if (!skill) return false;
         if (skill.system.swid === "shooting") return true;
 
-        const shootingNames = BRSW2_CONFIG.SHOOTING_SKILLS;
+        const shootingNames = BRSW2_CONST.SHOOTING_SKILLS;
         shootingNames.push(game.i18n.localize("BRSW.SkillName.Shooting"));
         return shootingNames.includes(skill.name.toLowerCase());
     }
@@ -566,7 +567,7 @@ export class Utils {
         if (!skill) return false;
         if (skill.system.swid === "athletics") return true;
 
-        const throwingNames = BRSW2_CONFIG.THROWING_SKILLS;
+        const throwingNames = BRSW2_CONST.THROWING_SKILLS;
         throwingNames.push(game.i18n.localize("BRSW.SkillName.Athletics"));
         return throwingNames.includes(skill.name.toLowerCase());
     }
@@ -606,7 +607,7 @@ export class Utils {
     }
 
     static actorHasArcaneMastery(actor) {
-        const edgeNames = BRSW2_CONFIG.ARCANE_MASTERY_EDGES.map((edge) => game.i18n.localize(edge).toLowerCase());
+        const edgeNames = BRSW2_CONST.ARCANE_MASTERY_EDGES.map((edge) => game.i18n.localize(edge).toLowerCase());
         const edge = actor?.items.find((item) => {
             return (
                 item.type === "edge" &&
@@ -714,7 +715,7 @@ export class SettingsUtils {
     }
 
     static isOptionalRuleEnabled(rule) {
-        return SettingsUtils.getSetting("optional_rules_enabled").indexOf(rule) > -1;
+        return SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.enabledOptionalRules).indexOf(rule) > -1;
     }
 
     static hasModuleFlags(obj) {

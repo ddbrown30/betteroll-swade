@@ -29,7 +29,7 @@
                     twbr:group-hover:opacity-100 twbr:group-hover:h-auto twbr:px-3 twbr:py-2
                     twbr:text-sm twbr:font-medium twbr:text-white twbr:bg-gray-900 twbr:rounded-lg
                     twbr:shadow-sm twbr:z-10">
-          {{tooltip}}
+          {{{tooltip}}}
         </div>
       {{/if}}
     </span>
@@ -41,14 +41,6 @@
                           twbr:hover:ring-offset-1 twbr:hover:cursor-pointer" src="{{{header.img}}}" alt="Item image">
       {{/if}}
     </div>
-    {{#if showPopoutButton}}
-      <button class="brsw-popout-button twbr:font-medium twbr:ml-1 twbr:w-8 twbr:h-8 twbr:min-w-8 twbr:align-top
-                      twbr:focus:outline-hidden twbr:bg-white twbr:rounded twbr:border twbr:border-solid
-                      twbr:focus:z-10 twbr:focus:ring-4 twbr:focus:ring-gray-700 twbr:text-gray-800
-                      twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700" title='{{localize "BRSW.PopoutCard"}}'>
-        <i class="fas fa-share-from-square"></i>
-      </button>
-    {{/if}}
   </div>
 </div>
 <div class="brsw-description {{#if collapse_descriptions}}brsw-collapsed{{/if}}">{{{description}}}</div>

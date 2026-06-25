@@ -2,16 +2,17 @@
   readTextFromFile, renderTemplate, foundry, canvas, $ */
 /* jshint -W089 */
 
-import { check_for_actions_with_damage } from "./item_card.js";
 import { SYSTEM_GLOBAL_ACTION } from "./actions/builtin-actions.js";
-import { BRSW_CONST, get_roll_options } from "./cards_common.js";
+import * as BRSW2_CONFIG from "./brsw2-config.js";
+import { get_roll_options } from "./cards_common.js";
+import { get_enabled_gm_actions } from "./gm_actions.js";
+import { check_for_actions_with_damage } from "./item_card.js";
 import {
     SettingsUtils,
-    measureDistance,
-    addEventListenerAll,
     Utils,
+    addEventListenerAll,
+    measureDistance,
 } from "./utils.js";
-import { get_enabled_gm_actions } from "./gm_actions.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -20,7 +21,7 @@ const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
  * Registers all the available global actions
  */
 export function register_actions() {
-    let world_actions = SettingsUtils.getSetting("world_global_actions");
+    let world_actions = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.worldGlobalActions);
     if (world_actions && world_actions[0] instanceof Array) {
         world_actions = world_actions[0];
     }
@@ -140,23 +141,22 @@ function process_action(action, item, actor) {
  * @param {SwadeActor} actor
  */
 export function get_actions(item, actor) {
-    const actions_avaliable = [];
-    let disabled_actions = SettingsUtils.getSetting("system_action_disabled");
-    if (disabled_actions && disabled_actions[0] instanceof Array) {
-        disabled_actions = disabled_actions[0];
+    const availableActions = [];
+
+    let disabledActions = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.disabledSystemActions);
+    if (disabledActions && disabledActions[0] instanceof Array) {
+        disabledActions = disabledActions[0];
     }
+
     for (const action of game.brsw.GLOBAL_ACTIONS) {
-        if (
-            !disabled_actions.includes(action.id) &&
-            process_action(action, item, actor)
-        ) {
-            actions_avaliable.push(action);
+        if (!disabledActions.includes(action.id) && process_action(action, item, actor)) {
+            availableActions.push(action);
         }
     }
-    actions_avaliable.sort((a, b) => {
-        return a.id < b.id ? -1 : 1;
-    });
-    return actions_avaliable;
+
+    availableActions.sort((a, b) => { return a.id < b.id ? -1 : 1; });
+
+    return availableActions;
 }
 
 // noinspection OverlyComplexFunctionJS,FunctionTooLongJS
@@ -463,6 +463,17 @@ export function check_selector(type, value, item, actor) {
             );
             selected = parseInt(value) >= distance;
         }
+    } else if (type === "undead_and_ignores_illumination") {
+        const undeadIgnores = SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.undeadIgnoresIllumination);
+        if (!undeadIgnores) {
+            selected = false;
+        } else {
+            const undeadName = game.i18n.localize("BRSW.AbilityName.Undead").toLowerCase();
+            const undeadAbility = actor.items.find((item) => {
+                return item.type === "ability" && item.name.toLowerCase().includes(undeadName);
+            });
+            selected = !!undeadAbility;
+        }
     } else if (type === "module_is_not_active") {
         const module = game.modules.get(value);
         selected = module && !module.active;
@@ -519,7 +530,7 @@ export class SystemGlobalConfiguration extends HandlebarsApplicationMixin(
 
     async _prepareContext(options) {
         const groups = {};
-        let disable_actions = SettingsUtils.getSetting("system_action_disabled");
+        let disable_actions = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.disabledSystemActions);
         if (disable_actions && disable_actions[0] instanceof Array) {
             disable_actions = disable_actions[0];
         }
@@ -564,13 +575,13 @@ export class SystemGlobalConfiguration extends HandlebarsApplicationMixin(
     }
 
     static async formHandler(event, form, formData) {
-        const disabled_actions = [];
+        const disabledActions = [];
         for (const id in formData.object) {
             if (!formData.object[id]) {
-                disabled_actions.push(id);
+                disabledActions.push(id);
             }
         }
-        await SettingsUtils.setSetting("system_action_disabled", disabled_actions);
+        await SettingsUtils.setSetting(BRSW2_CONFIG.SETTING_KEYS.disabledSystemActions, disabledActions);
     }
 }
 
@@ -630,7 +641,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(
     };
 
     async _prepareContext(options) {
-        let actions = SettingsUtils.getSetting("world_global_actions");
+        let actions = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.worldGlobalActions);
         if (actions && actions[0] instanceof Array) {
             actions = actions[0];
         }
@@ -660,7 +671,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(
                 new_world_actions.push(JSON.parse(action));
             }
         }
-        await SettingsUtils.setSetting("world_global_actions", new_world_actions);
+        await SettingsUtils.setSetting(BRSW2_CONFIG.SETTING_KEYS.worldGlobalActions, new_world_actions);
         register_actions();
     }
 
@@ -798,7 +809,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(
  * Exports custom global actions to a JSON file.
  */
 function export_global_actions() {
-    const actions = SettingsUtils.getSetting("world_global_actions");
+    const actions = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.worldGlobalActions);
     foundry.utils.saveDataToFile(
         JSON.stringify(actions),
         "json",
@@ -833,7 +844,7 @@ async function import_global_actions(app) {
                         return ui.notifications.error("You did not upload a data file!");
                     }
                     const jsonText = await foundry.utils.readTextFromFile(form.data.files[0]);
-                    await SettingsUtils.setSetting("world_global_actions", JSON.parse(jsonText));
+                    await SettingsUtils.setSetting(BRSW2_CONFIG.SETTING_KEYS.worldGlobalActions, JSON.parse(jsonText));
                     app.render(true);
                 },
             },
@@ -852,11 +863,11 @@ async function import_global_actions(app) {
  */
 function get_gm_actions() {
     const gm_actions = [];
-    const disabled_actions = SettingsUtils.getSetting("system_action_disabled");
+    const disabledActions = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.disabledSystemActions);
     for (const action of game.brsw.GLOBAL_ACTIONS) {
         if (
             action.selector_type === "gm_action" &&
-            !disabled_actions.includes(action.id)
+            !disabledActions.includes(action.id)
         ) {
             action.enable = false;
             gm_actions.push(action);

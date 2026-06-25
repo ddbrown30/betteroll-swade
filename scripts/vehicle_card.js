@@ -1,7 +1,7 @@
 // Functions for cards representing vehicles
 /* globals Token, game, ui, fromUuid, fromUuidSync */
 
-import { get_action_from_click } from "./cards_common.js";
+import { getActionFromClick } from "./cards_common.js";
 import { create_item_card } from "./item_card.js";
 import { roll_skill } from "./skill_card.js";
 import { Utils } from "./utils.js";
@@ -12,7 +12,7 @@ import { Utils } from "./utils.js";
  * @param {SwadeActor, Token} vehicle token or actor vehicle from the char sheet
  */
 async function vehicle_click_listener(ev, vehicle) {
-    const action = get_action_from_click(ev);
+    const action = getActionFromClick(ev);
     if (action === "system") {
         return;
     }

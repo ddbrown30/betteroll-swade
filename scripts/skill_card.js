@@ -1,25 +1,26 @@
 // Functions for cards representing skills
 /* globals TokenDocument, Token, game, CONST, canvas, console, Ray, succ, fromUuid, ui, $ */
 
+import { BrCommonCard } from "./BrCommonCard.js";
+import * as BRSW2_CONFIG from "./brsw2-config.js";
+import { BRSW2_CONST } from "./brsw2-const.js";
 import {
-    BRSW_CONST,
     create_common_card,
-    get_action_from_click,
+    getActionFromClick,
     get_actor_from_ids,
+    process_common_actions,
     roll_trait,
     spend_bennie,
     trait_to_string,
-    process_common_actions,
 } from "./cards_common.js";
 import { run_macros } from "./item_card.js";
+import { TraitModifier } from "./modifiers.js";
 import {
     SettingsUtils,
     Utils,
     addEventListenerAll,
     measureDistance,
 } from "./utils.js";
-import { BrCommonCard } from "./BrCommonCard.js";
-import { TraitModifier } from "./modifiers.js";
 
 /**
  * Creates a chat card for a skill
@@ -62,7 +63,7 @@ async function create_skill_card(
         },
         "modules/betterrolls-swade2/templates/skill_card.hbs",
     );
-    br_message.type = BRSW_CONST.TYPE_SKILL_CARD;
+    br_message.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_SKILL_CARD;
     br_message.skill_id = skill.id;
     if (vehicle) {
         br_message.vehicle_actor_id = vehicle.actor?.id || vehicle.id;
@@ -117,7 +118,7 @@ export function skill_card_hooks() {
  * @param {SwadeActor, Token} target token or actor from the char sheet
  */
 async function skill_click_listener(ev, target) {
-    const action = get_action_from_click(ev);
+    const action = getActionFromClick(ev);
     if (action === "system") {
         return;
     }
@@ -185,7 +186,7 @@ export async function roll_skill(br_card, expend_bennie) {
     const extra_data = { modifiers: [] };
     const macros = [];
     // Actions
-    for (const action of br_card.get_selected_actions()) {
+    for (const action of br_card.getSelectedActions()) {
         process_common_actions(action.code, extra_data, macros, br_card.actor);
     }
     if (br_card.trait_roll.is_rolled) {
@@ -524,7 +525,7 @@ function sizeToScale(size) {
  * - Each ally adjacent to the defender cancels out one point of Gang Up bonus from an attacker adjacent to both.
  */
 export function calculateGangUp(attackerToken, targetToken) {
-    if (SettingsUtils.getWorldSetting("disable-gang-up")) {
+    if (SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.disableGangUp)) {
         return { name: "NoGangup", bonus: 0 };
     }
 
@@ -548,7 +549,7 @@ export function calculateGangUp(attackerToken, targetToken) {
     const scene = targetToken.scene;
     if (!scene) return 0;
 
-    let meleeRange = SettingsUtils.getWorldSetting("measure_from_edge") ?
+    let meleeRange = SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.measureFromEdge) ?
         0 : //0 when using edge distance since edges have to be touching
         Math.SQRT2; //Range is SQRT2 to account for diagonals
 

@@ -1,9 +1,10 @@
 // Functions for the damage card
 /* global game, canvas, CONST, Token, CONFIG, Hooks, succ, console */
+import { BrCommonCard } from "./BrCommonCard.js";
+import { BRSW2_CONST } from "./brsw2-const.js";
 import {
-  BRSW_CONST,
-  create_common_card,
   are_bennies_available,
+  create_common_card,
   roll_trait,
   spend_bennie,
 } from "./cards_common.js";
@@ -12,7 +13,6 @@ import {
   create_injury_card,
 } from "./incapacitation_card.js";
 import { SettingsUtils, addEventListenerAll } from "./utils.js";
-import { BrCommonCard } from "./BrCommonCard.js";
 
 /**
  * Shows a damage card and applies damage to the token/actor
@@ -71,7 +71,7 @@ export async function create_damage_card(
     br_message.popoutShown = true;
   }
   br_message.update_list = { ...br_message.update_list, ...{ user: user.id } };
-  br_message.type = BRSW_CONST.TYPE_DMG_CARD;
+  br_message.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_DMG_CARD;
   await br_message.render();
   await br_message.save();
   Hooks.call("BRSW-AfterShowDamageCard", actor, wounds, br_message);

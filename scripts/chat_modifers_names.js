@@ -29,11 +29,11 @@ export class ModifierSettingsConfiguration extends HandlebarsApplicationMixin(Ap
   };
 
   async _prepareContext(options) {
-    let chat_modifiers_names = SettingsUtils.getSetting("chat_modifiers_names");
+    let chat_modifiers_names = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.chatModifiersName);
     return { names: chat_modifiers_names };
   }
 
   static async formHandler(event, form, formData) {
-    await SettingsUtils.setSetting("chat_modifiers_names", formData.object);
+    await SettingsUtils.setSetting(BRSW2_CONFIG.SETTING_KEYS.chatModifiersName, formData.object);
   }
 }

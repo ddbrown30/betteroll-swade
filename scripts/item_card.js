@@ -2,41 +2,41 @@
 /* globals Token, TokenDocument, game, CONST, canvas, console, CONFIG, ChatMessage, ui, Hooks, Roll, succ, structuredClone, $, fromUuid */
 // noinspection JSCheckFunctionSignatures
 
+import { get_current_generic_mods } from "../config/generic_pp_modifiers.js";
+import { BrCommonCard } from "./BrCommonCard.js";
+import { brAction } from "./actions.js";
 import * as BRSW2_CONFIG from "./brsw2-config.js";
+import { BRSW2_CONST } from "./brsw2-const.js";
 import {
-    BRSW_CONST,
     BRWSRoll,
     calculate_damage_results,
     check_and_roll_conviction,
     create_common_card,
-    get_action_from_click,
+    getActionFromClick,
     get_roll_options,
-    roll_trait,
-    spend_bennie,
-    update_message,
     has_joker,
     process_common_actions,
     process_minimum_str_modifiers,
     roll_dice,
+    roll_trait,
+    spend_bennie,
+    update_message,
 } from "./cards_common.js";
+import { create_damage_card } from "./damage_card.js";
+import { DamageModifier, TraitModifier } from "./modifiers.js";
+import { PPManagementDialog } from "./pp_management_dialog.js";
+import { calculateGangUp } from "./skill_card.js";
 import {
     SettingsUtils,
+    Utils,
+    addEventListenerAll,
+    broofa,
+    getAuthor,
     get_targeted_token,
-    makeExplotable,
+    makeExplodable,
     set_or_update_condition,
     simple_form,
-    broofa,
-    addEventListenerAll,
-    Utils,
-    getAuthor,
 } from "./utils.js";
-import { create_damage_card } from "./damage_card.js";
-import { BrCommonCard } from "./BrCommonCard.js";
-import { DamageModifier, TraitModifier } from "./modifiers.js";
-import { brAction } from "./actions.js";
-import { PPManagementDialog } from "./pp_management_dialog.js";
-import { get_current_generic_mods } from "../config/generic_pp_modifiers.js";
-import { calculateGangUp } from "./skill_card.js";
 
 const ROF_BULLETS = { 1: 1, 2: 5, 3: 10, 4: 20, 5: 40, 6: 50 };
 
@@ -69,7 +69,7 @@ export async function create_item_card(
         item = await fromUuid(item_id);
     }
 
-    if (item.type === "action" && SettingsUtils.getWorldSetting("disable_for_actions")) {
+    if (item.type === "action" && SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.disableForActions)) {
         // Disable actions
         item.show();
         return;
@@ -85,7 +85,7 @@ export async function create_item_card(
     const ammoEnabled = parseInt(item.system.shots) || item.system.ammo;
     const is_power = !isNaN(parseFloat(item.system.pp)) || item.type === "power";
     const subtract_select = ammoEnabled
-        ? SettingsUtils.getWorldSetting("default-ammo-management")
+        ? SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.defaultAmmoManagement)
         : false;
 
     if (!damage && item.system.actions) {
@@ -103,7 +103,7 @@ export async function create_item_card(
             ammo: ammoEnabled,
             subtract_selected: subtract_select,
             subtractPP: is_power
-                ? SettingsUtils.getWorldSetting("default-pp-management")
+                ? SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.defaultPPManagement)
                 : false,
             damage_rolls: [],
             is_power: is_power,
@@ -114,12 +114,12 @@ export async function create_item_card(
         },
         "modules/betterrolls-swade2/templates/item_card.hbs",
     );
-    br_message.type = BRSW_CONST.TYPE_ITEM_CARD;
+    br_message.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD;
     br_message.damage = damage;
     br_message.item_id = item_id;
     br_message.applicable_effects = get_applicable_effects(item);
     br_message.pp_modifiers = is_power ? get_pp_mods(item) : {};
-    br_message.check_warnings(br_message.render_data);
+    br_message.checkWarnings(br_message.render_data);
     await br_message.render(actions_stored);
     await br_message.save();
     call_create_item_card_hooks(item, br_message);
@@ -279,7 +279,10 @@ export function check_for_actions_with_damage(item) {
 function create_item_card_tooltip(item) {
     let tooltip = "";
     if (item.type === "weapon") {
-        tooltip = `<p>${game.i18n.localize("BRSW.Dmg")}: ${item.system.damage} ${game.i18n.localize("BRSW.ApShort")}: ${item.system.ap} ${game.i18n.localize("BRSW.Shots")}: ${item.system.currentShots}/${item.system.shots}</p>${tooltip}`;
+        tooltip += `${game.i18n.localize("BRSW.Dmg")}: ${item.system.damage} ${game.i18n.localize("BRSW.ApShort")}: ${item.system.ap}`;
+        if (item.system.currentShots !== null && item.system.shots !== null) {
+            tooltip += `<br>${game.i18n.localize("BRSW.Shots")}: ${item.system.currentShots}/${item.system.shots}`;
+        }
     }
     return tooltip;
 }
@@ -345,7 +348,7 @@ export function expose_item_functions() {
  * @param {HTMLElement} currentTarget the element that was clicked
  */
 async function item_click_listener(ev, target, currentTarget) {
-    let action = get_action_from_click(ev);
+    let action = getActionFromClick(ev);
     if (action === "system") {
         return;
     }
@@ -498,7 +501,7 @@ export function activate_item_card_listeners(br_card, html) {
             //This won't affect change the popout or vice versa,
             //but doing that would require an update to the chat message which would refresh the render which is disruptive
             ev.target.parentElement.querySelector(".brsw-shots-pp").innerText =
-                br_card.item_shots;
+                br_card.itemShots;
         });
 
     html
@@ -506,7 +509,7 @@ export function activate_item_card_listeners(br_card, html) {
         ?.addEventListener("click", async (ev) => {
             await new PPManagementDialog({ brCard: br_card }).wait({ force: true });
 
-            if (SettingsUtils.getWorldSetting("show_pp_shots_info")) {
+            if (SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.showPPShotsInfo)) {
                 //Update the pp text of the card we just clicked on.
                 //This won't affect the popout or vice versa,
                 //but doing that would require an update to the chat message which would refresh the render which is disruptive
@@ -515,7 +518,7 @@ export function activate_item_card_listeners(br_card, html) {
                     ppPenalty.innerText = -Math.ceil(calc_pp_cost(br_card) / 2);
                 } else {
                     const ppRemaining = ev.target.parentElement.parentElement.querySelector(".brsw-shots-pp");
-                    ppRemaining.innerText = br_card.item_shots;
+                    ppRemaining.innerText = br_card.itemShots;
 
                     const ppCost = ev.target.parentElement.parentElement.querySelector(".brsw-pp-cost");
                     ppCost.innerText = calc_pp_cost(br_card);
@@ -618,7 +621,7 @@ async function roll_resist(trait, br_card, trait_mod) {
     for (const token of canvas.tokens.controlled) {
         const trait_lower = trait.toLowerCase();
         let new_card;
-        if (BRSW2_CONFIG.ATTRIBUTES.includes(trait_lower)) {
+        if (BRSW2_CONST.ATTRIBUTES.includes(trait_lower)) {
             new_card = await game.brsw.create_atribute_card(
                 token,
                 trait.toLowerCase(),
@@ -676,7 +679,7 @@ function get_trait_roll_difficulty(br_card) {
 }
 
 export async function displayPPChangeCard(actor, chatData) {
-    const show_card = SettingsUtils.getWorldSetting("pp_change_card_behaviour");
+    const show_card = SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.ppChangeCardBehaviour);
     if (show_card !== "none") {
         chatData.author = getAuthor(actor);
         chatData.speaker = { alias: actor.name };
@@ -897,12 +900,12 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
     }
 
     extra_data.rof = br_message.item.system.rof || 1;
-    if (SettingsUtils.getUserSetting("default_rate_of_fire") === "single_shot") {
+    if (SettingsUtils.getUserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.defaultRateOfFire) === "single_shot") {
         extra_data.rof = 1;
     }
 
     // Actions
-    for (const action of br_message.get_selected_actions()) {
+    for (const action of br_message.getSelectedActions()) {
         if (action.code.skillOverride) {
             const trait = Utils.traitFromString(
                 br_message.actor,
@@ -1023,7 +1026,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
     ) {
         const dis_ammo_selected = html
             ? !!html.querySelector(".twbr\\:bg-red-700.brsw-ammo-toggle")
-            : SettingsUtils.getWorldSetting("default-ammo-management");
+            : SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.defaultAmmoManagement);
         if (dis_ammo_selected || macros.length) {
             br_message.render_data.used_shots =
                 shots_override || ROF_BULLETS[br_message.trait_roll.rof || 1];
@@ -1335,7 +1338,7 @@ async function get_damage_mods_from_actions(
     macros,
     expend_bennie,
 ) {
-    for (const action of br_card.get_selected_actions()) {
+    for (const action of br_card.getSelectedActions()) {
         if (action.code.isHeavyWeapon) {
             damage_formulas.heavy_weapon = true;
         }
@@ -1513,7 +1516,7 @@ export async function roll_dmg(
 
     // Roll
     if (damage_formulas.explodes) {
-        damage_formulas.damage = makeExplotable(damage_formulas.damage);
+        damage_formulas.damage = makeExplodable(damage_formulas.damage);
     } else {
         damage_formulas.damage = damage_formulas.damage.replace("x", "");
         damage_formulas.raise = damage_formulas.raise.replace("x", "");

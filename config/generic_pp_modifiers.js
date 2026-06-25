@@ -1,7 +1,8 @@
+import * as BRSW2_CONFIG from "../scripts/brsw2-config.js";
 import { SettingsUtils } from "../scripts/utils.js";
 
 export function get_current_generic_mods() {
-    const source = SettingsUtils.getWorldSetting("generic-pp-modifiers-source");
+    const source = SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.genericPPModifiersSource);
     if (source === "fc") {
         return FANTASY_COMPANION_GENERIC_POWER_MODIFIERS;
     }

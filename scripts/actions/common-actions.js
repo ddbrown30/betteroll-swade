@@ -77,6 +77,10 @@ const NIGHTDARKVISION_SELECTORS = [
     selector_type: "actor_has_ability",
     selector_value: "BRSW.AbilityName.DarkVision",
   },
+  {
+    selector_type: "undead_and_ignores_illumination",
+    selector_value: true,
+  },
 ];
 
 export const COMMON_ACTIONS = [
