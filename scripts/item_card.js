@@ -279,7 +279,10 @@ export function check_for_actions_with_damage(item) {
 function create_item_card_tooltip(item) {
     let tooltip = "";
     if (item.type === "weapon") {
-        tooltip = `<p>${game.i18n.localize("BRSW.Dmg")}: ${item.system.damage} ${game.i18n.localize("BRSW.ApShort")}: ${item.system.ap} ${game.i18n.localize("BRSW.Shots")}: ${item.system.currentShots}/${item.system.shots}</p>${tooltip}`;
+        tooltip += `${game.i18n.localize("BRSW.Dmg")}: ${item.system.damage} ${game.i18n.localize("BRSW.ApShort")}: ${item.system.ap}`;
+        if (item.system.currentShots !== null && item.system.shots !== null) {
+            tooltip += `<br>${game.i18n.localize("BRSW.Shots")}: ${item.system.currentShots}/${item.system.shots}`;
+        }
     }
     return tooltip;
 }
