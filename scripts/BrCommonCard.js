@@ -305,7 +305,7 @@ export class BrCommonCard {
         }
     }
 
-    populate_macro_buttons() {
+    populateMacroButtons() {
         if (!this.item.system?.actions?.additional) {
             return;
         }
@@ -322,15 +322,15 @@ export class BrCommonCard {
      * @param {object} stored_selections An object with action ids as properties
      *   and a boolean meaning if they need to set on or off
      */
-    populate_actions(stored_selections) {
+    populateActions(stored_selections) {
         this.action_sections = {};
-        this.populate_world_actions();
+        this.populateWorldActions();
         if (this.item && !SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.hideItemActions)) {
-            this.populate_item_actions();
+            this.populateItemActions();
         }
-        this.populate_active_effect_actions();
-        this.populate_resist_actions();
-        this.populate_no_power_points_actions();
+        this.populateActiveEffectActions();
+        this.populateResistActions();
+        this.populateNoPowerPointsActions();
         Utils.forEachActionGroup(this, group => {
             group.actions.sort((a, b) => {
                 if (group.name === "Active effects" || group.name === "Item actions") {
@@ -347,26 +347,26 @@ export class BrCommonCard {
         Hooks.call("BRSWCardActionsPopulated", this);
     }
 
-    populate_world_actions() {
-        const item = this.item ||
-            this.skill || { type: "attribute", name: this.attribute_name };
+    populateWorldActions() {
+        const item = this.item || this.skill || { type: "attribute", name: this.attribute_name };
+
         for (const global_action of get_actions(item, this.actor)) {
-            const name =
-                global_action.button_name.slice(0, 5) === "BRSW."
-                    ? game.i18n.localize(global_action.button_name)
-                    : global_action.button_name;
+            const name = game.i18n.localize(global_action.button_name);
             const section_name = (global_action.section ? global_action.section : "none").toLowerCase();
             const group_name = global_action.group || "BRSW.NoGroup";
             const group_name_id = group_name.split(".").join("");
             const group_single = global_action.hasOwnProperty("group_single");
+
             if (global_action.hasOwnProperty("extra_text")) {
                 this.extra_text += global_action.extra_text;
             }
+
             if (!this.action_sections.hasOwnProperty(section_name)) {
                 this.action_sections[section_name] = {
                     action_groups: {},
                 };
             }
+
             if (!this.action_sections[section_name].action_groups.hasOwnProperty(group_name_id)) {
                 const translated_group = game.i18n.localize(group_name);
                 this.action_sections[section_name].action_groups[group_name_id] = {
@@ -381,9 +381,7 @@ export class BrCommonCard {
             if (global_action.hasOwnProperty("defaultChecked")) {
                 if (global_action.defaultChecked == "on") {
                     new_action.selected = true;
-                } else if (
-                    global_action.defaultChecked.hasOwnProperty("selector_type")
-                ) {
+                } else if (global_action.defaultChecked.hasOwnProperty("selector_type")) {
                     new_action.selected = check_selector(
                         global_action.defaultChecked.selector_type,
                         global_action.defaultChecked.selector_value,
@@ -392,11 +390,12 @@ export class BrCommonCard {
                     );
                 }
             }
+
             this.action_sections[section_name].action_groups[group_name_id].actions.push(new_action);
         }
     }
 
-    populate_item_actions() {
+    populateItemActions() {
         const item_actions = [];
         for (const action in this.item.system?.actions?.additional) {
             const current_action = this.item.system.actions.additional[action];
@@ -407,6 +406,7 @@ export class BrCommonCard {
                     "item",
                     action,
                 );
+
                 item_actions.push(br_action);
             }
         }
@@ -507,10 +507,9 @@ export class BrCommonCard {
         }
     }
 
-    populate_active_effect_actions() {
+    populateActiveEffectActions() {
         if (this.skill) {
-            const attGlobalMods =
-                this.actor.system.stats.globalMods[this.skill.system.attribute] ?? [];
+            const attGlobalMods = this.actor.system.stats.globalMods[this.skill.system.attribute] ?? [];
             const effectArray = [
                 ...this.actor.system.stats.globalMods.trait,
                 ...attGlobalMods,
@@ -527,10 +526,7 @@ export class BrCommonCard {
             this.populate_active_effect_actions_from_array(effectArray);
         }
         if (this.damage && this.actor.system.stats.globalMods.damage.length > 0) {
-            this.populate_active_effect_actions_from_array(
-                this.actor.system.stats.globalMods.damage,
-                "dmgMod",
-            );
+            this.populate_active_effect_actions_from_array(this.actor.system.stats.globalMods.damage, "dmgMod");
         }
     }
 
@@ -566,10 +562,11 @@ export class BrCommonCard {
         }
     }
 
-    populate_resist_actions() {
+    populateResistActions() {
         if (!this.item || !this.item.system.actions) {
             return;
         }
+
         for (const action in this.item.system.actions.additional) {
             const current_action = this.item.system.actions.additional[action];
             if (current_action.type === "resist") {
@@ -585,14 +582,11 @@ export class BrCommonCard {
     /**
      * Populates actions needed for the No Power Points optional rule
      */
-    populate_no_power_points_actions() {
-        if (
-            !game.settings.get("swade", "noPowerPoints") ||
-            !this.item ||
-            !this.item.system.pp
-        ) {
+    populateNoPowerPointsActions() {
+        if (!game.settings.get("swade", "noPowerPoints") || !this.item || !this.item.system.pp) {
             return;
         }
+
         const ppCost = calc_pp_cost(this);
         const penaltySelections = Utils.getNoPPPenaltySelections(ppCost);
 
@@ -620,11 +614,11 @@ export class BrCommonCard {
         };
     }
 
-    get has_feet_buttons() {
+    get hasFooterButtons() {
         return this.resist_buttons?.length > 0 || this.macro_buttons?.length > 0;
     }
 
-    set_active_actions(actions) {
+    setActiveActions(actions) {
         Utils.forEachActionGroup(this, group => {
             for (const action of group.actions) {
                 action.selected = actions.includes(action.code.id);
@@ -657,10 +651,10 @@ export class BrCommonCard {
     /**
      * Set the trait_id for the render_data
      */
-    set_trait_using_skill_override() {
-        const actions = this.get_selected_actions();
+    setTraitUsingSkillOverride() {
+        const actions = this.getSelectedActions();
 
-        this.reset_default_trait();
+        this.resetDefaultTrait();
         const action = actions.find(
             (a) => a.code.hasOwnProperty("skillOverride") && a.code.skillOverride,
         );
@@ -680,7 +674,7 @@ export class BrCommonCard {
     /**
      * Revert the trait to the default for the item
      */
-    reset_default_trait() {
+    resetDefaultTrait() {
         if (this.item) {
             this.render_data.trait_id = Utils.getItemTrait(this.item, this.actor);
         }
@@ -692,7 +686,7 @@ export class BrCommonCard {
      * @param template
      * @returns {*}
      */
-    generate_render_data(render_data, template) {
+    generateRenderData(render_data, template) {
         render_data.actor = this.actor;
         render_data.result_master_only = SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.resultCard) === "master";
 
@@ -707,31 +701,24 @@ export class BrCommonCard {
             render_data.template = template;
         }
 
-        this.check_warnings(render_data);
+        this.checkWarnings(render_data);
         this.render_data = render_data;
         return render_data;
     }
 
     get show_rerolls() {
-        if (
-            game.settings.get("swade", "dumbLuck") ||
-            !this.trait_roll.current_roll
-        ) {
+        if (game.settings.get("swade", "dumbLuck") || !this.trait_roll.current_roll) {
             return true;
         }
-        return (
-            this.trait_roll.current_roll && !this.trait_roll.current_roll.is_fumble
-        );
+
+        return this.trait_roll.current_roll && !this.trait_roll.current_roll.is_fumble;
     }
 
     /**
      * Recovers the trait used in card
      */
-    get_trait() {
-        if (
-            this.render_data.hasOwnProperty("trait_id") &&
-            this.render_data.trait_id
-        ) {
+    getTrait() {
+        if (this.render_data.hasOwnProperty("trait_id") && this.render_data.trait_id) {
             let trait;
             if (this.render_data.trait_id.hasOwnProperty("name")) {
                 // This is an attribute
@@ -740,6 +727,7 @@ export class BrCommonCard {
                 // Should be a skill
                 trait = this.actor.items.get(this.render_data.trait_id);
             }
+
             this.render_data.skill = trait;
             this.render_data.skill_title = trait
                 ? trait.name + " " + trait_to_string(trait.system)
@@ -750,7 +738,7 @@ export class BrCommonCard {
     /**
      * Checks and creates a warning in the top of the card
      */
-    check_warnings(render_data) {
+    checkWarnings(render_data) {
         if (this.actor.system.status.isStunned) {
             render_data.warning = `<span class="br2-unstun-card brsw-clickable">${game.i18n.localize(
                 "BRSW.CharacterIsStunned",
@@ -779,17 +767,17 @@ export class BrCommonCard {
      */
     async render(stored_selections = {}) {
         if (!Object.keys(this.action_sections).length) {
-            this.populate_actions(stored_selections);
+            this.populateActions(stored_selections);
         }
         if (this.item && this.macro_buttons.length === 0) {
-            this.populate_macro_buttons();
+            this.populateMacroButtons();
         }
-        this.get_trait();
+        this.getTrait();
 
         this.pp_cost = this.render_data.is_power ? calc_pp_cost(this) : 0;
         const new_content = await foundry.applications.handlebars.renderTemplate(
             this.render_data.template,
-            this.get_data_render(),
+            this.getDataRender(),
         );
 
         await foundry.applications.ux.TextEditor.implementation.enrichHTML(
@@ -799,7 +787,7 @@ export class BrCommonCard {
         if (this.message) {
             this.update_list.content = new_content;
         } else {
-            await this.create_foundry_message(new_content);
+            await this.createFoundryMessage(new_content);
 
             //If auto-popout is disabled, mark our popout as shown so that we won't show a bunch of old popouts if it's later enabled
             this.popoutShown = !SettingsUtils.getUserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.autoPopoutChat);
@@ -815,7 +803,7 @@ export class BrCommonCard {
      * Temporal stop gap until render_data is removed, and we pass the class
      * to the template
      */
-    get_data_render() {
+    getDataRender() {
         const data = {
             ...this.get_data(),
             ...this.render_data,
@@ -825,14 +813,14 @@ export class BrCommonCard {
         data.item = this.item;
         data.bennie_available = this.bennie_available;
         data.show_rerolls = this.show_rerolls;
-        data.selected_actions = this.get_selected_actions();
-        data.has_feet_buttons = this.has_feet_buttons;
+        data.selected_actions = this.getSelectedActions();
+        data.hasFooterButtons = this.hasFooterButtons;
         data.skill_tooltip = this.skill_tooltip;
         data.supports_manual_mods = !!(this.attribute_name || this.skill || this.damage);
         data.showShotsPPInfo = SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.showPPShotsInfo);
         data.noPowerPoints = game.settings.get("swade", "noPowerPoints");
         data.ppPenalty = -Math.ceil(this.pp_cost / 2);
-        data.shots_pp_info = data.showShotsPPInfo ? this.item_shots : "";
+        data.shots_pp_info = data.showShotsPPInfo ? this.itemShots : "";
         data.applicable_effects = this.applicable_effects;
         return data;
     }
@@ -868,7 +856,7 @@ export class BrCommonCard {
         });
     }
 
-    get item_shots() {
+    get itemShots() {
         if (!this.item) {
             return;
         }
@@ -887,7 +875,7 @@ export class BrCommonCard {
     /**
      * Returns the actions currently selected in the card
      */
-    get_selected_actions() {
+    getSelectedActions() {
         const selected_actions = [];
         Utils.forEachActionGroup(this, group => {
             for (const action of group.actions) {
@@ -902,8 +890,8 @@ export class BrCommonCard {
     /**
      * Creates the Foundry message object
      */
-    async create_foundry_message(new_content) {
-        const chatData = await this.create_basic_chat_data();
+    async createFoundryMessage(new_content) {
+        const chatData = await this.createBasicChatData();
         if (new_content) {
             chatData.content = new_content;
         }
@@ -914,21 +902,21 @@ export class BrCommonCard {
      * Creates the basic chat data common to most cards
      * @return {Object} An object suitable to create a ChatMessage
      */
-    async create_basic_chat_data() {
-        const whisper_data = getWhisperData();
+    async createBasicChatData() {
+        const whisperData = getWhisperData();
         const chatData = {
             author: getAuthor(this.actor),
             content: "<p>Default content, likely an error in Better Rolls</p>",
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-            blind: whisper_data.blind,
+            blind: whisperData.blind,
             flags: { core: { canPopout: true } },
         };
-        if (whisper_data.whisper) {
-            chatData.whisper = whisper_data.whisper;
+        if (whisperData.whisper) {
+            chatData.whisper = whisperData.whisper;
         }
         chatData.rolls = [await new Roll("0").evaluate()];
         chatData.sound = "";
-        chatData.messageMode = whisper_data.messageMode;
+        chatData.messageMode = whisperData.messageMode;
         return chatData;
     }
 }

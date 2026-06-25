@@ -186,7 +186,7 @@ export async function roll_skill(br_card, expend_bennie) {
     const extra_data = { modifiers: [] };
     const macros = [];
     // Actions
-    for (const action of br_card.get_selected_actions()) {
+    for (const action of br_card.getSelectedActions()) {
         process_common_actions(action.code, extra_data, macros, br_card.actor);
     }
     if (br_card.trait_roll.is_rolled) {

@@ -33,7 +33,7 @@ import {
     broofa,
     getAuthor,
     get_targeted_token,
-    makeExplotable,
+    makeExplodable,
     set_or_update_condition,
     simple_form,
 } from "./utils.js";
@@ -119,7 +119,7 @@ export async function create_item_card(
     br_message.item_id = item_id;
     br_message.applicable_effects = get_applicable_effects(item);
     br_message.pp_modifiers = is_power ? get_pp_mods(item) : {};
-    br_message.check_warnings(br_message.render_data);
+    br_message.checkWarnings(br_message.render_data);
     await br_message.render(actions_stored);
     await br_message.save();
     call_create_item_card_hooks(item, br_message);
@@ -501,7 +501,7 @@ export function activate_item_card_listeners(br_card, html) {
             //This won't affect change the popout or vice versa,
             //but doing that would require an update to the chat message which would refresh the render which is disruptive
             ev.target.parentElement.querySelector(".brsw-shots-pp").innerText =
-                br_card.item_shots;
+                br_card.itemShots;
         });
 
     html
@@ -518,7 +518,7 @@ export function activate_item_card_listeners(br_card, html) {
                     ppPenalty.innerText = -Math.ceil(calc_pp_cost(br_card) / 2);
                 } else {
                     const ppRemaining = ev.target.parentElement.parentElement.querySelector(".brsw-shots-pp");
-                    ppRemaining.innerText = br_card.item_shots;
+                    ppRemaining.innerText = br_card.itemShots;
 
                     const ppCost = ev.target.parentElement.parentElement.querySelector(".brsw-pp-cost");
                     ppCost.innerText = calc_pp_cost(br_card);
@@ -905,7 +905,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
     }
 
     // Actions
-    for (const action of br_message.get_selected_actions()) {
+    for (const action of br_message.getSelectedActions()) {
         if (action.code.skillOverride) {
             const trait = Utils.traitFromString(
                 br_message.actor,
@@ -1338,7 +1338,7 @@ async function get_damage_mods_from_actions(
     macros,
     expend_bennie,
 ) {
-    for (const action of br_card.get_selected_actions()) {
+    for (const action of br_card.getSelectedActions()) {
         if (action.code.isHeavyWeapon) {
             damage_formulas.heavy_weapon = true;
         }
@@ -1516,7 +1516,7 @@ export async function roll_dmg(
 
     // Roll
     if (damage_formulas.explodes) {
-        damage_formulas.damage = makeExplotable(damage_formulas.damage);
+        damage_formulas.damage = makeExplodable(damage_formulas.damage);
     } else {
         damage_formulas.damage = damage_formulas.damage.replace("x", "");
         damage_formulas.raise = damage_formulas.raise.replace("x", "");

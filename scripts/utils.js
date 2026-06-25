@@ -66,7 +66,7 @@ export function getAuthor(actor) {
     return fallbackAuthor ?? game.user.id;
 }
 
-export function makeExplotable(expression) {
+export function makeExplodable(expression) {
     // Make all dice of a roll able to explode
     // Code from the SWADE system
     const reg_exp = /\d*d\d+[^kdrxc]/g;

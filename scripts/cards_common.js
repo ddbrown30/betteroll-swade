@@ -91,7 +91,7 @@ export function create_common_card(origin, render_data, template) {
     br_message.token_id = actor.token.id;
   }
 
-  br_message.generate_render_data(render_data, template);
+  br_message.generateRenderData(render_data, template);
   return br_message;
 }
 
@@ -629,7 +629,7 @@ export async function update_message(br_message, render_data) {
   if (br_message.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD) {
     render_data.skill = Utils.getItemTrait(br_message.item, br_message.actor);
   }
-  br_message.generate_render_data(render_data, undefined);
+  br_message.generateRenderData(render_data, undefined);
   await br_message.render();
   await br_message.save();
 }
@@ -1074,7 +1074,7 @@ async function override_die_result(br_card, die_index, new_value) {
   await br_card.render();
   await br_card.save();
   // Rerun macros.
-  const macro_actions = br_card.get_selected_actions().filter((action) => {
+  const macro_actions = br_card.getSelectedActions().filter((action) => {
     return action.code.hasOwnProperty("runSkillMacro");
   });
   if (macro_actions) {

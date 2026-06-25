@@ -155,7 +155,7 @@ export function activate_attribute_card_listeners(card, html) {
 export async function roll_attribute(br_card, expend_bennie) {
   const extra_data = { modifiers: [] };
   const macros = [];
-  for (const action of br_card.get_selected_actions()) {
+  for (const action of br_card.getSelectedActions()) {
     process_common_actions(action.code, extra_data, macros, br_card.actor);
   }
   if (br_card.trait_roll.is_rolled) {
