@@ -232,7 +232,7 @@ function registerWorldSettings() {
     SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.rangeCalcGrid, {
         name: game.i18n.localize("BRSW.Settings.RangeCalcUseGrid.Name"),
         hint: game.i18n.localize("BRSW.Settings.RangeCalcUseGrid.Hint"),
-        default: false,
+        default: true,
         scope: "world",
         type: Boolean,
     });
