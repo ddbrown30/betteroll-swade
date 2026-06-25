@@ -840,7 +840,7 @@ export class TelemetryUtils {
 
         Object.entries(BRSW2_CONFIG.USER_SETTINGS).forEach(([k, v]) => {
             userSettings[k] = v.value;
-            userSettings[`${k}_is_default`] = v.value === v.default;
+            userSettings[`${k}_is_default`] = v.value === undefined || v.value === v.default;
         });
 
         TelemetryUtils.sendTelemetry("user_ready", true, {
