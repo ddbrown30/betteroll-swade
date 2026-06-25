@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.11.2
+* Fixed the default check for unset settings
+
 # Version 5.11.1
 * Fixed some issues with telemetry
 
