@@ -3,10 +3,11 @@
       duplicate, ChatMessage, ui, Macro */
 // noinspection JSUnusedAssignment
 
-import { roll_attribute } from "./attribute_card.js";
 import { BrCommonCard } from "./BrCommonCard.js";
+import { roll_attribute } from "./attribute_card.js";
 import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { WORLD_SETTING_KEYS } from "./brsw2-config.js";
+import { BRSW2_CONST } from "./brsw2-const.js";
 import {
   roll_item,
   run_macros,
@@ -25,13 +26,13 @@ import {
   roll_skill,
 } from "./skill_card.js";
 import {
+  SettingsUtils,
+  Utils,
   addEventListenerAll,
   get_targeted_token,
   set_or_update_condition,
-  SettingsUtils,
   simple_form,
   spendMastersBenny,
-  Utils,
 } from "./utils.js";
 
 /**
