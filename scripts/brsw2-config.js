@@ -34,7 +34,6 @@ export const WORLD_SETTING_KEYS = {
     genericPPModifiersSource: "generic-pp-modifiers-source",
     hideWeaponActions: "hide-weapon-actions",
     measureFromEdge: "measure_from_edge",
-    noActionMessage: "no-action-message",
     ppChangeCardBehaviour: "pp_change_card_behaviour",
     rangeCalcGrid: "range_calc_grid",
     resultCard: "result-card",

@@ -146,13 +146,6 @@ function registerWorldSettings() {
         choices: clickActionChoices,
     });
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.noActionMessage, {
-        name: game.i18n.localize("BRSW.Settings.NoActionMessage.Name"),
-        hint: game.i18n.localize("BRSW.Settings.NoActionMessage.Hint"),
-        default: game.i18n.localize("BRSW.NoActionsSelected"),
-        type: String,
-    });
-
     SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.resultCard, {
         name: game.i18n.localize("BRSW.Settings.ResultCardVisibility.Name"),
         hint: game.i18n.localize("BRSW.Settings.ResultCardVisibility.Hint"),

@@ -826,7 +826,6 @@ export class BrCommonCard {
         data.bennie_available = this.bennie_available;
         data.show_rerolls = this.show_rerolls;
         data.selected_actions = this.get_selected_actions();
-        data.no_actions_message = SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.noActionMessage);
         data.has_feet_buttons = this.has_feet_buttons;
         data.skill_tooltip = this.skill_tooltip;
         data.supports_manual_mods = !!(this.attribute_name || this.skill || this.damage);
