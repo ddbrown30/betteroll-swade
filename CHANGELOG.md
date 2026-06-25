@@ -3,6 +3,8 @@
 # Version 5.11.0
 * Added simple, anonymous telemetry tracking. This tracks the settings that users are using so that I can better understand the way people are using the module.
 * Fixed the Undead Ignores Illumination Penalties option which was never hooked up
+* Some settings have been reworked or removed and others have had their defaults changed. If something isn't working the way you expect, double check your settings.
+* This version contains a massive amount of changes under the hood. It's mostly cleanup and refactoring and so should hopefully be invisible but with so many changes, it's almost guaranteed that I've made a mistake somewhere. Please don't hesitate to reach out if you encounter any issues.
 
 # Version 5.10.0
 * Removed the hard-coded checks in the gang up calculation now that gangUpAttack/gangUpDefend is available
