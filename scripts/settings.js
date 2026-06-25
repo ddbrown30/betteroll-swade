@@ -278,7 +278,6 @@ function registerWorldSettings() {
         hint: "BRSW.Settings.MeasureFromEdge.Hint",
         type: Boolean,
         default: false,
-        type: Boolean,
     });
 
     //Update our cached world settings with our saved data
