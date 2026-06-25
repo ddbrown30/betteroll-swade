@@ -2,6 +2,7 @@
 /* globals canvas, game, CONST, Roll, Hooks, succ, fromUuid, console */
 
 import { BrCommonCard } from "./BrCommonCard.js";
+import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
 import {
     create_common_card,
@@ -165,7 +166,7 @@ async function roll_incapacitation(br_card, spend_benny) {
  * @param {string} reason Reason for the injury
  */
 export async function create_injury_card(token_id, reason) {
-    if (SettingsUtils.getWorldSetting("use_system_injury_table")) {
+    if (SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.useSystemInjuryTable)) {
         const injuryTable = await fromUuid(
             game.settings.get("swade", "injuryTable"),
         );

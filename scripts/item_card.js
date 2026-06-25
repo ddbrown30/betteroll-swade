@@ -5,6 +5,7 @@
 import { get_current_generic_mods } from "../config/generic_pp_modifiers.js";
 import { BrCommonCard } from "./BrCommonCard.js";
 import { brAction } from "./actions.js";
+import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
 import {
     BRWSRoll,
@@ -68,7 +69,7 @@ export async function create_item_card(
         item = await fromUuid(item_id);
     }
 
-    if (item.type === "action" && SettingsUtils.getWorldSetting("disable_for_actions")) {
+    if (item.type === "action" && SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.disableForActions)) {
         // Disable actions
         item.show();
         return;
@@ -84,7 +85,7 @@ export async function create_item_card(
     const ammoEnabled = parseInt(item.system.shots) || item.system.ammo;
     const is_power = !isNaN(parseFloat(item.system.pp)) || item.type === "power";
     const subtract_select = ammoEnabled
-        ? SettingsUtils.getWorldSetting("default-ammo-management")
+        ? SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.defaultAmmoManagement)
         : false;
 
     if (!damage && item.system.actions) {
@@ -102,7 +103,7 @@ export async function create_item_card(
             ammo: ammoEnabled,
             subtract_selected: subtract_select,
             subtractPP: is_power
-                ? SettingsUtils.getWorldSetting("default-pp-management")
+                ? SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.defaultPPManagement)
                 : false,
             damage_rolls: [],
             is_power: is_power,
@@ -505,7 +506,7 @@ export function activate_item_card_listeners(br_card, html) {
         ?.addEventListener("click", async (ev) => {
             await new PPManagementDialog({ brCard: br_card }).wait({ force: true });
 
-            if (SettingsUtils.getWorldSetting("show_pp_shots_info")) {
+            if (SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.showPPShotsInfo)) {
                 //Update the pp text of the card we just clicked on.
                 //This won't affect the popout or vice versa,
                 //but doing that would require an update to the chat message which would refresh the render which is disruptive
@@ -675,7 +676,7 @@ function get_trait_roll_difficulty(br_card) {
 }
 
 export async function displayPPChangeCard(actor, chatData) {
-    const show_card = SettingsUtils.getWorldSetting("pp_change_card_behaviour");
+    const show_card = SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.ppChangeCardBehaviour);
     if (show_card !== "none") {
         chatData.author = getAuthor(actor);
         chatData.speaker = { alias: actor.name };
@@ -896,7 +897,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
     }
 
     extra_data.rof = br_message.item.system.rof || 1;
-    if (SettingsUtils.getUserSetting("default_rate_of_fire") === "single_shot") {
+    if (SettingsUtils.getUserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.defaultRateOfFire) === "single_shot") {
         extra_data.rof = 1;
     }
 
@@ -1022,7 +1023,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
     ) {
         const dis_ammo_selected = html
             ? !!html.querySelector(".twbr\\:bg-red-700.brsw-ammo-toggle")
-            : SettingsUtils.getWorldSetting("default-ammo-management");
+            : SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.defaultAmmoManagement);
         if (dis_ammo_selected || macros.length) {
             br_message.render_data.used_shots =
                 shots_override || ROF_BULLETS[br_message.trait_roll.rof || 1];

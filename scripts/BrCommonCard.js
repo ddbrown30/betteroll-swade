@@ -92,7 +92,7 @@ export class BrCommonCard {
             return;
         }
 
-        if (SettingsUtils.getUserSetting("auto_popout_chat")) {
+        if (SettingsUtils.getUserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.autoPopoutChat)) {
             this.showPopout();
         }
     }
@@ -278,7 +278,7 @@ export class BrCommonCard {
             return;
         }
         return this.skill.system.description.length <=
-            SettingsUtils.getWorldSetting("max_tooltip_length")
+            SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.maxTooltipLength)
             ? this.skill.system.description
             : "";
     }
@@ -325,7 +325,7 @@ export class BrCommonCard {
     populate_actions(stored_selections) {
         this.action_sections = {};
         this.populate_world_actions();
-        if (this.item && !SettingsUtils.getWorldSetting("hide-weapon-actions")) {
+        if (this.item && !SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.hideWeaponActions)) {
             this.populate_item_actions();
         }
         this.populate_active_effect_actions();
@@ -694,14 +694,14 @@ export class BrCommonCard {
      */
     generate_render_data(render_data, template) {
         render_data.actor = this.actor;
-        render_data.result_master_only = SettingsUtils.getWorldSetting("result-card") === "master";
+        render_data.result_master_only = SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.resultCard) === "master";
 
         // Benny image
         render_data.benny_image = game.settings.get("swade", "bennyImage3DFront") || "/systems/swade/assets/benny/benny-chip-front.png";
 
-        render_data.collapse_results = !SettingsUtils.getUserSetting("expand-results");
-        render_data.collapse_rolls = !SettingsUtils.getUserSetting("expand-rolls");
-        render_data.collapse_descriptions = !SettingsUtils.getUserSetting("expand-descriptions");
+        render_data.collapse_results = !SettingsUtils.getUserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.expandResults);
+        render_data.collapse_rolls = !SettingsUtils.getUserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.expandRolls);
+        render_data.collapse_descriptions = !SettingsUtils.getUserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.expandDescriptions);
 
         if (template) {
             render_data.template = template;
@@ -802,7 +802,7 @@ export class BrCommonCard {
             await this.create_foundry_message(new_content);
 
             //If auto-popout is disabled, mark our popout as shown so that we won't show a bunch of old popouts if it's later enabled
-            this.popoutShown = !SettingsUtils.getUserSetting("auto_popout_chat");
+            this.popoutShown = !SettingsUtils.getUserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.autoPopoutChat);
 
             if (!this.message.author.active) {
                 //If the author isn't connected, mark the popout as shown so that we don't pop it out when they connect
@@ -826,17 +826,11 @@ export class BrCommonCard {
         data.bennie_available = this.bennie_available;
         data.show_rerolls = this.show_rerolls;
         data.selected_actions = this.get_selected_actions();
-        data.no_actions_message =
-            SettingsUtils.getWorldSetting("no-action-message");
+        data.no_actions_message = SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.noActionMessage);
         data.has_feet_buttons = this.has_feet_buttons;
         data.skill_tooltip = this.skill_tooltip;
-        data.supports_manual_mods = !!(
-            this.attribute_name ||
-            this.skill ||
-            this.damage
-        );
-        data.showPopoutButton = SettingsUtils.getUserSetting("popout_chat_button");
-        data.showShotsPPInfo = SettingsUtils.getWorldSetting("show_pp_shots_info");
+        data.supports_manual_mods = !!(this.attribute_name || this.skill || this.damage);
+        data.showShotsPPInfo = SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.showPPShotsInfo);
         data.noPowerPoints = game.settings.get("swade", "noPowerPoints");
         data.ppPenalty = -Math.ceil(this.pp_cost / 2);
         data.shots_pp_info = data.showShotsPPInfo ? this.item_shots : "";

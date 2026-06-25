@@ -228,7 +228,7 @@ export function addEventListenerAll(
 }
 
 function measurePath(waypoints) {
-    const use_grid_calc = SettingsUtils.getWorldSetting("range_calc_grid");
+    const use_grid_calc = SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.rangeCalcGrid);
     const path = canvas.grid.measurePath(waypoints);
     return use_grid_calc ? path.distance : path.euclidean;
 }
@@ -304,7 +304,7 @@ export function measureDistance(tokenA, tokenB) {
         closestPair.b.coords,
     ]);
 
-    if (SettingsUtils.getWorldSetting("measure_from_edge")) {
+    if (SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.measureFromEdge)) {
         //If we're measuring from the edge, we need to offset from the center of the grid space to the edge
         //To do this, we need to find the intersection distance from center to edge based on the angle between the two tokens
         const dist = Math.sqrt(closestPair.dist);
@@ -715,7 +715,7 @@ export class SettingsUtils {
     }
 
     static isOptionalRuleEnabled(rule) {
-        return SettingsUtils.getSetting("optional_rules_enabled").indexOf(rule) > -1;
+        return SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.enabledOptionalRules).indexOf(rule) > -1;
     }
 
     static hasModuleFlags(obj) {

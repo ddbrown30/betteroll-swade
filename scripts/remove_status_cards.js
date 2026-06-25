@@ -2,6 +2,7 @@
 /* globals canvas, game, CONST, Hooks, succ, console */
 
 import { BrCommonCard } from "./BrCommonCard.js";
+import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
 import {
   create_common_card,
@@ -147,7 +148,7 @@ async function roll_unshaken(br_card, use_bennie) {
       }
     }
     if (result >= 4) {
-      if (SettingsUtils.getWorldSetting("swd-unshake") === true && result < 8) {
+      if (SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.swdUnshake) === true && result < 8) {
         br_card.render_data.text = game.i18n.format(
           "BRSW.UnshakeSuccessfulRollSWD",
           { name: br_card.actor.name },

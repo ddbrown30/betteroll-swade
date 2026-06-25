@@ -1,5 +1,5 @@
 /* globals game */
-
+import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { SettingsUtils } from "./utils.js";
 
 const OPTIONAL_RULES = [
@@ -39,7 +39,7 @@ export class OptionalRulesConfiguration extends HandlebarsApplicationMixin(Appli
   async _prepareContext(options) {
     let rules = [];
     // No idea why the 0...
-    let enable_rules = SettingsUtils.getSetting("optional_rules_enabled");
+    let enable_rules = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.enabledOptionalRules);
     for (let rule of OPTIONAL_RULES) {
       rules.push({
         id: rule,
@@ -58,6 +58,6 @@ export class OptionalRulesConfiguration extends HandlebarsApplicationMixin(Appli
         enabled.push(id);
       }
     }
-    await SettingsUtils.setSetting("optional_rules_enabled", enabled);
+    await SettingsUtils.setSetting(BRSW2_CONFIG.SETTING_KEYS.enabledOptionalRules, enabled);
   }
 }

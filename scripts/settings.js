@@ -352,13 +352,6 @@ function registerUserSettings() {
         default: true,
         type: Boolean,
     });
-
-    SettingsUtils.registerBR2UserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.popoutChatButton, {
-        name: "BRSW.Settings.PopoutChatButton.Name",
-        hint: "BRSW.Settings.PopoutChatButton.Hint",
-        default: false,
-        type: Boolean,
-    });
 }
 
 export function updateCachedUserSettings() {

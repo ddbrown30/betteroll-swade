@@ -7,6 +7,7 @@ import {
     activate_attribute_listeners,
     attribute_card_hooks,
 } from "./attribute_card.js";
+import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
 import { setup_dialog } from "./card-dialog.js";
 import {
@@ -87,7 +88,7 @@ Hooks.on(`ready`, async () => {
     Handlebars.registerHelper(`br2-cap`, s => s && String(s[0]).toUpperCase() + String(s).slice(1));
 
     // Add a hook to control combat flow.
-    if (SettingsUtils.getWorldSetting("auto-status-cards")) {
+    if (SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.autoStatusCards)) {
         game.swade.effectCallbacks.set("shaken", create_unshaken_wrapper);
         game.swade.effectCallbacks.set("stunned", create_unstun_wrapper);
     }

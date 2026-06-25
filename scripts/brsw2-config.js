@@ -50,7 +50,6 @@ export const USER_SETTING_KEYS = {
     expandDescriptions: "expand-descriptions",
     expandResults: "expand-results",
     expandRolls: "expand-rolls",
-    popoutChatButton: "popout_chat_button",
 };
 
 export const USER_FLAGS = {

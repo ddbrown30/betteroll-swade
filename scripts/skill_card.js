@@ -2,6 +2,7 @@
 /* globals TokenDocument, Token, game, CONST, canvas, console, Ray, succ, fromUuid, ui, $ */
 
 import { BrCommonCard } from "./BrCommonCard.js";
+import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
 import {
     create_common_card,
@@ -524,7 +525,7 @@ function sizeToScale(size) {
  * - Each ally adjacent to the defender cancels out one point of Gang Up bonus from an attacker adjacent to both.
  */
 export function calculateGangUp(attackerToken, targetToken) {
-    if (SettingsUtils.getWorldSetting("disable-gang-up")) {
+    if (SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.disableGangUp)) {
         return { name: "NoGangup", bonus: 0 };
     }
 
@@ -548,7 +549,7 @@ export function calculateGangUp(attackerToken, targetToken) {
     const scene = targetToken.scene;
     if (!scene) return 0;
 
-    let meleeRange = SettingsUtils.getWorldSetting("measure_from_edge") ?
+    let meleeRange = SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.measureFromEdge) ?
         0 : //0 when using edge distance since edges have to be touching
         Math.SQRT2; //Range is SQRT2 to account for diagonals
 

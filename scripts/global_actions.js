@@ -463,6 +463,17 @@ export function check_selector(type, value, item, actor) {
             );
             selected = parseInt(value) >= distance;
         }
+    } else if (type === "undead_and_ignores_illumination") {
+        const undeadIgnores = SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.undeadIgnoresIllumination);
+        if (!undeadIgnores) {
+            selected = false;
+        } else {
+            const undeadName = game.i18n.localize("BRSW.AbilityName.Undead").toLowerCase();
+            const undeadAbility = actor.items.find((item) => {
+                return item.type === "ability" && item.name.toLowerCase().includes(undeadName);
+            });
+            selected = !!undeadAbility;
+        }
     } else if (type === "module_is_not_active") {
         const module = game.modules.get(value);
         selected = module && !module.active;

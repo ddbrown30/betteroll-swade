@@ -5,6 +5,7 @@
 
 import { roll_attribute } from "./attribute_card.js";
 import { BrCommonCard } from "./BrCommonCard.js";
+import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { WORLD_SETTING_KEYS } from "./brsw2-config.js";
 import {
   roll_item,
@@ -76,7 +77,7 @@ export function create_common_card(origin, render_data, template) {
   if (render_data.tooltip) {
     render_data.tooltip = // Limit tooltip size.
       render_data.tooltip.length <
-      SettingsUtils.getWorldSetting("max_tooltip_length")
+      SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.maxTooltipLength)
         ? render_data.tooltip
         : null;
   }
