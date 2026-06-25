@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.11.1
+* Fixed some issues with telemetry
+
 # Version 5.11.0
 * Added simple, anonymous telemetry tracking. This tracks the settings that users are using so that I can better understand the way people are using the module.
 * Fixed the Undead Ignores Illumination Penalties option which was never hooked up
