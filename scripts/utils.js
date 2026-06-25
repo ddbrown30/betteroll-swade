@@ -758,9 +758,12 @@ export class SettingsUtils {
 export class TelemetryUtils {
     static POSTHOG_API_KEY = "phc_pTRr4oK26yQDbmFSkPuCNswLTtZABEHktpn9cNqYuAnr";
 
-    static async getWorldInstallId() {
-        let id = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.telemetryWorldInstallId);
+    static async generateWorldInstallId() {
+        if (!game.user.isGM) {
+            return;
+        }
 
+        let id = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.telemetryWorldInstallId);
         if (!id) {
             id = foundry.utils.randomID();
             await SettingsUtils.setSetting(BRSW2_CONFIG.SETTING_KEYS.telemetryWorldInstallId, id);
@@ -769,16 +772,32 @@ export class TelemetryUtils {
         return id;
     }
 
+    static async getWorldInstallId() {
+        let id = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.telemetryWorldInstallId);
+        if (!id) {
+            console.warn("Getting the world install ID before it has been set");
+
+            //Try generating it now
+            id = TelemetryUtils.generateWorldInstallId();
+        }
+        return id;
+    }
+
     static async sendTelemetry(event, includeUserId, properties = {}) {
         if (SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.telemetryOptOut)) return;
 
         const installId = await TelemetryUtils.getWorldInstallId();
+        if (!installId) {
+            return;
+        }
+
         const distinctId = includeUserId ? `${installId}:${game.user.id}` : installId;
 
         const br2Version = game.modules.get(BRSW2_CONFIG.MODULE_NAME).version;
 
         properties = {
             ...properties,
+            module: BRSW2_CONFIG.MODULE_NAME,
             moduleVersion: br2Version,
             foundryVersion: game.version,
             isTest: br2Version === "0.0.0",

@@ -58,6 +58,8 @@ Hooks.on(`init`, () => {
 
 // Base Hook
 Hooks.on(`ready`, async () => {
+    await TelemetryUtils.generateWorldInstallId();
+
     updateCachedUserSettings();
 
     // Create a base object to hook functions
