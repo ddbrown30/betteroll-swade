@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.11.3
+* Fixed the default check for unset user settings
+
 # Version 5.11.2
 * Fixed the default check for unset settings
 
