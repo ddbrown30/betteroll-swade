@@ -1,3 +1,4 @@
+import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { SettingsUtils } from "./utils.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;

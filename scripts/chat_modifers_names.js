@@ -1,5 +1,6 @@
 /* globals game */
 
+import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { SettingsUtils } from "./utils.js";
 
 /**
