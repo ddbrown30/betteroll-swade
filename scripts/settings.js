@@ -302,15 +302,6 @@ function registerUserSettings() {
         type: Boolean,
     });
 
-    SettingsUtils.registerBR2UserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.expandRolls, {
-        name: game.i18n.localize("BRSW.Settings.ExpandRolls.Name"),
-        hint: game.i18n.localize("BRSW.Settings.ExpandRolls.Hint"),
-        default: false,
-        scope: "world",
-        type: Boolean,
-        config: true,
-    });
-
     SettingsUtils.registerBR2UserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.expandDescriptions, {
         name: game.i18n.localize("BRSW.Settings.ExpandDescriptions.Name"),
         hint: game.i18n.localize("BRSW.Settings.ExpandDescriptions.Hint"),

@@ -46,7 +46,6 @@ export const USER_SETTING_KEYS = {
     defaultRateOfFire: "default_rate_of_fire",
     expandDescriptions: "expand-descriptions",
     expandResults: "expand-results",
-    expandRolls: "expand-rolls",
 };
 
 export const USER_FLAGS = {

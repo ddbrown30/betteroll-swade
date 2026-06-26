@@ -694,7 +694,6 @@ export class BrCommonCard {
         render_data.benny_image = game.settings.get("swade", "bennyImage3DFront") || "/systems/swade/assets/benny/benny-chip-front.png";
 
         render_data.collapse_results = !SettingsUtils.getUserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.expandResults);
-        render_data.collapse_rolls = !SettingsUtils.getUserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.expandRolls);
         render_data.collapse_descriptions = !SettingsUtils.getUserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.expandDescriptions);
 
         if (template) {
