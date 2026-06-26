@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.11.5
+* Added missing imports
+
 # Version 5.11.4
 * Fixed bug with damage not working
 
