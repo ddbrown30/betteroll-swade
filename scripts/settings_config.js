@@ -112,34 +112,20 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         let requiresWorldReload = false;
         let requiresClientReload = false;
         for (let [k, v] of Object.entries(foundry.utils.expandObject(formData.object))) {
-            if (
-                canModifyWorld &&
-                BRSW2_CONFIG.WORLD_SETTINGS[k] &&
-                BRSW2_CONFIG.WORLD_SETTINGS[k].value !== v
-            ) {
+            if (canModifyWorld && BRSW2_CONFIG.WORLD_SETTINGS[k] && BRSW2_CONFIG.WORLD_SETTINGS[k].value !== v) {
                 BRSW2_CONFIG.WORLD_SETTINGS[k].value = v;
-                requiresWorldReload =
-                    requiresWorldReload || !!BRSW2_CONFIG.WORLD_SETTINGS[k].requiresReload;
+                requiresWorldReload = requiresWorldReload || !!BRSW2_CONFIG.WORLD_SETTINGS[k].requiresReload;
             } else if (BRSW2_CONFIG.USER_SETTINGS[k] && BRSW2_CONFIG.USER_SETTINGS[k].value !== v) {
                 BRSW2_CONFIG.USER_SETTINGS[k].value = v;
-                requiresClientReload =
-                    requiresClientReload || !!BRSW2_CONFIG.USER_SETTINGS[k].requiresReload;
+                requiresClientReload = requiresClientReload || !!BRSW2_CONFIG.USER_SETTINGS[k].requiresReload;
             }
         }
 
         if (canModifyWorld) {
-            await SettingsUtils.setSetting(
-                BRSW2_CONFIG.SETTING_KEYS.worldSettings,
-                BRSW2_CONFIG.WORLD_SETTINGS,
-            );
+            await SettingsUtils.setWorldSettings();
         }
 
-        await game.user.unsetFlag(BRSW2_CONFIG.MODULE_NAME, BRSW2_CONFIG.USER_FLAGS.userSettings);
-        await game.user.setFlag(
-            BRSW2_CONFIG.MODULE_NAME,
-            BRSW2_CONFIG.USER_FLAGS.userSettings,
-            BRSW2_CONFIG.USER_SETTINGS,
-        );
+        await SettingsUtils.setUserSettings();
 
         if (requiresWorldReload || requiresClientReload) {
             await this.constructor.reloadConfirm({ world: requiresWorldReload });
@@ -240,14 +226,9 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             }
         }
 
-        await SettingsUtils.setSetting(BRSW2_CONFIG.SETTING_KEYS.worldSettings, BRSW2_CONFIG.WORLD_SETTINGS);
+        await SettingsUtils.setWorldSettings();
 
-        await game.user.unsetFlag(BRSW2_CONFIG.MODULE_NAME, BRSW2_CONFIG.USER_FLAGS.userSettings);
-        await game.user.setFlag(
-            BRSW2_CONFIG.MODULE_NAME,
-            BRSW2_CONFIG.USER_FLAGS.userSettings,
-            BRSW2_CONFIG.USER_SETTINGS,
-        );
+        await SettingsUtils.setUserSettings();
 
         this.render(true);
 

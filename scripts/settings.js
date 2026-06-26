@@ -284,10 +284,12 @@ function registerWorldSettings() {
     const worldSettings = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.worldSettings);
     if (worldSettings) {
         for (const key in BRSW2_CONFIG.WORLD_SETTINGS) {
-            if (worldSettings[key] !== undefined) {
-                BRSW2_CONFIG.WORLD_SETTINGS[key].value = worldSettings[key].value;
+            if (Object.hasOwn(worldSettings, key)) {
+                BRSW2_CONFIG.WORLD_SETTINGS[key].value = worldSettings[key];
             }
         }
+
+        SettingsUtils.setWorldSettings();
     }
 }
 
@@ -343,10 +345,12 @@ export function updateCachedUserSettings() {
     const userSettings = SettingsUtils.getModuleFlag(game.user, BRSW2_CONFIG.USER_FLAGS.userSettings);
     if (userSettings) {
         for (const key in BRSW2_CONFIG.USER_SETTINGS) {
-            if (userSettings[key] !== undefined) {
-                BRSW2_CONFIG.USER_SETTINGS[key].value = userSettings[key].value;
+            if (Object.hasOwn(userSettings, key)) {
+                BRSW2_CONFIG.USER_SETTINGS[key].value = userSettings[key];
             }
         }
+
+        SettingsUtils.setUserSettings();
     }
 }
 
