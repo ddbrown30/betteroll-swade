@@ -139,9 +139,11 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         for (let [k, v] of Object.entries(foundry.utils.expandObject(formData.object))) {
             if (canModifyWorld && BRSW2_CONFIG.WORLD_SETTINGS[k] && BRSW2_CONFIG.WORLD_SETTINGS[k].value !== v) {
                 BRSW2_CONFIG.WORLD_SETTINGS[k].value = v;
+                if (v === BRSW2_CONFIG.WORLD_SETTINGS[k].default) continue;
                 requiresWorldReload = requiresWorldReload || !!BRSW2_CONFIG.WORLD_SETTINGS[k].requiresReload;
             } else if (BRSW2_CONFIG.USER_SETTINGS[k] && BRSW2_CONFIG.USER_SETTINGS[k].value !== v) {
                 BRSW2_CONFIG.USER_SETTINGS[k].value = v;
+                if (v === BRSW2_CONFIG.USER_SETTINGS[k].default) continue;
                 requiresClientReload = requiresClientReload || !!BRSW2_CONFIG.USER_SETTINGS[k].requiresReload;
             }
         }
@@ -188,9 +190,7 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         event.preventDefault();
 
         let content;
-        const active_data_tab = this.element.querySelector(".tab.active")
-            .attributes["data-tab"].nodeValue;
-        switch (active_data_tab) {
+        switch (this.tabGroups.primary) {
             case "world":
                 content = game.i18n.localize("BRSW.Settings.RestoreDefaultsWorldBody");
                 break;
@@ -209,7 +209,7 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                     label: game.i18n.localize("BRSW.Yes"),
                     action: "yes",
                     callback: () => {
-                        this.restoreDefaults(active_data_tab);
+                        this.restoreDefaults(this.tabGroups.primary);
                     },
                 },
                 {
@@ -224,17 +224,17 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         }).render(true);
     }
 
-    async restoreDefaults(data_tab) {
+    async restoreDefaults(dataTab) {
         let requiresWorldReload = false;
         let requiresClientReload = false;
-        if (data_tab === "world") {
+        if (dataTab === "world") {
             for (let setting of Object.values(BRSW2_CONFIG.WORLD_SETTINGS)) {
                 if (setting.requiresReload && setting.value !== undefined && setting.value !== setting.default) {
                     requiresWorldReload = true;
                 }
                 delete setting.value;
             }
-        } else if (data_tab === "user") {
+        } else if (dataTab === "user") {
             for (let setting of Object.values(BRSW2_CONFIG.USER_SETTINGS)) {
                 if (setting.requiresReload && setting.value !== undefined && setting.value !== setting.default) {
                     requiresClientReload = true;
@@ -246,7 +246,7 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         await SettingsUtils.setWorldSettings();
         await SettingsUtils.setUserSettings();
 
-        this.render(true);
+        this.render({ parts: [dataTab] });
 
         if (requiresWorldReload || requiresClientReload) {
             await this.constructor.reloadConfirm({ world: requiresWorldReload });

@@ -699,7 +699,7 @@ export class SettingsUtils {
 
     static async setWorldSettings() {
         const worldSettings = Object.fromEntries(
-            Object.entries(BRSW2_CONFIG.WORLD_SETTINGS).map(([key, value]) => [
+            Object.entries(BRSW2_CONFIG.WORLD_SETTINGS).filter(([key, value]) => value.value !== undefined && value.value !== value.default).map(([key, value]) => [
                 key,
                 value.value
             ])
@@ -727,7 +727,7 @@ export class SettingsUtils {
 
     static async setUserSettings() {
         const userSettings = Object.fromEntries(
-            Object.entries(BRSW2_CONFIG.USER_SETTINGS).map(([key, value]) => [
+            Object.entries(BRSW2_CONFIG.USER_SETTINGS).filter(([key, value]) => value.value !== undefined && value.value !== value.default).map(([key, value]) => [
                 key,
                 value.value
             ])
