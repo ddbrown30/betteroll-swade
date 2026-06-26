@@ -254,13 +254,6 @@ function registerWorldSettings() {
         type: Boolean,
     });
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.useSystemInjuryTable, {
-        name: game.i18n.localize("BRSW.Settings.UseSystemInjuryTable.Name"),
-        hint: game.i18n.localize("BRSW.Settings.UseSystemInjuryTable.Hint"),
-        default: false,
-        type: Boolean,
-    });
-
     SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.autoCheckExtraCritFailures, {
         name: "BRSW.Settings.AutoCheckExtraCritFailures.Name",
         hint: "BRSW.Settings.AutoCheckExtraCritFailures.Hint",

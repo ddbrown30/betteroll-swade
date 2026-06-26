@@ -39,7 +39,6 @@ export const WORLD_SETTING_KEYS = {
     resultCard: "result-card",
     swdUnshake: "swd-unshake",
     undeadIgnoresIllumination: "undeadIgnoresIllumination",
-    useSystemInjuryTable: "use_system_injury_table",
 };
 
 export const USER_SETTING_KEYS = {
