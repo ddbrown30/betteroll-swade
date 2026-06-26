@@ -152,7 +152,7 @@ function registerWorldSettings() {
         default: "all",
         type: String,
         choices: {
-            master: game.i18n.localize("BRSW.VisibilityTypes.Owners"),
+            master: game.i18n.localize("BRSW.VisibilityTypes.GM"),
             all: game.i18n.localize("BRSW.VisibilityTypes.Everybody"),
         },
     });
@@ -201,6 +201,7 @@ function registerWorldSettings() {
         hint: game.i18n.localize("BRSW.Settings.DisableGangUp.Hint"),
         default: false,
         type: Boolean,
+        group: "BRSW.Settings.RulesGroup",
     });
 
     SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.ppChangeCardBehaviour, {
@@ -222,6 +223,7 @@ function registerWorldSettings() {
         hint: game.i18n.localize("BRSW.Settings.SWDUnshake.Hint"),
         default: false,
         type: Boolean,
+        group: "BRSW.Settings.RulesGroup",
     });
 
     SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.autoStatusCards, {
@@ -238,6 +240,7 @@ function registerWorldSettings() {
         default: true,
         scope: "world",
         type: Boolean,
+        group: "BRSW.Settings.RulesGroup",
     });
 
     SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.undeadIgnoresIllumination, {
@@ -245,6 +248,7 @@ function registerWorldSettings() {
         hint: game.i18n.localize("BRSW.Settings.UndeadIgnoresIllumination.Hint"),
         default: false,
         type: Boolean,
+        group: "BRSW.Settings.RulesGroup",
     });
 
     SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.disableForActions, {
