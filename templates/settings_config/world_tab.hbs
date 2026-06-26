@@ -1,7 +1,28 @@
 <section class="tab active scrollable" data-group="primary" data-tab="world">
-    {{#if canModifyWorld}}
-        {{#each worldSettings}}
-            {{>"modules/betterrolls-swade2/templates/setting_partial.hbs"}}
+    <fieldset class="brsw-setting-group">
+        <legend class="brsw-setting-group-name">{{localize "BRSW.Settings.ClickActions.Name"}}</legend>
+        {{#each clickSettings}}
+            <div class="form-group" data-setting-id="{{this.id}}">
+                <label>{{this.name}}</label>
+                <div class="form-fields">
+                    <select name="{{this.id}}" data-dtype="{{this.type}}">
+                        {{selectOptions this.choices selected=this.value localize=true}}
+                    </select>
+                </div>
+            </div>
         {{/each}}
-    {{/if}}
+    </fieldset>
+
+    {{#each groups}}
+        <fieldset class="brsw-setting-group">
+            <legend class="brsw-setting-group-name">{{localize @key}}</legend>
+            {{#each this}}
+                {{>"modules/betterrolls-swade2/templates/setting_partial.hbs"}}
+            {{/each}}
+        </fieldset>
+    {{/each}}
+
+    {{#each worldSettings}}
+        {{>"modules/betterrolls-swade2/templates/setting_partial.hbs"}}
+    {{/each}}
 </section>

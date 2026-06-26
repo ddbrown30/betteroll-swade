@@ -171,6 +171,7 @@ function registerWorldSettings() {
         hint: game.i18n.localize("BRSW.Settings.PPManagement.Hint"),
         default: true,
         type: Boolean,
+        group: "BRSW.Settings.PowersGroup",
     });
 
     const modifiersSourceChoices = {
@@ -185,6 +186,7 @@ function registerWorldSettings() {
         default: "swade",
         type: String,
         choices: modifiersSourceChoices,
+        group: "BRSW.Settings.PowersGroup",
     });
 
     SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.hideItemActions, {
@@ -206,6 +208,7 @@ function registerWorldSettings() {
         hint: game.i18n.localize("BRSW.Settings.PPChangeCardBehaviour.Hint"),
         default: "none",
         type: String,
+        group: "BRSW.Settings.PowersGroup",
         choices: {
             none: game.i18n.localize("BRSW.NoOne"),
             master_only: game.i18n.localize("BRSW.VisibilityTypes.Owners"),
@@ -256,14 +259,6 @@ function registerWorldSettings() {
         hint: game.i18n.localize("BRSW.Settings.UseSystemInjuryTable.Hint"),
         default: false,
         type: Boolean,
-    });
-
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.showPPShotsInfo, {
-        name: "BRSW.Settings.ShowPPShots.Name",
-        label: "BRSW.Settings.ShowPPShots.Label",
-        hint: "BRSW.Settings.ShowPPShots.Hint",
-        type: Boolean,
-        default: true,
     });
 
     SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.autoCheckExtraCritFailures, {

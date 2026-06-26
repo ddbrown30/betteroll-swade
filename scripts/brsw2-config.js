@@ -37,7 +37,6 @@ export const WORLD_SETTING_KEYS = {
     ppChangeCardBehaviour: "pp_change_card_behaviour",
     rangeCalcGrid: "range_calc_grid",
     resultCard: "result-card",
-    showPPShotsInfo: "show_pp_shots_info",
     swdUnshake: "swd-unshake",
     undeadIgnoresIllumination: "undeadIgnoresIllumination",
     useSystemInjuryTable: "use_system_injury_table",

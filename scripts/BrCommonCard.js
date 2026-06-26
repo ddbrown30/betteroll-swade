@@ -817,7 +817,6 @@ export class BrCommonCard {
         data.hasFooterButtons = this.hasFooterButtons;
         data.skill_tooltip = this.skill_tooltip;
         data.supports_manual_mods = !!(this.attribute_name || this.skill || this.damage);
-        data.showShotsPPInfo = SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.showPPShotsInfo);
         data.noPowerPoints = game.settings.get("swade", "noPowerPoints");
         data.ppPenalty = -Math.ceil(this.pp_cost / 2);
         data.shots_pp_info = data.showShotsPPInfo ? this.itemShots : "";
