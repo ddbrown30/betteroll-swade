@@ -224,7 +224,7 @@ function registerWorldSettings() {
         default: true,
         scope: "world",
         type: Boolean,
-        group: "BRSW.Settings.RulesGroup",
+        group: "BRSW.Settings.MeasurementGroup",
     });
 
     SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.undeadIgnoresIllumination, {
@@ -247,6 +247,7 @@ function registerWorldSettings() {
         hint: "BRSW.Settings.MeasureFromEdge.Hint",
         type: Boolean,
         default: false,
+        group: "BRSW.Settings.MeasurementGroup",
     });
 }
 

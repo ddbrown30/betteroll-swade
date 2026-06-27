@@ -345,6 +345,7 @@
   "BRSW.Settings.MaxTooltipLength.Name": "Max Tooltip Length",
   "BRSW.Settings.MeasureFromEdge.Hint": "When enabled, measurements will be taken from the edge of the token instead of the center",
   "BRSW.Settings.MeasureFromEdge.Name": "Measure from edge",
+  "BRSW.Settings.MeasurementGroup": "Measurement",
   "BRSW.Settings.NoActionMessage.Hint": "Set the message to show the players when no action was selected",
   "BRSW.Settings.NoActionMessage.Name": "No actions selected message",
   "BRSW.Settings.OptionalRules.GrittyDamage": "Gritty Damage",
