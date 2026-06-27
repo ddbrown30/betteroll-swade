@@ -77,6 +77,13 @@ export function registerSettings() {
         scope: "world",
     });
 
+    SettingsUtils.registerSetting(BRSW2_CONFIG.SETTING_KEYS.invalidWorldGlobalActions, {
+        default: [],
+        type: Array,
+        config: false,
+        scope: "world",
+    });
+
     SettingsUtils.registerSetting(BRSW2_CONFIG.SETTING_KEYS.chatModifiersName, {
         name: "Chat Modifiers Names",
         hint: "",

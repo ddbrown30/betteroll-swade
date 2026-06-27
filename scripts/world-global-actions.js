@@ -21,7 +21,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
         position: { width: 800, height: 700 },
         actions: {
             newAction: function (event, button) {
-                this.add_action(event, this.element);
+                this.addAction(event, this.element);
             },
             export: function (event, button) {
                 this.exportGlobalActions();
@@ -58,38 +58,68 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
         },
     };
 
-    async _prepareContext(options) {
-        let actions = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.worldGlobalActions);
-        if (actions && actions[0] instanceof Array) {
-            actions = actions[0];
-        }
+    nextFormId = 1;
 
-        const formatted_actions = [];
-        for (const action of actions) {
-            formatted_actions.push({
-                name: action.name,
-                id: action.id,
-                json: JSON.stringify(action, undefined, 4).trim(),
+    constructor(options = {}) {
+        super(options);
+
+        this.actions = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.worldGlobalActions).map(a => ({
+            action: a,
+            formId: this.nextFormId++
+        }));
+
+        this.invalidActions = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.invalidWorldGlobalActions).map(a => ({
+            ...a,
+            formId: this.nextFormId++
+        }));
+    }
+
+    async _prepareContext(options) {
+        const formattedActions = [];
+
+        for (const action of this.actions) {
+            formattedActions.push({
+                id: action.action.id,
+                formId: action.formId,
+                json: JSON.stringify(action.action, undefined, 4).trim(),
             });
         }
 
-        formatted_actions.sort((a, b) => {
+        for (const invalidAction of this.invalidActions) {
+            formattedActions.push({
+                id: invalidAction.error,
+                formId: invalidAction.formId,
+                json: invalidAction.json,
+            });
+        }
+
+        formattedActions.sort((a, b) => {
             return a.id <= b.id ? -1 : 1;
         });
 
-        return { actions: formatted_actions };
+        return { actions: formattedActions };
     }
 
     static async formHandler(event, form, formData) {
         const newWorldActions = [];
-        for (const form_action in formData.object) {
-            const actions = formData.object[form_action] instanceof Array ? formData.object[form_action] : [formData.object[form_action]];
-            for (const action of actions) {
-                newWorldActions.push(JSON.parse(action));
+        const newInvalidActions = [];
+        for (const [formId, json] of Object.entries(formData.object)) {
+            if (this.actions.find(a => a.formId == formId)) {
+                const newAction = JSON.parse(json);
+                delete newAction.formId; //We don't want the formId in the saved data
+                newWorldActions.push(newAction);
+            } else {
+                const invalidAction = this.invalidActions.find(a => a.formId == formId);
+                newInvalidActions.push({
+                    json: json,
+                    error: invalidAction.error
+                });
             }
         }
 
         await SettingsUtils.setSetting(BRSW2_CONFIG.SETTING_KEYS.worldGlobalActions, newWorldActions);
+        await SettingsUtils.setSetting(BRSW2_CONFIG.SETTING_KEYS.invalidWorldGlobalActions, newInvalidActions);
+
         registerActions();
     }
 
@@ -106,18 +136,18 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
         });
 
         // Activate JSON check on old actions
-        addEventListenerAll(this.element, ".brsw-action-json", "blur", this.checkJson);
+        addEventListenerAll(this.element, ".brsw-action-json", "blur", (ev) => this.checkJson(ev, this));
     }
 
-    checkJson(ev) {
+    checkJson(ev, app) {
         // Checks the json in a textarea
-        const text_area = ev.currentTarget;
+        const textArea = ev.currentTarget;
         let error = "";
         let action;
 
         // Json loads.
         try {
-            action = JSON.parse(text_area.value);
+            action = JSON.parse(textArea.value);
         } catch (_) {
             error = game.i18n.localize("BRSW.InvalidJSONError");
         }
@@ -174,56 +204,95 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
             ];
 
             for (const key in action) {
+                if (key === "formId") continue;
+
                 if (SUPPORTED_KEYS.indexOf(key) < 0) {
                     error = game.i18n.localize("BRSW.UnknownActionKey") + key;
                 }
             }
         }
 
-        const action_title = text_area.parentElement.parentElement.querySelector("button>span");
+        const actionTitle = textArea.parentElement.parentElement.querySelector("button>span");
+        const formId = textArea.parentElement.parentElement.dataset.formid;
+
+        if (!error) {
+            if (app.actions.find(a => a.action.id === action.id && a.formId != formId)) {
+                error = game.i18n.localize("BRSW.DuplicateId");
+            }
+        }
+
+        textArea.name = formId;
+        actionTitle.innerHTML = error || action.id;
 
         if (error) {
-            // Inputs without a name are not passed to updateObject
-            action_title.innerHTML = error;
-            text_area.removeAttribute("name");
+            //This is an invalid action so add it to our list
+            const existingIndex = app.invalidActions.findIndex(a => a.formId == formId);
+            if (existingIndex !== -1) {
+                //We're already in the list. Update our values instead
+                app.invalidActions[existingIndex].json = textArea.value;
+                app.invalidActions[existingIndex].error = error;
+            } else {
+                app.invalidActions.push({
+                    json: textArea.value,
+                    formId: formId,
+                    error: error
+                });
+            }
+
+            //If this action was in our valid list, we need to remove it
+            const actionIndex = app.actions.findIndex(a => a.formId == formId);
+            if (actionIndex !== -1) {
+                app.actions.splice(actionIndex, 1);
+            }
         } else {
-            action_title.innerHTML = action.name;
-            text_area.name = action.id;
+            //This is a valid action so add it to our list
+            const existingIndex = app.actions.findIndex(a => a.formId === formId);
+            if (existingIndex !== -1) {
+                //We're already in the list. Update our action instead
+                app.actions[existingIndex].action = action;
+            } else {
+                app.actions.push({
+                    action: action,
+                    formId: formId
+                });
+            }
+
+            //If this action was in our invalid list, we need to remove it
+            const invalidActionIndex = app.invalidActions.findIndex(a => a.formId == formId);
+            if (invalidActionIndex !== -1) {
+                app.invalidActions.splice(invalidActionIndex, 1);
+            }
         }
     }
 
-    add_action(ev, html) {
+    async addAction(ev, html) {
         ev.preventDefault();
-        for (const text_input of document.getElementsByClassName("brsw-edit-action")) {
-            text_input.classList.add("brsw-collapsed");
+
+        const formId = this.nextFormId++;
+        this.invalidActions.push({
+            json: "",
+            formId: formId,
+        });
+
+        await this.render(true);
+
+        //Rendering will collapse everything and show our new action
+        //Expand the new action and focus it
+        for (const textInput of document.getElementsByClassName("brsw-edit-action")) {
+            if (textInput.parentElement.dataset.formid == formId) {
+                textInput.classList.remove("brsw-collapsed");
+
+                const actionTitle = textInput.parentElement.querySelector("button>span");
+                actionTitle.innerHTML = game.i18n.localize("BRSW.NewAction");
+
+                textInput.querySelector("textarea").focus();
+
+                //Scroll the view to the bottom in case we have a long list of actions
+                const scrollable = this.element.querySelector(".scrollable");
+                scrollable.scrollTop = scrollable.scrollHeight;
+                break;
+            }
         }
-
-        const action_list = html.querySelector(".brsw-action-list");
-        const new_span = document.createElement("span");
-        new_span.insertAdjacentHTML(
-            "beforeend",
-            '<h2 class=\'mb-0 border-none\'><button type="button" class="p-5 font-medium border border-b-0 border-gray-200 {{#if @first}}rounded-t-xl{{/if}} bg-gray-600 focus:ring-4 focus:ring-gray-700 hover:text-white hover:bg-gray-700 gap-3"><span>New</span></button></h2>',
-        );
-        new_span.insertAdjacentHTML(
-            "beforeend",
-            "<div class='p-5 border border-b-0 border-gray-200 bg-gray-500'></div>",
-        );
-        new_span.insertAdjacentHTML(
-            "beforeend",
-            "<textarea class='brsw-action-json' rows='9'></textarea>",
-        );
-
-        new_span.querySelector("textarea").addEventListener("blur", this.checkJson);
-
-        action_list.append(new_span);
-    }
-
-    /**
-     * Exports custom global actions to a JSON file.
-     */
-    exportGlobalActions() {
-        const actions = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.worldGlobalActions);
-        foundry.utils.saveDataToFile(JSON.stringify(actions), "json", "worldActions.json");
     }
 
     /**
@@ -266,5 +335,13 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
             ],
             default: "import",
         }).render(true);
+    }
+
+    /**
+     * Exports custom global actions to a JSON file.
+     */
+    exportGlobalActions() {
+        const actions = this.actions.map(a => a.action);
+        foundry.utils.saveDataToFile(JSON.stringify(actions), "json", "brsw2_world_actions.json");
     }
 }

@@ -12,6 +12,7 @@ export const SETTING_KEYS = {
     chatModifiersName: "chat_modifiers_names",
     disabledSystemActions: "system_action_disabled",
     enabledOptionalRules: "optional_rules_enabled",
+    invalidWorldGlobalActions: "invalidWorldGlobalActions",
     telemetryOptOut: "telemetryOptOut",
     telemetryWorldInstallId: "telemetryWorldInstallId",
     worldGlobalActions: "world_global_actions",
