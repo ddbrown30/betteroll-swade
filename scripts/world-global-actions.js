@@ -223,7 +223,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
         }
 
         textArea.name = formId;
-        actionTitle.innerHTML = error || action.id;
+        actionTitle.textContent = error || action.id;
 
         if (error) {
             //This is an invalid action so add it to our list
@@ -284,7 +284,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
                 textInput.classList.remove("brsw-collapsed");
 
                 const actionTitle = textInput.parentElement.querySelector("button>span");
-                actionTitle.innerHTML = game.i18n.localize("BRSW.NewAction");
+                actionTitle.textContent = game.i18n.localize("BRSW.NewAction");
 
                 textInput.querySelector("textarea").focus();
 
