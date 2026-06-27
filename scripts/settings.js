@@ -271,18 +271,6 @@ function registerWorldSettings() {
         type: Boolean,
         default: false,
     });
-
-    //Update our cached world settings with our saved data
-    const worldSettings = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.worldSettings);
-    if (worldSettings) {
-        for (const key in BRSW2_CONFIG.WORLD_SETTINGS) {
-            if (Object.hasOwn(worldSettings, key)) {
-                BRSW2_CONFIG.WORLD_SETTINGS[key].value = worldSettings[key];
-            }
-        }
-
-        SettingsUtils.setWorldSettings();
-    }
 }
 
 function registerUserSettings() {
@@ -323,12 +311,48 @@ function registerUserSettings() {
     });
 }
 
+export function updateCachedWorldSettings() {
+    //Update our cached world settings with our saved data
+    const worldSettings = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.worldSettings);
+    if (worldSettings) {
+        for (const key in BRSW2_CONFIG.WORLD_SETTINGS) {
+            if (Object.hasOwn(worldSettings, key)) {
+                //Migrate old data to the new structure
+                if (worldSettings[key].name !== undefined) {
+                    if (worldSettings[key].value === worldSettings[key].default) {
+                        //If the old value was the old default, use the current default
+                        BRSW2_CONFIG.WORLD_SETTINGS[key].value = BRSW2_CONFIG.WORLD_SETTINGS[key].default;
+                    } else {
+                        BRSW2_CONFIG.WORLD_SETTINGS[key].value = worldSettings[key].value;
+                    }
+                    continue;
+                }
+
+                BRSW2_CONFIG.WORLD_SETTINGS[key].value = worldSettings[key];
+            }
+        }
+
+        SettingsUtils.setWorldSettings();
+    }
+}
+
 export function updateCachedUserSettings() {
     //Update our cached user settings from the user's flags
     const userSettings = SettingsUtils.getModuleFlag(game.user, BRSW2_CONFIG.USER_FLAGS.userSettings);
     if (userSettings) {
         for (const key in BRSW2_CONFIG.USER_SETTINGS) {
             if (Object.hasOwn(userSettings, key)) {
+                //Migrate old data to the new structure
+                if (userSettings[key].name !== undefined) {
+                    if (userSettings[key].value === userSettings[key].default) {
+                        //If the old value was the old default, use the current default
+                        BRSW2_CONFIG.USER_SETTINGS[key].value = BRSW2_CONFIG.USER_SETTINGS[key].default;
+                    } else {
+                        BRSW2_CONFIG.USER_SETTINGS[key].value = userSettings[key].value;
+                    }
+                    continue;
+                }
+
                 BRSW2_CONFIG.USER_SETTINGS[key].value = userSettings[key];
             }
         }
