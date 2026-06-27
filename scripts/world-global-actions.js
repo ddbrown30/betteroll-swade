@@ -103,13 +103,14 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
     static async formHandler(event, form, formData) {
         const newWorldActions = [];
         const newInvalidActions = [];
-        for (const [formId, json] of Object.entries(formData.object)) {
-            if (this.actions.find(a => a.formId == formId)) {
+        for (let [formId, json] of Object.entries(formData.object)) {
+            formId = Number(formId);
+            if (this.actions.find(a => a.formId === formId)) {
                 const newAction = JSON.parse(json);
                 delete newAction.formId; //We don't want the formId in the saved data
                 newWorldActions.push(newAction);
             } else {
-                const invalidAction = this.invalidActions.find(a => a.formId == formId);
+                const invalidAction = this.invalidActions.find(a => a.formId === formId);
                 newInvalidActions.push({
                     json: json,
                     error: invalidAction.error
@@ -213,10 +214,10 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
         }
 
         const actionTitle = textArea.parentElement.parentElement.querySelector("button>span");
-        const formId = textArea.parentElement.parentElement.dataset.formid;
+        const formId = Number(textArea.parentElement.parentElement.dataset.formid);
 
         if (!error) {
-            if (app.actions.find(a => a.action.id === action.id && a.formId != formId)) {
+            if (app.actions.find(a => a.action.id === action.id && a.formId !== formId)) {
                 error = game.i18n.localize("BRSW.DuplicateId");
             }
         }
@@ -226,7 +227,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
 
         if (error) {
             //This is an invalid action so add it to our list
-            const existingIndex = app.invalidActions.findIndex(a => a.formId == formId);
+            const existingIndex = app.invalidActions.findIndex(a => a.formId === formId);
             if (existingIndex !== -1) {
                 //We're already in the list. Update our values instead
                 app.invalidActions[existingIndex].json = textArea.value;
@@ -240,7 +241,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
             }
 
             //If this action was in our valid list, we need to remove it
-            const actionIndex = app.actions.findIndex(a => a.formId == formId);
+            const actionIndex = app.actions.findIndex(a => a.formId === formId);
             if (actionIndex !== -1) {
                 app.actions.splice(actionIndex, 1);
             }
@@ -258,7 +259,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
             }
 
             //If this action was in our invalid list, we need to remove it
-            const invalidActionIndex = app.invalidActions.findIndex(a => a.formId == formId);
+            const invalidActionIndex = app.invalidActions.findIndex(a => a.formId === formId);
             if (invalidActionIndex !== -1) {
                 app.invalidActions.splice(invalidActionIndex, 1);
             }
@@ -279,7 +280,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
         //Rendering will collapse everything and show our new action
         //Expand the new action and focus it
         for (const textInput of document.getElementsByClassName("brsw-edit-action")) {
-            if (textInput.parentElement.dataset.formid == formId) {
+            if (Number(textInput.parentElement.dataset.formid) === formId) {
                 textInput.classList.remove("brsw-collapsed");
 
                 const actionTitle = textInput.parentElement.querySelector("button>span");
