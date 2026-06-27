@@ -195,8 +195,6 @@
     "BRSW.CharacterIsShaken": "Персонаж в шоке",
     "BRSW.CharacterIsStunned": "Персонаж оглушен",
     "BRSW.ChatFormTittle": "Модификаторы для Better Rolls",
-    "BRSW.Settings.ChatModifiersMenu.Name": "Название модификаторов чата",
-    "BRSW.Settings.ChatModifiersMenu.Hint": "Изменить названия модификатороф чата",
     "BRSW.AbilityDie": "Кубик способности",
     "BRSW.AllSoaked": "<p>Но прошел проверку на прочность поглотив все ранения, избавляясь от шока</p>",
     "BRSW.AmmunitionStatus": "{actor_name} выпускает {number} снарядов из {weapon_name}, и у него осталось {newCharges}",

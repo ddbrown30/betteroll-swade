@@ -4,7 +4,7 @@ import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { SettingsUtils } from "./utils.js";
 
 /**
- * Form application for managing mapping of Conditions to Icons and JournalEntries
+ * Menu for selecting which global actions are enabled
  */
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 export class GlobalActionsMenu extends HandlebarsApplicationMixin(ApplicationV2) {

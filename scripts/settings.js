@@ -1,6 +1,5 @@
 
 import * as BRSW2_CONFIG from "./brsw2-config.js";
-import { ModifierSettingsConfiguration } from "./chat_modifers_names.js";
 import { GlobalActionsMenu } from "./global-actions-menu.js";
 import { OptionalRulesConfiguration } from "./optional_rules.js";
 import { SettingsConfig } from "./settings_config.js";
@@ -40,13 +39,6 @@ export function registerSettings() {
         type: OptionalRulesConfiguration,
     });
 
-    SettingsUtils.registerMenu("chat_modifiers_menu", {
-        name: "BRSW.Settings.ChatModifiersMenu.Name",
-        label: "BRSW.Settings.ChatModifiersMenu.Name",
-        hint: "BRSW.Settings.ChatModifiersMenu.Hint",
-        type: ModifierSettingsConfiguration,
-    });
-
     // Register core settings. These should be config:false settings only. Everything else should be a world or user setting
     SettingsUtils.registerSetting(BRSW2_CONFIG.SETTING_KEYS.worldSettings, {
         name: "World Settings",
@@ -82,15 +74,6 @@ export function registerSettings() {
         type: Array,
         config: false,
         scope: "world",
-    });
-
-    SettingsUtils.registerSetting(BRSW2_CONFIG.SETTING_KEYS.chatModifiersName, {
-        name: "Chat Modifiers Names",
-        hint: "",
-        default: { GM: "", Trait: "", Damage: "", ROF: "" },
-        scope: "world",
-        type: Object,
-        config: false,
     });
 
     SettingsUtils.registerSetting(BRSW2_CONFIG.SETTING_KEYS.telemetryOptOut, {

@@ -9,7 +9,6 @@ export const MAX_NOPP_PENALTY_ACTION = 6;
 export const MAX_TOOLTIP_LENGTH = 500;
 
 export const SETTING_KEYS = {
-    chatModifiersName: "chat_modifiers_names",
     disabledSystemActions: "system_action_disabled",
     enabledOptionalRules: "optional_rules_enabled",
     invalidWorldGlobalActions: "invalidWorldGlobalActions",
