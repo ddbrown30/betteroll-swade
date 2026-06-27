@@ -334,8 +334,6 @@
   "BRSW.Settings.DamageDiceTheme.Name": "Damage dice theme",
   "BRSW.Settings.DefaultRateOfFire.Hint": "The rate of fire used by weapon cards",
   "BRSW.Settings.DefaultRateOfFire.Name": "Default Rate of Fire",
-  "BRSW.Settings.DisableActions.Hint": "Use system cards for actions",
-  "BRSW.Settings.DisableActions.Name": "Disable Better Rolls for actions",
   "BRSW.Settings.DisableGangUp.Hint": "Disables the Gang Up bonus on melee attacks.",
   "BRSW.Settings.DisableGangUp.Name": "Disable Gang Up",
   "BRSW.Settings.ExpandDescriptions.Hint": "When enabled, descriptions are expanded by default.",

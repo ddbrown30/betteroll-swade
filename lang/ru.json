@@ -79,8 +79,6 @@
     "BRSW.Settings.DefaultRateOfFire.Hint": "Выберите скорость стрельбы, используемую по умолчанию картами оружия (Клиент)",
     "BRSW.ClickActionTypes.DefaultSystemRoll": "Стандартный бросок системы",
     "BRSW.Description": "Описание",
-    "BRSW.Settings.DisableActions.Name": "Отключить Better Rolls для действий",
-    "BRSW.Settings.DisableActions.Hint": "Используйте системные карточки для действий",
     "BRSW.Settings.DisableGangUp.Name": "Отключить расчет модификатороф окружения",
     "BRSW.Settings.DisableGangUp.Hint": "Отключите автоматический расчет модификатороф окружения. (Мир)",
     "BRSW.Dmg": "Урон",

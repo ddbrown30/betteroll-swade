@@ -332,8 +332,6 @@
     "BRSW.Settings.DamageDiceTheme.Name": "டேமேச் டைச் கருப்பொருள்",
     "BRSW.Settings.DefaultRateOfFire.Hint": "ஆயுத அட்டைகள் (வாடிக்கையாளர்) மூலம் இயல்பாகப் பயன்படுத்தப்படும் தீ விகிதத்தைத் தேர்வு செய்யவும்",
     "BRSW.Settings.DefaultRateOfFire.Name": "இயல்புநிலை தீ விகிதம்",
-    "BRSW.Settings.DisableActions.Hint": "செயல்களுக்கு கணினி அட்டைகளைப் பயன்படுத்தவும்",
-    "BRSW.Settings.DisableActions.Name": "செயல்களுக்கு சிறந்த ரோல்களை முடக்கவும்",
     "BRSW.Settings.DisableGangUp.Hint": "கும்பலின் தானியங்கு கணக்கீட்டை முடக்கு.",
     "BRSW.Settings.DisableGangUp.Name": "Gangup கணக்கீட்டை முடக்கு",
     "BRSW.Settings.ExpandDescriptions.Hint": "உருப்படி விளக்கங்களை விரிவுபடுத்த இந்த விருப்பங்களை இயக்கவும், இயல்பாக அவை சுருக்கப்படும்.",

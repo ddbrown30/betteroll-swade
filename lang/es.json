@@ -323,8 +323,6 @@
     "BRSW.AttackOptionDesperate": "Opciones de ataque [Desesperado]",
     "BRSW.CalledArm": "Ataque apuntado: Brazos (-2)",
     "BRSW.CalledLeg": "Ataque apuntado: Piernas (-2)",
-    "BRSW.Settings.DisableActions.Name": "Deshabilitar Better Rolls para las acciones",
-    "BRSW.Settings.DisableActions.Hint": "Usas las tarjetas del sistema para las acciones",
     "BRSW.EdgeName.DoubleShot": "Disparo rápido",
     "BRSW.EdgeName.EpicMastery": "Maestría épica",
     "BRSW.EdgeName.ImprovedDoubleShot": "Disparo rápido mejorado",
