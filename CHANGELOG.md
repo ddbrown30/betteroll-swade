@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.12.1
+* Removed an accidental dependence on succ
+
 # Version 5.12.0
 * Cleaned up a bunch of the code around how we store and use settings
 * Improved the appearance and behaviour of the settings menu
