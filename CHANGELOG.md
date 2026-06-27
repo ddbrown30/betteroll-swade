@@ -1,5 +1,16 @@
 # Changelog
 
+# Version 5.12.0
+* Cleaned up a bunch of the code around how we store and use settings
+* Improved the appearance and behaviour of the settings menu
+* Fixed some issues with restoring default settings
+* Improved the functionality of the World Global Actions menu. Among other improvements, it now saves invalid actions so you don't accidentally lose them
+* Removed Chat Modifier Names setting
+* Removed Hide Item Actions setting
+* Removed Disable BR2 for Actions setting
+* Removed The PP/Shots Info setting
+* Removed the Use System Injury Table setting
+
 # Version 5.11.5
 * Added missing imports
 
@@ -787,7 +798,7 @@ NOTE: NO NEW FEATURES, JUST COMPATIBILITY WITH SWADE 3.2
 * Actions: Make "shots_used" in power points addictive
 * Bugfix: Bennie rerolls use the same target than the original roll not the one currently targeted
 * Bugfix: Damage explosions are marked (changed to blue) correctly
-* Api: add_action now replaces world actions with the same id
+* Api: add_actions now replaces world actions with the same id
 * Bugfix: When a modifier is a die show the results of each dice instead of the total
 
 ## Version 3.20 aka Praying so nothing explodes too much
