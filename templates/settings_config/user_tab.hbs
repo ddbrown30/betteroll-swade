@@ -1,4 +1,4 @@
-<section class="tab scrollable" data-group="primary" data-tab="user">
+<section class="tab scrollable {{#unless canModifyWorld}}active{{/unless}}" data-group="primary" data-tab="user">
     {{#each userSettings}}
         {{>"modules/betterrolls-swade2/templates/setting_partial.hbs"}}
     {{/each}}

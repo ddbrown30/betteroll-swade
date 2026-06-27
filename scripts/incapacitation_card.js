@@ -166,15 +166,6 @@ async function roll_incapacitation(br_card, spend_benny) {
  * @param {string} reason Reason for the injury
  */
 export async function create_injury_card(token_id, reason) {
-    if (SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.useSystemInjuryTable)) {
-        const injuryTable = await fromUuid(
-            game.settings.get("swade", "injuryTable"),
-        );
-        if (injuryTable) {
-            await injuryTable.draw();
-        }
-        return;
-    }
     let token = canvas.tokens.get(token_id);
     let { actor } = token;
     let user = get_owner(actor);

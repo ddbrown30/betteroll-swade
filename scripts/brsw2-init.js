@@ -19,7 +19,7 @@ import { create_unshaken_wrapper, create_unstun_wrapper } from "./combat.js";
 import { activate_damage_card_listeners } from "./damage_card.js";
 import {
     expose_global_actions_functions,
-    register_actions,
+    registerActions,
     register_gm_actions_settings
 } from "./global_actions.js";
 import { setup_chat_button } from "./gm_actions.js";
@@ -33,7 +33,7 @@ import {
     expose_item_functions,
 } from "./item_card.js";
 import { activate_remove_status_card_listeners } from "./remove_status_cards.js";
-import { registerDSNSettings, registerSettings, updateCachedUserSettings } from "./settings.js";
+import { registerDSNSettings, registerSettings, updateCachedUserSettings, updateCachedWorldSettings } from "./settings.js";
 import {
     activate_skill_card_listeners,
     activate_skill_listeners,
@@ -52,7 +52,7 @@ Hooks.on(`init`, () => {
 
     registerSettings();
 
-    register_actions();
+    registerActions();
     register_gm_actions_settings();
 });
 
@@ -60,6 +60,7 @@ Hooks.on(`init`, () => {
 Hooks.on(`ready`, async () => {
     await TelemetryUtils.generateWorldInstallId();
 
+    updateCachedWorldSettings();
     updateCachedUserSettings();
 
     // Create a base object to hook functions
@@ -157,9 +158,7 @@ Hooks.on("renderChatMessageHTML", (message, html, options) => {
 
         // Hide save macro button from non-owner, non-trusted players
         if (!message.isOwner && !game.user.isTrusted) {
-            html
-                .querySelectorAll(".brsw-owner-trusted-only")
-                .forEach((e) => e.remove());
+            html.querySelectorAll(".brsw-owner-trusted-only").forEach((e) => e.remove());
         }
 
         if (Object.keys(message.apps).length < 1) {

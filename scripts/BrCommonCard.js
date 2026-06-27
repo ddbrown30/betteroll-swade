@@ -325,12 +325,15 @@ export class BrCommonCard {
     populateActions(stored_selections) {
         this.action_sections = {};
         this.populateWorldActions();
-        if (this.item && !SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.hideItemActions)) {
+
+        if (this.item) {
             this.populateItemActions();
         }
+
         this.populateActiveEffectActions();
         this.populateResistActions();
         this.populateNoPowerPointsActions();
+
         Utils.forEachActionGroup(this, group => {
             group.actions.sort((a, b) => {
                 if (group.name === "Active effects" || group.name === "Item actions") {
@@ -338,12 +341,14 @@ export class BrCommonCard {
                 }
                 return a.code.id > b.code.id ? 1 : -1;
             });
+
             for (const action of group.actions) {
                 if (stored_selections.hasOwnProperty(action.code.id)) {
                     action.selected = stored_selections[action.code.id];
                 }
             }
         });
+
         Hooks.call("BRSWCardActionsPopulated", this);
     }
 
@@ -694,7 +699,6 @@ export class BrCommonCard {
         render_data.benny_image = game.settings.get("swade", "bennyImage3DFront") || "/systems/swade/assets/benny/benny-chip-front.png";
 
         render_data.collapse_results = !SettingsUtils.getUserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.expandResults);
-        render_data.collapse_rolls = !SettingsUtils.getUserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.expandRolls);
         render_data.collapse_descriptions = !SettingsUtils.getUserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.expandDescriptions);
 
         if (template) {
@@ -817,7 +821,6 @@ export class BrCommonCard {
         data.hasFooterButtons = this.hasFooterButtons;
         data.skill_tooltip = this.skill_tooltip;
         data.supports_manual_mods = !!(this.attribute_name || this.skill || this.damage);
-        data.showShotsPPInfo = SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.showPPShotsInfo);
         data.noPowerPoints = game.settings.get("swade", "noPowerPoints");
         data.ppPenalty = -Math.ceil(this.pp_cost / 2);
         data.shots_pp_info = data.showShotsPPInfo ? this.itemShots : "";

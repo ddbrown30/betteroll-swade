@@ -9,9 +9,9 @@ export const MAX_NOPP_PENALTY_ACTION = 6;
 export const MAX_TOOLTIP_LENGTH = 500;
 
 export const SETTING_KEYS = {
-    chatModifiersName: "chat_modifiers_names",
     disabledSystemActions: "system_action_disabled",
     enabledOptionalRules: "optional_rules_enabled",
+    invalidWorldGlobalActions: "invalidWorldGlobalActions",
     telemetryOptOut: "telemetryOptOut",
     telemetryWorldInstallId: "telemetryWorldInstallId",
     worldGlobalActions: "world_global_actions",
@@ -29,18 +29,14 @@ export const WORLD_SETTING_KEYS = {
     },
     defaultAmmoManagement: "default-ammo-management",
     defaultPPManagement: "default-pp-management",
-    disableForActions: "disable_for_actions",
     disableGangUp: "disable-gang-up",
     genericPPModifiersSource: "generic-pp-modifiers-source",
-    hideItemActions: "hideItemActions",
     measureFromEdge: "measure_from_edge",
     ppChangeCardBehaviour: "pp_change_card_behaviour",
     rangeCalcGrid: "range_calc_grid",
     resultCard: "result-card",
-    showPPShotsInfo: "show_pp_shots_info",
     swdUnshake: "swd-unshake",
     undeadIgnoresIllumination: "undeadIgnoresIllumination",
-    useSystemInjuryTable: "use_system_injury_table",
 };
 
 export const USER_SETTING_KEYS = {
@@ -48,7 +44,6 @@ export const USER_SETTING_KEYS = {
     defaultRateOfFire: "default_rate_of_fire",
     expandDescriptions: "expand-descriptions",
     expandResults: "expand-results",
-    expandRolls: "expand-rolls",
 };
 
 export const USER_FLAGS = {

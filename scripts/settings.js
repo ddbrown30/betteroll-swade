@@ -1,10 +1,10 @@
 
 import * as BRSW2_CONFIG from "./brsw2-config.js";
-import { ModifierSettingsConfiguration } from "./chat_modifers_names.js";
-import { SystemGlobalConfiguration, WorldGlobalActions } from "./global_actions.js";
+import { GlobalActionsMenu } from "./global-actions-menu.js";
 import { OptionalRulesConfiguration } from "./optional_rules.js";
 import { SettingsConfig } from "./settings_config.js";
 import { SettingsUtils } from "./utils.js";
+import { WorldGlobalActions } from "./world-global-actions.js";
 
 
 export function registerSettings() {
@@ -22,7 +22,7 @@ export function registerSettings() {
         name: "BRSW.Settings.SystemGlobalMenu.Name",
         label: "BRSW.Settings.SystemGlobalMenu.Label",
         hint: "BRSW.Settings.SystemGlobalMenu.Hint",
-        type: SystemGlobalConfiguration,
+        type: GlobalActionsMenu,
     });
 
     SettingsUtils.registerMenu("world_global-Menus", {
@@ -37,13 +37,6 @@ export function registerSettings() {
         label: "BRSW.Settings.OptionalRules.Label",
         hint: "BRSW.Settings.OptionalRules.Hint",
         type: OptionalRulesConfiguration,
-    });
-
-    SettingsUtils.registerMenu("chat_modifiers_menu", {
-        name: "BRSW.Settings.ChatModifiersMenu.Name",
-        label: "BRSW.Settings.ChatModifiersMenu.Name",
-        hint: "BRSW.Settings.ChatModifiersMenu.Hint",
-        type: ModifierSettingsConfiguration,
     });
 
     // Register core settings. These should be config:false settings only. Everything else should be a world or user setting
@@ -76,13 +69,11 @@ export function registerSettings() {
         scope: "world",
     });
 
-    SettingsUtils.registerSetting(BRSW2_CONFIG.SETTING_KEYS.chatModifiersName, {
-        name: "Chat Modifiers Names",
-        hint: "",
-        default: { GM: "", Trait: "", Damage: "", ROF: "" },
-        scope: "world",
-        type: Object,
+    SettingsUtils.registerSetting(BRSW2_CONFIG.SETTING_KEYS.invalidWorldGlobalActions, {
+        default: [],
+        type: Array,
         config: false,
+        scope: "world",
     });
 
     SettingsUtils.registerSetting(BRSW2_CONFIG.SETTING_KEYS.telemetryOptOut, {
@@ -152,7 +143,7 @@ function registerWorldSettings() {
         default: "all",
         type: String,
         choices: {
-            master: game.i18n.localize("BRSW.VisibilityTypes.Owners"),
+            master: game.i18n.localize("BRSW.VisibilityTypes.GM"),
             all: game.i18n.localize("BRSW.VisibilityTypes.Everybody"),
         },
     });
@@ -171,6 +162,7 @@ function registerWorldSettings() {
         hint: game.i18n.localize("BRSW.Settings.PPManagement.Hint"),
         default: true,
         type: Boolean,
+        group: "BRSW.Settings.PowersGroup",
     });
 
     const modifiersSourceChoices = {
@@ -185,13 +177,7 @@ function registerWorldSettings() {
         default: "swade",
         type: String,
         choices: modifiersSourceChoices,
-    });
-
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.hideItemActions, {
-        name: game.i18n.localize("BRSW.Settings.HideItemActions.Name"),
-        hint: game.i18n.localize("BRSW.Settings.HideItemActions.Hint"),
-        default: false,
-        type: Boolean,
+        group: "BRSW.Settings.PowersGroup",
     });
 
     SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.disableGangUp, {
@@ -199,6 +185,7 @@ function registerWorldSettings() {
         hint: game.i18n.localize("BRSW.Settings.DisableGangUp.Hint"),
         default: false,
         type: Boolean,
+        group: "BRSW.Settings.RulesGroup",
     });
 
     SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.ppChangeCardBehaviour, {
@@ -206,6 +193,7 @@ function registerWorldSettings() {
         hint: game.i18n.localize("BRSW.Settings.PPChangeCardBehaviour.Hint"),
         default: "none",
         type: String,
+        group: "BRSW.Settings.PowersGroup",
         choices: {
             none: game.i18n.localize("BRSW.NoOne"),
             master_only: game.i18n.localize("BRSW.VisibilityTypes.Owners"),
@@ -219,6 +207,7 @@ function registerWorldSettings() {
         hint: game.i18n.localize("BRSW.Settings.SWDUnshake.Hint"),
         default: false,
         type: Boolean,
+        group: "BRSW.Settings.RulesGroup",
     });
 
     SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.autoStatusCards, {
@@ -235,6 +224,7 @@ function registerWorldSettings() {
         default: true,
         scope: "world",
         type: Boolean,
+        group: "BRSW.Settings.MeasurementGroup",
     });
 
     SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.undeadIgnoresIllumination, {
@@ -242,28 +232,7 @@ function registerWorldSettings() {
         hint: game.i18n.localize("BRSW.Settings.UndeadIgnoresIllumination.Hint"),
         default: false,
         type: Boolean,
-    });
-
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.disableForActions, {
-        name: game.i18n.localize("BRSW.Settings.DisableActions.Name"),
-        hint: game.i18n.localize("BRSW.Settings.DisableActions.Hint"),
-        default: false,
-        type: Boolean,
-    });
-
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.useSystemInjuryTable, {
-        name: game.i18n.localize("BRSW.Settings.UseSystemInjuryTable.Name"),
-        hint: game.i18n.localize("BRSW.Settings.UseSystemInjuryTable.Hint"),
-        default: false,
-        type: Boolean,
-    });
-
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.showPPShotsInfo, {
-        name: "BRSW.Settings.ShowPPShots.Name",
-        label: "BRSW.Settings.ShowPPShots.Label",
-        hint: "BRSW.Settings.ShowPPShots.Hint",
-        type: Boolean,
-        default: true,
+        group: "BRSW.Settings.RulesGroup",
     });
 
     SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.autoCheckExtraCritFailures, {
@@ -278,17 +247,8 @@ function registerWorldSettings() {
         hint: "BRSW.Settings.MeasureFromEdge.Hint",
         type: Boolean,
         default: false,
+        group: "BRSW.Settings.MeasurementGroup",
     });
-
-    //Update our cached world settings with our saved data
-    const worldSettings = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.worldSettings);
-    if (worldSettings) {
-        for (const key in BRSW2_CONFIG.WORLD_SETTINGS) {
-            if (worldSettings[key] !== undefined) {
-                BRSW2_CONFIG.WORLD_SETTINGS[key].value = worldSettings[key].value;
-            }
-        }
-    }
 }
 
 function registerUserSettings() {
@@ -312,15 +272,6 @@ function registerUserSettings() {
         type: Boolean,
     });
 
-    SettingsUtils.registerBR2UserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.expandRolls, {
-        name: game.i18n.localize("BRSW.Settings.ExpandRolls.Name"),
-        hint: game.i18n.localize("BRSW.Settings.ExpandRolls.Hint"),
-        default: false,
-        scope: "world",
-        type: Boolean,
-        config: true,
-    });
-
     SettingsUtils.registerBR2UserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.expandDescriptions, {
         name: game.i18n.localize("BRSW.Settings.ExpandDescriptions.Name"),
         hint: game.i18n.localize("BRSW.Settings.ExpandDescriptions.Hint"),
@@ -338,15 +289,53 @@ function registerUserSettings() {
     });
 }
 
+export function updateCachedWorldSettings() {
+    //Update our cached world settings with our saved data
+    const worldSettings = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.worldSettings);
+    if (worldSettings) {
+        for (const key in BRSW2_CONFIG.WORLD_SETTINGS) {
+            if (Object.hasOwn(worldSettings, key)) {
+                //Migrate old data to the new structure
+                if (worldSettings[key].name !== undefined) {
+                    if (worldSettings[key].value === worldSettings[key].default) {
+                        //If the old value was the old default, use the current default
+                        BRSW2_CONFIG.WORLD_SETTINGS[key].value = BRSW2_CONFIG.WORLD_SETTINGS[key].default;
+                    } else {
+                        BRSW2_CONFIG.WORLD_SETTINGS[key].value = worldSettings[key].value;
+                    }
+                    continue;
+                }
+
+                BRSW2_CONFIG.WORLD_SETTINGS[key].value = worldSettings[key];
+            }
+        }
+
+        SettingsUtils.setWorldSettings();
+    }
+}
+
 export function updateCachedUserSettings() {
     //Update our cached user settings from the user's flags
     const userSettings = SettingsUtils.getModuleFlag(game.user, BRSW2_CONFIG.USER_FLAGS.userSettings);
     if (userSettings) {
         for (const key in BRSW2_CONFIG.USER_SETTINGS) {
-            if (userSettings[key] !== undefined) {
-                BRSW2_CONFIG.USER_SETTINGS[key].value = userSettings[key].value;
+            if (Object.hasOwn(userSettings, key)) {
+                //Migrate old data to the new structure
+                if (userSettings[key].name !== undefined) {
+                    if (userSettings[key].value === userSettings[key].default) {
+                        //If the old value was the old default, use the current default
+                        BRSW2_CONFIG.USER_SETTINGS[key].value = BRSW2_CONFIG.USER_SETTINGS[key].default;
+                    } else {
+                        BRSW2_CONFIG.USER_SETTINGS[key].value = userSettings[key].value;
+                    }
+                    continue;
+                }
+
+                BRSW2_CONFIG.USER_SETTINGS[key].value = userSettings[key];
             }
         }
+
+        SettingsUtils.setUserSettings();
     }
 }
 

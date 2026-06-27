@@ -4,7 +4,7 @@ import { SettingsUtils } from "./utils.js";
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 /**
- * Dialog for configuring and executing a shape change
+ * Popup for selecting additional modifiers for a card
  */
 export class ManualModifiersPopup extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
@@ -32,15 +32,10 @@ export class ManualModifiersPopup extends HandlebarsApplicationMixin(Application
   }
 
   async _prepareContext(_options) {
-    const chat_modifiers_names = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.chatModifiersName);
-    chat_modifiers_names.Damage ||= "BRSW.DmgModifier";
-    chat_modifiers_names.ROF ||= "BRSW.Number_trait_dice";
-    chat_modifiers_names.Trait ||= "BRSW.TraitModifier";
     const trait_mods = this.constructor.TRAIT_MODS.map((t) => ({ value: t, enabled: !!this.br_card.manual_mods?.trait_mods?.find((m) => t == m) }));
     const trait_dice = this.constructor.TRAIT_DICE.map((t) => ({ value: t, enabled: t == this.br_card.manual_mods?.rof }));
     const damage_mods = this.constructor.DAMAGE_MODS.map((t) => ({ value: t, enabled: !!this.br_card.manual_mods?.dmg_modifiers?.find((m) => t == m) }));
     return {
-      chat_modifiers_names: chat_modifiers_names,
       trait: !!(this.br_card.attribute_name || this.br_card.skill),
       damage: !!this.br_card.damage,
       trait_mods: trait_mods,

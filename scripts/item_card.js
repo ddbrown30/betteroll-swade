@@ -69,12 +69,6 @@ export async function create_item_card(
         item = await fromUuid(item_id);
     }
 
-    if (item.type === "action" && SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.disableForActions)) {
-        // Disable actions
-        item.show();
-        return;
-    }
-
     let notes = "";
     if (item.system.notes && item.system.notes.length < 50) {
         notes = item.system.notes;
@@ -469,6 +463,7 @@ export function activate_item_card_listeners(br_card, html) {
     html.querySelector(".brsw-header-img")?.addEventListener("click", (_) => {
         item.sheet.render(true);
     });
+
     addEventListenerAll(html, ".brsw-roll-button", "click", async (ev) => {
         ev.stopPropagation();
         await roll_item(
@@ -477,6 +472,7 @@ export function activate_item_card_listeners(br_card, html) {
             ev.currentTarget.classList.contains("roll-bennie-button"),
         );
     });
+
     addEventListenerAll(
         html,
         ".brsw-damage-button, .brsw-damage-bennie-button",
@@ -493,38 +489,33 @@ export function activate_item_card_listeners(br_card, html) {
             );
         },
     );
-    html
-        .querySelector(".brsw-ammo-manual")
-        ?.addEventListener("click", async (ev) => {
-            await item.reload();
-            //Update the ammo text of the card we just clicked on.
-            //This won't affect change the popout or vice versa,
-            //but doing that would require an update to the chat message which would refresh the render which is disruptive
-            ev.target.parentElement.querySelector(".brsw-shots-pp").innerText =
-                br_card.itemShots;
-        });
 
-    html
-        .querySelector(".brsw-pp-manual")
-        ?.addEventListener("click", async (ev) => {
-            await new PPManagementDialog({ brCard: br_card }).wait({ force: true });
+    html.querySelector(".brsw-ammo-manual")?.addEventListener("click", async (ev) => {
+        await item.reload();
+        //Update the ammo text of the card we just clicked on.
+        //This won't affect change the popout or vice versa,
+        //but doing that would require an update to the chat message which would refresh the render which is disruptive
+        ev.target.parentElement.querySelector(".brsw-shots-pp").innerText =
+            br_card.itemShots;
+    });
 
-            if (SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.showPPShotsInfo)) {
-                //Update the pp text of the card we just clicked on.
-                //This won't affect the popout or vice versa,
-                //but doing that would require an update to the chat message which would refresh the render which is disruptive
-                if (game.settings.get("swade", "noPowerPoints")) {
-                    const ppPenalty = ev.target.parentElement.parentElement.querySelector(".brsw-pp-penalty");
-                    ppPenalty.innerText = -Math.ceil(calc_pp_cost(br_card) / 2);
-                } else {
-                    const ppRemaining = ev.target.parentElement.parentElement.querySelector(".brsw-shots-pp");
-                    ppRemaining.innerText = br_card.itemShots;
+    html.querySelector(".brsw-pp-manual")?.addEventListener("click", async (ev) => {
+        await new PPManagementDialog({ brCard: br_card }).wait({ force: true });
 
-                    const ppCost = ev.target.parentElement.parentElement.querySelector(".brsw-pp-cost");
-                    ppCost.innerText = calc_pp_cost(br_card);
-                }
-            }
-        });
+        //Update the pp text of the card we just clicked on.
+        //This won't affect the popout or vice versa,
+        //but doing that would require an update to the chat message which would refresh the render which is disruptive
+        if (game.settings.get("swade", "noPowerPoints")) {
+            const ppPenalty = ev.target.parentElement.parentElement.querySelector(".brsw-pp-penalty");
+            ppPenalty.innerText = -Math.ceil(calc_pp_cost(br_card) / 2);
+        } else {
+            const ppRemaining = ev.target.parentElement.parentElement.querySelector(".brsw-shots-pp");
+            ppRemaining.innerText = br_card.itemShots;
+
+            const ppCost = ev.target.parentElement.parentElement.querySelector(".brsw-pp-cost");
+            ppCost.innerText = calc_pp_cost(br_card);
+        }
+    });
 
     addEventListenerAll(html, ".brsw-apply-damage", "click", (ev) => {
         create_damage_card(
@@ -534,24 +525,27 @@ export function activate_item_card_listeners(br_card, html) {
             ev.currentTarget.dataset.heavyDamage,
         ).then();
     });
+
     addEventListenerAll(html, ".brsw-target-tough", "click", (ev) => {
-        // noinspection JSIgnoredPromiseFromCall
         edit_toughness(br_card, ev.currentTarget.dataset.index);
     });
+
     addEventListenerAll(html, ".brsw-add-damage-d6", "click", (ev) => {
-        // noinspection JSIgnoredPromiseFromCall
         add_damage_dice(br_card, ev.currentTarget.dataset.index);
     });
+
     addEventListenerAll(html, ".brsw-half-damage", "click", (ev) => {
-        // noinspection JSIgnoredPromiseFromCall
         half_damage(br_card, ev.currentTarget.dataset.index);
     });
+
     addEventListenerAll(html, ".brsw-add-damage-number", "click", (ev) => {
         show_fixed_damage_dialog(ev, br_card);
     });
+
     addEventListenerAll(html, ".brsw-template-button", "click", (ev) => {
         preview_template(ev, br_card);
     });
+
     html.querySelector("#roll-damage")?.addEventListener("dragstart", (ev) => {
         ev.originalEvent.dataTransfer.setData(
             "text/plain",
@@ -562,32 +556,33 @@ export function activate_item_card_listeners(br_card, html) {
             }),
         );
     });
-    html
-        .querySelector("#roll-raise-damage")
-        ?.addEventListener("dragstart", (ev) => {
-            ev.originalEvent.dataTransfer.setData(
-                "text/plain",
-                JSON.stringify({
-                    type: "target_click",
-                    tag_id: "roll-raise-damage",
-                    message_id: br_card.message.id,
-                }),
-            );
-        });
+
+    html.querySelector("#roll-raise-damage")?.addEventListener("dragstart", (ev) => {
+        ev.originalEvent.dataTransfer.setData(
+            "text/plain",
+            JSON.stringify({
+                type: "target_click",
+                tag_id: "roll-raise-damage",
+                message_id: br_card.message.id,
+            }),
+        );
+    });
+
     html.querySelector(".brsw-ammo-toggle")?.addEventListener("click", (ev) => {
         ev.currentTarget.classList.toggle("twbr:bg-red-700");
         ev.currentTarget.classList.toggle("twbr:bg-gray-500");
     });
+
     html.querySelector(".brsw-pp-toggle")?.addEventListener("click", async (ev) => {
         br_card.render_data.subtractPP = !br_card.render_data.subtractPP;
         await br_card.render();
         await br_card.save();
     });
-    html
-        .querySelector(".brsw-use-consumable-button")
-        ?.addEventListener("click", (ev) => {
-            br_card.item.consume();
-        });
+
+    html.querySelector(".brsw-use-consumable-button")?.addEventListener("click", (ev) => {
+        br_card.item.consume();
+    });
+
     addEventListenerAll(html, ".brsw-macro-button", "click", (ev) => {
         const action =
             br_card.item.system.actions.additional[ev.currentTarget.dataset.macro];
@@ -595,6 +590,7 @@ export function activate_item_card_listeners(br_card, html) {
             console.error("Error in macro", err);
         });
     });
+
     addEventListenerAll(html, ".brsw-resist-button", "click", (ev) => {
         roll_resist(
             ev.currentTarget.dataset.trait,

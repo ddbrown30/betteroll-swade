@@ -697,6 +697,17 @@ export class SettingsUtils {
         BRSW2_CONFIG.WORLD_SETTINGS[key] = setting;
     }
 
+    static async setWorldSettings() {
+        const worldSettings = Object.fromEntries(
+            Object.entries(BRSW2_CONFIG.WORLD_SETTINGS).filter(([key, value]) => value.value !== undefined && value.value !== value.default).map(([key, value]) => [
+                key,
+                value.value
+            ])
+        );
+
+        await SettingsUtils.setSetting(BRSW2_CONFIG.SETTING_KEYS.worldSettings, worldSettings);
+    }
+
     /**
      * Register a single setting using the provided key and setting data
      * @param {*} key
@@ -712,6 +723,18 @@ export class SettingsUtils {
         setting.key = key;
         foundry.utils.mergeObject(setting, metadata);
         BRSW2_CONFIG.USER_SETTINGS[key] = setting;
+    }
+
+    static async setUserSettings() {
+        const userSettings = Object.fromEntries(
+            Object.entries(BRSW2_CONFIG.USER_SETTINGS).filter(([key, value]) => value.value !== undefined && value.value !== value.default).map(([key, value]) => [
+                key,
+                value.value
+            ])
+        );
+
+        await SettingsUtils.unsetModuleFlag(game.user, BRSW2_CONFIG.USER_FLAGS.userSettings);
+        await SettingsUtils.setModuleFlag(game.user, BRSW2_CONFIG.USER_FLAGS.userSettings, userSettings);
     }
 
     static isOptionalRuleEnabled(rule) {
@@ -732,6 +755,14 @@ export class SettingsUtils {
         }
 
         return obj.flags[BRSW2_CONFIG.MODULE_NAME][flag];
+    }
+
+    static async setModuleFlag(obj, flag, data) {
+        return await obj.setFlag(BRSW2_CONFIG.MODULE_NAME, flag, data);
+    }
+
+    static async unsetModuleFlag(obj, flag) {
+        return await obj.unsetFlag(BRSW2_CONFIG.MODULE_NAME, flag);
     }
 
     static getWorldSetting(key) {

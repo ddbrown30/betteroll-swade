@@ -1,0 +1,15 @@
+<div id="condition-form" class='sheet-body condition-list scrollable'>
+    {{#each groups }}
+        <section class="tab {{#if (eq @index 0)}}active{{/if}}" id="{{{ this.name }}}" data-group="primary" data-tab="{{ this.name }}">
+            <div class="flexrow">
+                <h4>{{ localize this.name }}</h4>
+            </div>
+            {{#each actions }}
+                <div>
+                    <input type="checkbox" name="{{{ this.id }}}" id="{{{ this.id }}}" {{#if this.enabled}}checked="checked" {{/if}}>
+                    <label for="{{{ this.id }}}">{{ localize this.name }}</label>
+                </div>
+            {{/each}}
+        </section>
+    {{/each}}
+</div>

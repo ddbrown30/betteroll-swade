@@ -67,19 +67,44 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         return { tabs: this._getTabs() };
     }
 
+    _configureRenderParts(options) {
+        const parts = super._configureRenderParts(options);
+        if (!game.user.hasPermission("SETTINGS_MODIFY")) {
+            delete parts.world;
+            delete parts.tabs;
+        }
+        return parts;
+    }
+
     async _preparePartContext(partId, context, _options) {
         switch (partId) {
             case 'world':
                 context.canModifyWorld = game.user.hasPermission("SETTINGS_MODIFY");
                 context.worldSettings = [];
+                context.groups = {};
+
+                const clickActionKeys = BRSW2_CONFIG.WORLD_SETTING_KEYS.clickActionKeys;
+                context.clickSettings = [
+                    this.getSettingData(BRSW2_CONFIG.WORLD_SETTINGS[clickActionKeys.click]),
+                    this.getSettingData(BRSW2_CONFIG.WORLD_SETTINGS[clickActionKeys.shiftClick]),
+                    this.getSettingData(BRSW2_CONFIG.WORLD_SETTINGS[clickActionKeys.ctrlClick]),
+                    this.getSettingData(BRSW2_CONFIG.WORLD_SETTINGS[clickActionKeys.altClick]),
+                ];
+
                 for (let setting of Object.values(BRSW2_CONFIG.WORLD_SETTINGS)) {
-                    context.worldSettings.push(this.get_setting_data(setting));
+                    if (context.clickSettings.find(s => s.key === setting.key)) continue;
+                    if (setting.group) {
+                        context.groups[setting.group] ??= [];
+                        context.groups[setting.group].push(this.getSettingData(setting));
+                    } else {
+                        context.worldSettings.push(this.getSettingData(setting));
+                    }
                 }
                 break;
             case 'user':
                 context.userSettings = [];
                 for (let setting of Object.values(BRSW2_CONFIG.USER_SETTINGS)) {
-                    context.userSettings.push(this.get_setting_data(setting));
+                    context.userSettings.push(this.getSettingData(setting));
                 }
                 break;
             case 'footer':
@@ -93,7 +118,7 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
      * @param {object} setting - The setting object.
      * @returns {object} The setting data.
      */
-    get_setting_data(setting) {
+    getSettingData(setting) {
         const s = foundry.utils.deepClone(setting);
         s.id = s.key;
         s.name = game.i18n.localize(s.name);
@@ -112,34 +137,22 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         let requiresWorldReload = false;
         let requiresClientReload = false;
         for (let [k, v] of Object.entries(foundry.utils.expandObject(formData.object))) {
-            if (
-                canModifyWorld &&
-                BRSW2_CONFIG.WORLD_SETTINGS[k] &&
-                BRSW2_CONFIG.WORLD_SETTINGS[k].value !== v
-            ) {
+            if (canModifyWorld && BRSW2_CONFIG.WORLD_SETTINGS[k] && BRSW2_CONFIG.WORLD_SETTINGS[k].value !== v) {
                 BRSW2_CONFIG.WORLD_SETTINGS[k].value = v;
-                requiresWorldReload =
-                    requiresWorldReload || !!BRSW2_CONFIG.WORLD_SETTINGS[k].requiresReload;
+                if (v === BRSW2_CONFIG.WORLD_SETTINGS[k].default) continue;
+                requiresWorldReload = requiresWorldReload || !!BRSW2_CONFIG.WORLD_SETTINGS[k].requiresReload;
             } else if (BRSW2_CONFIG.USER_SETTINGS[k] && BRSW2_CONFIG.USER_SETTINGS[k].value !== v) {
                 BRSW2_CONFIG.USER_SETTINGS[k].value = v;
-                requiresClientReload =
-                    requiresClientReload || !!BRSW2_CONFIG.USER_SETTINGS[k].requiresReload;
+                if (v === BRSW2_CONFIG.USER_SETTINGS[k].default) continue;
+                requiresClientReload = requiresClientReload || !!BRSW2_CONFIG.USER_SETTINGS[k].requiresReload;
             }
         }
 
         if (canModifyWorld) {
-            await SettingsUtils.setSetting(
-                BRSW2_CONFIG.SETTING_KEYS.worldSettings,
-                BRSW2_CONFIG.WORLD_SETTINGS,
-            );
+            await SettingsUtils.setWorldSettings();
         }
 
-        await game.user.unsetFlag(BRSW2_CONFIG.MODULE_NAME, BRSW2_CONFIG.USER_FLAGS.userSettings);
-        await game.user.setFlag(
-            BRSW2_CONFIG.MODULE_NAME,
-            BRSW2_CONFIG.USER_FLAGS.userSettings,
-            BRSW2_CONFIG.USER_SETTINGS,
-        );
+        await SettingsUtils.setUserSettings();
 
         if (requiresWorldReload || requiresClientReload) {
             await this.constructor.reloadConfirm({ world: requiresWorldReload });
@@ -177,9 +190,7 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         event.preventDefault();
 
         let content;
-        const active_data_tab = this.element.querySelector(".tab.active")
-            .attributes["data-tab"].nodeValue;
-        switch (active_data_tab) {
+        switch (this.tabGroups.primary) {
             case "world":
                 content = game.i18n.localize("BRSW.Settings.RestoreDefaultsWorldBody");
                 break;
@@ -198,7 +209,7 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                     label: game.i18n.localize("BRSW.Yes"),
                     action: "yes",
                     callback: () => {
-                        this.restoreDefaults(active_data_tab);
+                        this.restoreDefaults(this.tabGroups.primary);
                     },
                 },
                 {
@@ -213,43 +224,29 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         }).render(true);
     }
 
-    async restoreDefaults(data_tab) {
+    async restoreDefaults(dataTab) {
         let requiresWorldReload = false;
         let requiresClientReload = false;
-        if (data_tab === "world") {
+        if (dataTab === "world") {
             for (let setting of Object.values(BRSW2_CONFIG.WORLD_SETTINGS)) {
-                if (
-                    setting.requiresReload &&
-                    setting.value !== undefined &&
-                    setting.value !== setting.default
-                ) {
+                if (setting.requiresReload && setting.value !== undefined && setting.value !== setting.default) {
                     requiresWorldReload = true;
                 }
                 delete setting.value;
             }
-        } else if (data_tab === "user") {
+        } else if (dataTab === "user") {
             for (let setting of Object.values(BRSW2_CONFIG.USER_SETTINGS)) {
-                if (
-                    setting.requiresReload &&
-                    setting.value !== undefined &&
-                    setting.value !== setting.default
-                ) {
+                if (setting.requiresReload && setting.value !== undefined && setting.value !== setting.default) {
                     requiresClientReload = true;
                 }
                 delete setting.value;
             }
         }
 
-        await SettingsUtils.setSetting(BRSW2_CONFIG.SETTING_KEYS.worldSettings, BRSW2_CONFIG.WORLD_SETTINGS);
+        await SettingsUtils.setWorldSettings();
+        await SettingsUtils.setUserSettings();
 
-        await game.user.unsetFlag(BRSW2_CONFIG.MODULE_NAME, BRSW2_CONFIG.USER_FLAGS.userSettings);
-        await game.user.setFlag(
-            BRSW2_CONFIG.MODULE_NAME,
-            BRSW2_CONFIG.USER_FLAGS.userSettings,
-            BRSW2_CONFIG.USER_SETTINGS,
-        );
-
-        this.render(true);
+        this.render({ parts: [dataTab] });
 
         if (requiresWorldReload || requiresClientReload) {
             await this.constructor.reloadConfirm({ world: requiresWorldReload });
