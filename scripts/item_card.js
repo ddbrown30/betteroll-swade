@@ -69,12 +69,6 @@ export async function create_item_card(
         item = await fromUuid(item_id);
     }
 
-    if (item.type === "action" && SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.disableForActions)) {
-        // Disable actions
-        item.show();
-        return;
-    }
-
     let notes = "";
     if (item.system.notes && item.system.notes.length < 50) {
         notes = item.system.notes;

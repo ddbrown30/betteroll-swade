@@ -235,13 +235,6 @@ function registerWorldSettings() {
         group: "BRSW.Settings.RulesGroup",
     });
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.disableForActions, {
-        name: game.i18n.localize("BRSW.Settings.DisableActions.Name"),
-        hint: game.i18n.localize("BRSW.Settings.DisableActions.Hint"),
-        default: false,
-        type: Boolean,
-    });
-
     SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.autoCheckExtraCritFailures, {
         name: "BRSW.Settings.AutoCheckExtraCritFailures.Name",
         hint: "BRSW.Settings.AutoCheckExtraCritFailures.Hint",

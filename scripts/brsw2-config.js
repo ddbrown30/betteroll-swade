@@ -29,7 +29,6 @@ export const WORLD_SETTING_KEYS = {
     },
     defaultAmmoManagement: "default-ammo-management",
     defaultPPManagement: "default-pp-management",
-    disableForActions: "disable_for_actions",
     disableGangUp: "disable-gang-up",
     genericPPModifiersSource: "generic-pp-modifiers-source",
     measureFromEdge: "measure_from_edge",
