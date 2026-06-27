@@ -19,7 +19,7 @@ import { create_unshaken_wrapper, create_unstun_wrapper } from "./combat.js";
 import { activate_damage_card_listeners } from "./damage_card.js";
 import {
     expose_global_actions_functions,
-    register_actions,
+    registerActions,
     register_gm_actions_settings
 } from "./global_actions.js";
 import { setup_chat_button } from "./gm_actions.js";
@@ -52,7 +52,7 @@ Hooks.on(`init`, () => {
 
     registerSettings();
 
-    register_actions();
+    registerActions();
     register_gm_actions_settings();
 });
 

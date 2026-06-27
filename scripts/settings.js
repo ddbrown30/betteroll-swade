@@ -5,6 +5,7 @@ import { GlobalActionsMenu } from "./global-actions-menu.js";
 import { OptionalRulesConfiguration } from "./optional_rules.js";
 import { SettingsConfig } from "./settings_config.js";
 import { SettingsUtils } from "./utils.js";
+import { WorldGlobalActions } from "./world-global-actions.js";
 
 
 export function registerSettings() {
