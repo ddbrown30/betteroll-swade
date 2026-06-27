@@ -16,12 +16,12 @@ export class GlobalActionsMenu extends HandlebarsApplicationMixin(ApplicationV2)
             submitOnChange: false,
             closeOnSubmit: true
         },
-        classes: ["standard-form", "succ-form"],
+        classes: ["standard-form", "brsw-global-actions-form"],
         window: {
             title: "",
             minimizable: false,
             resizable: true,
-            contentClasses: ["succ-default-conditions"],
+            contentClasses: ["brsw-global-actions"],
         },
         position: { width: 600, height: 650 },
     };
