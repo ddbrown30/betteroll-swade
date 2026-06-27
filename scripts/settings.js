@@ -1,7 +1,7 @@
 
 import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { ModifierSettingsConfiguration } from "./chat_modifers_names.js";
-import { SystemGlobalConfiguration, WorldGlobalActions } from "./global_actions.js";
+import { GlobalActionsMenu } from "./global-actions-menu.js";
 import { OptionalRulesConfiguration } from "./optional_rules.js";
 import { SettingsConfig } from "./settings_config.js";
 import { SettingsUtils } from "./utils.js";
@@ -22,7 +22,7 @@ export function registerSettings() {
         name: "BRSW.Settings.SystemGlobalMenu.Name",
         label: "BRSW.Settings.SystemGlobalMenu.Label",
         hint: "BRSW.Settings.SystemGlobalMenu.Hint",
-        type: SystemGlobalConfiguration,
+        type: GlobalActionsMenu,
     });
 
     SettingsUtils.registerMenu("world_global-Menus", {
