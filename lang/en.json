@@ -342,8 +342,6 @@
   "BRSW.Settings.ExpandDescriptions.Name": "Expand Descriptions",
   "BRSW.Settings.ExpandResults.Hint": "When enabled, roll results are expanded by default.",
   "BRSW.Settings.ExpandResults.Name": "Expand Results",
-  "BRSW.Settings.HideItemActions.Hint": "Show only global actions in the card, hiding weapon specific ones.",
-  "BRSW.Settings.HideItemActions.Name": "Hide weapon actions",
   "BRSW.Settings.MaxTooltipLength.Hint": "The maximum length (in characters) of the tooltip shown when hovering over the title of the card. Use 0 to disable the tooltip",
   "BRSW.Settings.MaxTooltipLength.Label": "Max Tooltip Length",
   "BRSW.Settings.MaxTooltipLength.Name": "Max Tooltip Length",

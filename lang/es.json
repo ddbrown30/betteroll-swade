@@ -130,8 +130,6 @@
     "BRSW.HeavyCover": "Cobertura pesada (-6)",
     "BRSW.HideReRolls": "Ocultar repeticiones en pifias",
     "BRSW.HideReRollsHint": "Marca esta opción para esconder las opciones de repetir tiradas de la carta en una pifia (Mundo)",
-    "BRSW.Settings.HideItemActions.Name": "Esconde las acciones de arma",
-    "BRSW.Settings.HideItemActions.Hint": "Mostrar solo las acciones globales en la carta, ocultando las específicas del arma. (Mundo)",
     "BRSW.Hindrances": "Defectos",
     "BRSW.Illumination": "Iluminación",
     "BRSW.IlluminationDark": "Oscuridad (-4)",

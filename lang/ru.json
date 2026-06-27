@@ -118,8 +118,6 @@
     "BRSW.Head": "Голова",
     "BRSW.HideReRolls": "Скрыть переброс при критическом провале",
     "BRSW.HideReRollsHint": "Установите этот флажок, чтобы скрыть варианты переброса с карты при критическом провале (Мир)",
-    "BRSW.Settings.HideItemActions.Name": "Скрыть действия оружия",
-    "BRSW.Settings.HideItemActions.Hint": "Показывать на карточке только глобальные действия, скрывая действия, специфичные для оружия. (Мир)",
     "BRSW.Illumination": "Освещение",
     "BRSW.IlluminationDark": "Темный (-4)",
     "BRSW.IlluminationDim": "Тусклый (-2)",

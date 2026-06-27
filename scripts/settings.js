@@ -180,13 +180,6 @@ function registerWorldSettings() {
         group: "BRSW.Settings.PowersGroup",
     });
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.hideItemActions, {
-        name: game.i18n.localize("BRSW.Settings.HideItemActions.Name"),
-        hint: game.i18n.localize("BRSW.Settings.HideItemActions.Hint"),
-        default: false,
-        type: Boolean,
-    });
-
     SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.disableGangUp, {
         name: game.i18n.localize("BRSW.Settings.DisableGangUp.Name"),
         hint: game.i18n.localize("BRSW.Settings.DisableGangUp.Hint"),

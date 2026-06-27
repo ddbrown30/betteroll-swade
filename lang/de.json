@@ -132,8 +132,6 @@
     "BRSW.HeavyCover": "Schwere Deckung (-6)",
     "BRSW.HideReRolls": "Verstecke Wiederholungswurf bei Kritischem Fehlschlag",
     "BRSW.HideReRollsHint": "Verbirgt den Wiederholungswurf-Knopf bei einem Kritischen Fehlschlag",
-    "BRSW.Settings.HideItemActions.Name": "Verberge Waffenaktionen",
-    "BRSW.Settings.HideItemActions.Hint": "Zeige nur globale Aktionen, verberge Waffenaktionen.",
     "BRSW.Hindrances": "Handicaps",
     "BRSW.Illumination": "Beleuchtung",
     "BRSW.IlluminationDark": "Dunkel (-4)",

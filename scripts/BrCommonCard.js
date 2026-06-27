@@ -325,12 +325,15 @@ export class BrCommonCard {
     populateActions(stored_selections) {
         this.action_sections = {};
         this.populateWorldActions();
-        if (this.item && !SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.hideItemActions)) {
+
+        if (this.item) {
             this.populateItemActions();
         }
+
         this.populateActiveEffectActions();
         this.populateResistActions();
         this.populateNoPowerPointsActions();
+
         Utils.forEachActionGroup(this, group => {
             group.actions.sort((a, b) => {
                 if (group.name === "Active effects" || group.name === "Item actions") {
@@ -338,12 +341,14 @@ export class BrCommonCard {
                 }
                 return a.code.id > b.code.id ? 1 : -1;
             });
+
             for (const action of group.actions) {
                 if (stored_selections.hasOwnProperty(action.code.id)) {
                     action.selected = stored_selections[action.code.id];
                 }
             }
         });
+
         Hooks.call("BRSWCardActionsPopulated", this);
     }
 

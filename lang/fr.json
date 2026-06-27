@@ -129,8 +129,6 @@
     "BRSW.HeavyCover": "Couvert lourd",
     "BRSW.HideReRolls": "Cacher l'option Relance sur Échec critique",
     "BRSW.HideReRollsHint": "Cocher pour cacher les boutons permettant de Relancer un jet si ce jet est un Échec critique",
-    "BRSW.Settings.HideItemActions.Name": "Cacher les actions d'armes",
-    "BRSW.Settings.HideItemActions.Hint": "N'afficher que les Actions globales et cacher les actions spécifiques configurées sur une arme.",
     "BRSW.Hindrances": "Handicaps",
     "BRSW.Illumination": "Visibilité",
     "BRSW.IlluminationDark": "Obscurité",
