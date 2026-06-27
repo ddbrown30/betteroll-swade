@@ -41,7 +41,7 @@ export class GlobalActionsMenu extends HandlebarsApplicationMixin(ApplicationV2)
 
     prepareTabs() {
       return Object.values(this.groups).reduce((tabs, group) => {
-        const isActive = this.tabGroups.main === group.name;
+        const isActive = this.tabGroups.primary === group.name;
         tabs[group.name] = {
           id: group.name,
           group: "primary",
