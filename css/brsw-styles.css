@@ -572,3 +572,8 @@
     vertical-align: middle;
     flex: 0 0 20px;
 }
+
+.brsw-edit-action code-mirror {
+    resize: vertical;
+    min-height: 15rem;
+}

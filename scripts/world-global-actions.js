@@ -81,7 +81,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
             formattedActions.push({
                 id: action.action.id,
                 formId: action.formId,
-                json: JSON.stringify(action.action, undefined, 4).trim(),
+                json: JSON.stringify(action.action, undefined, 2).trim(),
             });
         }
 
@@ -124,20 +124,23 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
         registerActions();
     }
 
-    _onRender(context, options) {
-        addEventListenerAll(this.element, "textarea", "keydown", async (ev) => {
-            if (ev.key === "Tab") {
-                ev.preventDefault();
-                const start = ev.currentTarget.selectionStart;
-                const end = ev.currentTarget.selectionEnd;
-                ev.currentTarget.value = ev.currentTarget.value.substring(0, start) + "    " + ev.currentTarget.value.substring(end);
-                ev.currentTarget.selectionStart = start + 4;
-                ev.currentTarget.selectionEnd = start + 4;
-            }
-        });
+    async _onRender(context, options) {
+        this.editors = [];
 
-        // Activate JSON check on old actions
-        addEventListenerAll(this.element, ".brsw-action-json", "blur", (ev) => this.checkJson(ev, this));
+        for (const textarea of this.element.querySelectorAll(".brsw-action-json")) {
+            const editor = await foundry.applications.elements.HTMLCodeMirrorElement.create({
+                language: "json",
+                value: textarea.value,
+                name: textarea.name
+            });
+
+            textarea.replaceWith(editor);
+            this.editors.push(editor);
+
+            editor.addEventListener("focusout", () => {
+                this.checkJson({ currentTarget: editor }, this);
+            });
+        }
     }
 
     checkJson(ev, app) {
@@ -165,43 +168,42 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
         if (!error) {
             // Check that the keys are supported
             const SUPPORTED_KEYS = [
-                "id",
-                "name",
-                "button_name",
-                "skillMod",
-                "skillOverride",
-                "dmgMod",
+                "add_wild_die",
+                "and_selector",
                 "apMod",
-                "dmgOverride",
+                "avoid_exploding_damage",
+                "button_name",
+                "change_location",
                 "defaultChecked",
-                "runSkillMacro",
-                "runDamageMacro",
+                "dmgMod",
+                "dmgOverride",
+                "extra_text",
+                "gm_action",
+                "group_single",
+                "group",
+                "id",
+                "multiplyDmgMod",
+                "name",
+                "not_selector",
+                "or_selector",
+                "overrideAp",
                 "raiseDamageFormula",
-                "wildDieFormula",
-                "rerollSkillMod",
-                "rerollMode",
+                "replaceExisting",
                 "rerollDamageMod",
+                "rerollMode",
+                "rerollSkillMod",
+                "resourcesUsed",
+                "rof",
+                "runDamageMacro",
+                "runSkillMacro",
+                "section",
                 "selector_type",
                 "selector_value",
-                "and_selector",
-                "section",
-                "group",
-                "resourcesUsed",
-                "or_selector",
-                "rof",
                 "self_add_status",
-                "not_selector",
+                "skillMod",
+                "skillOverride",
                 "tnOverride",
-                "extra_text",
-                "overrideAp",
-                "multiplyDmgMod",
-                "add_wild_die",
-                "avoid_exploding_damage",
-                "change_location",
-                "group_single",
-                "gm_action",
-                "disable_if_module_present",
-                "replaceExisting",
+                "wildDieFormula",
             ];
 
             for (const key in action) {
@@ -343,6 +345,6 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
      */
     exportGlobalActions() {
         const actions = this.actions.map(a => a.action);
-        foundry.utils.saveDataToFile(JSON.stringify(actions), "json", "brsw2_world_actions.json");
+        foundry.utils.saveDataToFile(JSON.stringify(actions, undefined, 2), "json", "brsw2_world_actions.json");
     }
 }
