@@ -115,10 +115,6 @@ function process_or_selector(action, item, actor) {
  */
 function process_action(action, item, actor) {
     let selected = false;
-    if (action.hasOwnProperty("disable_if_module_present")) {
-        const module_data = game.modules.get(action.disable_if_module_present);
-        selected = !(module_data && module_data.active);
-    }
     if (action.hasOwnProperty("selector_type")) {
         selected = check_selector(
             action.selector_type,
@@ -234,9 +230,7 @@ export function check_selector(type, value, item, actor) {
             }
         }
     } else if (type === "attribute") {
-        selected =
-            item.type === "attribute" &&
-            item.name.toLowerCase().includes(value.toLowerCase());
+        selected = item.type === "attribute" && item.name.toLowerCase().includes(value.toLowerCase());
     } else if (type === "all") {
         selected = true;
     } else if (type === "item_type") {
@@ -412,13 +406,10 @@ export function check_selector(type, value, item, actor) {
         const gm_actions = get_enabled_gm_actions();
         selected = !!gm_actions.find((a) => a.id == value);
     } else if (type === "faction") {
-        const tokens = actor.getActiveTokens();
-        if (
-            game.user.targets.size > 0 &&
-            tokens.length > 0 &&
-            tokens[0] !== game.user.targets.first()
-        ) {
-            const actor_disposition = tokens[0].document.disposition;
+        const token = actor.getActiveTokens()[0];
+        const targetToken = game.user.targets.first();
+        if (token && targetToken && token !== targetToken) {
+            const actor_disposition = token.document.disposition;
             const target_disposition = game.user.targets.first().document.disposition;
             if (value === "same") {
                 selected = actor_disposition === target_disposition;
@@ -458,10 +449,10 @@ export function check_selector(type, value, item, actor) {
             selected = !selected;
         }
     } else if (type === "range_less_than") {
-        const tokens = actor.getActiveTokens();
-        if (tokens && game.user.targets.size) {
-            const distance = measureDistance(tokens[0], game.user.targets.first(),
-            );
+        const token = actor.getActiveTokens()[0];
+        const targetToken = game.user.targets.first();
+        if (token && targetToken) {
+            const distance = measureDistance(token, targetToken);
             selected = parseInt(value) >= distance;
         }
     } else if (type === "undead_and_ignores_illumination") {
@@ -477,7 +468,7 @@ export function check_selector(type, value, item, actor) {
         }
     } else if (type === "module_is_not_active") {
         const module = game.modules.get(value);
-        selected = module && !module.active;
+        selected = !module || !module.active;
     } else {
         selected = false;
     }
