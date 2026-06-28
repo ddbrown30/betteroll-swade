@@ -158,9 +158,7 @@ This tag lets you group the actions.
 
 ## Macros
 
-The following variables are pre-populated in a macro run from global actions for macro writer convenience.
-Note that all info is already stored in the message, all the others are just conveniences.
-
+The following variables are included in the scope when running a macro via `runSkillMacro` or `runDamageMacro`:
 `actor`, `token`, `speaker`, `item`, `targets`
 
 ## API
