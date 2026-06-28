@@ -201,7 +201,7 @@ export async function roll_skill(br_card, expend_bennie) {
         game.i18n.localize("BRSW.SkillDie"),
         extra_data,
     );
-    await runMacros(macros, br_card.actor, null, br_card);
+    await runMacros(macros, br_card);
 }
 
 /**

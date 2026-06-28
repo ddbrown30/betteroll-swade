@@ -171,5 +171,5 @@ export async function roll_attribute(br_card, expend_bennie) {
     extra_data,
   );
   // noinspection ES6MissingAwait
-  runMacros(macros, br_card.actor, null, br_card);
+  runMacros(macros, br_card);
 }

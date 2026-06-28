@@ -793,12 +793,7 @@ export async function spendPP(br_card, prevSpentPP) {
  * @param item_param
  * @param br_card_param
  */
-export async function runMacros(
-    macros,
-    actor,
-    item,
-    brCard,
-) {
+export async function runMacros(macros, brCard) {
     if (macros) {
         for (const macroName of macros) {
             const macro = await findMacro(macroName);
@@ -1020,7 +1015,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
     await br_message.render();
     await br_message.save();
 
-    await runMacros(macros, br_message.actor, br_message.item, br_message);
+    await runMacros(macros, br_message);
 
     //Call a hook after roll for other modules
     Hooks.call("BRSW-RollItem", br_message, html);
@@ -1532,7 +1527,7 @@ export async function roll_dmg(
     await update_message(br_card, render_data);
 
     // Run macros
-    await runMacros(macros, actor, item, br_card);
+    await runMacros(macros, br_card);
 
     Hooks.call("BRSW-RollDamage", br_card, html);
 }

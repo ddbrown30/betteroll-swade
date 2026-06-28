@@ -1083,7 +1083,7 @@ async function override_die_result(br_card, die_index, new_value) {
     for (const macro of macro_actions) {
       macros.push(macro.code.runSkillMacro);
     }
-    await runMacros(macros, br_card.actor, br_card.item, br_card);
+    await runMacros(macros, br_card);
   }
 }
 
