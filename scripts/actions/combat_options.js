@@ -176,7 +176,7 @@ export const COMBAT_OPTIONS = [
         group: "BRSW.SituationalModifiers",
     },
     {
-        id: "AttackInanimateObject ",
+        id: "AttackInanimateObject",
         name: "BRSW.AttackInanimate",
         button_name: "BRSW.AttackInanimate",
         avoid_exploding_damage: "true",
