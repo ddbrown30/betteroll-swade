@@ -1,6 +1,6 @@
 The **Better Rolls 2 for Savage Worlds** module cards provides a lot of useful information that will be detailed below:
 
-<img src="https://github.com/ddbrown30/betteroll-swade/blob/version_2/docs/img/card-anatomy.webp" width="500">
+<img src="https://github.com/ddbrown30/betteroll-swade/blob/version_2/docs/img/card-anatomy.webp" width="400">
 
 ## 1. Header section
 
