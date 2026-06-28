@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.13.1
+* Improved how we migrate the old data
+
 # Version 5.13.0
 * Cleaned up macro execution
 * Switched World Global Action editor to be a code mirror
