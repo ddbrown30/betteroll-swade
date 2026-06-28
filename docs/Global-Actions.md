@@ -154,7 +154,7 @@ This tag lets you group the actions.
   future version)
 * `group_single`: If all entries of a group have this option set to true the group will let you select only one of the
   options.
-* `section`: Determines which section this action will appear. You can make your own or use the ones from BR2 e.g. attack, character, common, power
+* `section`: Determines which section this action will appear. You can make your own or use the ones from BR2 (attack, character, common, power).
 
 ## Macros
 
