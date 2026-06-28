@@ -2,19 +2,18 @@ The **Better Rolls 2 for Savage Worlds** module has both pre-defined and custom 
 
 ## Pre-defined Global Actions
 
-![Global Actions](https://github.com/ddbrown30/betteroll-swade/blob/version_2/docs/img/global-actions.jpg?raw=true)
+<img src="https://github.com/ddbrown30/betteroll-swade/blob/version_2/docs/img/global-actions-menu.webp" width="500">
 
 Global actions are pre-defined global actions that are ready to use. You can choose to disable them, if they should not
 be available in your setting.
 
 ## Custom Global Actions
 
-![World Global Actions](https://github.com/ddbrown30/betteroll-swade/blob/version_2/docs/img/world-global-actions.jpg?raw=true)
 
 With the World global actions functionality, you can define your own global actions for this world. You need to provide
 a JSON file to add them:
 
-![Add a new World Global Action](https://github.com/ddbrown30/betteroll-swade/blob/version_2/docs/img/new-world-global-action.jpg?raw=true)
+<img src="https://github.com/ddbrown30/betteroll-swade/blob/version_2/docs/img/world-global-actions.webp" width="500">
 
 Global actions are a json encoded set of instructions that allow the user to customize how **Better Rolls** works.
 
@@ -41,18 +40,17 @@ If this action is checked it will add a penalty of 4 to the skill roll and a bon
 ### Required fields
 
 * `id`: Any string, needs to be different for each action.
-    * **NOTE**: the actions are displayed in order of id, so name appropriately
+    * **NOTE**: The actions are displayed in order of id, so name appropriately. For example, the Cover actions are named 1-LightCover, 2-MediumCover, etc. to ensure they appear in a logical order.
 * `name`: The name of the action.
-* `button_name`: The name that will be displayed on the icon. Will be made optional in some update.
+* `button_name`: The name that will be displayed on the button in the actions menu of the chat card.
 
 ### Optional fields
 
 * `skillMod`: A number to be used as a modifier to the related skill roll.
-* `dmgMod`: A number that will be used as a modifier for damage roll
+* `dmgMod`: A number that will be used as a modifier for damage roll.
 * `dmgOverride`: A foundry die expression that will be rolled for damage instead of the weapon default.
-* `defaultChecked`: If this key exists the action button will start pinned (marked in red)
-    * **NOTE**: using `defaultChecked: "off"` does **NOT** mean the button is by default unchecked. If you don't want
-      the button checked by default, do **NOT** put any `defaultChecked` element in.
+* `defaultChecked`: If this key exists the action will start enabled.
+    * It is also possible to use a selector as the value (see [selector_type](#selector_type) below). The defaultChecked value will match the result of that selector at the time the card is created.
 * `runSkillMacro`: This key will run a macro named like its value after skill roll.
 * `runDamageMacro`: This key will run a macro named like its value after damage roll.
 * `raiseDamageFormula`: A string, specify here the formula used to add damage in the event of a raise. The default
@@ -77,89 +75,75 @@ If this action is checked it will add a penalty of 4 to the skill roll and a bon
 
 ### Selector fields
 
-This group of fields are used to select when the action is available, you will need to specify a `selector_type` and
-a `selector_value` for a simple selection. You can also use `and_selector` and give it a list of simple selectors.
+This group of fields are used to select when the action is available, you will need to specify a `selector_type` and a `selector_value` for a simple selection. You can also use a [complex selector](#Complex Selectors). All selectors are evaluated when the card is created. This means that for target based selectors to work, you must already have selected the target.
 
 #### selector_type
 
-* `skill`: `'selector_value'` must be a string. The action will be available when the item uses a skill with that name.
-* `attribute`: `'selector_value'` must be a string. The action will be available when the attribute named is rolled,
-  e.g., strength, agility, spirit, smarts, vigor.
-* `item_type`: `'selector_value'` must be another string, a valid SWADE item type; weapon, power, edge, ...
-* `actor_name`: `'selector_value'` must be a string. The action will be available to actor that include that string in
-  their name.
-* `item_name`: `'selector_value'` must be again a string that this time is compared with the item name.
-* `actor_has_effect`: Another string selector, will select actors that have an enabled effect whose label contains the
-  string.
-* `actor_has_edge`: The same, this time it will look for an edge that contains that string.
-* `actor_has_hindrance`: Like the last two, but for hindrances.
-* `actor_has_major_hindrance`: This one only matches is the hindrance is major.
-* `actor_has_ability`: Like the last three, but for special abilities.
-* `actor_has_item`: Matches when the actor has an `item` (Weapon, Armor, Shield, Gear, Consumable) with the same name as
-  the value *(exact name)*
-* `actor_equips_item`: This action will appear when the actor has an item (see above) with the same name as the value
-  equipped.
+* `actor_additional_stat_xxx`: True if the actor has an additional stat named xxx and its value matches the comparison. Supports equality operators (e.g. `<`, `>`, `!=`, etc.).
+* `actor_equips_item`: True is the actor has an item with the same name as the value equipped.
+* `actor_has_ability`: True if the actor has an ability with the same name as the value.
+* `actor_has_edge`: True if the actor has an edge with the same name as the value.
+* `actor_has_effect`: True if the actor has an enabled Active Effect with the same name as the value.
+* `actor_has_hindrance`: True if the actor has a hindrance with the same name as the value.
+* `actor_has_item`: True if the actor has an item (Weapon, Armor, Shield, Gear, Consumable) with the same name as the value.
+* `actor_has_joker`: True when the actor is in combat and has drawn a joker.
+* `actor_has_major_hindrance`: True if the actor has a major hindrance with the same name as the value.
+* `actor_has_skill`: True if the actor has a skill with the same name as the value.
+* `actor_name`: True if the actor includes the value in its name.
+* `actor_value`: True if the value on the actor matches the value in `selector_value`. `selector_value` must be composed of `"path=value"`, where path is a dot path of actor data (e.g. `system.advances.value`). Supports equality operators (e.g. `<`, `>`, `!=`, etc.).
 * `all`: It will always show this action.
-* `actor_has_joker`: The action will only be available when the actor is in combat and has drawn a joker.
-* `target_has_edge`: This action will be available if PRIOR TO CLICKING the icon, the user has selected a target that
-  has some edge.
-* `target_has_hindrance`: This action is like `actor_has_edge` but fires for target hindrances
-* `target_has_major_hindrance`: This other action only fires when the target has a major hindrance that includes the
-  text in the value.
-* `target_has_effect`: String selector; works similar to `actor_has_effect` but checks for active effects on the target
-  instead.
-* `item_description_includes`: This action will be shown if the item description or trappings includes the value.
-* `actor_additional_stat_xxx`: This action will be present if an actor has an additional stat named xxx and its value is
-  equal to what is in `selector_value``. You need to substitute xxx with the additional stat name.
-* `item_additional_stat_xxx`: This works like `actor_additional_stat_xxx` but applies to items.
-* `faction`: If `selector_value` is `same` this will make the action appear when token from the same disposition is
-  targeted. When the value is another it will make the action appear when the targeted token disposition is different
-  from acting.
-* `gm_action`: A selector with this value will make the action appear in the dm modifiers above the char window.
-* `is_wildcard`: This will show the action if the character is a Wildcard. If the value is "false" it will only show the
-  card for extras
-* `actor_value`: This expects a selector composed of `"path=value"`. Where path is a dot path of actor data (
-  like `system.advances.value`) and value a value (like 4). This coerces the values using javascript `==`.
-* `item_value`: The same selector as above but for items instead of actors.
-* `target_value`: Again the same way of working but it checks the first target actor.
-* `item_has_damage`: This will show the action if the item has a damage value. The value is ignored.
-* `actor_has_skill`: This will show the action if the actor has a skill with the same name as the value. For example, `actor_has_skill: "Acrobatics"` would show the action if the actor has a skill named "Acrobatics".
-* `actor_has_item`: This will show the action if the actor has an item with the same name as the value.
-* `actor_equips_item`: This action will appear when the actor has an item (see above) with the same name as the value
-  equipped, not just owned.
-* `range_less_than`: This action will appear when the range between the first token of the acting actor and the targeted
-  token is less or equal than value.
-* `module_is_not_active`: This action will only be shown when the module with that identifier is not present. It is
-  mainly to avoid automation duplication with other modules like the Core Rules.
+* `attribute`: True if rolling the matching attribute (e.g., strength, agility, spirit, smarts, vigor).
+* `faction`: If `selector_value` is `same`, this will be true when a token from the same disposition as the actor is targeted. For any value other than `same`, it will be true if the dispositions are different.
+* `gm_action`: A selector with this value will make the action appear in the GM modifiers above the char window.
+* `is_weapon_or_bolt`: True if the item is either a weapon or the bolt power.
+* `is_wildcard`: True if the actor is a Wildcard.
+* `item_additional_stat_xxx`: True if the item has an additional stat named xxx and its value matches the comparison. Supports equality operators (e.g. `<`, `>`, `!=`, etc.).
+* `item_description_includes`: True if the item's description, trappings, category, and/or notes includes the value.
+* `item_has_damage`: True if the item or one of its actions has a damage value.
+* `item_name`: True if the item includes the value in its name.
+* `item_type`: True if the item type (weapon, power, edge, gear, etc.) includes the value in its name.
+* `item_value`: True if the value on the item matches the value in `selector_value`. `selector_value` must be composed of `"path=value"`, where path is a dot path of actor data (e.g. `system.ap`). Supports equality operators (e.g. `<`, `>`, `!=`, etc.).
+* `module_is_not_active`: True when the module with that identifier is not active. It is mainly to avoid automation duplication with other modules like the Core Rules.
+* `range_less_than`: True when the range between the actor's token and the targeted token is less or equal than value.
+* `skill`: True when the card uses a skill with that name.
+* `target_has_edge`: True if the target has an edge with the same name as the value.
+* `target_has_effect`: True if the target has an enabled Active Effect with the same name as the value.
+* `target_has_hindrance`: True if the target has a hindrance with the same name as the value.
+* `target_has_major_hindrance`: True if the target has a major hindrance with the same name as the value.
+* `target_value`: True if the value on the target matches the value in `selector_value`. `selector_value` must be composed of `"path=value"`, where path is a dot path of actor data (e.g. `system.advances.value`). Supports equality operators (e.g. `<`, `>`, `!=`, etc.).
 
 #### Complex Selectors
 
-* `and_selector`: Takes a list of the above selectors and executes the action if all are true, i.e., `and_selector`. As
-  an example the following json will select and item that uses fighting skill and is owned by an actor whose name
-  includes John.
-* `or_selector`: Takes a list of selectors and executes the action if at least one is true
-* `not_selector`: Takes a list of only on selector and executes the action if that selector conditions are NOT met.
+* `and_selector`: Takes a list of the above selectors and returns true if all are true.
+* `or_selector`: Takes a list of selectors and returns true if at least one is true.
+* `not_selector`: Takes a list of selectors and returns true if .
 
 #### Example: Basic `and_selector` Selector
 
 ```json
-  "and_selector": [
-{"selector_type": "skill", "selector_value": "fighting"},
-{"selector_type": "actor", "selector_value": "John"}
+"and_selector": [
+    { "selector_type": "skill", "selector_value": "fighting" },
+    { "selector_type": "actor", "selector_value": "John" }
 ]
 ```
 
-#### Example: Nested AND and OR Selectors
+#### Example: Nested Selectors
 
 ```json
-  "and_selector": [
-{
-"selector_type": "target_has_edge", "selector_value": "Dodge",
-"or_selector": [
-{"selector_type": "item_name", "selector_value": "Bolt"},
-{"selector_type": "skill", "selector_value": "Shooting"}
-]}
-],
+"and_selector": [
+    { "selector_type": "actor_has_edge", "selector_value": "BRSW.EdgeName.Assassin" },
+    { "selector_type": "item_has_damage", "selector_value": "true" },
+    {
+        "not_selector": [
+            {
+                "or_selector": [
+                    { "selector_type": "actor_has_edge", "selector_value": "BRSW.EdgeName.SneakAttack" },
+                    { "selector_type": "actor_has_ability", "selector_value": "BRSW.EdgeName.SneakAttack" }
+                ]
+            }
+        ]
+    }
+]
 ```
 
 #### Grouping
@@ -170,35 +154,25 @@ This tag lets you group the actions.
   future version)
 * `group_single`: If all entries of a group have this option set to true the group will let you select only one of the
   options.
+* `section`: Determines which section this action will appear. You can make your own or use the ones from BR2 e.g. attack, character, common, power
 
 ## Macros
 
 The following variables are pre-populated in a macro run from global actions for macro writer convenience.
 Note that all info is already stored in the message, all the others are just conveniences.
 
-```js
-const actor = actor_param; // The card actor
-const item = item_param; // The card item
-const speaker = ChatMessage.getSpeaker();
-const token = canvas.tokens.get(speaker.token);
-const character = game.user.character;
-const message = message_param; // The full message object
-```
+`actor`, `token`, `speaker`, `item`, `targets`
 
 ## API
 
-You can define global actions within a module. This let the user activate your module and have all the **Global Actions
-** you defined turned on.
+You can define global actions within a module. To add actions, listen to the hook `brswReady` and call `game.brsw.add_actions`. If the id of an action matches one of the default actions in BR2, your action will replace it. See the example below.
 
-You need to load a script in your module. It's recommended to use `Hooks once ready`.
-
-The format of the global action must be like an array of objects. Look at the example.
 
 ```js
-Hooks.once('ready', () => {
+Hooks.once('brswReady', () => {
     const groupName = "Savage Pathfinder";
 
-    const BETTER_ROLLS_GLOBAL_ACTIONS = [{
+    const CUSTOM_BRSW_GLOBAL_ACTIONS = [{
         id: "DESPERATE_ATTACK-2",
         name: "Desperate Attack +2",
         button_name: "Desperate Attack +2",
@@ -235,18 +209,8 @@ Hooks.once('ready', () => {
         }
     ];
 
-    game.brsw.add_actions(BETTER_ROLLS_GLOBAL_ACTIONS);
+    game.brsw.add_actions(CUSTOM_BRSW_GLOBAL_ACTIONS);
 })
-```
-
-It's recommended to add a conditional check to `game.brsw.add_actions` to prevent an error if the Better Rolls module is
-not activated.
-
-```js
-if (game.modules.get("betterrolls-swade2")?.active) {
-    game.brsw.add_actions(BETTER_ROLLS_GLOBAL_ACTIONS);
-    ui.notifications.error("Please, activate better rolls module!");
-}
 ```
 
 It's also recommended to add an option to your module settings to let the user turn on this feature, e.g., maybe the
@@ -254,7 +218,7 @@ user wants to use their own global actions.
 
 ```js
 if (game.settings.get("yourModuleID", "TurnOnOrOffMyModuleGlobalActions")) {
-    game.brsw.add_actions(BETTER_ROLLS_GLOBAL_ACTIONS);
+    game.brsw.add_actions(CUSTOM_BRSW_GLOBAL_ACTIONS);
 }
 ```
 
@@ -284,71 +248,6 @@ Below are examples for the core rules of SWADE and may be applicable to most set
 
 These cover the most basic modifiers and combat actions in SWADE.
 
-##### Called Shot
-
-```json
-{
-    "id": "CALLEDSHOTHAND",
-    "name": "Called shot: Hand",
-    "button_name": "Called shot: Hand",
-    "skillMod": "-4",
-    "dmgMod": "+4",
-    "selector_type": "skill",
-    "selector_value": "Shooting",
-    "group": "BRSW.AttackOption"
-}
-```
-
-##### Unarmed Defender
-
-```json
-{
-    "id": "UNARMEDDEFENDER",
-    "name": "Unarmed Defender",
-    "button_name": "Unarmed Defender",
-    "skillMod": "+2",
-    "selector_type": "skill",
-    "selector_value": "Fighting",
-    "group": "BRSW.SituationalModifiers"
-}
-```
-
-##### Unstable Platform
-
-```json
-{
-    "id": "UNSTABLEPLATFORM",
-    "name": "Unstable Platform",
-    "button_name": "Unstable Platform",
-    "skillMod": "-2",
-    "or_selector": [
-        {
-            "selector_type": "skill",
-            "selector_value": "Shooting"
-        },
-        {
-            "selector_type": "skill",
-            "selector_value": "Athletics"
-        }
-    ],
-    "group": "BRSW.SituationalModifiers"
-}
-```
-
-##### Touch Attack
-
-```json
-{
-    "id": "TOUCHATTACK",
-    "name": "Touch Attack",
-    "button_name": "Touch Attack",
-    "skillMod": "+2",
-    "dmgOverride": "0",
-    "selector_type": "skill",
-    "selector_value": "Fighting",
-    "group": "BRSW.SituationalModifiers"
-}
-```
 
 ##### Off-Hand Attacks
 
@@ -360,20 +259,6 @@ These cover the most basic modifiers and combat actions in SWADE.
     "skillMod": "-2",
     "selector_type": "item_type",
     "selector_value": "weapon",
-    "group": "BRSW.SituationalModifiers"
-}
-```
-
-##### Nonlethal Damage
-
-```json
-{
-    "id": "NONLETHALDAMAGE",
-    "name": "Nonlethal Damage",
-    "button_name": "Nonlethal Damage",
-    "skillMod": "-1",
-    "selector_type": "skill",
-    "selector_value": "Fighting",
     "group": "BRSW.SituationalModifiers"
 }
 ```
@@ -392,108 +277,7 @@ These cover the most basic modifiers and combat actions in SWADE.
 }
 ```
 
-#### Edges in SWADE
-
-This is a non-exhaustive list of modifiers enabled by Edges a character has learned in SWADE.
-
-##### Dodge
-
-```json
-{
-    "id": "DODGE",
-    "name": "Dodge",
-    "button_name": "Dodge",
-    "skillMod": "-2",
-    "and_selector": [
-        {
-            "selector_type": "target_has_edge",
-            "selector_value": "Dodge",
-            "or_selector": [
-                {
-                    "selector_type": "item_name",
-                    "selector_value": "Bolt"
-                },
-                {
-                    "selector_type": "skill",
-                    "selector_value": "Shooting"
-                }
-            ]
-        }
-    ],
-    "group": "Edges",
-    "defaultChecked": "on"
-}
-```
-
-##### Marksman
-
-```json
-{
-    "id": "MARKSMAN",
-    "name": "Marksman",
-    "button_name": "Marksman",
-    "skillMod": "+1",
-    "and_selector": [
-        {
-            "selector_type": "actor_has_edge",
-            "selector_value": "Marksman"
-        },
-        {
-            "selector_type": "skill",
-            "selector_value": "Shooting"
-        }
-    ],
-    "group": "Edges"
-}
-```
-
-##### Alertness
-
-```json
-{
-    "id": "ALERTNESS",
-    "name": "Alertness",
-    "button_name": "Alertness",
-    "skillMod": "+2",
-    "and_selector": [
-        {
-            "selector_type": "actor_has_edge",
-            "selector_value": "Alertness"
-        },
-        {
-            "selector_type": "skill",
-            "selector_value": "Notice"
-        }
-    ],
-    "defaultChecked": "on",
-    "group": "Edges"
-}
-```
-
-##### Mr Fix It
-
-```json
-{
-    "id": "MRFIXIT",
-    "name": "Mr Fix It",
-    "button_name": "Mr Fix It",
-    "skillMod": "+2",
-    "and_selector": [
-        {
-            "selector_type": "actor_has_edge",
-            "selector_value": "Mr Fix It"
-        },
-        {
-            "selector_type": "skill",
-            "selector_value": "Repair"
-        }
-    ],
-    "defaultChecked": "on",
-    "group": "Edges"
-}
-```
-
-Here are examples for Special Abilities (N)PCs might have in SWADE.
+Here are examples for Special Abilities characters might have in SWADE.
 
 ##### Rollover (Alligator/Crocodile ability)
 
@@ -521,21 +305,16 @@ Here are examples for Special Abilities (N)PCs might have in SWADE.
 
 ```json
 {
-    "id": "POUNCE-WILD_ATTACK",
-    "name": "Wild Attack",
-    "button_name": "Wild Attack (Pounce)",
-    "dmgMod": "+4",
+    "id": "Pounce",
+    "name": "Pounce",
+    "button_name": "Pounce",
+    "dmgMod": "+2",
     "and_selector": [
-        {
-            "selector_type": "actor_has_ability",
-            "selector_value": "Pounce"
-        },
-        {
-            "selector_type": "skill",
-            "selector_value": "Fighting"
-        }
+        { "selector_type": "actor_has_ability", "selector_value": "Pounce" },
+        { "selector_type": "skill", "selector_value": "Fighting" }
     ],
-    "group": "Special Abilities"
+    "section": "attack",
+    "group": "BRSW.AttackOption"
 }
 ```
 
@@ -543,27 +322,20 @@ Here are examples for Special Abilities (N)PCs might have in SWADE.
 
 Below is a list of actions for the Fantasy Companion for SWADE.
 
-#### Edges in Fantasy Companion
-
 ##### Savagery
 
 ```json
 {
     "id": "Savagery",
-    "name": "Wild Attack (Savagery)",
-    "button_name": "Wild Attack (Savagery)",
-    "dmgMod": "+4",
+    "name": "Savagery",
+    "button_name": "Savagery",
+    "dmgMod": "+2",
     "and_selector": [
-        {
-            "selector_type": "actor_has_edge",
-            "selector_value": "Savagery"
-        },
-        {
-            "selector_type": "skill",
-            "selector_value": "Fighting"
-        }
+        { "selector_type": "actor_has_edge", "selector_value": "Savagery" },
+        { "selector_type": "skill", "selector_value": "Fighting" }
     ],
-    "group": "Fantasy Companion"
+    "section": "attack",
+    "group": "BRSW.Edges"
 }
 ```
 
@@ -571,59 +343,6 @@ Below is a list of actions for the Fantasy Companion for SWADE.
 
 Below is a list of actions for the Savage Pathfinder setting. Some of the basic actions from SWADE (see above) are
 applicable as well.
-
-#### Attack Options
-
-SWPF adds new combat options like Desperate Attack which is listed as an example below.
-
-##### Desperate Attack
-
-Due to the nature of Desperate Attack, i.e., either a +2 or +4 to Fighting and subtract like amount from damage, two
-global actions are needed:
-
-*NOTE: Desperate Attack has been rolled back into the core Savage Worlds in the "printing v5".*
-
-```json
-{
-    "id": "DESPERATE_ATTACK-2",
-    "name": "Desperate Attack +2",
-    "button_name": "Desperate Attack +2",
-    "skillMod": "2",
-    "dmgMod": "-2",
-    "and_selector": [
-        {
-            "selector_type": "skill",
-            "selector_value": "fighting"
-        },
-        {
-            "selector_type": "item_type",
-            "selector_value": "weapon"
-        }
-    ],
-    "group": "BRSW.AttackOption"
-}
-```
-
-```json
-{
-    "id": "DESPERATE_ATTACK-4",
-    "name": "Desperate Attack +4",
-    "button_name": "Desperate Attack +4",
-    "skillMod": "4",
-    "dmgMod": "-4",
-    "and_selector": [
-        {
-            "selector_type": "skill",
-            "selector_value": "fighting"
-        },
-        {
-            "selector_type": "item_type",
-            "selector_value": "weapon"
-        }
-    ],
-    "group": "BRSW.AttackOption"
-}
-```
 
 #### Edges in Pathfinder for Savage Worlds
 
@@ -652,36 +371,14 @@ These are examples enabled by learned Edges from Savage Pathfinder.
 }
 ```
 
-##### Sneak Attack
-
-```json
-{
-    "id": "SNEAKATTACK",
-    "name": "Sneak Attack",
-    "button_name": "Sneak Attack",
-    "dmgMod": "+1d6x",
-    "and_selector": [
-        {
-            "selector_type": "actor_has_edge",
-            "selector_value": "Rogue"
-        },
-        {
-            "selector_type": "skill",
-            "selector_value": "Fighting"
-        }
-    ],
-    "group": "Savage Pathfinder"
-}
-```
-
 ##### Powerful Blow
 
 ```json
 {
-    "id": "POWERFUL_BLOW-WILD_ATTACK",
-    "name": "Wild Attack",
-    "button_name": "Wild Attack (Powerful Blow)",
-    "dmgMod": "+4",
+    "id": "POWERFULBLOW",
+    "name": "Powerful Blow",
+    "button_name": "Powerful Blow",
+    "dmgMod": "+2",
     "and_selector": [
         {
             "selector_type": "actor_has_edge",
@@ -692,7 +389,8 @@ These are examples enabled by learned Edges from Savage Pathfinder.
             "selector_value": "Fighting"
         }
     ],
-    "group": "Savage Pathfinder"
+    "section": "character",
+    "group": "BRSW.Edges"
 }
 ```
 
@@ -740,35 +438,9 @@ These are examples enabled by learned Edges from Savage Pathfinder.
 }
 ```
 
-##### Wild Attack (Pounce)
-
-```json
-{
-    "id": "POUNCE-WILD_ATTACK",
-    "name": "Wild Attack (Pounce)",
-    "button_name": "Wild Attack (Pounce)",
-    "dmgMod": "+4",
-    "and_selector": [
-        {
-            "selector_type": "actor_has_ability",
-            "selector_value": "Pounce"
-        },
-        {
-            "selector_type": "skill",
-            "selector_value": "Fighting"
-        }
-    ],
-    "group": "Savage Pathfinder"
-}
-```
-
 ### Sprawlrunners
 
 These are examples common to the Sprawlrunners rules for Savage Worlds.
-
-#### Edges in Sprawlrunners
-
-These are enabled by Edges a character has learned in Sprawlrunners.
 
 ##### Passive Alarm
 

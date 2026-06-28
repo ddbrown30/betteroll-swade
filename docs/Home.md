@@ -1,13 +1,11 @@
 The **Better Rolls 2 for Savage Worlds** module adds a complete different rolls cards to the SWADE system that supports both more complex rolls and more automation.
 
-* This is more complex than system default rolls. It's quite likely that you don't need it. Please try SWADE without it first and only check it out if you feel rolls could be improved.
-* You need to be familiar with the rules of Savage Worlds to use it. You need to know e.g. which dice are discarded and how damage is affected by raises; generally speaking, this is not a good module for beginners. It could be confusing. So, again, please use the base system and get familiar with it before using this module.
+* This is more complex than system default rolls. Please try SWADE without it first and only check it out if you feel rolls could be improved.
+* You need to be familiar with the rules of Savage Worlds to use it which means this module can be challenging for beginners to the Savage Worlds.
 
-Please leave your feedback on the official Foundry discord. Feel free to ping me if you want.
+Please leave your feedback in the [BR2 thread](https://discord.com/channels/170995199584108546/1052222686463537272) on the swade channel of the official Foundry Discord. Feel free to message me (@thechemist30) if needed, but I actively monitor the thread and there are many other helpful users when I'm unavailable.
 
-Criticism, feature requests, and UI changes are all welcome but, if you want me to do something about it, please be as detailed as you can. Please, at the very least, tell me what you expect and why do you believe your approach is better.
-
-The following pages detail the modules features. If there are issues or shortcomings please let me know.
+Feedback, bugs, and feature requests are all welcome. Head to the Discord for feedback or open an issue here for bugs or feature requests. Please be as detailed as possible when describing the issue.
 
 ---
 
