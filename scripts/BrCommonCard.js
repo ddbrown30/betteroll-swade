@@ -384,7 +384,7 @@ export class BrCommonCard {
 
             const new_action = new brAction(name, global_action);
             if (global_action.hasOwnProperty("defaultChecked")) {
-                if (global_action.defaultChecked == "on") {
+                if (global_action.defaultChecked === "on") {
                     new_action.selected = true;
                 } else if (global_action.defaultChecked.hasOwnProperty("selector_type")) {
                     new_action.selected = check_selector(

@@ -13,7 +13,7 @@ import {
     spend_bennie,
     trait_to_string,
 } from "./cards_common.js";
-import { run_macros } from "./item_card.js";
+import { runMacros } from "./item_card.js";
 import { TraitModifier } from "./modifiers.js";
 import {
     SettingsUtils,
@@ -201,7 +201,7 @@ export async function roll_skill(br_card, expend_bennie) {
         game.i18n.localize("BRSW.SkillDie"),
         extra_data,
     );
-    await run_macros(macros, br_card.actor, null, br_card);
+    await runMacros(macros, br_card);
 }
 
 /**
