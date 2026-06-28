@@ -698,6 +698,10 @@ export class SettingsUtils {
     }
 
     static async setWorldSettings() {
+        if (!game.user.hasPermission("SETTINGS_MODIFY")) {
+            return;
+        }
+
         const worldSettings = Object.fromEntries(
             Object.entries(BRSW2_CONFIG.WORLD_SETTINGS).filter(([key, value]) => value.value !== undefined && value.value !== value.default).map(([key, value]) => [
                 key,
@@ -854,30 +858,40 @@ export class TelemetryUtils {
 
     static sendModuleReadyEvent() {
         const worldSettings = {};
+        let nonDefaultSettings = [];
 
         Object.entries(BRSW2_CONFIG.WORLD_SETTINGS).forEach(([k, v]) => {
-            worldSettings[k] = v.value;
-            worldSettings[`${k}_is_default`] = v.value === undefined || v.value === v.default;
+            if (v.value !== undefined && v.value !== v.default) {
+                worldSettings[k] = v.value;
+                worldSettings[`${k}_is_default`] = false;
+                nonDefaultSettings.push(k);
+            }
         });
 
         TelemetryUtils.sendTelemetry("module_ready", false, {
             ...worldSettings,
             enabledOptionalRules: SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.enabledOptionalRules),
+            nonDefaultSettings,
         });
     }
 
     static sendUserReadyEvent() {
         const userSettings = {};
+        let nonDefaultSettings = [];
 
         Object.entries(BRSW2_CONFIG.USER_SETTINGS).forEach(([k, v]) => {
-            userSettings[k] = v.value;
-            userSettings[`${k}_is_default`] = v.value === undefined || v.value === v.default;
+            if (v.value !== undefined && v.value !== v.default) {
+                userSettings[k] = v.value;
+                userSettings[`${k}_is_default`] = false;
+                nonDefaultSettings.push(k);
+            }
         });
 
         TelemetryUtils.sendTelemetry("user_ready", true, {
             isGM: game.user.isGM,
             lang:game.i18n.lang,
             ...userSettings,
+            nonDefaultSettings,
         });
     }
 }
