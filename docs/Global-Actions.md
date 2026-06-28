@@ -75,7 +75,7 @@ If this action is checked it will add a penalty of 4 to the skill roll and a bon
 
 ### Selector fields
 
-This group of fields are used to select when the action is available, you will need to specify a `selector_type` and a `selector_value` for a simple selection. You can also use a [complex selector](#Complex Selectors). All selectors are evaluated when the card is created. This means that for target based selectors to work, you must already have selected the target.
+This group of fields are used to select when the action is available, you will need to specify a `selector_type` and a `selector_value` for a simple selection. You can also use a [complex selector](#Complex-Selectors). All selectors are evaluated when the card is created. This means that for target based selectors to work, you must already have selected the target.
 
 #### selector_type
 
@@ -159,6 +159,7 @@ This tag lets you group the actions.
 ## Macros
 
 The following variables are included in the scope when running a macro via `runSkillMacro` or `runDamageMacro`:
+
 `actor`, `token`, `speaker`, `item`, `targets`
 
 ## API
