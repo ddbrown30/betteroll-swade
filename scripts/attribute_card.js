@@ -12,7 +12,7 @@ import {
   spend_bennie,
   trait_to_string,
 } from "./cards_common.js";
-import { run_macros } from "./item_card.js";
+import { runMacros } from "./item_card.js";
 import { addEventListenerAll } from "./utils.js";
 
 /**
@@ -171,5 +171,5 @@ export async function roll_attribute(br_card, expend_bennie) {
     extra_data,
   );
   // noinspection ES6MissingAwait
-  run_macros(macros, br_card.actor, null, br_card);
+  runMacros(macros, br_card.actor, null, br_card);
 }

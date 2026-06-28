@@ -793,52 +793,28 @@ export async function spendPP(br_card, prevSpentPP) {
  * @param item_param
  * @param br_card_param
  */
-export async function run_macros(
+export async function runMacros(
     macros,
-    actor_param,
-    item_param,
-    br_card_param,
+    actor,
+    item,
+    brCard,
 ) {
     if (macros) {
-        for (const macro_name of macros) {
-            const real_macro = await find_macro(macro_name);
-            if (real_macro) {
-                const actor = actor_param;
-                const item = item_param;
-                const speaker = ChatMessage.getSpeaker();
-                const token = canvas.tokens.get(speaker.token);
-                const { character, targets } = game.user;
-                const br_card = br_card_param;
+        for (const macroName of macros) {
+            const macro = await findMacro(macroName);
+            if (macro) {
                 // Attempt script execution
-                const body = `(async () => {${real_macro.command}})()`;
-                // prettier-ignore
-                const fn = Function( // jshint ignore:line
-                    "speaker",
-                    "actor",
-                    "token",
-                    "character",
-                    "item",
-                    "message",
-                    "targets",
-                    "br_card",
-                    body,
-                );
                 try {
-                    fn.call(
-                        this,
-                        speaker,
-                        actor,
-                        token,
-                        character,
-                        item,
-                        br_card.message,
-                        targets,
-                        br_card,
-                    );
+                    const scope = {
+                        speaker: ChatMessage.getSpeaker(),
+                        actor: brCard.actor,
+                        token: brCard.token,
+                        item: brCard.item,
+                        targets: brCard.targets,
+                    };
+                    await macro.execute(scope);
                 } catch (err) {
-                    ui.notifications.error(
-                        `There was an error in your macro syntax. See the console (F12) for details`,
-                    );
+                    ui.notifications.error(`There was an error in your macro syntax. See the console (F12) for details. Error: ${err}`);
                 }
             }
         }
@@ -849,9 +825,8 @@ export async function run_macros(
  * Finds a macro from a name or id
  * @param {string} macro_name_or_id
  */
-async function find_macro(macro_name_or_id) {
-    let macro =
-        game.macros.getName(macro_name_or_id) || game.macros.get(macro_name_or_id);
+async function findMacro(macro_name_or_id) {
+    let macro = game.macros.getName(macro_name_or_id) || game.macros.get(macro_name_or_id);
     if (!macro) {
         // Try UUID
         macro = await fromUuid(macro_name_or_id);
@@ -1045,7 +1020,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
     await br_message.render();
     await br_message.save();
 
-    await run_macros(macros, br_message.actor, br_message.item, br_message);
+    await runMacros(macros, br_message.actor, br_message.item, br_message);
 
     //Call a hook after roll for other modules
     Hooks.call("BRSW-RollItem", br_message, html);
@@ -1557,7 +1532,7 @@ export async function roll_dmg(
     await update_message(br_card, render_data);
 
     // Run macros
-    await run_macros(macros, actor, item, br_card);
+    await runMacros(macros, actor, item, br_card);
 
     Hooks.call("BRSW-RollDamage", br_card, html);
 }

@@ -10,7 +10,7 @@ import { WORLD_SETTING_KEYS } from "./brsw2-config.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
 import {
   roll_item,
-  run_macros,
+  runMacros,
   spendPP,
 } from "./item_card.js";
 import { ManualModifiersPopup } from "./manual_mods_popup.js";
@@ -1083,7 +1083,7 @@ async function override_die_result(br_card, die_index, new_value) {
     for (const macro of macro_actions) {
       macros.push(macro.code.runSkillMacro);
     }
-    await run_macros(macros, br_card.actor, br_card.item, br_card);
+    await runMacros(macros, br_card.actor, br_card.item, br_card);
   }
 }
 
