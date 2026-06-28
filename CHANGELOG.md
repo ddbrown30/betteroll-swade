@@ -1,5 +1,10 @@
 # Changelog
 
+# Version 5.13.0
+* Cleaned up macro execution
+* Switched World Global Action editor to be a code mirror
+* Removed disable_if_module_present as it wasn't working anyway. Use module_is_not_active instead.
+
 # Version 5.12.1
 * Removed an accidental dependence on succ
 
