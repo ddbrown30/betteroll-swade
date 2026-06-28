@@ -289,27 +289,32 @@ function registerUserSettings() {
     });
 }
 
+function cacheSettings(savedSettings, settingsCache) {
+    for (const key in settingsCache) {
+        if (Object.hasOwn(savedSettings, key)) {
+            if (savedSettings[key].name !== undefined) {
+                //If we have a name, this is old data which means we need to migrate it to the new structure
+                if (savedSettings[key].value === savedSettings[key].default ||
+                    savedSettings[key].value === settingsCache[key].default) {
+                    //If the old value was the old default or is the new default,
+                    //we'll use the current default which means we don't need a value
+                    continue;
+                }
+
+                settingsCache[key].value = savedSettings[key].value;
+                continue;
+            }
+
+            settingsCache[key].value = savedSettings[key];
+        }
+    }
+}
+
 export function updateCachedWorldSettings() {
     //Update our cached world settings with our saved data
     const worldSettings = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.worldSettings);
     if (worldSettings) {
-        for (const key in BRSW2_CONFIG.WORLD_SETTINGS) {
-            if (Object.hasOwn(worldSettings, key)) {
-                //Migrate old data to the new structure
-                if (worldSettings[key].name !== undefined) {
-                    if (worldSettings[key].value === worldSettings[key].default) {
-                        //If the old value was the old default, use the current default
-                        BRSW2_CONFIG.WORLD_SETTINGS[key].value = BRSW2_CONFIG.WORLD_SETTINGS[key].default;
-                    } else {
-                        BRSW2_CONFIG.WORLD_SETTINGS[key].value = worldSettings[key].value;
-                    }
-                    continue;
-                }
-
-                BRSW2_CONFIG.WORLD_SETTINGS[key].value = worldSettings[key];
-            }
-        }
-
+        cacheSettings(worldSettings, BRSW2_CONFIG.WORLD_SETTINGS);
         SettingsUtils.setWorldSettings();
     }
 }
@@ -318,23 +323,7 @@ export function updateCachedUserSettings() {
     //Update our cached user settings from the user's flags
     const userSettings = SettingsUtils.getModuleFlag(game.user, BRSW2_CONFIG.USER_FLAGS.userSettings);
     if (userSettings) {
-        for (const key in BRSW2_CONFIG.USER_SETTINGS) {
-            if (Object.hasOwn(userSettings, key)) {
-                //Migrate old data to the new structure
-                if (userSettings[key].name !== undefined) {
-                    if (userSettings[key].value === userSettings[key].default) {
-                        //If the old value was the old default, use the current default
-                        BRSW2_CONFIG.USER_SETTINGS[key].value = BRSW2_CONFIG.USER_SETTINGS[key].default;
-                    } else {
-                        BRSW2_CONFIG.USER_SETTINGS[key].value = userSettings[key].value;
-                    }
-                    continue;
-                }
-
-                BRSW2_CONFIG.USER_SETTINGS[key].value = userSettings[key];
-            }
-        }
-
+        cacheSettings(userSettings, BRSW2_CONFIG.USER_SETTINGS);
         SettingsUtils.setUserSettings();
     }
 }
