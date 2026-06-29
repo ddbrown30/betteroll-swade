@@ -1,5 +1,4 @@
 {
-    "Better Rolls for SWADE": "Better Rolls para SWADE",
     "BRSW.AbilityName.Amorphous": "Amorfo",
     "BRSW.AbilityName.Construct": "Construto",
     "BRSW.AbilityName.DemonHellfrost": "Demônio",
@@ -101,8 +100,6 @@
     "BRSW.VisibilityTypes.Everybody": "Todo mundo",
     "BRSW.Settings.ExpandResults.Name": "Mostrar resultados",
     "BRSW.Settings.ExpandResults.Hint": "Ver os pormenores do resultado por padrão (ainda pode clicar nele para ocultá-lo) (Mundo)",
-    "BRSW.Settings.ExpandRolls.Name": "Mostrar pormenores do resultado da rolagem",
-    "BRSW.Settings.ExpandRolls.Hint": "Ativar esta opção para mostrar os pormenores do resultado da rolagem, por padrão eles ficam ocultos (Mundo)",
     "BRSW.ExpendedAmmo": "<p>{item_name} efetuou {ammo_spent} disparo(s). Faltam ainda {final_ammo} tiro(s)</p>",
     "BRSW.ExpendedPoints": "<p>{pp} Pontos de Poder foram gastos por {name}. Restam {final_pp}.</p>",
     "BRSW.ExpendPP": "Gastar PP",
@@ -182,7 +179,6 @@
     "BRSW.Settings.OptionalRules.Hint": "Obre uma janela para escolher quais regras opcionais serão aplicadas (Mundo)",
     "BRSW.Settings.OptionalRules.Label": "Escolha regras opcionais",
     "BRSW.Settings.OptionalRules.GrittyDamage": "Dano Severo",
-    "BRSW.PPBennieRecharge": "Recuperar com Bene",
     "BRSW.Settings.PPManagement.Name": "Controle de Ponto de Poder",
     "BRSW.Settings.PPManagement.Hint": "Quando ativado Subtrair PP ficará selecionado por padrão (Mundo)",
     "BRSW.QuantityIsZero": "A quantidade de elementos é zero",
@@ -293,6 +289,5 @@
     "BRSW.Settings.WorldGlobalMenu.Label": "Ações globais do Mundo",
     "BRSW.Wound": "Ferimento",
     "BRSW.Wounds": "Ferimentos",
-    "BRSW.WoundsOrFatigueIgnored": "Ferimentos ou Fadiga ignorados",
-    "Better Rolls": "Better Rolls"
+    "BRSW.WoundsOrFatigueIgnored": "Ferimentos ou Fadiga ignorados"
 }
