@@ -1,6 +1,4 @@
 {
-    "Better Rolls": "Better Rolls",
-    "Better Rolls for SWADE": "Better Rolls per SWADE",
     "BRSW.AbilityDie": "Dau d'atribut",
     "BRSW.AbilityName.Amorphous": "Amorf",
     "BRSW.AbilityName.Construct": "Constructe",
@@ -109,8 +107,6 @@
     "BRSW.VisibilityTypes.Everybody": "Tothom pot veure la carta",
     "BRSW.Settings.ExpandResults.Name": "Amplieu els resultats",
     "BRSW.Settings.ExpandResults.Hint": "Consulteu els detalls del resultat per defecte (podeu fer-hi clic per amagar-los)",
-    "BRSW.Settings.ExpandRolls.Name": "Mostrar els detalls de les tirades",
-    "BRSW.Settings.ExpandRolls.Hint": "Marca aquesta opció per veure els detalls de les tirades, per defecte es presenta reduït.",
     "BRSW.ExpendedAmmo": "<p>S'han fet {ammo_spent} trets de {item_name}. Queden {final_ammo} trets</p>",
     "BRSW.ExpendedPoints": "<p>{name} ha utilitzat {pp} punts de poder. Li queden {final_pp}.</p>",
     "BRSW.ExpendPP": "Gasta PP",
@@ -136,7 +132,6 @@
     "BRSW.Illumination": "Il·luminació",
     "BRSW.IlluminationDark": "Fosc (-4)",
     "BRSW.IlluminationDim": "Feble (-2)",
-    "BRSW.IlluminationGM": "Il·luminació (DJ)",
     "BRSW.IlluminationPitch": "Foscor total (-6)",
     "BRSW.Import": "Importar",
     "BRSW.IncapacitatedMustVigor": "i haurà de tirar vigor per conèixer el seu destí</p>",
@@ -190,7 +185,6 @@
     "BRSW.Settings.OptionalRules.Hint": "Obre una finestra per seleccionar las regles opcionals que es faran servir",
     "BRSW.Settings.OptionalRules.Label": "Selecciona regles opcionals",
     "BRSW.Settings.OptionalRules.GrittyDamage": "Dany cru",
-    "BRSW.PPBennieRecharge": "Recarrega amb beni",
     "BRSW.Settings.PPManagement.Name": "Gestió de punts de poder",
     "BRSW.Settings.PPManagement.Hint": "Si està marcat Restar, els punts de poder apareixen marcats per defecte",
     "BRSW.QuantityIsZero": "La quantitat d'articles és zero",
@@ -266,7 +260,6 @@
     "BRSW.Settings.SystemGlobalMenu.Label": "Accions globals",
     "BRSW.Target": "Objectiu",
     "BRSW.Target_number": "Valor objectiu",
-    "BRSW.TargetHasDodge": "L'objectiu té esquivar (-2), armes",
     "BRSW.TargetHasDodgePower": "El objetivo tiene esquiva (-2), poderes",
     "BRSW.TempInjury": ", i ha patit una lesió temporal (desapareixerà quan es curin totes les ferides).</p>",
     "BRSW.TempInjury24": ", i ha patit una lesió que desapareixerà en 24 hores o quan es curin totes les ferides</p>",
@@ -312,7 +305,6 @@
     "BRSW.Wound": "Ferida",
     "BRSW.Wounds": "Ferides",
     "BRSW.WoundsOrFatigueIgnored": "Ignorar ferides i fatiga",
-    "BRWS.ConvictionRoll": "Tirada de convicció",
     "I18N.MAINTAINERS": [
         "Javier Rivera"
     ]
