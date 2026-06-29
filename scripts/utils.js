@@ -864,14 +864,16 @@ export class TelemetryUtils {
             if (v.value !== undefined && v.value !== v.default) {
                 worldSettings[k] = v.value;
                 worldSettings[`${k}_is_default`] = false;
-                nonDefaultSettings.push(k);
+                nonDefaultSettings.push({ [k]: v.value });
             }
         });
 
+        const enabledOptionalRules = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.enabledOptionalRules);
         TelemetryUtils.sendTelemetry("module_ready", false, {
             ...worldSettings,
-            enabledOptionalRules: SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.enabledOptionalRules),
-            nonDefaultSettings,
+            enabled_optional_rules: enabledOptionalRules.length ? enabledOptionalRules : undefined,
+            has_non_default_settings: nonDefaultSettings.length ? true : undefined,
+            non_default_settings: nonDefaultSettings.length ? nonDefaultSettings : undefined,
         });
     }
 
@@ -883,7 +885,7 @@ export class TelemetryUtils {
             if (v.value !== undefined && v.value !== v.default) {
                 userSettings[k] = v.value;
                 userSettings[`${k}_is_default`] = false;
-                nonDefaultSettings.push(k);
+                nonDefaultSettings.push({ [k]: v.value });
             }
         });
 
@@ -891,7 +893,8 @@ export class TelemetryUtils {
             isGM: game.user.isGM,
             lang:game.i18n.lang,
             ...userSettings,
-            nonDefaultSettings,
+            has_non_default_settings: nonDefaultSettings.length ? true : undefined,
+            non_default_settings: nonDefaultSettings.length ? nonDefaultSettings : undefined,
         });
     }
 }
