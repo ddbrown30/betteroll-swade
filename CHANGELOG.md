@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.13.2
+* Fixed the PP/Shots display
+
 # Version 5.13.1
 * Improved how we migrate the old data
 
