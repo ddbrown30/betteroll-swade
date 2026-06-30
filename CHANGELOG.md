@@ -1,5 +1,11 @@
 # Changelog
 
+# Version 5.15.0
+* Moved Optional Rules into the world settings
+* Changed the default setting for innate powers PP spending to false
+* Changed the default setting for NPC encumbrance to false
+* Fixed a minor issue when using Mega Damage Gritty Damage
+
 # Version 5.14.0
 * Added a setting to allow players to choose their own default behaviour for subtracting PP
 * Hide the PP/Ammo management buttons on non-owners
