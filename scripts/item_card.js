@@ -97,7 +97,7 @@ export async function create_item_card(
             ammo: ammoEnabled,
             subtract_selected: subtract_select,
             subtractPP: is_power
-                ? SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.defaultPPManagement)
+                ? Utils.getDefaultPPManagementSetting()
                 : false,
             damage_rolls: [],
             is_power: is_power,

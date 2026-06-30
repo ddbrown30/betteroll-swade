@@ -33,6 +33,7 @@ export const WORLD_SETTING_KEYS = {
     genericPPModifiersSource: "generic-pp-modifiers-source",
     measureFromEdge: "measure_from_edge",
     ppChangeCardBehaviour: "pp_change_card_behaviour",
+    ppManagementPlayerChoice: "ppManagementPlayerChoice",
     rangeCalcGrid: "range_calc_grid",
     resultCard: "result-card",
     swdUnshake: "swd-unshake",
@@ -44,6 +45,7 @@ export const USER_SETTING_KEYS = {
     defaultRateOfFire: "default_rate_of_fire",
     expandDescriptions: "expand-descriptions",
     expandResults: "expand-results",
+    playerDefaultPPManagement: "playerDefaultPPManagement",
 };
 
 export const USER_FLAGS = {

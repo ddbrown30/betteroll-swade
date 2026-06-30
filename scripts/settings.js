@@ -1,5 +1,5 @@
 
-import * as BRSW2_CONFIG from "./brsw2-config.js";
+import { SETTING_KEYS, USER_FLAGS, USER_SETTINGS, USER_SETTING_KEYS, WORLD_SETTINGS, WORLD_SETTING_KEYS } from "./brsw2-config.js";
 import { GlobalActionsMenu } from "./global-actions-menu.js";
 import { OptionalRulesConfiguration } from "./optional_rules.js";
 import { SettingsConfig } from "./settings_config.js";
@@ -40,43 +40,43 @@ export function registerSettings() {
     });
 
     // Register core settings. These should be config:false settings only. Everything else should be a world or user setting
-    SettingsUtils.registerSetting(BRSW2_CONFIG.SETTING_KEYS.worldSettings, {
+    SettingsUtils.registerSetting(SETTING_KEYS.worldSettings, {
         name: "World Settings",
         hint: "Collection of world settings",
         scope: "world",
         type: Object,
-        default: BRSW2_CONFIG.WORLD_SETTINGS,
+        default: WORLD_SETTINGS,
     });
 
-    SettingsUtils.registerSetting(BRSW2_CONFIG.SETTING_KEYS.disabledSystemActions, {
+    SettingsUtils.registerSetting(SETTING_KEYS.disabledSystemActions, {
         default: [],
         type: Array,
         scope: "world",
         config: false,
     });
 
-    SettingsUtils.registerSetting(BRSW2_CONFIG.SETTING_KEYS.enabledOptionalRules, {
+    SettingsUtils.registerSetting(SETTING_KEYS.enabledOptionalRules, {
         default: [],
         type: Array,
         scope: "world",
         config: false,
     });
 
-    SettingsUtils.registerSetting(BRSW2_CONFIG.SETTING_KEYS.worldGlobalActions, {
+    SettingsUtils.registerSetting(SETTING_KEYS.worldGlobalActions, {
         default: [],
         type: Array,
         config: false,
         scope: "world",
     });
 
-    SettingsUtils.registerSetting(BRSW2_CONFIG.SETTING_KEYS.invalidWorldGlobalActions, {
+    SettingsUtils.registerSetting(SETTING_KEYS.invalidWorldGlobalActions, {
         default: [],
         type: Array,
         config: false,
         scope: "world",
     });
 
-    SettingsUtils.registerSetting(BRSW2_CONFIG.SETTING_KEYS.telemetryOptOut, {
+    SettingsUtils.registerSetting(SETTING_KEYS.telemetryOptOut, {
         name: game.i18n.localize("BRSW.Settings.TelemetryOptOut.Name"),
         hint: game.i18n.localize("BRSW.Settings.TelemetryOptOut.Hint"),
         scope: "user",
@@ -85,7 +85,7 @@ export function registerSettings() {
         config: true,
     });
 
-    SettingsUtils.registerSetting(BRSW2_CONFIG.SETTING_KEYS.telemetryWorldInstallId, {
+    SettingsUtils.registerSetting(SETTING_KEYS.telemetryWorldInstallId, {
         scope: "world",
         type: String,
         default: "",
@@ -105,7 +105,7 @@ function registerWorldSettings() {
         trait_damage: game.i18n.localize("BRSW.ClickActionTypes.ShowCardDamage"),
     };
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.clickActionKeys.click, {
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.clickActionKeys.click, {
         name: game.i18n.localize("BRSW.Settings.SingleClickAction.Name"),
         hint: game.i18n.localize("BRSW.Settings.SingleClickAction.Hint"),
         default: "card",
@@ -113,7 +113,7 @@ function registerWorldSettings() {
         choices: clickActionChoices,
     });
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.clickActionKeys.shiftClick, {
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.clickActionKeys.shiftClick, {
         name: game.i18n.localize("BRSW.Settings.ShiftClickAction.Name"),
         hint: game.i18n.localize("BRSW.Settings.ShiftClickAction.Hint"),
         default: "system",
@@ -121,7 +121,7 @@ function registerWorldSettings() {
         choices: clickActionChoices,
     });
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.clickActionKeys.ctrlClick, {
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.clickActionKeys.ctrlClick, {
         name: game.i18n.localize("BRSW.Settings.ControlClickAction.Name"),
         hint: game.i18n.localize("BRSW.Settings.ControlClickAction.Hint"),
         default: "trait",
@@ -129,7 +129,7 @@ function registerWorldSettings() {
         choices: clickActionChoices,
     });
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.clickActionKeys.altClick, {
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.clickActionKeys.altClick, {
         name: game.i18n.localize("BRSW.Settings.AltClickAction.Name"),
         hint: game.i18n.localize("BRSW.Settings.AltClickAction.Hint"),
         default: "system",
@@ -137,7 +137,7 @@ function registerWorldSettings() {
         choices: clickActionChoices,
     });
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.resultCard, {
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.resultCard, {
         name: game.i18n.localize("BRSW.Settings.ResultCardVisibility.Name"),
         hint: game.i18n.localize("BRSW.Settings.ResultCardVisibility.Hint"),
         default: "all",
@@ -148,7 +148,7 @@ function registerWorldSettings() {
         },
     });
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.defaultAmmoManagement, {
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.defaultAmmoManagement, {
         name: game.i18n.localize("BRSW.Settings.AmmoManagement.Name"),
         hint: game.i18n.localize("BRSW.Settings.AmmoManagement.Hint"),
         default: true,
@@ -157,9 +157,17 @@ function registerWorldSettings() {
         config: true,
     });
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.defaultPPManagement, {
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.defaultPPManagement, {
         name: game.i18n.localize("BRSW.Settings.PPManagement.Name"),
         hint: game.i18n.localize("BRSW.Settings.PPManagement.Hint"),
+        default: true,
+        type: Boolean,
+        group: "BRSW.Settings.PowersGroup",
+    });
+
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.ppManagementPlayerChoice, {
+        name: game.i18n.localize("BRSW.Settings.PPManagementPlayerChoice.Name"),
+        hint: game.i18n.localize("BRSW.Settings.PPManagementPlayerChoice.Hint"),
         default: true,
         type: Boolean,
         group: "BRSW.Settings.PowersGroup",
@@ -171,7 +179,7 @@ function registerWorldSettings() {
         swpf: game.i18n.localize("BRSW.PPModSources.Pathfinder"),
     };
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.genericPPModifiersSource, {
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.genericPPModifiersSource, {
         name: game.i18n.localize("BRSW.Settings.PowerModifiersSource.Name"),
         hint: game.i18n.localize("BRSW.Settings.PowerModifiersSource.Hint"),
         default: "swade",
@@ -180,7 +188,7 @@ function registerWorldSettings() {
         group: "BRSW.Settings.PowersGroup",
     });
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.disableGangUp, {
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.disableGangUp, {
         name: game.i18n.localize("BRSW.Settings.DisableGangUp.Name"),
         hint: game.i18n.localize("BRSW.Settings.DisableGangUp.Hint"),
         default: false,
@@ -188,7 +196,7 @@ function registerWorldSettings() {
         group: "BRSW.Settings.RulesGroup",
     });
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.ppChangeCardBehaviour, {
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.ppChangeCardBehaviour, {
         name: game.i18n.localize("BRSW.Settings.PPChangeCardBehaviour.Name"),
         hint: game.i18n.localize("BRSW.Settings.PPChangeCardBehaviour.Hint"),
         default: "none",
@@ -202,7 +210,7 @@ function registerWorldSettings() {
         },
     });
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.swdUnshake, {
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.swdUnshake, {
         name: game.i18n.localize("BRSW.Settings.SWDUnshake.Name"),
         hint: game.i18n.localize("BRSW.Settings.SWDUnshake.Hint"),
         default: false,
@@ -210,7 +218,7 @@ function registerWorldSettings() {
         group: "BRSW.Settings.RulesGroup",
     });
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.autoStatusCards, {
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.autoStatusCards, {
         name: game.i18n.localize("BRSW.Settings.AutoStatusCards.Name"),
         hint: game.i18n.localize("BRSW.Settings.AutoStatusCards.Hint"),
         default: true,
@@ -218,7 +226,7 @@ function registerWorldSettings() {
         requiresReload: true,
     });
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.rangeCalcGrid, {
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.rangeCalcGrid, {
         name: game.i18n.localize("BRSW.Settings.RangeCalcUseGrid.Name"),
         hint: game.i18n.localize("BRSW.Settings.RangeCalcUseGrid.Hint"),
         default: true,
@@ -227,7 +235,7 @@ function registerWorldSettings() {
         group: "BRSW.Settings.MeasurementGroup",
     });
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.undeadIgnoresIllumination, {
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.undeadIgnoresIllumination, {
         name: game.i18n.localize("BRSW.Settings.UndeadIgnoresIllumination.Name"),
         hint: game.i18n.localize("BRSW.Settings.UndeadIgnoresIllumination.Hint"),
         default: false,
@@ -235,14 +243,14 @@ function registerWorldSettings() {
         group: "BRSW.Settings.RulesGroup",
     });
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.autoCheckExtraCritFailures, {
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.autoCheckExtraCritFailures, {
         name: "BRSW.Settings.AutoCheckExtraCritFailures.Name",
         hint: "BRSW.Settings.AutoCheckExtraCritFailures.Hint",
         type: Boolean,
         default: true,
     });
 
-    SettingsUtils.registerBR2WorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.measureFromEdge, {
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.measureFromEdge, {
         name: "BRSW.Settings.MeasureFromEdge.Name",
         hint: "BRSW.Settings.MeasureFromEdge.Hint",
         type: Boolean,
@@ -254,7 +262,7 @@ function registerWorldSettings() {
 function registerUserSettings() {
 
     //Register BR2 user settings
-    SettingsUtils.registerBR2UserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.defaultRateOfFire, {
+    SettingsUtils.registerBR2UserSetting(USER_SETTING_KEYS.defaultRateOfFire, {
         name: game.i18n.localize("BRSW.Settings.DefaultRateOfFire.Name"),
         hint: game.i18n.localize("BRSW.Settings.DefaultRateOfFire.Hint"),
         default: "single_shot",
@@ -265,14 +273,26 @@ function registerUserSettings() {
         },
     });
 
-    SettingsUtils.registerBR2UserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.expandResults, {
+    SettingsUtils.registerBR2UserSetting(USER_SETTING_KEYS.playerDefaultPPManagement, {
+        name: game.i18n.localize("BRSW.Settings.PPManagement.Name"),
+        hint: game.i18n.localize("BRSW.Settings.PPManagement.Hint"),
+        default: "world",
+        type: String,
+        choices: {
+            world: game.i18n.localize("BRSW.Settings.PPManagement.WorldDefault"),
+            enabled: game.i18n.localize("BRSW.Enabled"),
+            disabled: game.i18n.localize("BRSW.Disabled"),
+        },
+    });
+
+    SettingsUtils.registerBR2UserSetting(USER_SETTING_KEYS.expandResults, {
         name: game.i18n.localize("BRSW.Settings.ExpandResults.Name"),
         hint: game.i18n.localize("BRSW.Settings.ExpandResults.Hint"),
         default: false,
         type: Boolean,
     });
 
-    SettingsUtils.registerBR2UserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.expandDescriptions, {
+    SettingsUtils.registerBR2UserSetting(USER_SETTING_KEYS.expandDescriptions, {
         name: game.i18n.localize("BRSW.Settings.ExpandDescriptions.Name"),
         hint: game.i18n.localize("BRSW.Settings.ExpandDescriptions.Hint"),
         default: false,
@@ -281,7 +301,7 @@ function registerUserSettings() {
         config: true,
     });
 
-    SettingsUtils.registerBR2UserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.autoPopoutChat, {
+    SettingsUtils.registerBR2UserSetting(USER_SETTING_KEYS.autoPopoutChat, {
         name: "BRSW.Settings.PopoutChat.Name",
         hint: "BRSW.Settings.PopoutChat.Hint",
         default: true,
@@ -312,18 +332,18 @@ function cacheSettings(savedSettings, settingsCache) {
 
 export function updateCachedWorldSettings() {
     //Update our cached world settings with our saved data
-    const worldSettings = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.worldSettings);
+    const worldSettings = SettingsUtils.getSetting(SETTING_KEYS.worldSettings);
     if (worldSettings) {
-        cacheSettings(worldSettings, BRSW2_CONFIG.WORLD_SETTINGS);
+        cacheSettings(worldSettings, WORLD_SETTINGS);
         SettingsUtils.setWorldSettings();
     }
 }
 
 export function updateCachedUserSettings() {
     //Update our cached user settings from the user's flags
-    const userSettings = SettingsUtils.getModuleFlag(game.user, BRSW2_CONFIG.USER_FLAGS.userSettings);
+    const userSettings = SettingsUtils.getModuleFlag(game.user, USER_FLAGS.userSettings);
     if (userSettings) {
-        cacheSettings(userSettings, BRSW2_CONFIG.USER_SETTINGS);
+        cacheSettings(userSettings, USER_SETTINGS);
         SettingsUtils.setUserSettings();
     }
 }
