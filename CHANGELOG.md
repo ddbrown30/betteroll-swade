@@ -1,6 +1,7 @@
 # Changelog
 
-# Version 5.13.3
+# Version 5.14.0
+* Added a setting to allow players to choose their own default behaviour for subtracting PP
 * Hide the PP/Ammo management buttons on non-owners
 
 # Version 5.13.2
