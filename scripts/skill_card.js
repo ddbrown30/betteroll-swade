@@ -209,7 +209,7 @@ export async function roll_skill(br_card, expend_bennie) {
  * @param item
  * @param distance
  * @param origin_token
- * @param target_token
+ * @param targetToken
  * @param skill
  * @param tn
  * @returns {number}
@@ -218,15 +218,15 @@ function calculate_generic_distance_modifier(
     item,
     distance,
     origin_token,
-    target_token,
+    targetToken,
     skill,
     tn,
     extra_data,
 ) {
     const range = item.system.range.split("/");
-    if (origin_token.document.elevation !== target_token.document.elevation) {
+    if (origin_token.document.elevation !== targetToken.document.elevation) {
         const h_diff = Math.abs(
-            origin_token.document.elevation - target_token.document.elevation,
+            origin_token.document.elevation - targetToken.document.elevation,
         );
         distance = Math.sqrt(Math.pow(h_diff, 2) + Math.pow(distance, 2));
     }
@@ -279,7 +279,7 @@ function calculate_generic_distance_modifier(
 /**
  * Calculates the distance between tokens
  * @param origin_token
- * @param target_token
+ * @param targetToken
  * @param item
  * @param tn
  * @param {SwadeItem} skill
@@ -287,7 +287,7 @@ function calculate_generic_distance_modifier(
  */
 export function calculate_distance(
     origin_token,
-    target_token,
+    targetToken,
     item,
     tn,
     skill,
@@ -298,7 +298,7 @@ export function calculate_distance(
     }
     const grid_unit = canvas.grid.distance;
     let use_parry_as_tn = false;
-    let distance = measureDistance(origin_token, target_token);
+    let distance = measureDistance(origin_token, targetToken);
     if (distance / grid_unit < 1 && item) {
         use_parry_as_tn = item.type !== "power";
     } else if (item) {
@@ -314,7 +314,7 @@ export function calculate_distance(
                 item,
                 distance,
                 origin_token,
-                target_token,
+                targetToken,
                 skill,
                 tn,
                 extra_data,
@@ -327,35 +327,35 @@ export function calculate_distance(
 /**
  * Gets the tn for a vehicle
  * @param tn
- * @param target_token
+ * @param targetToken
  */
-async function get_vehicle_tn(tn, target_token) {
-    tn.reason = `Veh - ${target_token.name}`;
+async function get_vehicle_tn(tn, targetToken) {
+    tn.reason = `Veh - ${targetToken.name}`;
     //lookup the vehicle operator and get their maneuveringSkill
     let operator_skill = 0;
-    const target_operator_id = target_token.actor.system.driver.id;
+    const target_operator_id = targetToken.actor.system.driver.id;
     const target_operator = await fromUuid(target_operator_id);
     const operatorItems = target_operator ? target_operator.items : [];
-    const maneuveringSkill = target_token.actor.system.driver.skill;
+    const maneuveringSkill = targetToken.actor.system.driver.skill;
     for (const value of operatorItems) {
         if (value.name === maneuveringSkill) {
             operator_skill = value.system.die.sides || 0;
         }
     }
-    tn.value = operator_skill / 2 + 2 + target_token.actor.system.handling;
+    tn.value = operator_skill / 2 + 2 + targetToken.actor.system.handling;
 }
 
 /**
  * Get a target number and modifiers from a token appropriated to a skill
  *
  * @param {Item} skill
- * @param {Token} target_token
+ * @param {Token} targetToken
  * @param {Token} origin_token
  * @param {Item} item
  */
 export async function get_tn_from_token(
     skill,
-    target_token,
+    targetToken,
     origin_token,
     origin_actor,
     item,
@@ -370,14 +370,14 @@ export async function get_tn_from_token(
     let use_parry_as_tn = is_fighting;
     if (origin_token) {
         if (is_fighting) {
-            const gangup = calculateGangUp(origin_token, target_token);
+            const gangup = calculateGangUp(origin_token, targetToken);
             if (gangup.bonus) {
                 tn.modifiers.push(new TraitModifier(gangup.name, gangup.bonus));
             }
         } else if (item && item.system.range) {
             use_parry_as_tn = calculate_distance(
                 origin_token,
-                target_token,
+                targetToken,
                 item,
                 tn,
                 skill,
@@ -386,24 +386,24 @@ export async function get_tn_from_token(
         }
     }
     if (use_parry_as_tn) {
-        if (target_token.actor.type !== "vehicle") {
-            tn.reason = `${game.i18n.localize("SWADE.Parry")} - ${target_token.name}`;
-            tn.value = parseInt(target_token.actor.system.stats.parry.value);
+        if (targetToken.actor.type !== "vehicle") {
+            tn.reason = `${game.i18n.localize("SWADE.Parry")} - ${targetToken.name}`;
+            tn.value = parseInt(targetToken.actor.system.stats.parry.value);
         } else {
-            await get_vehicle_tn(tn, target_token);
+            await get_vehicle_tn(tn, targetToken);
         }
     }
     // Size modifiers
-    if (shouldUseScale(origin_actor, target_token, item, skill)) {
-        getScaleModifier(origin_actor, target_token.actor, item, tn, extra_data);
+    if (shouldUseScale(origin_actor, targetToken, item, skill)) {
+        getScaleModifier(origin_actor, targetToken.actor, item, tn, extra_data);
     }
     if (
-        target_token.actor.system.status.isVulnerable ||
-        target_token.actor.system.status.isStunned
+        targetToken.actor.system.status.isVulnerable ||
+        targetToken.actor.system.status.isStunned
     ) {
         tn.modifiers.push(
             new TraitModifier(
-                `${target_token.name}: ${game.i18n.localize("SWADE.Vuln")}`,
+                `${targetToken.name}: ${game.i18n.localize("SWADE.Vuln")}`,
                 2,
             ),
         );
@@ -411,8 +411,8 @@ export async function get_tn_from_token(
     return tn;
 }
 
-function shouldUseScale(origin_actor, target_token, item, skill) {
-    if (!origin_actor || !target_token) return false;
+function shouldUseScale(origin_actor, targetToken, item, skill) {
+    if (!origin_actor || !targetToken) return false;
     if (item?.system?.isVehicular || origin_actor.type === "vehicle") return false;
 
     if (!item) {

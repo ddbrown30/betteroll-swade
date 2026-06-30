@@ -650,6 +650,18 @@ export class Utils {
 
         return playerValue === "enabled";
     }
+
+    static shouldShowInjury(heavyDamage) {
+        if (SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.grittyDamage)) {
+            return true;
+        }
+
+        if (SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.riftsGrittyDamage)) {
+            return heavyDamage;
+        }
+
+        return false;
+    }
 }
 
 export class SettingsUtils {
@@ -756,10 +768,6 @@ export class SettingsUtils {
 
         await SettingsUtils.unsetModuleFlag(game.user, USER_FLAGS.userSettings);
         await SettingsUtils.setModuleFlag(game.user, USER_FLAGS.userSettings, userSettings);
-    }
-
-    static isOptionalRuleEnabled(rule) {
-        return SettingsUtils.getSetting(SETTING_KEYS.enabledOptionalRules).indexOf(rule) > -1;
     }
 
     static hasModuleFlags(obj) {
@@ -875,34 +883,32 @@ export class TelemetryUtils {
 
     static sendModuleReadyEvent() {
         const worldSettings = {};
-        let nonDefaultSettings = [];
+        let nonDefaultSettings = {};
 
         Object.entries(WORLD_SETTINGS).forEach(([k, v]) => {
             if (v.value !== undefined && v.value !== v.default) {
                 worldSettings[k] = v.value;
                 worldSettings[`${k}_is_default`] = false;
-                nonDefaultSettings.push({ [k]: v.value });
+                nonDefaultSettings[k] = v.value;
             }
         });
 
-        const enabledOptionalRules = SettingsUtils.getSetting(SETTING_KEYS.enabledOptionalRules);
         TelemetryUtils.sendTelemetry("module_ready", false, {
             ...worldSettings,
-            enabled_optional_rules: enabledOptionalRules.length ? enabledOptionalRules : undefined,
             has_non_default_settings: nonDefaultSettings.length ? true : undefined,
-            non_default_settings: nonDefaultSettings.length ? nonDefaultSettings : undefined,
+            non_default_settings: Object.keys(nonDefaultSettings).length ? nonDefaultSettings : undefined,
         });
     }
 
     static sendUserReadyEvent() {
         const userSettings = {};
-        let nonDefaultSettings = [];
+        let nonDefaultSettings = {};
 
         Object.entries(USER_SETTINGS).forEach(([k, v]) => {
             if (v.value !== undefined && v.value !== v.default) {
                 userSettings[k] = v.value;
                 userSettings[`${k}_is_default`] = false;
-                nonDefaultSettings.push({ [k]: v.value });
+                nonDefaultSettings[k] = v.value;
             }
         });
 
@@ -911,7 +917,7 @@ export class TelemetryUtils {
             lang: game.i18n.lang,
             ...userSettings,
             has_non_default_settings: nonDefaultSettings.length ? true : undefined,
-            non_default_settings: nonDefaultSettings.length ? nonDefaultSettings : undefined,
+            non_default_settings: Object.keys(nonDefaultSettings).length ? nonDefaultSettings : undefined,
         });
     }
 }

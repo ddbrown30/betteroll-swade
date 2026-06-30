@@ -41,9 +41,12 @@
         </button>
     </div>
 {{/if}}
-{{#if show_injury}}
+{{#if showInjury}}
     <div class="brsw-button-row brsw-form twbr:border-t-1 twbr:mt-1 twbr:p-1">
-        <button class="brsw-injury-button twbr:w-full">
+        <button class="brsw-injury-button twbr:py-0.5 twbr:px-5 twbr:focus:outline-hidden
+                twbr:bg-white twbr:rounded-lg twbr:border twbr:border-solid twbr:focus:ring-4
+                twbr:focus:ring-gray-700 twbr:text-gray-800 twbr:border-gray-600
+                twbr:hover:text-white twbr:hover:bg-gray-700 twbr:w-full">
             {{localize 'BRSW.RollInjury'}}
         </button>
     </div>

@@ -5,7 +5,7 @@
 import { get_current_generic_mods } from "../config/generic_pp_modifiers.js";
 import { BrCommonCard } from "./BrCommonCard.js";
 import { brAction } from "./actions.js";
-import * as BRSW2_CONFIG from "./brsw2-config.js";
+import { USER_SETTING_KEYS, WORLD_SETTING_KEYS } from "./brsw2-config.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
 import {
     BRWSRoll,
@@ -79,7 +79,7 @@ export async function create_item_card(
     const ammoEnabled = parseInt(item.system.shots) || item.system.ammo;
     const is_power = !isNaN(parseFloat(item.system.pp)) || item.type === "power";
     const subtract_select = ammoEnabled
-        ? SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.defaultAmmoManagement)
+        ? SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.defaultAmmoManagement)
         : false;
 
     if (!damage && item.system.actions) {
@@ -230,7 +230,7 @@ function get_pp_mods(item) {
 }
 
 export function calc_pp_cost(br_card) {
-    if (SettingsUtils.isOptionalRuleEnabled("InnatePowersDontConsume") && br_card.item.system.innate) {
+    if (br_card.item.system.innate && !SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.innatePowersSpendPP)) {
         return 0;
     }
 
@@ -675,7 +675,7 @@ function get_trait_roll_difficulty(br_card) {
 }
 
 export async function displayPPChangeCard(actor, chatData) {
-    const show_card = SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.ppChangeCardBehaviour);
+    const show_card = SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.ppChangeCardBehaviour);
     if (show_card !== "none") {
         chatData.author = getAuthor(actor);
         chatData.speaker = { alias: actor.name };
@@ -707,7 +707,7 @@ export async function spendPP(br_card, prevSpentPP) {
     const actor = br_card.actor;
     const item = br_card.item;
 
-    if (SettingsUtils.isOptionalRuleEnabled("InnatePowersDontConsume") && item.system.innate) {
+    if (item.system.innate && !SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.innatePowersSpendPP)) {
         return 0;
     }
 
@@ -866,7 +866,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
     }
 
     extra_data.rof = br_message.item.system.rof || 1;
-    if (SettingsUtils.getUserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.defaultRateOfFire) === "single_shot") {
+    if (SettingsUtils.getUserSetting(USER_SETTING_KEYS.defaultRateOfFire) === "single_shot") {
         extra_data.rof = 1;
     }
 
@@ -992,7 +992,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
     ) {
         const dis_ammo_selected = html
             ? !!html.querySelector(".twbr\\:bg-red-700.brsw-ammo-toggle")
-            : SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.defaultAmmoManagement);
+            : SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.defaultAmmoManagement);
         if (dis_ammo_selected || macros.length) {
             br_message.render_data.used_shots =
                 shots_override || ROF_BULLETS[br_message.trait_roll.rof || 1];
@@ -1241,7 +1241,7 @@ async function roll_dmg_target(
 
     await roll_dice(message, damage_roll.brswroll, roll);
 
-    current_damage_roll.damage_result = calculate_damage_results(
+    current_damage_roll.damageResult = calculate_damage_results(
         current_damage_roll.brswroll.rolls,
     );
 
@@ -1608,7 +1608,7 @@ async function add_damage_dice(br_card, index) {
         });
         damage_rolls.dice.push(new_die);
     });
-    render_data.damage_rolls[index].damage_result = calculate_damage_results(
+    render_data.damage_rolls[index].damageResult = calculate_damage_results(
         damage_rolls.rolls,
     );
 
@@ -1653,7 +1653,7 @@ async function add_fixed_damage(target, br_card, form_results) {
     const damage_rolls = render_data.damage_rolls[index].brswroll;
     damage_rolls.modifiers.push({ value: modifier, name: form_results.Label });
     damage_rolls.rolls[0].result += modifier;
-    render_data.damage_rolls[index].damage_result = calculate_damage_results(
+    render_data.damage_rolls[index].damageResult = calculate_damage_results(
         damage_rolls.rolls,
     );
     await update_message(br_card, render_data);
@@ -1676,7 +1676,7 @@ async function half_damage(br_card, index) {
         name: game.i18n.localize("BRSW.HalfDamage"),
     });
     damage_rolls.rolls[0].result += half_damage;
-    render_data.damage_rolls[index].damage_result = calculate_damage_results(
+    render_data.damage_rolls[index].damageResult = calculate_damage_results(
         damage_rolls.rolls,
     );
     await update_message(br_card, render_data);
@@ -1696,7 +1696,7 @@ async function edit_toughness(br_card, index) {
     damage_rolls[0].armor = defense_values.armor;
     damage_rolls[0].target_id = defense_values.token_id || 0;
     render_data.damage_rolls[index].label = defense_values.name;
-    render_data.damage_rolls[index].damage_result =
+    render_data.damage_rolls[index].damageResult =
         calculate_damage_results(damage_rolls);
     // noinspection JSIgnoredPromiseFromCall
     await update_message(br_card, render_data);
