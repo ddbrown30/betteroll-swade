@@ -216,7 +216,7 @@
     "BRSW.Settings.ShiftClickAction.Hint": "Que se passe-t-il lorsque vous cliquez en maintenant MAJ",
     "BRSW.Shooting": "Tir",
     "BRSW.ShootingSkill": "tir",
-    "BRSW.ClickActionTypes.ShowBetterrollsCard": "Afficher le cartouche Better Roll",
+    "BRSW.ClickActionTypes.ShowBetterRollsCard": "Afficher le cartouche Better Roll",
     "BRSW.ClickActionTypes.ShowCardAndTrait": "Afficher le cartouche et jeter les dés (compétence)",
     "BRSW.ClickActionTypes.ShowCardDamage": "Afficher le cartouche et jeter les dés (compétence et dégâts)",
     "BRSW.Settings.SingleClickAction.Name": "Action sur simple clic",

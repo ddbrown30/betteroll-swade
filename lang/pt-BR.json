@@ -220,7 +220,7 @@
     "BRSW.Settings.ShiftClickAction.Hint": "Defina o que acontece quando você clica um nome segurando o SHIFT (Mundo)",
     "BRSW.Shooting": "Atirar",
     "BRSW.ShootingSkill": "Atirar",
-    "BRSW.ClickActionTypes.ShowBetterrollsCard": "Mostrar cartão do Betterrolls",
+    "BRSW.ClickActionTypes.ShowBetterRollsCard": "Mostrar cartão do Betterrolls",
     "BRSW.ClickActionTypes.ShowCardAndTrait": "Mostrar cartão e rolar característica",
     "BRSW.ClickActionTypes.ShowCardDamage": "Mostrar cartão e rolar característica e dano",
     "BRSW.Settings.SingleClickAction.Name": "Ação de clique único",

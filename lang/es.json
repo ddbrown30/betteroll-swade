@@ -218,7 +218,7 @@
     "BRSW.Settings.ShiftClickAction.Hint": "Elige que ocurre cuando haces un clic a nombre mientras pulsas mayúsculas (Mundo)",
     "BRSW.Shooting": "Disparar",
     "BRSW.ShootingSkill": "disparar",
-    "BRSW.ClickActionTypes.ShowBetterrollsCard": "Ver la carta de Betterrolls",
+    "BRSW.ClickActionTypes.ShowBetterRollsCard": "Ver la carta de Betterrolls",
     "BRSW.ClickActionTypes.ShowCardAndTrait": "Ver la carta y hacer la tirada de Betterrolls",
     "BRSW.ClickActionTypes.ShowCardDamage": "Ver la carta y tirar daño y habilidad",
     "BRSW.Settings.SingleClickAction.Name": "Acción de click normal",

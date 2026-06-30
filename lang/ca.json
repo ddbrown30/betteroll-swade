@@ -219,7 +219,7 @@
     "BRSW.Settings.ShiftClickAction.Hint": "Tria que passa quan fas un clic mentres prems MAJÚSCULA",
     "BRSW.Shooting": "Disparar",
     "BRSW.ShootingSkill": "Disparar",
-    "BRSW.ClickActionTypes.ShowBetterrollsCard": "Veure la carta de Betterrolls",
+    "BRSW.ClickActionTypes.ShowBetterRollsCard": "Veure la carta de Betterrolls",
     "BRSW.ClickActionTypes.ShowCardAndTrait": "Veure la carta i fer la tirada de Betterrolls",
     "BRSW.ClickActionTypes.ShowCardDamage": "Veure la carta i triar mal i habilitat",
     "BRSW.Settings.SingleClickAction.Name": "Acció de clic normal",

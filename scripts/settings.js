@@ -91,7 +91,7 @@ export function registerSettings() {
 function registerWorldSettings() {
     const clickActionChoices = {
         system: game.i18n.localize("BRSW.ClickActionTypes.DefaultSystemRoll"),
-        card: game.i18n.localize("BRSW.ClickActionTypes.ShowBetterrollsCard"),
+        card: game.i18n.localize("BRSW.ClickActionTypes.ShowBetterRollsCard"),
         dialog: game.i18n.localize("BRSW.ClickActionTypes.ShowDialog"),
         trait: game.i18n.localize("BRSW.ClickActionTypes.ShowCardAndTrait"),
         trait_damage: game.i18n.localize("BRSW.ClickActionTypes.ShowCardDamage"),
@@ -180,14 +180,6 @@ function registerWorldSettings() {
         group: "BRSW.Settings.PowersGroup",
     });
 
-    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.disableGangUp, {
-        name: game.i18n.localize("BRSW.Settings.DisableGangUp.Name"),
-        hint: game.i18n.localize("BRSW.Settings.DisableGangUp.Hint"),
-        default: false,
-        type: Boolean,
-        group: "BRSW.Settings.RulesGroup",
-    });
-
     SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.ppChangeCardBehaviour, {
         name: game.i18n.localize("BRSW.Settings.PPChangeCardBehaviour.Name"),
         hint: game.i18n.localize("BRSW.Settings.PPChangeCardBehaviour.Hint"),
@@ -200,14 +192,6 @@ function registerWorldSettings() {
             master_and_gm: game.i18n.localize("BRSW.VisibilityTypes.OwnersAndGM"),
             everybody: game.i18n.localize("BRSW.VisibilityTypes.Everybody"),
         },
-    });
-
-    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.swdUnshake, {
-        name: game.i18n.localize("BRSW.Settings.SWDUnshake.Name"),
-        hint: game.i18n.localize("BRSW.Settings.SWDUnshake.Hint"),
-        default: false,
-        type: Boolean,
-        group: "BRSW.Settings.RulesGroup",
     });
 
     SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.grittyDamage, {
@@ -259,9 +243,33 @@ function registerWorldSettings() {
         group: "BRSW.Settings.MeasurementGroup",
     });
 
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.measureFromEdge, {
+        name: "BRSW.Settings.MeasureFromEdge.Name",
+        hint: "BRSW.Settings.MeasureFromEdge.Hint",
+        type: Boolean,
+        default: false,
+        group: "BRSW.Settings.MeasurementGroup",
+    });
+
     SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.undeadIgnoresIllumination, {
         name: game.i18n.localize("BRSW.Settings.UndeadIgnoresIllumination.Name"),
         hint: game.i18n.localize("BRSW.Settings.UndeadIgnoresIllumination.Hint"),
+        default: false,
+        type: Boolean,
+        group: "BRSW.Settings.RulesGroup",
+    });
+
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.disableGangUp, {
+        name: game.i18n.localize("BRSW.Settings.DisableGangUp.Name"),
+        hint: game.i18n.localize("BRSW.Settings.DisableGangUp.Hint"),
+        default: false,
+        type: Boolean,
+        group: "BRSW.Settings.RulesGroup",
+    });
+
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.swdUnshake, {
+        name: game.i18n.localize("BRSW.Settings.SWDUnshake.Name"),
+        hint: game.i18n.localize("BRSW.Settings.SWDUnshake.Hint"),
         default: false,
         type: Boolean,
         group: "BRSW.Settings.RulesGroup",
@@ -272,14 +280,6 @@ function registerWorldSettings() {
         hint: "BRSW.Settings.AutoCheckExtraCritFailures.Hint",
         type: Boolean,
         default: true,
-    });
-
-    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.measureFromEdge, {
-        name: "BRSW.Settings.MeasureFromEdge.Name",
-        hint: "BRSW.Settings.MeasureFromEdge.Hint",
-        type: Boolean,
-        default: false,
-        group: "BRSW.Settings.MeasurementGroup",
     });
 }
 

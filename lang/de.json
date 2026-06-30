@@ -220,7 +220,7 @@
     "BRSW.Settings.ShiftClickAction.Hint": "Definiert die Aktion, die bei SHIFT + Linksklick ausgeführt wird",
     "BRSW.Shooting": "Schießen",
     "BRSW.ShootingSkill": "Schießen",
-    "BRSW.ClickActionTypes.ShowBetterrollsCard": "Zeige Better Rolls Chatkarte",
+    "BRSW.ClickActionTypes.ShowBetterRollsCard": "Zeige Better Rolls Chatkarte",
     "BRSW.ClickActionTypes.ShowCardAndTrait": "Zeige Chatkarte und Eigenschaftsprobe",
     "BRSW.ClickActionTypes.ShowCardDamage": "Zeige Chatkarte, Eigenschaftsprobe und Schadenswurf",
     "BRSW.Settings.SingleClickAction.Name": "Aktion bei Linksklick",

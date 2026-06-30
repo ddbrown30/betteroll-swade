@@ -183,7 +183,7 @@
     "BRSW.Settings.ShiftClickAction.Hint": "Seleziona cosa succede quando clicchi sul nome tenendo premuto Maiusc",
     "BRSW.Shooting": "Consuma",
     "BRSW.ShootingSkill": "sparare",
-    "BRSW.ClickActionTypes.ShowBetterrollsCard": "Mostra la card di Betterrolls",
+    "BRSW.ClickActionTypes.ShowBetterRollsCard": "Mostra la card di Betterrolls",
     "BRSW.ClickActionTypes.ShowCardAndTrait": "Mostra la card di Betterrolls e tira il Dado del Tratto",
     "BRSW.ClickActionTypes.ShowCardDamage": "Mostra la card di Betterrolls e tira il Dado del Tratto e i Danni",
     "BRSW.Settings.SingleClickAction.Name": "Azione con singolo click",

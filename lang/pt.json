@@ -206,7 +206,7 @@
     "BRSW.Shaken": "Abalado",
     "BRSW.Settings.ShiftClickAction.Name": "Ação shift-clique",
     "BRSW.Settings.ShiftClickAction.Hint": "Defina o que acontece quando clica num nome segurando o SHIFT (Mundo)",
-    "BRSW.ClickActionTypes.ShowBetterrollsCard": "Mostrar cartão do Betterrolls",
+    "BRSW.ClickActionTypes.ShowBetterRollsCard": "Mostrar cartão do Betterrolls",
     "BRSW.ClickActionTypes.ShowCardAndTrait": "Mostrar cartão e rolar característica",
     "BRSW.ClickActionTypes.ShowCardDamage": "Mostrar cartão e rolar característica e dano",
     "BRSW.Settings.SingleClickAction.Name": "Ação de clique único",
