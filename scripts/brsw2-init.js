@@ -146,9 +146,15 @@ Hooks.on("renderChatMessageHTML", (message, html, options) => {
 
         // Hide forms to non-master, non owner
         if (!message.isOwner) {
-            html
-                .querySelectorAll(".brsw-form")
-                .forEach((e) => e.classList.add("brsw-collapsed"));
+            html.querySelectorAll(".brsw-form").forEach((e) => e.classList.add("brsw-collapsed"));
+        }
+
+        if (!message.isOwner) {
+            //Remove the PP and ammo management buttons for non-owners
+            html.querySelector(".brsw-pp-toggle")?.remove();
+            html.querySelector(".brsw-pp-manual")?.remove();
+            html.querySelector(".brsw-ammo-toggle")?.remove();
+            html.querySelector(".brsw-ammo-manual")?.remove();
         }
 
         // Hide master only sections
@@ -161,8 +167,7 @@ Hooks.on("renderChatMessageHTML", (message, html, options) => {
             html.querySelectorAll(".brsw-owner-trusted-only").forEach((e) => e.remove());
         }
 
-        if (Object.keys(message.apps).length < 1) {
-            // Don't create a popout when rendering popouts
+        if (Object.keys(message.apps).length < 1) { // Don't create a popout when rendering popouts
             card.createPopout();
         }
 
