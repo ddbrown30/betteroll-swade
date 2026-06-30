@@ -22,9 +22,7 @@
             {{#if ammo}}
                 <span>
                     <span class="brws-common-modifiers brsw-form twbr:flex">
-                        {{#if showShotsPPInfo}}
-                            <span class="twbr:self-center brsw-shots-pp">{{shots_pp_info}}</span>
-                        {{/if}}
+                        <span class="twbr:self-center brsw-shots-pp">{{shots_pp_info}}</span>
                         <img src="modules/betterrolls-swade2/assets/bullet.svg" alt="ammo" title="{{localize 'BRSW.SubtractAmmo'}}" class="twbr:w-6 brsw-ammo-toggle twbr:cursor-pointer twbr:border twbr:border-solid
                             twbr:border-slate-400 twbr:m-1 twbr:rounded twbr:hover:ring-2
                             twbr:hover:ring-offset-1
@@ -40,22 +38,20 @@
         <div class="twbr:relative twbr:flex twbr:justify-between">
             {{#if is_power}}
                 <span class="brws-common-modifiers brsw-form twbr:flex twbr:grow twbr:gap-1">
-                    {{#if showShotsPPInfo}}
-                        {{#if noPowerPoints}}
+                    {{#if noPowerPoints}}
                         <div class="twbr:self-center">
                             <span class="twbr:font-bold">{{localize "BRSW.PPPenalty"}}: </span>
                             <span class="brsw-pp-penalty">{{ppPenalty}}</span>
                         </div>
-                        {{else}}
-                            <div class="twbr:self-center">
-                                <span class="twbr:font-bold">{{localize "BRSW.PPCurrent"}}: </span>
-                                <span class="brsw-shots-pp">{{shots_pp_info}}</span>
-                            </div>
+                    {{else}}
+                        <div class="twbr:self-center">
+                            <span class="twbr:font-bold">{{localize "BRSW.PPCurrent"}}: </span>
+                            <span class="brsw-shots-pp">{{shots_pp_info}}</span>
+                        </div>
                         <div class="twbr:self-center">
                             <span class="twbr:font-bold">{{localize "BRSW.PPCost"}}: </span>
                             <span class="brsw-pp-cost">{{pp_cost}}</span>
                         </div>
-                        {{/if}}
                     {{/if}}
                     <div class="twbr:flex twbr:ml-auto">
                         {{#unless noPowerPoints}}

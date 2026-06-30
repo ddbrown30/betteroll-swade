@@ -823,7 +823,7 @@ export class BrCommonCard {
         data.supports_manual_mods = !!(this.attribute_name || this.skill || this.damage);
         data.noPowerPoints = game.settings.get("swade", "noPowerPoints");
         data.ppPenalty = -Math.ceil(this.pp_cost / 2);
-        data.shots_pp_info = data.showShotsPPInfo ? this.itemShots : "";
+        data.shots_pp_info = this.itemShots;
         data.applicable_effects = this.applicable_effects;
         return data;
     }
