@@ -1,4 +1,5 @@
-import * as BRSW2_CONFIG from "./brsw2-config.js";
+
+import { MAX_NOPP_PENALTY_ACTION, MODULE_NAME, SETTING_KEYS, USER_FLAGS, USER_SETTINGS, USER_SETTING_KEYS, WORLD_SETTINGS, WORLD_SETTING_KEYS } from "./brsw2-config.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
 
 // Utility functions that can be used out of the module
@@ -228,7 +229,7 @@ export function addEventListenerAll(
 }
 
 function measurePath(waypoints) {
-    const use_grid_calc = SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.rangeCalcGrid);
+    const use_grid_calc = SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.rangeCalcGrid);
     const path = canvas.grid.measurePath(waypoints);
     return use_grid_calc ? path.distance : path.euclidean;
 }
@@ -304,7 +305,7 @@ export function measureDistance(tokenA, tokenB) {
         closestPair.b.coords,
     ]);
 
-    if (SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.measureFromEdge)) {
+    if (SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.measureFromEdge)) {
         //If we're measuring from the edge, we need to offset from the center of the grid space to the edge
         //To do this, we need to find the intersection distance from center to edge based on the angle between the two tokens
         const dist = Math.sqrt(closestPair.dist);
@@ -624,7 +625,7 @@ export class Utils {
 
         let penalty = Math.ceil(ppCost / 2);
 
-        for (let p = BRSW2_CONFIG.MAX_NOPP_PENALTY_ACTION; p >= 1 && penalty > 0; --p) {
+        for (let p = MAX_NOPP_PENALTY_ACTION; p >= 1 && penalty > 0; --p) {
             if (penalty >= p) {
                 result.push(p);
                 penalty -= p;
@@ -632,6 +633,22 @@ export class Utils {
         }
 
         return result;
+    }
+
+    static getDefaultPPManagementSetting() {
+        const playerChoiceEnabled = SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.ppManagementPlayerChoice);
+        const worldValue = SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.defaultPPManagement);
+
+        if (!playerChoiceEnabled) {
+            return worldValue;
+        }
+
+        const playerValue = SettingsUtils.getUserSetting(USER_SETTING_KEYS.playerDefaultPPManagement);
+        if (playerValue === "world") {
+            return worldValue;
+        }
+
+        return playerValue === "enabled";
     }
 }
 
@@ -642,7 +659,7 @@ export class SettingsUtils {
      * @returns {Object} setting
      */
     static getSetting(key) {
-        return game.settings.get(BRSW2_CONFIG.MODULE_NAME, key);
+        return game.settings.get(MODULE_NAME, key);
     }
 
     /**
@@ -653,7 +670,7 @@ export class SettingsUtils {
      */
     static async setSetting(key, value) {
         await game.settings
-            .set(BRSW2_CONFIG.MODULE_NAME, key, value)
+            .set(MODULE_NAME, key, value)
             .then((result) => {
                 return result;
             })
@@ -668,7 +685,7 @@ export class SettingsUtils {
      * @param {*} metadata
      */
     static registerSetting(key, metadata) {
-        return game.settings.register(BRSW2_CONFIG.MODULE_NAME, key, metadata);
+        return game.settings.register(MODULE_NAME, key, metadata);
     }
 
     /**
@@ -677,7 +694,7 @@ export class SettingsUtils {
      * @param {*} metadata
      */
     static registerMenu(key, metadata) {
-        return game.settings.registerMenu(BRSW2_CONFIG.MODULE_NAME, key, metadata);
+        return game.settings.registerMenu(MODULE_NAME, key, metadata);
     }
 
     /**
@@ -686,7 +703,7 @@ export class SettingsUtils {
      * @param {*} metadata
      */
     static registerBR2WorldSetting(key, metadata) {
-        if (BRSW2_CONFIG.WORLD_SETTINGS[key] || BRSW2_CONFIG.USER_SETTINGS[key]) {
+        if (WORLD_SETTINGS[key] || USER_SETTINGS[key]) {
             console.error("Duplicate setting key");
             return;
         }
@@ -694,7 +711,7 @@ export class SettingsUtils {
         const setting = {};
         setting.key = key;
         foundry.utils.mergeObject(setting, metadata);
-        BRSW2_CONFIG.WORLD_SETTINGS[key] = setting;
+        WORLD_SETTINGS[key] = setting;
     }
 
     static async setWorldSettings() {
@@ -703,13 +720,13 @@ export class SettingsUtils {
         }
 
         const worldSettings = Object.fromEntries(
-            Object.entries(BRSW2_CONFIG.WORLD_SETTINGS).filter(([key, value]) => value.value !== undefined && value.value !== value.default).map(([key, value]) => [
+            Object.entries(WORLD_SETTINGS).filter(([key, value]) => value.value !== undefined && value.value !== value.default).map(([key, value]) => [
                 key,
                 value.value
             ])
         );
 
-        await SettingsUtils.setSetting(BRSW2_CONFIG.SETTING_KEYS.worldSettings, worldSettings);
+        await SettingsUtils.setSetting(SETTING_KEYS.worldSettings, worldSettings);
     }
 
     /**
@@ -718,7 +735,7 @@ export class SettingsUtils {
      * @param {*} metadata
      */
     static registerBR2UserSetting(key, metadata) {
-        if (BRSW2_CONFIG.WORLD_SETTINGS[key] || BRSW2_CONFIG.USER_SETTINGS[key]) {
+        if (WORLD_SETTINGS[key] || USER_SETTINGS[key]) {
             console.error("Duplicate setting key");
             return;
         }
@@ -726,23 +743,23 @@ export class SettingsUtils {
         const setting = {};
         setting.key = key;
         foundry.utils.mergeObject(setting, metadata);
-        BRSW2_CONFIG.USER_SETTINGS[key] = setting;
+        USER_SETTINGS[key] = setting;
     }
 
     static async setUserSettings() {
         const userSettings = Object.fromEntries(
-            Object.entries(BRSW2_CONFIG.USER_SETTINGS).filter(([key, value]) => value.value !== undefined && value.value !== value.default).map(([key, value]) => [
+            Object.entries(USER_SETTINGS).filter(([key, value]) => value.value !== undefined && value.value !== value.default).map(([key, value]) => [
                 key,
                 value.value
             ])
         );
 
-        await SettingsUtils.unsetModuleFlag(game.user, BRSW2_CONFIG.USER_FLAGS.userSettings);
-        await SettingsUtils.setModuleFlag(game.user, BRSW2_CONFIG.USER_FLAGS.userSettings, userSettings);
+        await SettingsUtils.unsetModuleFlag(game.user, USER_FLAGS.userSettings);
+        await SettingsUtils.setModuleFlag(game.user, USER_FLAGS.userSettings, userSettings);
     }
 
     static isOptionalRuleEnabled(rule) {
-        return SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.enabledOptionalRules).indexOf(rule) > -1;
+        return SettingsUtils.getSetting(SETTING_KEYS.enabledOptionalRules).indexOf(rule) > -1;
     }
 
     static hasModuleFlags(obj) {
@@ -750,7 +767,7 @@ export class SettingsUtils {
             return false;
         }
 
-        return !!obj.flags[BRSW2_CONFIG.MODULE_NAME];
+        return !!obj.flags[MODULE_NAME];
     }
 
     static getModuleFlag(obj, flag) {
@@ -758,35 +775,35 @@ export class SettingsUtils {
             return;
         }
 
-        return obj.flags[BRSW2_CONFIG.MODULE_NAME][flag];
+        return obj.flags[MODULE_NAME][flag];
     }
 
     static async setModuleFlag(obj, flag, data) {
-        return await obj.setFlag(BRSW2_CONFIG.MODULE_NAME, flag, data);
+        return await obj.setFlag(MODULE_NAME, flag, data);
     }
 
     static async unsetModuleFlag(obj, flag) {
-        return await obj.unsetFlag(BRSW2_CONFIG.MODULE_NAME, flag);
+        return await obj.unsetFlag(MODULE_NAME, flag);
     }
 
     static getWorldSetting(key) {
-        if (!BRSW2_CONFIG.WORLD_SETTINGS[key]) {
+        if (!WORLD_SETTINGS[key]) {
             return;
         }
 
-        return BRSW2_CONFIG.WORLD_SETTINGS[key].value !== undefined
-            ? BRSW2_CONFIG.WORLD_SETTINGS[key].value
-            : BRSW2_CONFIG.WORLD_SETTINGS[key].default;
+        return WORLD_SETTINGS[key].value !== undefined
+            ? WORLD_SETTINGS[key].value
+            : WORLD_SETTINGS[key].default;
     }
 
     static getUserSetting(key) {
-        if (!BRSW2_CONFIG.USER_SETTINGS[key]) {
+        if (!USER_SETTINGS[key]) {
             return;
         }
 
-        return BRSW2_CONFIG.USER_SETTINGS[key].value !== undefined
-            ? BRSW2_CONFIG.USER_SETTINGS[key].value
-            : BRSW2_CONFIG.USER_SETTINGS[key].default;
+        return USER_SETTINGS[key].value !== undefined
+            ? USER_SETTINGS[key].value
+            : USER_SETTINGS[key].default;
     }
 }
 
@@ -798,17 +815,17 @@ export class TelemetryUtils {
             return;
         }
 
-        let id = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.telemetryWorldInstallId);
+        let id = SettingsUtils.getSetting(SETTING_KEYS.telemetryWorldInstallId);
         if (!id) {
             id = foundry.utils.randomID();
-            await SettingsUtils.setSetting(BRSW2_CONFIG.SETTING_KEYS.telemetryWorldInstallId, id);
+            await SettingsUtils.setSetting(SETTING_KEYS.telemetryWorldInstallId, id);
         }
 
         return id;
     }
 
     static async getWorldInstallId() {
-        let id = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.telemetryWorldInstallId);
+        let id = SettingsUtils.getSetting(SETTING_KEYS.telemetryWorldInstallId);
         if (!id) {
             console.warn("Getting the world install ID before it has been set");
 
@@ -819,7 +836,7 @@ export class TelemetryUtils {
     }
 
     static async sendTelemetry(event, includeUserId, properties = {}) {
-        if (SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.telemetryOptOut)) return;
+        if (SettingsUtils.getSetting(SETTING_KEYS.telemetryOptOut)) return;
 
         const installId = await TelemetryUtils.getWorldInstallId();
         if (!installId) {
@@ -828,15 +845,15 @@ export class TelemetryUtils {
 
         const distinctId = includeUserId ? `${installId}:${game.user.id}` : installId;
 
-        const br2Version = game.modules.get(BRSW2_CONFIG.MODULE_NAME).version;
+        const br2Version = game.modules.get(MODULE_NAME).version;
 
         properties = {
             ...properties,
-            module: BRSW2_CONFIG.MODULE_NAME,
+            module: MODULE_NAME,
             moduleVersion: br2Version,
             foundryVersion: game.version,
             isTest: br2Version === "0.0.0",
-        }
+        };
 
         try {
             await fetch("https://us.i.posthog.com/capture/", {
@@ -860,7 +877,7 @@ export class TelemetryUtils {
         const worldSettings = {};
         let nonDefaultSettings = [];
 
-        Object.entries(BRSW2_CONFIG.WORLD_SETTINGS).forEach(([k, v]) => {
+        Object.entries(WORLD_SETTINGS).forEach(([k, v]) => {
             if (v.value !== undefined && v.value !== v.default) {
                 worldSettings[k] = v.value;
                 worldSettings[`${k}_is_default`] = false;
@@ -868,7 +885,7 @@ export class TelemetryUtils {
             }
         });
 
-        const enabledOptionalRules = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.enabledOptionalRules);
+        const enabledOptionalRules = SettingsUtils.getSetting(SETTING_KEYS.enabledOptionalRules);
         TelemetryUtils.sendTelemetry("module_ready", false, {
             ...worldSettings,
             enabled_optional_rules: enabledOptionalRules.length ? enabledOptionalRules : undefined,
@@ -881,7 +898,7 @@ export class TelemetryUtils {
         const userSettings = {};
         let nonDefaultSettings = [];
 
-        Object.entries(BRSW2_CONFIG.USER_SETTINGS).forEach(([k, v]) => {
+        Object.entries(USER_SETTINGS).forEach(([k, v]) => {
             if (v.value !== undefined && v.value !== v.default) {
                 userSettings[k] = v.value;
                 userSettings[`${k}_is_default`] = false;
@@ -891,7 +908,7 @@ export class TelemetryUtils {
 
         TelemetryUtils.sendTelemetry("user_ready", true, {
             isGM: game.user.isGM,
-            lang:game.i18n.lang,
+            lang: game.i18n.lang,
             ...userSettings,
             has_non_default_settings: nonDefaultSettings.length ? true : undefined,
             non_default_settings: nonDefaultSettings.length ? nonDefaultSettings : undefined,

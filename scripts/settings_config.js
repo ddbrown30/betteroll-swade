@@ -1,7 +1,8 @@
 // An aplication to manage the settings
 
+import { USER_SETTINGS, USER_SETTING_KEYS, WORLD_SETTINGS, WORLD_SETTING_KEYS } from "./brsw2-config.js";
 import { SettingsUtils } from "./utils.js";
-import * as BRSW2_CONFIG from "./brsw2-config.js";
+
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -83,15 +84,15 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 context.worldSettings = [];
                 context.groups = {};
 
-                const clickActionKeys = BRSW2_CONFIG.WORLD_SETTING_KEYS.clickActionKeys;
+                const clickActionKeys = WORLD_SETTING_KEYS.clickActionKeys;
                 context.clickSettings = [
-                    this.getSettingData(BRSW2_CONFIG.WORLD_SETTINGS[clickActionKeys.click]),
-                    this.getSettingData(BRSW2_CONFIG.WORLD_SETTINGS[clickActionKeys.shiftClick]),
-                    this.getSettingData(BRSW2_CONFIG.WORLD_SETTINGS[clickActionKeys.ctrlClick]),
-                    this.getSettingData(BRSW2_CONFIG.WORLD_SETTINGS[clickActionKeys.altClick]),
+                    this.getSettingData(WORLD_SETTINGS[clickActionKeys.click]),
+                    this.getSettingData(WORLD_SETTINGS[clickActionKeys.shiftClick]),
+                    this.getSettingData(WORLD_SETTINGS[clickActionKeys.ctrlClick]),
+                    this.getSettingData(WORLD_SETTINGS[clickActionKeys.altClick]),
                 ];
 
-                for (let setting of Object.values(BRSW2_CONFIG.WORLD_SETTINGS)) {
+                for (let setting of Object.values(WORLD_SETTINGS)) {
                     if (context.clickSettings.find(s => s.key === setting.key)) continue;
                     if (setting.group) {
                         context.groups[setting.group] ??= [];
@@ -103,7 +104,13 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 break;
             case 'user':
                 context.userSettings = [];
-                for (let setting of Object.values(BRSW2_CONFIG.USER_SETTINGS)) {
+                for (let setting of Object.values(USER_SETTINGS)) {
+                    if (setting.key === USER_SETTING_KEYS.playerDefaultPPManagement) {
+                        if (!SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.ppManagementPlayerChoice)) {
+                            //If this is the playerDefaultPPManagement setting and player choice is not enabled, don't render this setting
+                            continue;
+                        }
+                    }
                     context.userSettings.push(this.getSettingData(setting));
                 }
                 break;
@@ -137,14 +144,14 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         let requiresWorldReload = false;
         let requiresClientReload = false;
         for (let [k, v] of Object.entries(foundry.utils.expandObject(formData.object))) {
-            if (canModifyWorld && BRSW2_CONFIG.WORLD_SETTINGS[k] && BRSW2_CONFIG.WORLD_SETTINGS[k].value !== v) {
-                BRSW2_CONFIG.WORLD_SETTINGS[k].value = v;
-                if (v === BRSW2_CONFIG.WORLD_SETTINGS[k].default) continue;
-                requiresWorldReload = requiresWorldReload || !!BRSW2_CONFIG.WORLD_SETTINGS[k].requiresReload;
-            } else if (BRSW2_CONFIG.USER_SETTINGS[k] && BRSW2_CONFIG.USER_SETTINGS[k].value !== v) {
-                BRSW2_CONFIG.USER_SETTINGS[k].value = v;
-                if (v === BRSW2_CONFIG.USER_SETTINGS[k].default) continue;
-                requiresClientReload = requiresClientReload || !!BRSW2_CONFIG.USER_SETTINGS[k].requiresReload;
+            if (canModifyWorld && WORLD_SETTINGS[k] && WORLD_SETTINGS[k].value !== v) {
+                WORLD_SETTINGS[k].value = v;
+                if (v === WORLD_SETTINGS[k].default) continue;
+                requiresWorldReload = requiresWorldReload || !!WORLD_SETTINGS[k].requiresReload;
+            } else if (USER_SETTINGS[k] && USER_SETTINGS[k].value !== v) {
+                USER_SETTINGS[k].value = v;
+                if (v === USER_SETTINGS[k].default) continue;
+                requiresClientReload = requiresClientReload || !!USER_SETTINGS[k].requiresReload;
             }
         }
 
@@ -228,14 +235,14 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         let requiresWorldReload = false;
         let requiresClientReload = false;
         if (dataTab === "world") {
-            for (let setting of Object.values(BRSW2_CONFIG.WORLD_SETTINGS)) {
+            for (let setting of Object.values(WORLD_SETTINGS)) {
                 if (setting.requiresReload && setting.value !== undefined && setting.value !== setting.default) {
                     requiresWorldReload = true;
                 }
                 delete setting.value;
             }
         } else if (dataTab === "user") {
-            for (let setting of Object.values(BRSW2_CONFIG.USER_SETTINGS)) {
+            for (let setting of Object.values(USER_SETTINGS)) {
                 if (setting.requiresReload && setting.value !== undefined && setting.value !== setting.default) {
                     requiresClientReload = true;
                 }
