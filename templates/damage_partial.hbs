@@ -28,12 +28,12 @@
                         {{{this.result_icon}}}
                     </span>
                 {{/if}}
-                {{#if ../damage_result}}
+                {{#if ../damageResult}}
                     {{#if this.target_id}}
                         <button class="brsw-master-only brsw-row-button brsw-apply-damage twbr:py-0.5
                                 twbr:px-0.5 twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg twbr:border
                                 twbr:border-solid twbr:focus:ring-4 twbr:focus:ring-gray-700
-                                twbr:text-gray-800 twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700" title="{{localize 'BRSW.ApplyDamage'}}" data-token="{{this.target_id}}" data-damage="{{../damage_result}}" data-heavy-damage="{{../../item.system.isHeavyWeapon}}">
+                                twbr:text-gray-800 twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700" title="{{localize 'BRSW.ApplyDamage'}}" data-token="{{this.target_id}}" data-damage="{{../damageResult}}" data-heavy-damage="{{../../item.system.isHeavyWeapon}}">
                             <i class="fas fa-check"></i><i class="fas fa-tint"></i>
                         </button>
                     {{/if}}

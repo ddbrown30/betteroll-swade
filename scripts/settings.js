@@ -1,7 +1,6 @@
 
 import { SETTING_KEYS, USER_FLAGS, USER_SETTINGS, USER_SETTING_KEYS, WORLD_SETTINGS, WORLD_SETTING_KEYS } from "./brsw2-config.js";
 import { GlobalActionsMenu } from "./global-actions-menu.js";
-import { OptionalRulesConfiguration } from "./optional_rules.js";
 import { SettingsConfig } from "./settings_config.js";
 import { SettingsUtils } from "./utils.js";
 import { WorldGlobalActions } from "./world-global-actions.js";
@@ -30,13 +29,6 @@ export function registerSettings() {
         label: "BRSW.Settings.WorldGlobalMenu.Label",
         hint: "BRSW.Settings.WorldGlobalMenu.Hint",
         type: WorldGlobalActions,
-    });
-
-    SettingsUtils.registerMenu("optional_rules", {
-        name: "BRSW.Settings.OptionalRules.Name",
-        label: "BRSW.Settings.OptionalRules.Label",
-        hint: "BRSW.Settings.OptionalRules.Hint",
-        type: OptionalRulesConfiguration,
     });
 
     // Register core settings. These should be config:false settings only. Everything else should be a world or user setting
@@ -99,7 +91,7 @@ export function registerSettings() {
 function registerWorldSettings() {
     const clickActionChoices = {
         system: game.i18n.localize("BRSW.ClickActionTypes.DefaultSystemRoll"),
-        card: game.i18n.localize("BRSW.ClickActionTypes.ShowBetterrollsCard"),
+        card: game.i18n.localize("BRSW.ClickActionTypes.ShowBetterRollsCard"),
         dialog: game.i18n.localize("BRSW.ClickActionTypes.ShowDialog"),
         trait: game.i18n.localize("BRSW.ClickActionTypes.ShowCardAndTrait"),
         trait_damage: game.i18n.localize("BRSW.ClickActionTypes.ShowCardDamage"),
@@ -188,14 +180,6 @@ function registerWorldSettings() {
         group: "BRSW.Settings.PowersGroup",
     });
 
-    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.disableGangUp, {
-        name: game.i18n.localize("BRSW.Settings.DisableGangUp.Name"),
-        hint: game.i18n.localize("BRSW.Settings.DisableGangUp.Hint"),
-        default: false,
-        type: Boolean,
-        group: "BRSW.Settings.RulesGroup",
-    });
-
     SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.ppChangeCardBehaviour, {
         name: game.i18n.localize("BRSW.Settings.PPChangeCardBehaviour.Name"),
         hint: game.i18n.localize("BRSW.Settings.PPChangeCardBehaviour.Hint"),
@@ -210,9 +194,33 @@ function registerWorldSettings() {
         },
     });
 
-    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.swdUnshake, {
-        name: game.i18n.localize("BRSW.Settings.SWDUnshake.Name"),
-        hint: game.i18n.localize("BRSW.Settings.SWDUnshake.Hint"),
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.grittyDamage, {
+        name: game.i18n.localize("BRSW.Settings.GrittyDamage.Name"),
+        hint: game.i18n.localize("BRSW.Settings.GrittyDamage.Hint"),
+        default: false,
+        type: Boolean,
+        group: "BRSW.Settings.RulesGroup",
+    });
+
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.riftsGrittyDamage, {
+        name: game.i18n.localize("BRSW.Settings.RiftsGrittyDamage.Name"),
+        hint: game.i18n.localize("BRSW.Settings.RiftsGrittyDamage.Hint"),
+        default: false,
+        type: Boolean,
+        group: "BRSW.Settings.RulesGroup",
+    });
+
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.innatePowersSpendPP, {
+        name: game.i18n.localize("BRSW.Settings.InnatePowersSpendPP.Name"),
+        hint: game.i18n.localize("BRSW.Settings.InnatePowersSpendPP.Hint"),
+        default: false,
+        type: Boolean,
+        group: "BRSW.Settings.RulesGroup",
+    });
+
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.npcsUseEncumbrance, {
+        name: game.i18n.localize("BRSW.Settings.NPCsUseEncumbrance.Name"),
+        hint: game.i18n.localize("BRSW.Settings.NPCsUseEncumbrance.Hint"),
         default: false,
         type: Boolean,
         group: "BRSW.Settings.RulesGroup",
@@ -235,9 +243,33 @@ function registerWorldSettings() {
         group: "BRSW.Settings.MeasurementGroup",
     });
 
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.measureFromEdge, {
+        name: "BRSW.Settings.MeasureFromEdge.Name",
+        hint: "BRSW.Settings.MeasureFromEdge.Hint",
+        type: Boolean,
+        default: false,
+        group: "BRSW.Settings.MeasurementGroup",
+    });
+
     SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.undeadIgnoresIllumination, {
         name: game.i18n.localize("BRSW.Settings.UndeadIgnoresIllumination.Name"),
         hint: game.i18n.localize("BRSW.Settings.UndeadIgnoresIllumination.Hint"),
+        default: false,
+        type: Boolean,
+        group: "BRSW.Settings.RulesGroup",
+    });
+
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.disableGangUp, {
+        name: game.i18n.localize("BRSW.Settings.DisableGangUp.Name"),
+        hint: game.i18n.localize("BRSW.Settings.DisableGangUp.Hint"),
+        default: false,
+        type: Boolean,
+        group: "BRSW.Settings.RulesGroup",
+    });
+
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.swdUnshake, {
+        name: game.i18n.localize("BRSW.Settings.SWDUnshake.Name"),
+        hint: game.i18n.localize("BRSW.Settings.SWDUnshake.Hint"),
         default: false,
         type: Boolean,
         group: "BRSW.Settings.RulesGroup",
@@ -248,14 +280,6 @@ function registerWorldSettings() {
         hint: "BRSW.Settings.AutoCheckExtraCritFailures.Hint",
         type: Boolean,
         default: true,
-    });
-
-    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.measureFromEdge, {
-        name: "BRSW.Settings.MeasureFromEdge.Name",
-        hint: "BRSW.Settings.MeasureFromEdge.Hint",
-        type: Boolean,
-        default: false,
-        group: "BRSW.Settings.MeasurementGroup",
     });
 }
 
@@ -346,6 +370,27 @@ export function updateCachedUserSettings() {
         cacheSettings(userSettings, USER_SETTINGS);
         SettingsUtils.setUserSettings();
     }
+}
+
+export function migrateOptionalRules() {
+    const enabledRules = SettingsUtils.getSetting(SETTING_KEYS.enabledOptionalRules);
+    if (!enabledRules || !enabledRules.length) {
+        return;
+    }
+
+    enabledRules.forEach(r => {
+        if (r === "GrittyDamage") {
+            WORLD_SETTINGS[WORLD_SETTING_KEYS.grittyDamage].value = true;
+        } else if (r === "RiftsGrittyDamage") {
+            WORLD_SETTINGS[WORLD_SETTING_KEYS.riftsGrittyDamage].value = true;
+        } else if (r === "InnatePowersDontConsume") {
+            WORLD_SETTINGS[WORLD_SETTING_KEYS.innatePowersSpendPP].value = false;
+        } else if (r === "NPCDontUseEncumbrance") {
+            WORLD_SETTINGS[WORLD_SETTING_KEYS.npcsUseEncumbrance].value = false;
+        }
+    });
+
+    SettingsUtils.setSetting(SETTING_KEYS.enabledOptionalRules, undefined);
 }
 
 // Settings related to Dice So Nice.

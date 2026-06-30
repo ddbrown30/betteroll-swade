@@ -33,7 +33,7 @@ import {
     expose_item_functions,
 } from "./item_card.js";
 import { activate_remove_status_card_listeners } from "./remove_status_cards.js";
-import { registerDSNSettings, registerSettings, updateCachedUserSettings, updateCachedWorldSettings } from "./settings.js";
+import { migrateOptionalRules, registerDSNSettings, registerSettings, updateCachedUserSettings, updateCachedWorldSettings } from "./settings.js";
 import {
     activate_skill_card_listeners,
     activate_skill_listeners,
@@ -59,6 +59,8 @@ Hooks.on(`init`, () => {
 // Base Hook
 Hooks.on(`ready`, async () => {
     await TelemetryUtils.generateWorldInstallId();
+
+    migrateOptionalRules();
 
     updateCachedWorldSettings();
     updateCachedUserSettings();
