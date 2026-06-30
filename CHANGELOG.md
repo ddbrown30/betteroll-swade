@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.13.3
+* Hide the PP/Ammo management buttons on non-owners
+
 # Version 5.13.2
 * Fixed the PP/Shots display
 
