@@ -1109,7 +1109,7 @@ function adjust_dmg_str(damage_roll, roll_formula, str_die_size) {
 
 async function roll_dmg_target(
     damage_roll,
-    damage_formulas,
+    damageFormulas,
     target,
     total_modifiers,
     message,
@@ -1122,23 +1122,22 @@ async function roll_dmg_target(
     if (shortcuts.str === "1d1x[Strength]") {
         shortcuts.str = "1d1[Strength]";
     }
-    if (!damage_formulas.explodes) {
+
+    if (!damageFormulas.explodes) {
         for (const key of ["sma", "spi", "str", "agi", "vig"]) {
             shortcuts[key] = shortcuts[key].replace("x", "");
         }
     }
-    const roll = new Roll(
-        damage_formulas.damage + damage_formulas.raise,
-        shortcuts,
-    );
+
+    const roll = new Roll(damageFormulas.damage + damageFormulas.raise, shortcuts);
     await roll.evaluate();
 
     // Heavy armor
     if (
         target &&
         !item.system.isHeavyWeapon &&
-        !damage_formulas.heavy_weapon &&
-        has_heavy_armor(target, damage_formulas.location)
+        !damageFormulas.heavy_weapon &&
+        has_heavy_armor(target, damageFormulas.location)
     ) {
         const no_damage_mod = new DamageModifier(
             game.i18n.localize("BRSW.HeavyArmor"),
@@ -1160,11 +1159,11 @@ async function roll_dmg_target(
     }
 
     // Multiply modifiers must be last
-    if (damage_formulas.multiplier !== 1) {
-        const multiplier = parseFloat(damage_formulas.multiplier) || 2;
+    if (damageFormulas.multiplier !== 1) {
+        const multiplier = parseFloat(damageFormulas.multiplier) || 2;
         const final_value = (roll.total + total_modifiers) * multiplier;
         const multiply_mod = new DamageModifier(
-            `x ${damage_formulas.multiplier}`,
+            `x ${damageFormulas.multiplier}`,
             final_value - total_modifiers - roll.total,
         );
         current_damage_roll.brswroll.modifiers.push(multiply_mod);
@@ -1174,14 +1173,14 @@ async function roll_dmg_target(
     const defense_values = get_target_defense(
         actor,
         target,
-        damage_formulas.location,
+        damageFormulas.location,
     );
 
     current_damage_roll.brswroll.rolls.push({
         result: roll.total + total_modifiers,
         tn: defense_values.toughness,
         armor: defense_values.armor,
-        ap: damage_formulas.ap || 0,
+        ap: damageFormulas.ap || 0,
         target_id: defense_values.token_id || 0,
     });
 
@@ -1223,7 +1222,7 @@ async function roll_dmg_target(
         }
     }
 
-    if (damage_formulas.raise) {
+    if (damageFormulas.raise) {
         // The Last die is raise die.
         current_damage_roll.brswroll.dice[
             current_damage_roll.brswroll.dice.length - 1
@@ -1257,7 +1256,7 @@ function get_chat_dmg_modifiers(options, damage_roll) {
     });
 }
 
-function calc_min_str_penalty(item, actor, damage_formulas, damage_roll) {
+function calc_min_str_penalty(item, actor, damageFormulas, damage_roll) {
     const splited_minStr = item.system.minStr.split("d");
     const min_str_die_size = parseInt(splited_minStr[splited_minStr.length - 1]);
     let str_die_size = actor?.system?.attributes?.strength?.die?.sides;
@@ -1272,9 +1271,9 @@ function calc_min_str_penalty(item, actor, damage_formulas, damage_roll) {
         !Utils.isShootingSkill(Utils.getItemTrait(item, actor)) &&
         min_str_die_size > str_die_size
     ) {
-        damage_formulas.damage = adjust_dmg_str(
+        damageFormulas.damage = adjust_dmg_str(
             damage_roll,
-            damage_formulas.damage,
+            damageFormulas.damage,
             str_die_size,
         );
     }
@@ -1299,15 +1298,16 @@ function joker_modifiers(br_card, damage_roll) {
 
 async function get_damage_mods_from_actions(
     br_card,
-    damage_formulas,
+    damageFormulas,
     damage_roll,
     macros,
     expend_bennie,
 ) {
     for (const action of br_card.getSelectedActions()) {
         if (action.code.isHeavyWeapon) {
-            damage_formulas.heavy_weapon = true;
+            damageFormulas.heavy_weapon = true;
         }
+
         if (action.code.dmgMod) {
             let dmgMod = action.code.dmgMod;
             if (action.code.isWildAttack) {
@@ -1324,12 +1324,21 @@ async function get_damage_mods_from_actions(
                 dmgMod,
                 br_card.actor?.getRollData(),
             );
+
             await new_modifier.evaluate();
             damage_roll.brswroll.modifiers.push(new_modifier);
         }
+
         if (action.code.dmgOverride) {
-            damage_formulas.damage = action.code.dmgOverride;
+            damageFormulas.damage = action.code.dmgOverride;
+
+            if (damageFormulas.damageType) {
+                //If we have a damage type, set the type on the override
+                //If it already has a type, this regex will do nothing
+                damageFormulas.damage = damageFormulas.damage.replace(/\b(?:\d+)?d\d+\b(?!\[)/g, match => `${match}${damageFormulas.damageType}`);
+            }
         }
+
         if (action.code.self_add_status) {
             set_or_update_condition(action.code.self_add_status, br_card.actor).catch(
                 () => {
@@ -1337,18 +1346,23 @@ async function get_damage_mods_from_actions(
                 },
             );
         }
+
         if (action.code.runDamageMacro) {
             macros.push(action.code.runDamageMacro);
         }
+
         if (action.code.raiseDamageFormula) {
-            damage_formulas.raise = action.code.raiseDamageFormula;
+            damageFormulas.raise = action.code.raiseDamageFormula;
         }
+
         if (action.code.overrideAp) {
-            damage_formulas.ap = action.code.overrideAp;
+            damageFormulas.ap = action.code.overrideAp;
         }
+
         if (action.code.apMod) {
-            damage_formulas.ap += parseInt(action.code.apMod);
+            damageFormulas.ap += parseInt(action.code.apMod);
         }
+
         const reroll_mode = expend_bennie ? "benny" : "free";
         if (
             action.code.rerollDamageMod &&
@@ -1362,14 +1376,17 @@ async function get_damage_mods_from_actions(
                 ),
             );
         }
+
         if (action.code.multiplyDmgMod) {
-            damage_formulas.multiplier = action.code.multiplyDmgMod;
+            damageFormulas.multiplier = action.code.multiplyDmgMod;
         }
+
         if (action.code.avoid_exploding_damage) {
-            damage_formulas.explodes = false;
+            damageFormulas.explodes = false;
         }
+
         if (action.code.change_location) {
-            damage_formulas.location = action.code.change_location;
+            damageFormulas.location = action.code.change_location;
         }
     }
 }
@@ -1414,14 +1431,23 @@ export async function roll_dmg(
     const { render_data, actor, item } = br_card;
     const raise_die_size = item.system.bonusDamageDie || 6;
     const number_raise_dice = item.system.bonusDamageDice || 1;
-    const damage_formulas = {
+    let raiseFormula = `+${number_raise_dice}d${raise_die_size}x`;
+
+    const damageTypeMatch = item.system.damage.match(/\[([^\]]+)\]/);
+    const damageType = damageTypeMatch?.[0];
+    if (damageType) {
+        raiseFormula += damageType;
+    }
+
+    const damageFormulas = {
         damage: item.system.damage,
-        raise: `+${number_raise_dice}d${raise_die_size}x`,
+        raise: raiseFormula,
         ap: parseInt(item.system.ap),
         multiplier: 1,
         explodes: true,
         heavy_weapon: false,
         location: "torso",
+        damageType: damageType,
     };
 
     const macros = [];
@@ -1433,9 +1459,9 @@ export async function roll_dmg(
     const options = get_roll_options(default_options, br_card);
 
     // Shotgun
-    if (damage_formulas.damage === "1-3d6" && item.type === "weapon") {
+    if (damageFormulas.damage.includes("1-3d6") && item.type === "weapon") {
         // Bet that this is a shotgun
-        damage_formulas.damage = "3d6";
+        damageFormulas.damage = "3d6" + (damageType ?? "");
     }
 
     const damage_roll = { label: "---", brswroll: new BRWSRoll(), raise: raise };
@@ -1455,21 +1481,21 @@ export async function roll_dmg(
 
     // Minimum strength
     if (item.system.minStr) {
-        calc_min_str_penalty(item, actor, damage_formulas, damage_roll);
+        calc_min_str_penalty(item, actor, damageFormulas, damage_roll);
     }
 
     // Actions
     await get_damage_mods_from_actions(
         br_card,
-        damage_formulas,
+        damageFormulas,
         damage_roll,
         macros,
         expend_bennie,
     );
 
-    if (!damage_formulas.damage) {
+    if (!damageFormulas.damage) {
         // Damage is empty and damage action has not been selected...
-        damage_formulas.damage = get_any_damage_from_actions(br_card);
+        damageFormulas.damage = get_any_damage_from_actions(br_card);
     }
 
     //Conviction
@@ -1478,19 +1504,19 @@ export async function roll_dmg(
         damage_roll.brswroll.modifiers.push(conviction_modifier);
     }
 
-    get_global_modifiers(expend_bennie, actor, damage_roll, damage_formulas);
+    get_global_modifiers(expend_bennie, actor, damage_roll, damageFormulas);
 
     // Roll
-    if (damage_formulas.explodes) {
-        damage_formulas.damage = makeExplodable(damage_formulas.damage);
+    if (damageFormulas.explodes) {
+        damageFormulas.damage = makeExplodable(damageFormulas.damage);
     } else {
-        damage_formulas.damage = damage_formulas.damage.replace("x", "");
-        damage_formulas.raise = damage_formulas.raise.replace("x", "");
+        damageFormulas.damage = damageFormulas.damage.replace("x", "");
+        damageFormulas.raise = damageFormulas.raise.replace("x", "");
     }
 
     const targets = await get_dmg_targets(target_token_id, br_card);
     if (!raise) {
-        damage_formulas.raise = "";
+        damageFormulas.raise = "";
     }
 
     // Gang Up on Damage
@@ -1514,7 +1540,7 @@ export async function roll_dmg(
             render_data.damage_rolls.push(
                 await roll_dmg_target(
                     damage_roll,
-                    damage_formulas,
+                    damageFormulas,
                     target,
                     total_modifiers,
                     br_card.message,
@@ -1536,7 +1562,7 @@ function get_global_modifiers(
     expend_bennie,
     actor,
     damage_roll,
-    damage_formulas,
+    damageFormulas,
 ) {
     if (expend_bennie && actor.system.stats.globalMods.bennyDamage.length) {
         for (const modifier of actor.system.stats.globalMods.bennyDamage) {
@@ -1546,7 +1572,7 @@ function get_global_modifiers(
         }
     }
     for (const modifier of actor.system.stats.globalMods.ap) {
-        damage_formulas.ap += modifier.value;
+        damageFormulas.ap += modifier.value;
         damage_roll.brswroll.modifiers.push(
             new DamageModifier(
                 `${game.i18n.localize("BRSW.APModifier")}: ${modifier.label}`,
