@@ -1,9 +1,7 @@
 # Changelog
 
-# Version 5.16.0
-* If damage has a type (e.g. 2d6[fire]), we apply that type to all other damage dice, such as the raise damage and damage actions
-
 # Version 5.15.0
+* If damage has a type (e.g. 2d6[fire]), we apply that type to all other damage dice, such as the raise damage and damage actions
 * Moved Optional Rules into the world settings
 * Changed the default setting for innate powers PP spending to false
 * Changed the default setting for NPC encumbrance to false
