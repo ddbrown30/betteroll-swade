@@ -21,9 +21,8 @@ Feedback, bugs, and feature requests are all welcome. Head to the Discord for fe
 
 ## Translations
 
-* We are using [Weblate](https://hosted.weblate.org/projects/betterrolls-2-for-swade/main/) to manage translations. Please register there and help us to get the module translated into your language. To request a new language, please open an issue or reach for us in Discord.
-* Thanks to [Weblate](https://weblate.org/) for giving us free hosting.
-
+* We use [Weblate](https://hosted.weblate.org/projects/betterrolls-2-for-swade/main/) to manage translations. Please register there to help get the module translated into your language. To request a new language, please open an issue or reach out to us on Discord.
+* Thanks to Weblate for giving us free hosting. If you would like to donate to them, you can do that at https://weblate.org/donate/.
 
 ## Documentation
 
