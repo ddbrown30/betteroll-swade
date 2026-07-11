@@ -95,7 +95,7 @@ function process_and_selector(action, item, actor) {
  * @param actor
  * @return {boolean}
  */
-function process_or_selector(action, item, actor, useDefaultChecked) {
+function process_or_selector(action, item, actor) {
     let selected = false;
     for (const selection_option of action.or_selector) {
         if (process_action(selection_option, item, actor)) {
