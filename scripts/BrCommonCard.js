@@ -6,7 +6,7 @@ import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { TraitRoll } from "./rolls.js";
 import { broofa, getAuthor, getWhisperData, SettingsUtils, Utils } from "./utils.js";
 import { calc_pp_cost } from "./item_card.js";
-import { get_actions, check_selector } from "./global_actions.js";
+import { get_actions, process_action } from "./global_actions.js";
 import { brAction } from "./actions.js";
 import { are_bennies_available, trait_to_string } from "./cards_common.js";
 
@@ -386,13 +386,8 @@ export class BrCommonCard {
             if (global_action.hasOwnProperty("defaultChecked")) {
                 if (global_action.defaultChecked === "on") {
                     new_action.selected = true;
-                } else if (global_action.defaultChecked.hasOwnProperty("selector_type")) {
-                    new_action.selected = check_selector(
-                        global_action.defaultChecked.selector_type,
-                        global_action.defaultChecked.selector_value,
-                        item,
-                        this.actor,
-                    );
+                } else {
+                    new_action.selected = process_action(global_action, item, this.actor, true);
                 }
             }
 
@@ -917,7 +912,6 @@ export class BrCommonCard {
         if (whisperData.whisper) {
             chatData.whisper = whisperData.whisper;
         }
-        chatData.rolls = [await new Roll("0").evaluate()];
         chatData.sound = "";
         chatData.messageMode = whisperData.messageMode;
         return chatData;

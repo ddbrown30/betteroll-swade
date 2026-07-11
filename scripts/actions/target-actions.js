@@ -75,38 +75,143 @@ export const TARGET_ACTIONS = [
     group: "BRSW.Target",
   },
   {
-      id: "ArcaneResistance",
-      name: "BRSW.EdgeName.ArcaneResistance",
-      button_name: "BRSW.HasArcaneResistance",
-      skillMod: "-2",
-      ignoresArcaneActivation: true,
-      dmgMod: "-2",
-      defaultChecked: "on",
-      and_selector: [
-          { selector_type: "target_has_edge", selector_value: "BRSW.EdgeName.ArcaneResistance" },
-          { selector_type: "item_type", selector_value: "power" },
+    id: "1-ArcaneProtection",
+    name: "BRSW.StatusEffect.ArcaneProtection",
+    button_name: "BRSW.HasArcaneProtection",
+    skillMod: "-2",
+    ignoresArcaneActivation: true,
+    dmgMod: "-2",
+    group_single: true,
+    defaultChecked: {
+      not_selector: [
+        {
+          or_selector:
+            [
+              { selector_type: "target_has_effect", selector_value: "BRSW.StatusEffect.ArcaneProtectionRaise" },
+              { selector_type: "target_has_effect", selector_value: "BRSW.StatusEffect.ArcaneProtectionGreater" }
+            ]
+        }
+      ]
+    },
+    and_selector: [
+      { selector_type: "target_has_effect", selector_value: "BRSW.StatusEffect.ArcaneProtection" },
+      { selector_type: "item_type", selector_value: "power" },
+      {
+        not_selector: [
           {
-              not_selector: [
-                  { selector_type: "target_has_edge", selector_value: "BRSW.EdgeName.ImprovedArcaneResistance" }
+            or_selector:
+              [
+                { selector_type: "target_has_effect", selector_value: "BRSW.StatusEffect.ArcaneProtectionRaise" },
+                { selector_type: "target_has_effect", selector_value: "BRSW.StatusEffect.ArcaneProtectionGreater" }
               ]
           }
-      ],
-      section: "attack",
-      group: "BRSW.Target"
+        ]
+      }
+    ],
+    section: "attack",
+    group: "BRSW.StatusEffect.ArcaneProtection"
   },
   {
-      id: "ImpArcaneResistance",
-      name: "BRSW.EdgeName.ImprovedArcaneResistance",
-      button_name: "BRSW.HasImprovedArcaneResistance",
-      skillMod: "-4",
-      ignoresArcaneActivation: true,
-      dmgMod: "-4",
-      defaultChecked: "on",
+    id: "2-ArcaneProtectionRaise",
+    name: "BRSW.StatusEffect.ArcaneProtectionRaise",
+    button_name: "BRSW.HasArcaneProtectionRaise",
+    skillMod: "-4",
+    ignoresArcaneActivation: true,
+    dmgMod: "-4",
+    group_single: true,
+    defaultChecked: { selector_type: "target_has_effect", selector_value: "BRSW.StatusEffect.ArcaneProtectionRaise" },
+    and_selector: [
+      { selector_type: "target_has_effect", selector_value: "BRSW.StatusEffect.ArcaneProtection" },
+      { selector_type: "item_type", selector_value: "power" },
+      {
+        not_selector: [
+          { selector_type: "target_has_effect", selector_value: "BRSW.StatusEffect.ArcaneProtectionGreater" }
+        ]
+      }
+    ],
+    section: "attack",
+    group: "BRSW.StatusEffect.ArcaneProtection"
+  },
+  {
+    id: "3-ArcaneProtectionGreater",
+    name: "BRSW.StatusEffect.ArcaneProtectionGreater",
+    button_name: "BRSW.HasArcaneProtectionGreater",
+    skillMod: "-4",
+    ignoresArcaneActivation: true,
+    dmgMod: "-4",
+    group_single: true,
+    defaultChecked: {
       and_selector: [
-          { selector_type: "target_has_edge", selector_value: "BRSW.EdgeName.ImprovedArcaneResistance" },
-          { selector_type: "item_type", selector_value: "power" }
+        { selector_type: "target_has_effect", selector_value: "BRSW.StatusEffect.ArcaneProtectionGreater" },
+        {
+          not_selector: [
+            { selector_type: "target_has_effect", selector_value: "BRSW.StatusEffect.ArcaneProtectionGreaterRaise" },
+          ]
+        }
       ],
-      section: "attack",
-      group: "BRSW.Target"
+    },
+    and_selector: [
+      { selector_type: "target_has_effect", selector_value: "BRSW.StatusEffect.ArcaneProtection" },
+      { selector_type: "item_type", selector_value: "power" },
+      {
+        not_selector: [
+          { selector_type: "target_has_effect", selector_value: "BRSW.StatusEffect.ArcaneProtectionRaise" },
+          { selector_type: "target_has_effect", selector_value: "BRSW.StatusEffect.ArcaneProtectionGreaterRaise" },
+        ]
+      }
+    ],
+    section: "attack",
+    group: "BRSW.StatusEffect.ArcaneProtection"
+  },
+  {
+    id: "4-ArcaneProtectionGreaterRaise",
+    name: "BRSW.StatusEffect.ArcaneProtectionGreaterRaise",
+    button_name: "BRSW.HasArcaneProtectionGreaterRaise",
+    skillMod: "-6",
+    ignoresArcaneActivation: true,
+    dmgMod: "-6",
+    group_single: true,
+    defaultChecked: { selector_type: "target_has_effect", selector_value: "BRSW.StatusEffect.ArcaneProtectionGreaterRaise" },
+    and_selector: [
+      { selector_type: "target_has_effect", selector_value: "BRSW.StatusEffect.ArcaneProtection" },
+      { selector_type: "item_type", selector_value: "power" },
+    ],
+    section: "attack",
+    group: "BRSW.StatusEffect.ArcaneProtection"
+  },
+  {
+    id: "ArcaneResistance",
+    name: "BRSW.EdgeName.ArcaneResistance",
+    button_name: "BRSW.HasArcaneResistance",
+    skillMod: "-2",
+    ignoresArcaneActivation: true,
+    dmgMod: "-2",
+    defaultChecked: "on",
+    and_selector: [
+      { selector_type: "target_has_edge", selector_value: "BRSW.EdgeName.ArcaneResistance" },
+      { selector_type: "item_type", selector_value: "power" },
+      {
+        not_selector: [
+          { selector_type: "target_has_edge", selector_value: "BRSW.EdgeName.ImprovedArcaneResistance" }
+        ]
+      }
+    ],
+    section: "attack",
+    group: "BRSW.Target"
+  },
+  {
+    id: "ImpArcaneResistance",
+    name: "BRSW.EdgeName.ImprovedArcaneResistance",
+    button_name: "BRSW.HasImprovedArcaneResistance",
+    skillMod: "-4",
+    ignoresArcaneActivation: true,
+    dmgMod: "-4",
+    defaultChecked: "on",
+    and_selector: [
+      { selector_type: "target_has_edge", selector_value: "BRSW.EdgeName.ImprovedArcaneResistance" },
+      { selector_type: "item_type", selector_value: "power" }
+    ],
+    section: "attack",
+    group: "BRSW.Target"
   },
 ];

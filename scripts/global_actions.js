@@ -113,21 +113,22 @@ function process_or_selector(action, item, actor) {
  * @param actor
  * @return {boolean}
  */
-function process_action(action, item, actor) {
+export function process_action(action, item, actor, useDefaultChecked) {
     let selected = false;
-    if (action.hasOwnProperty("selector_type")) {
+    const selectorObject = useDefaultChecked ? action.defaultChecked : action;
+    if (selectorObject.hasOwnProperty("selector_type")) {
         selected = check_selector(
-            action.selector_type,
-            action.selector_value,
+            selectorObject.selector_type,
+            selectorObject.selector_value,
             item,
             actor,
         );
-    } else if (action.hasOwnProperty("and_selector")) {
-        selected = process_and_selector(action, item, actor);
-    } else if (action.hasOwnProperty("or_selector")) {
-        selected = process_or_selector(action, item, actor);
-    } else if (action.hasOwnProperty("not_selector")) {
-        selected = process_not_selector(action, item, actor);
+    } else if (selectorObject.hasOwnProperty("and_selector")) {
+        selected = process_and_selector(selectorObject, item, actor);
+    } else if (selectorObject.hasOwnProperty("or_selector")) {
+        selected = process_or_selector(selectorObject, item, actor);
+    } else if (selectorObject.hasOwnProperty("not_selector")) {
+        selected = process_not_selector(selectorObject, item, actor);
     }
     return selected;
 }
@@ -165,7 +166,7 @@ export function get_actions(item, actor) {
  * @param actor actor been checked
  */
 // eslint-disable-next-line complexity
-export function check_selector(type, value, item, actor) {
+function check_selector(type, value, item, actor) {
     let selected = false;
     if (type === "skill") {
         if (item.type === "attribute") {
@@ -394,9 +395,10 @@ export function check_selector(type, value, item, actor) {
         }
     } else if (type === "target_has_effect") {
         selected = false;
+        const abilityName = game.i18n.localize(value);
         for (const targeted_token of game.user.targets) {
             const effect = targeted_token.actor?.appliedEffects.find(
-                (ef) => ef.name.toLowerCase().includes(value.toLowerCase()), // jshint ignore:line
+                (ef) => ef.name.toLowerCase().includes(abilityName.toLowerCase()), // jshint ignore:line
             );
             if (effect) {
                 selected = selected || effect ? !effect.disabled : false;

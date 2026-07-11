@@ -1,5 +1,10 @@
 # Changelog
 
+# Version 5.16.0
+* Added support for Arcane Protection
+* Fixed using complex selectors with defaultChecked
+* We now localize the value of the target_has_effect selector before using it
+
 # Version 5.15.0
 * If damage has a type (e.g. 2d6[fire]), we apply that type to all other damage dice, such as the raise damage and damage actions
 * Moved Optional Rules into the world settings
