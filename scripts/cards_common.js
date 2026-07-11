@@ -473,11 +473,11 @@ async function manage_sheet(actor) {
 export function getActionFromClick(event) {
     let setting_name = WORLD_SETTING_KEYS.clickActionKeys.click;
 
-    if (event.shiftKey) {
+    if (event?.shiftKey) {
         setting_name = WORLD_SETTING_KEYS.clickActionKeys.shiftClick;
-    } else if (event.ctrlKey) {
+    } else if (event?.ctrlKey) {
         setting_name = WORLD_SETTING_KEYS.clickActionKeys.ctrlClick;
-    } else if (event.altKey) {
+    } else if (event?.altKey) {
         setting_name = WORLD_SETTING_KEYS.clickActionKeys.altClick;
     }
 
