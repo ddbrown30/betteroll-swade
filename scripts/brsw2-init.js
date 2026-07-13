@@ -169,6 +169,12 @@ Hooks.on("renderChatMessageHTML", (message, html, options) => {
             html.querySelectorAll(".brsw-owner-trusted-only").forEach((e) => e.remove());
         }
 
+        const damageSection = html.querySelector(".brsw-damage-section");
+        if (damageSection) {
+            //If we have damage, show the damage section
+            damageSection.hidden = !br_card.damage;
+        }
+
         if (Object.keys(message.apps).length < 1) { // Don't create a popout when rendering popouts
             card.createPopout();
         }

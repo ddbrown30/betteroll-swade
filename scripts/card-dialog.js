@@ -97,6 +97,8 @@ class BrCardDialog {
     this.BrCard.setActiveActions(enabled_actions);
     this.BrCard.setTraitUsingSkillOverride();
 
+    this.BrCard.refreshDamageFromActions();
+
     this.BrCard.refreshPPModsFromActions();
 
     await this.BrCard.render();

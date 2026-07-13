@@ -75,16 +75,11 @@ export async function create_item_card(
     }
 
     const description = item.system.description;
-    let damage = item.system.damage;
     const ammoEnabled = parseInt(item.system.shots) || item.system.ammo;
     const is_power = !isNaN(parseFloat(item.system.pp)) || item.type === "power";
     const subtract_select = ammoEnabled
         ? SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.defaultAmmoManagement)
         : false;
-
-    if (!damage && item.system.actions) {
-        damage = check_for_actions_with_damage(item);
-    }
 
     const trait = Utils.getItemTrait(item, actor);
 
@@ -109,7 +104,7 @@ export async function create_item_card(
         "modules/betterrolls-swade2/templates/item_card.hbs",
     );
     br_message.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD;
-    br_message.damage = damage;
+    br_message.damage = !!item.system.damage;
     br_message.item_id = item_id;
     br_message.applicable_effects = get_applicable_effects(item);
     br_message.pp_modifiers = is_power ? get_pp_mods(item) : {};
@@ -1296,7 +1291,7 @@ function joker_modifiers(br_card, damage_roll) {
     }
 }
 
-async function get_damage_mods_from_actions(
+async function getDamageModsFromActions(
     br_card,
     damageFormulas,
     damage_roll,
@@ -1331,12 +1326,6 @@ async function get_damage_mods_from_actions(
 
         if (action.code.dmgOverride) {
             damageFormulas.damage = action.code.dmgOverride;
-
-            if (damageFormulas.damageType) {
-                //If we have a damage type, set the type on the override
-                //If it already has a type, this regex will do nothing
-                damageFormulas.damage = damageFormulas.damage.replace(/\b(?:\d+)?d\d+\b(?!\[)/g, match => `${match}${damageFormulas.damageType}`);
-            }
         }
 
         if (action.code.self_add_status) {
@@ -1392,25 +1381,6 @@ async function get_damage_mods_from_actions(
 }
 
 /**
- * Gets any damage from any action
- * @param {BrCommonCard} br_card
- */
-function get_any_damage_from_actions(br_card) {
-    let damage = "1";
-    Utils.forEachActionGroup(br_card, group => {
-        for (const action of group.actions) {
-            if (action.code.dmgOverride) {
-                if (action.selected || action.code.dmgOverride != 0) {
-                    damage = action.code.dmgOverride;
-                    return true;
-                }
-            }
-        }
-    });
-    return damage;
-}
-
-/**
  * Rolls damage dor an item
  * @param {BrCommonCard} br_card
  * @param html
@@ -1433,21 +1403,16 @@ export async function roll_dmg(
     const number_raise_dice = item.system.bonusDamageDice || 1;
     let raiseFormula = `+${number_raise_dice}d${raise_die_size}x`;
 
-    const damageTypeMatch = item.system.damage.match(/\[([^\]]+)\]/);
-    const damageType = damageTypeMatch?.[0];
-    if (damageType) {
-        raiseFormula += damageType;
-    }
+    const damage = item.system.damage;
 
     const damageFormulas = {
-        damage: item.system.damage,
+        damage: damage,
         raise: raiseFormula,
         ap: parseInt(item.system.ap),
         multiplier: 1,
         explodes: true,
         heavy_weapon: false,
         location: "torso",
-        damageType: damageType,
     };
 
     const macros = [];
@@ -1459,9 +1424,9 @@ export async function roll_dmg(
     const options = get_roll_options(default_options, br_card);
 
     // Shotgun
-    if (damageFormulas.damage.includes("1-3d6") && item.type === "weapon") {
+    if (damageFormulas.damage?.includes("1-3d6") && item.type === "weapon") {
         // Bet that this is a shotgun
-        damageFormulas.damage = "3d6" + (damageType ?? "");
+        damageFormulas.damage = "3d6";
     }
 
     const damage_roll = { label: "---", brswroll: new BRWSRoll(), raise: raise };
@@ -1485,7 +1450,7 @@ export async function roll_dmg(
     }
 
     // Actions
-    await get_damage_mods_from_actions(
+    await getDamageModsFromActions(
         br_card,
         damageFormulas,
         damage_roll,
@@ -1493,9 +1458,21 @@ export async function roll_dmg(
         expend_bennie,
     );
 
-    if (!damageFormulas.damage) {
-        // Damage is empty and damage action has not been selected...
-        damageFormulas.damage = get_any_damage_from_actions(br_card);
+    //If our selected damage has a type use that otherwise fall back to the type on the item
+    const damageTypeMatch = damageFormulas.damage.match(/\[([^\]]+)\]/) ?? damage?.match(/\[([^\]]+)\]/);
+    const damageType = damageTypeMatch?.[0];
+    if (damageType) {
+        const addDamageType = (formula, damageType) =>
+        formula.replace(
+            /((?:\d+)?d\d+(?:[a-zA-Z]+(?:[<>=]+-?\d+)?)*)/g,
+            (match, captured, offset, string) =>
+                string[offset + match.length] === "["
+                    ? match
+                    : `${match}${damageType}`,
+        );
+
+        damageFormulas.damage = addDamageType(damageFormulas.damage, damageType);
+        damageFormulas.raise = addDamageType(damageFormulas.raise, damageType);
     }
 
     //Conviction
@@ -1510,8 +1487,9 @@ export async function roll_dmg(
     if (damageFormulas.explodes) {
         damageFormulas.damage = makeExplodable(damageFormulas.damage);
     } else {
-        damageFormulas.damage = damageFormulas.damage.replace("x", "");
-        damageFormulas.raise = damageFormulas.raise.replace("x", "");
+        const removeExplode = (formula) => formula.replace(/((?:\d+)?d\d+(?:[a-zA-Z]+(?:[<>=]+-?\d+)?)*?)x(?=[a-zA-Z<>=+\-\[]|$)/g, "$1");
+        damageFormulas.damage = removeExplode(damageFormulas.damage);
+        damageFormulas.raise = removeExplode(damageFormulas.raise);
     }
 
     const targets = await get_dmg_targets(target_token_id, br_card);

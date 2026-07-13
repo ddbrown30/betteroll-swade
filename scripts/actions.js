@@ -8,6 +8,7 @@ export class brAction {
     if (type === "item") {
       this.code = JSON.parse(JSON.stringify(code));
       this.code.id = broofa();
+      this.convertCodeProperties();
     } else {
       this.code = code;
     }
@@ -15,7 +16,6 @@ export class brAction {
       this.code.id = idOverride;
     }
     this.selected = false;
-    this.recreate_skill_damage_mods();
     // noinspection JSUnusedGlobalSymbols
     this.has_skill_mod = !!(this.code.skillMod || this.code.skillOverride);
     // noinspection JSUnusedGlobalSymbols
@@ -26,20 +26,24 @@ export class brAction {
     );
   }
 
-  recreate_skill_damage_mods() {
-    // Since SWADE 3.1 modifiers to trait and damage roll no longer share
-    // the same syntax with Global Actions. So we need to recreate them
+  convertCodeProperties() {
+    //SWADE stores its properties generically between trait and damage but BR2 needs them separate
     if (this.code.hasOwnProperty("modifier")) {
-      // Post SWADE 3.1 action
-      this.code = JSON.parse(JSON.stringify(this.code));
       if (this.code.type === "trait") {
         this.code.skillMod = this.code.modifier;
-        this.code.skillOverride = this.code.override;
       } else if (this.code.type === "damage") {
         this.code.dmgMod = this.code.modifier;
+      }
+    }
+
+    if (this.code.hasOwnProperty("override")) {
+      if (this.code.type === "trait") {
+        this.code.skillOverride = this.code.override;
+      } else if (this.code.type === "damage") {
         this.code.dmgOverride = this.code.override;
       }
     }
+
     if (this.code.hasOwnProperty("ap")) {
       this.code.overrideAp = this.code.ap;
     }

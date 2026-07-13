@@ -1,5 +1,10 @@
 # Changelog
 
+# Version 5.16.1
+* Fixed a bunch of issues with damage formulas
+* The damage section now only appears if the item has damage or while an action with damage is selected
+* Updated Spanish translations (Libertad)
+
 # Version 5.16.0
 * Added support for Arcane Protection
 * Fixed using complex selectors with defaultChecked
