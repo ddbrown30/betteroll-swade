@@ -1,14 +1,12 @@
 # Changelog
 
-# Version 5.16.1
-* Fixed a bunch of issues with damage formulas
-* The damage section now only appears if the item has damage or while an action with damage is selected
-* Updated Spanish translations (Libertad)
-
 # Version 5.16.0
 * Added support for Arcane Protection
 * Fixed using complex selectors with defaultChecked
 * We now localize the value of the target_has_effect selector before using it
+* Fixed a bunch of issues with damage formulas
+* The damage section now only appears if the item has damage or while an action with damage is selected
+* Updated Spanish translations (Libertad)
 
 # Version 5.15.0
 * If damage has a type (e.g. 2d6[fire]), we apply that type to all other damage dice, such as the raise damage and damage actions
