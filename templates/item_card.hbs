@@ -83,30 +83,30 @@
         {{>"modules/betterrolls-swade2/templates/trait_roll_partial.hbs"}}
         {{>"modules/betterrolls-swade2/templates/trait_result_partial.hbs"}}
     {{/if}}
-    {{#if damage}}
-        <div class="brsw-form brsw-button-row brsw-form-options twbr:pt-2">
+    <div class="brsw-damage-section">
+        <div class="brsw-form brsw-button-row brsw-form-options twbr:pt-2" {{#unless damage}}hidden{{/unless}}>
             <span>
                 {{localize 'BRSW.Damage'}}
             </span>
             <span class="twbr:flex twbr:gap-1">
                 <button id="roll-damage" class="brsw-damage-button brsw-form twbr:py-0.5 twbr:px-5
-                     twbr:font-medium twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg
-                     twbr:border twbr:border-solid twbr:focus:z-10 twbr:focus:ring-4
-                     twbr:focus:ring-gray-700 twbr:text-gray-800 twbr:border-gray-600
-                     twbr:hover:text-white twbr:hover:bg-gray-700" title="{{localize 'BRSW.Damage'}}">
+                         twbr:font-medium twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg
+                         twbr:border twbr:border-solid twbr:focus:z-10 twbr:focus:ring-4
+                         twbr:focus:ring-gray-700 twbr:text-gray-800 twbr:border-gray-600
+                         twbr:hover:text-white twbr:hover:bg-gray-700" title="{{localize 'BRSW.Damage'}}">
                     <i class="fas fa-dice"></i>
                 </button>
                 <button id="roll-raise-damage" class="brsw-damage-button brsw-form twbr:py-0.5 twbr:px-5
-                    twbr:font-medium twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg
-                    twbr:border twbr:border-solid twbr:focus:z-10 twbr:focus:ring-4
-                    twbr:focus:ring-gray-700 twbr:text-gray-800 twbr:border-gray-600
-                    twbr:hover:text-white twbr:hover:bg-gray-700" title="{{localize 'BRSW.RaiseDamage'}}">
+                        twbr:font-medium twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg
+                        twbr:border twbr:border-solid twbr:focus:z-10 twbr:focus:ring-4
+                        twbr:focus:ring-gray-700 twbr:text-gray-800 twbr:border-gray-600
+                        twbr:hover:text-white twbr:hover:bg-gray-700" title="{{localize 'BRSW.RaiseDamage'}}">
                     <i class="fas fa-plus"></i><i class="fas fa-dice-six"></i>
                 </button>
             </span>
         </div>
         {{>"modules/betterrolls-swade2/templates/damage_partial.hbs"}}
-    {{/if}}
+    </div>
     {{#if swade_templates}}
         <div class="brsw-form">
             <h4 class="brsw-item-subheading">

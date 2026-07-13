@@ -68,24 +68,17 @@ export function getAuthor(actor) {
 }
 
 export function makeExplodable(expression) {
-    // Make all dice of a roll able to explode
-    // Code from the SWADE system
-    const reg_exp = /\d*d\d+[^kdrxc]/g;
-    let new_expression = expression + " "; // Just because of my poor reg_exp foo
-    const dice_strings = new_expression.match(reg_exp);
-    const used = [];
-    if (dice_strings) {
-        dice_strings.forEach((match) => {
-            if (used.indexOf(match.slice(0, -1)) === -1) {
-                new_expression = new_expression.replace(
-                    new RegExp(match.slice(0, -1), "g"),
-                    match.slice(0, -1) + "x",
-                );
-                used.push(match.slice(0, -1));
-            }
-        });
-    }
-    return new_expression;
+    return expression.replace(
+        /(?:\d+)?d\d+/g,
+        (match, offset, string) => {
+            const next = string[offset + match.length];
+
+            // Already has a dice modifier.
+            if (next && /[kdrxc]/.test(next)) return match;
+
+            return `${match}x`;
+        }
+    );
 }
 
 export async function spendMastersBenny() {

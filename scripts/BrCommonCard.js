@@ -626,7 +626,7 @@ export class BrCommonCard {
         });
     }
 
-    refreshPPModsFromActions(actions) {
+    refreshPPModsFromActions() {
         if (this.pp_modifiers.genericMods) {
             for (const mod of this.pp_modifiers.genericMods) {
                 if (mod.actionId) {
@@ -644,6 +644,21 @@ export class BrCommonCard {
                 if (action) {
                     mod.selected = action.selected;
                 }
+            }
+        }
+    }
+
+    refreshDamageFromActions() {
+        if (this.item?.system.damage) {
+            //An item with damage doesn't need refreshing as it will always have damage
+            return;
+        }
+
+        this.damage = false;
+        for (const action of this.getSelectedActions()) {
+            if (action.code.dmgOverride) {
+                this.damage = true;
+                return;
             }
         }
     }
