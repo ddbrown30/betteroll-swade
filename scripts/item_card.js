@@ -1462,14 +1462,17 @@ export async function roll_dmg(
     const damageTypeMatch = damageFormulas.damage.match(/\[([^\]]+)\]/) ?? damage?.match(/\[([^\]]+)\]/);
     const damageType = damageTypeMatch?.[0];
     if (damageType) {
-        const addDamageType = (formula) =>
-            formula.replace(
-                /(?:\d+)?d\d+x?(?=\[|[^0-9]|$)/g,
-                (match, offset, string) => string[offset + match.length] === "[" ? match : `${match}${damageType}`,
-            );
+        const addDamageType = (formula, damageType) =>
+        formula.replace(
+            /((?:\d+)?d\d+(?:[a-zA-Z]+(?:[<>=]+-?\d+)?)*)/g,
+            (match, captured, offset, string) =>
+                string[offset + match.length] === "["
+                    ? match
+                    : `${match}${damageType}`,
+        );
 
-        damageFormulas.damage = addDamageType(damageFormulas.damage);
-        damageFormulas.raise = addDamageType(damageFormulas.raise);
+        damageFormulas.damage = addDamageType(damageFormulas.damage, damageType);
+        damageFormulas.raise = addDamageType(damageFormulas.raise, damageType);
     }
 
     //Conviction
@@ -1484,7 +1487,7 @@ export async function roll_dmg(
     if (damageFormulas.explodes) {
         damageFormulas.damage = makeExplodable(damageFormulas.damage);
     } else {
-        const removeExplode = (formula) => formula.replace(/((?:\d+)?d\d+)x(?=\[|[^0-9]|$)/g, "$1");
+        const removeExplode = (formula) => formula.replace(/((?:\d+)?d\d+(?:[a-zA-Z]+(?:[<>=]+-?\d+)?)*?)x(?=[a-zA-Z<>=+\-\[]|$)/g, "$1");
         damageFormulas.damage = removeExplode(damageFormulas.damage);
         damageFormulas.raise = removeExplode(damageFormulas.raise);
     }

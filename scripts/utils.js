@@ -69,15 +69,10 @@ export function getAuthor(actor) {
 
 export function makeExplodable(expression) {
     return expression.replace(
-        /(?:\d+)?d\d+/g,
-        (match, offset, string) => {
-            const next = string[offset + match.length];
-
-            // Already has a dice modifier.
-            if (next && /[kdrxc]/.test(next)) return match;
-
-            return `${match}x`;
-        }
+        /((?:\d+)?d\d+)([a-zA-Z]+(?:[<>=]+-?\d+)*)?/g,
+        (match, dice, modifiers = "") => {
+            return modifiers ? match : `${dice}x`;
+        },
     );
 }
 
