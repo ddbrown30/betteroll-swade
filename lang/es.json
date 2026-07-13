@@ -501,5 +501,16 @@
     "BRSW.VehicleOperationSkillNotSetError": "Debe establecer una habilidad de operación en este vehículo.",
     "BRSW.VisibilityTypes.GM": "Solo GM",
     "BRSW.WoundsOrFatigueIgnored": "Heridas o fatiga ignorados",
-    "BRSW.Yes": "Sí"
+    "BRSW.Yes": "Sí",
+    "BRSW.HasArcaneProtection": "tiene Prot Arcano",
+    "BRSW.HasArcaneProtectionRaise": "tiene Prot Arcano (Leva)",
+    "BRSW.HasArcaneProtectionGreater": "tiene Prot Arcano Grtr",
+    "BRSW.HasArcaneProtectionGreaterRaise": "tiene Prot Arcano Grtr (Leva)",
+    "BRSW.StatusEffect.ArcaneProtection": "Protección arcana",
+    "BRSW.StatusEffect.ArcaneProtectionRaise": "Protección arcana (Leva)",
+    "BRSW.StatusEffect.ArcaneProtectionGreaterRaise": "Protección arcada mayor (Leva)",
+    "BRSW.StatusEffect.ArcaneProtectionGreater": "Protección arcana mayor",
+    "BRSW.LargeTemplateShort": "LBT",
+    "BRSW.MediumTemplateShort": "MBT",
+    "BRSW.SmallTemplateShort": "SBT"
 }
