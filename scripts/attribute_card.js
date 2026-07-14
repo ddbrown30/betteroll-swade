@@ -13,7 +13,7 @@ import {
   trait_to_string,
 } from "./cards_common.js";
 import { runMacros } from "./item_card.js";
-import { addEventListenerAll } from "./utils.js";
+import { Utils, addEventListenerAll } from "./utils.js";
 
 /**
  * Creates a chat card for an attribute
@@ -24,36 +24,28 @@ import { addEventListenerAll } from "./utils.js";
  *   and a boolean meaning if they need to set on or off
  * @return {Promise} A promise for the BrCommonCard object
  */
-async function create_attribute_card(
-  origin,
-  name,
-  { actions_stored = {} } = {},
-) {
+async function create_attribute_card(origin, name, { actions_stored = {} } = {},) {
   let actor;
-  if (
-    origin instanceof TokenDocument ||
-    origin instanceof foundry.canvas.placeables.Token
-  ) {
+  if (origin instanceof TokenDocument || origin instanceof foundry.canvas.placeables.Token) {
     actor = origin.actor;
   } else {
     actor = origin;
   }
+
   const translated_name = game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS[name]);
-  const title =
-    translated_name +
-    " " +
-    trait_to_string(actor.system.attributes[name.toLowerCase()]);
+  const title = translated_name + " " + trait_to_string(actor.system.attributes[name.toLowerCase()]);
+
   const brCard = create_common_card(
     origin,
     {
       header: { type: game.i18n.localize("BRSW.Attribute"), title: title },
-      attribute_name: name,
+      trait: Utils.traitFromString(actor, name),
     },
     "modules/betterrolls-swade2/templates/attribute_card.hbs",
   );
-  // We always set the actor (as a fallback, and the token if possible)
-  brCard.attribute_name = name;
+
   brCard.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ATTRIBUTE_CARD;
+
   await brCard.render(actions_stored);
   await brCard.save();
   return brCard;
@@ -166,7 +158,7 @@ export async function roll_attribute(brCard, expend_bennie) {
   }
   await roll_trait(
     brCard,
-    brCard.actor.system.attributes[brCard.attribute_name],
+    brCard.actor.system.attributes[brCard.attribute],
     game.i18n.localize("BRSW.AbilityDie"),
     extra_data,
   );

@@ -36,7 +36,7 @@ export class ManualModifiersPopup extends HandlebarsApplicationMixin(Application
     const trait_dice = this.constructor.TRAIT_DICE.map((t) => ({ value: t, enabled: t == this.brCard.manual_mods?.rof }));
     const damage_mods = this.constructor.DAMAGE_MODS.map((t) => ({ value: t, enabled: !!this.brCard.manual_mods?.dmg_modifiers?.find((m) => t == m) }));
     return {
-      trait: !!(this.brCard.attribute_name || this.brCard.skill),
+      trait: !!(this.brCard.trait),
       damage: !!this.brCard.damage,
       trait_mods: trait_mods,
       trait_dice: trait_dice,

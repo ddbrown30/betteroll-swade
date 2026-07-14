@@ -1,5 +1,10 @@
 # Changelog
 
+# Version 5.17.0
+* Major refactor to the way we store and handle skills and attributes to make them more generic. I've tested as much as I can but expect some bugs.
+* If an item does not have a trait set, we will search through the valid actions and automatically select one of them that has a trait override, so long as it doesn't contain one of a list of disallowed properties. For example, a skill override action that contains "dmgOverride" or "rof" will not be automatically selected. This is to ensure that we don't auto-select an action that may have unexpected behaviour. You can of course still manually select these actions yourself.
+* If an item does not have damage set, we do the same logic as for traits as described above, just with a different list of disallowed properties.
+
 # Version 5.16.1
 * Fixed an error when auto-rolling damage
 
@@ -1325,7 +1330,7 @@ Special thanks to SalieriC for doing all the test that make possible to get this
 
 * Cards: Description added to skill cards
 * Cards: Added a setting to expand roll results by default (holgaph)
-* Internal refactoring: skill_id and attribute_id moved to render_data
+* Internal refactoring: skillId and attribute_id moved to render_data
 * Global actions: Support of or_selector, support for ROF action, added actor_has_hindrance selector, added all selector
 * Global actions: Illumination actions added to system actions.
 * Bugs: Items card without rolls where not show (reicargaywood)

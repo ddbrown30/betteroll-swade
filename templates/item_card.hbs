@@ -3,11 +3,11 @@
     {{#if notes}}
         <div class="twbr:w-full twbr:text-center twbr:font-bold">{{{notes}}}</div>
     {{/if}}
-    {{#if skill}}
+    {{#if trait}}
         <div class="twbr:relative twbr:flex twbr:justify-between">
             <span class="twbr:group">
                 <span class="twbr:text-lg">
-                    {{skill_title}}
+                    {{traitTitle}}
                 </span>
                 {{#if skill_tooltip}}
                     <div class="twbr:w-52 twbr:opacity-0 twbr:collapse twbr:absolute
@@ -76,10 +76,10 @@
             </a>
         {{/each}}
     {{/if}}
-    {{#if (or damage skill)}}
+    {{#if showActions}}
         {{>"modules/betterrolls-swade2/templates/actions_partial.hbs"}}
     {{/if}}
-    {{#if skill}}
+    {{#if trait}}
         {{>"modules/betterrolls-swade2/templates/trait_roll_partial.hbs"}}
         {{>"modules/betterrolls-swade2/templates/trait_result_partial.hbs"}}
     {{/if}}

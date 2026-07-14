@@ -429,20 +429,6 @@ export class Utils {
         if (item.system.actions && item.system.actions.trait) {
             return Utils.traitFromString(actor, item.system.actions.trait);
         }
-        // Now check for a skill in additional actions.
-        if (item.system.actions) {
-            for (const action in item.system.actions.additional) {
-                if (
-                    item.system.actions.additional[action].type === "trait" &&
-                    item.system.actions.additional[action].override // name => override (use override if we really want to check for action trait name)
-                ) {
-                    return Utils.traitFromString(
-                        actor,
-                        item.system.actions.additional[action].override, // name => override  (use override if we really want to check for action trait name)
-                    );
-                }
-            }
-        }
         // Some types of items don't have an associated skill
         if (
             [
@@ -522,6 +508,7 @@ export class Utils {
      * @return {boolean}
      */
     static isFightingSkill(skill) {
+        if (!skill) return false;
         const configured_skill_swid = game.settings.get("swade", "parryBaseSwid").toLowerCase();
         if (skill.system.swid === configured_skill_swid) {
             return true;
@@ -573,16 +560,15 @@ export class Utils {
         return Utils.isWeapon(item) || Utils.isBolt(item);
     }
 
-    static isMeleeAttack(item, actor, trait) {
+    static isMeleeAttack(item, skill) {
         if (Utils.isBolt(item) || !Utils.isWeapon(item)) {
             return false;
         }
 
-        trait = trait ?? Utils.getItemTrait(item, actor);
-        return item.system.isMelee && (!item.system.isRanged || trait?.system.swid === 'fighting');
+        return item.system.isMelee && (!item.system.isRanged || skill?.system.swid === 'fighting');
     }
 
-    static isRangedAttack(item, actor, trait) {
+    static isRangedAttack(item, actor, skill) {
         if (Utils.isBolt(item)) {
             return true;
         }
@@ -591,8 +577,8 @@ export class Utils {
             return false;
         }
 
-        trait = trait ?? Utils.getItemTrait(item, actor);
-        return item.system.isRanged && (!item.system.isMelee || trait?.system.swid !== 'fighting');
+        skill = skill ?? Utils.getItemTrait(item, actor);
+        return item.system.isRanged && (!item.system.isMelee || skill?.system?.swid !== 'fighting');
     }
 
     static actorHasArcaneMastery(actor) {

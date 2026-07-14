@@ -41,14 +41,12 @@ export class BrCommonCard {
         this.token_id = undefined;
         this.actor_id = undefined;
         this.item_id = undefined;
-        this.skill_id = undefined;
         this.damage = undefined;
         this.vehicle_actor_id = undefined;
         this.vehicle_token_id = undefined;
         this.target_ids = [];
         this.environment = { light: "bright" };
         this.extra_text = "";
-        this.attribute_name = ""; // If this is an attribute card, its name
         this.action_sections = {};
         this.macro_buttons = []; // Macro buttons from items
         this.render_data = {}; // Old render data, to be removed
@@ -135,12 +133,10 @@ export class BrCommonCard {
             token_id: this.token_id,
             actor_id: this.actor_id,
             item_id: this.item_id,
-            skill_id: this.skill_id,
             vehicle_actor_id: this.vehicle_actor_id,
             vehicle_token_id: this.vehicle_token_id,
             environment: this.environment,
             extra_text: this.extra_text,
-            attribute_name: this.attribute_name,
             action_sections: this.action_sections,
             macro_buttons: this.macro_buttons,
             id: this.id,
@@ -153,6 +149,8 @@ export class BrCommonCard {
             applicable_effects: this.applicable_effects,
             pp_modifiers: this.pp_modifiers,
             pp_cost: this.pp_cost,
+            showActions: this.showActions,
+            trait: this.trait,
         };
     }
 
@@ -163,12 +161,11 @@ export class BrCommonCard {
             "token_id",
             "actor_id",
             "item_id",
-            "skill_id",
+            "trait",
             "vehicle_actor_id",
             "vehicle_token_id",
             "environment",
             "extra_text",
-            "attribute_name",
             "action_sections",
             "target_ids",
             "macro_buttons",
@@ -179,6 +176,7 @@ export class BrCommonCard {
             "applicable_effects",
             "pp_modifiers",
             "pp_cost",
+            "showActions",
         ];
         for (const field of FIELDS) {
             this[field] = data[field];
@@ -260,17 +258,76 @@ export class BrCommonCard {
         return item;
     }
 
-    get skill() {
-        if (this.skill_id) {
-            return this.actor.items.find((item) => item.id === this.skill_id);
+    setTrait(trait) {
+        this.trait = null;
+        if (!trait) return;
+
+        this.trait = {};
+        if( trait.type === "skill") {
+            this.trait.id = trait.id;
+        } else {
+            this.trait.name = trait.name.toLowerCase();
         }
+    }
+
+    get traitDie() {
+        if (this.trait) {
+            if (this.trait.name) {
+                return this.actor.system.attributes[this.trait.name];
+            }
+            return this.actor.items.get(this.trait.id)?.system;
+        }
+
         if (this.item_id) {
             const trait = Utils.getItemTrait(this.item, this.actor);
-            if (trait && Object.hasOwn(trait, "type") && trait.type === "skill") {
-                this.skill_id = trait.id;
+            if (trait?.type === "skill") {
+                this.trait = { id: trait.id };
+                return trait.system;
+            } else if (trait?.name) {
+                this.trait = { name: trait.name.toLowerCase() };
+                return this.actor.system.attributes[this.trait.name];
             }
-            return trait;
         }
+
+        return undefined;
+    }
+
+    get skill() {
+        if (this.trait) {
+            if (this.trait.name) {
+                //This is an attribute not a skill
+                return undefined;
+            }
+            return this.actor.items.get(this.trait.id);
+        }
+
+        if (this.item_id) {
+            const trait = Utils.getItemTrait(this.item, this.actor);
+            if (trait?.type === "skill") {
+                return trait;
+            }
+        }
+
+        return undefined;
+    }
+
+    get attribute() {
+        if (this.trait) {
+            if (this.trait.id) {
+                //This is an skill not an attribute
+                return undefined;
+            }
+            return this.trait.name;
+        }
+
+        if (this.item_id) {
+            const trait = Utils.getItemTrait(this.item, this.actor);
+            if (trait && trait.type !== "skill") {
+                return trait?.name.toLowerCase();
+            }
+        }
+
+        return undefined;
     }
 
     get skill_tooltip() {
@@ -353,7 +410,7 @@ export class BrCommonCard {
     }
 
     populateWorldActions() {
-        const item = this.item || this.skill || { type: "attribute", name: this.attribute_name };
+        const item = this.item || this.skill || { type: "attribute", name: this.attribute };
 
         for (const global_action of get_actions(item, this.actor)) {
             const name = game.i18n.localize(global_action.button_name);
@@ -516,11 +573,11 @@ export class BrCommonCard {
                 ...this.skill.system.effects,
             ];
             this.populate_active_effect_actions_from_array(effectArray);
-        } else if (this.attribute_name) {
-            const abl = this.actor.system.attributes[this.attribute_name];
+        } else if (this.attribute) {
+            const abl = this.actor.system.attributes[this.attribute];
             const effectArray = [
                 ...abl.effects,
-                ...this.actor.system.stats.globalMods[this.attribute_name],
+                ...this.actor.system.stats.globalMods[this.attribute],
                 ...this.actor.system.stats.globalMods.trait,
             ];
             this.populate_active_effect_actions_from_array(effectArray);
@@ -572,7 +629,7 @@ export class BrCommonCard {
             if (current_action.type === "resist") {
                 this.resist_buttons.push({
                     name: current_action.name,
-                    trait: current_action.override || this.skill.name,
+                    trait: current_action.override || (this.skill?.name ?? this.attribute),
                     trait_mod: current_action.modifier,
                 });
             }
@@ -664,26 +721,20 @@ export class BrCommonCard {
     }
 
     /**
-     * Set the trait_id for the render_data
+     * Set the trait for the render_data
      */
     setTraitUsingSkillOverride() {
-        const actions = this.getSelectedActions();
-
         this.resetDefaultTrait();
-        const action = actions.find(
-            (a) => a.code.hasOwnProperty("skillOverride") && a.code.skillOverride,
-        );
+
+        const action = this.getSelectedActions().find((a) => a.code.skillOverride);
         if (!this.actor || !action) {
+            this.setTrait(this.render_data.trait);
             return;
         }
-        const skill = Utils.traitFromString(this.actor, action.code.skillOverride);
-        if (skill.hasOwnProperty("name")) {
-            // Attribute
-            this.render_data.trait_id = skill;
-        } else {
-            // Skill
-            this.render_data.trait_id = skill.id;
-        }
+
+        const trait = Utils.traitFromString(this.actor, action.code.skillOverride);
+        this.render_data.trait = trait;
+        this.setTrait(trait);
     }
 
     /**
@@ -691,7 +742,87 @@ export class BrCommonCard {
      */
     resetDefaultTrait() {
         if (this.item) {
-            this.render_data.trait_id = Utils.getItemTrait(this.item, this.actor);
+            this.render_data.trait = Utils.getItemTrait(this.item, this.actor);
+        }
+    }
+
+    /**
+     * Selects fallback trait and damage actions when appropriate
+     */
+    selectFallbackActions() {
+        if (!this.item) return;
+
+        const selectedActions = this.getSelectedActions();
+
+        const trait = Utils.getItemTrait(this.item, this.actor);
+        if (!trait) {
+            const hasSkillOverride = selectedActions.some((a) => a.code.skillOverride);
+            if (!hasSkillOverride) {
+                const invalidProperties = new Set([
+                    "add_wild_die",
+                    "aiming_ignores",
+                    "aimingIgnoreMod",
+                    "apMod",
+                    "avoid_exploding_damage",
+                    "change_location",
+                    "dmgMod",
+                    "dmgOverride",
+                    "ignoresArcaneActivation",
+                    "isHeavyWeapon",
+                    "multiplyDmgMod",
+                    "overrideAp",
+                    "raiseDamageFormula",
+                    "rerollDamageMod",
+                    "rerollMode",
+                    "rerollSkillMod",
+                    "rof",
+                    "runDamageMacro",
+                    "self_add_status",
+                    "tnOverride",
+                    "wildDieFormula",
+                ]);
+
+                //Find the first action with a skill override that does not also have any of the properties above
+                Utils.forEachActionGroup(this, group => {
+                    const skillAction = group.actions.find((a) => a.code.skillOverride && !invalidProperties.some((prop) => a.code[prop]));
+                    if (skillAction) {
+                        //We've found a valid action so mark it as selected and stop searching
+                        skillAction.selected = true;
+                        return true;
+                    }
+                });
+            }
+        }
+
+        const damage = this.item?.system.damage || selectedActions.some((a) => a.code.dmgOverride);
+        if (!damage) {
+            const invalidProperties = new Set([
+                "add_wild_die",
+                "aiming_ignores",
+                "aimingIgnoreMod",
+                "change_location",
+                "rerollDamageMod",
+                "rerollMode",
+                "rerollSkillMod",
+                "resourcesUsed",
+                "rof",
+                "runSkillMacro",
+                "self_add_status",
+                "skillMod",
+                "skillOverride",
+                "tnOverride",
+                "wildDieFormula",
+            ]);
+
+            //Find the first action with a skill override that does not also have any of the properties above
+            Utils.forEachActionGroup(this, group => {
+                const damageAction = group.actions.find((a) => a.code.dmgOverride && !invalidProperties.some((prop) => a.code[prop]));
+                if (damageAction) {
+                    //We've found a valid action so mark it as selected and stop searching
+                    damageAction.selected = true;
+                    return true;
+                }
+            });
         }
     }
 
@@ -732,18 +863,18 @@ export class BrCommonCard {
      * Recovers the trait used in card
      */
     getTrait() {
-        if (this.render_data.hasOwnProperty("trait_id") && this.render_data.trait_id) {
+        if (this.render_data.trait) {
             let trait;
-            if (this.render_data.trait_id.hasOwnProperty("name")) {
-                // This is an attribute
-                trait = this.render_data.trait_id;
+            if (this.render_data.trait.id) {
+                //This is a skill
+                trait = this.actor.items.get(this.render_data.trait.id);
             } else {
-                // Should be a skill
-                trait = this.actor.items.get(this.render_data.trait_id);
+                // This is an attribute
+                trait = this.render_data.trait;
             }
 
-            this.render_data.skill = trait;
-            this.render_data.skill_title = trait
+            this.render_data.trait = trait;
+            this.render_data.traitTitle = trait
                 ? trait.name + " " + trait_to_string(trait.system)
                 : "";
         }
@@ -782,10 +913,20 @@ export class BrCommonCard {
     async render(stored_selections = {}) {
         if (!Object.keys(this.action_sections).length) {
             this.populateActions(stored_selections);
+
+            if (this.item) {
+                this.selectFallbackActions();
+                this.showActions = this.shouldShowActionsMenu();
+            }
         }
+
         if (this.item && this.macro_buttons.length === 0) {
             this.populateMacroButtons();
         }
+
+        this.setTraitUsingSkillOverride();
+        this.refreshDamageFromActions();
+
         this.getTrait();
 
         this.pp_cost = this.render_data.is_power ? calc_pp_cost(this) : 0;
@@ -794,9 +935,7 @@ export class BrCommonCard {
             this.getDataRender(),
         );
 
-        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-            new_content,
-        );
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(new_content);
 
         if (this.message) {
             this.update_list.content = new_content;
@@ -830,7 +969,7 @@ export class BrCommonCard {
         data.selected_actions = this.getSelectedActions();
         data.hasFooterButtons = this.hasFooterButtons;
         data.skill_tooltip = this.skill_tooltip;
-        data.supports_manual_mods = !!(this.attribute_name || this.skill || this.damage);
+        data.supports_manual_mods = !!(this.trait || this.damage);
         data.noPowerPoints = game.settings.get("swade", "noPowerPoints");
         data.ppPenalty = -Math.ceil(this.pp_cost / 2);
         data.shots_pp_info = this.itemShots;
@@ -898,6 +1037,15 @@ export class BrCommonCard {
             }
         });
         return selected_actions;
+    }
+
+    shouldShowActionsMenu() {
+        if (this.trait || this.damage) return true;
+        return !!Utils.forEachActionGroup(this, group => {
+            if (group.actions.some((a) => a.code.skillOverride || a.code.dmgOverride)) {
+                return true;
+            }
+        });
     }
 
     /**

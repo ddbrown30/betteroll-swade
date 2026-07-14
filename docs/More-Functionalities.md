@@ -56,7 +56,7 @@ game.brsw.create_attribute_card_from_id(token_id, actor_id, name)
  * @param {string} actor_id An actor id, it could be set as fallback or
  *  if you keep token empty as the only way to find the actor
  * @param {string} name Name of the attribute to roll, like 'vigor'
- * @return {Promise} a promise fot the ChatMessage object
+ * @return {Promise} a promise for the ChatMessage object
  */
  ```
 
@@ -140,7 +140,7 @@ game.brsw.create_item_card_from_id(token_id, actor_id, itemid)
  * @param {string} actor_id An actor id, it could be set as fallback or
  *  if you keep token empty as the only way to find the actor
  * @param {string} item_id Id of the item
- * @return {Promise} a promise fot the BrCommonCard object
+ * @return {Promise} a promise for the BrCommonCard object
  */
 ```
 
@@ -159,18 +159,18 @@ game.brsw.roll_item(brCard, html, expend_bennie, roll_damage)
  ```
 
 ```js
-game.brsw.create_skill_card(origin, skill_id)
+game.brsw.create_skill_card(origin, skillId)
 /**
  * Creates a chat card for a skill
  *
  * @param {Token, SwadeActor} origin  The actor or token owning the attribute
- * @param {string} skill_id The id of the skill that we want to show
+ * @param {string} skillId The id of the skill that we want to show
  * @return {Promise} A promise for the ChatMessage object
  */
  ```
 
 ```js
-game.brsw.create_skill_card_from_id(token_id, actor_id, skill_id)
+game.brsw.create_skill_card_from_id(token_id, actor_id, skillId)
 /**
  * Creates a skill card from a token or actor id, mainly for use in macros
  *
@@ -178,8 +178,8 @@ game.brsw.create_skill_card_from_id(token_id, actor_id, skill_id)
  *  before actor
  * @param {string} actor_id An actor id, it could be set as fallback or
  *  if you keep token empty as the only way to find the actor
- * @param {string} skill_id Id of the skill item
- * @return {Promise} a promise fot the BrCommonCard object
+ * @param {string} skillId Id of the skill item
+ * @return {Promise} a promise for the BrCommonCard object
  */
  ```
 

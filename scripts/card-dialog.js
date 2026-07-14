@@ -95,9 +95,7 @@ class BrCardDialog {
       enabled_actions.push(button.dataset.actionId);
     }
     this.BrCard.setActiveActions(enabled_actions);
-    this.BrCard.setTraitUsingSkillOverride();
 
-    this.BrCard.refreshDamageFromActions();
 
     this.BrCard.refreshPPModsFromActions();
 
