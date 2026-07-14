@@ -86,7 +86,7 @@ async function create_skill_card(
  * @param {string} skillId Id of the skill item
  * @param {object} actions_stored An object with action ids as properties
  *   and a boolean meaning if they need to set on or off
- * @return {Promise} a promise fot the ChatMessage object
+ * @return {Promise} a promise for the ChatMessage object
  */
 function create_skill_card_from_id(
     token_id,

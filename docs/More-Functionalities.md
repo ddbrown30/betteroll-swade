@@ -56,7 +56,7 @@ game.brsw.create_attribute_card_from_id(token_id, actor_id, name)
  * @param {string} actor_id An actor id, it could be set as fallback or
  *  if you keep token empty as the only way to find the actor
  * @param {string} name Name of the attribute to roll, like 'vigor'
- * @return {Promise} a promise fot the ChatMessage object
+ * @return {Promise} a promise for the ChatMessage object
  */
  ```
 
@@ -140,7 +140,7 @@ game.brsw.create_item_card_from_id(token_id, actor_id, itemid)
  * @param {string} actor_id An actor id, it could be set as fallback or
  *  if you keep token empty as the only way to find the actor
  * @param {string} item_id Id of the item
- * @return {Promise} a promise fot the BrCommonCard object
+ * @return {Promise} a promise for the BrCommonCard object
  */
 ```
 
@@ -179,7 +179,7 @@ game.brsw.create_skill_card_from_id(token_id, actor_id, skillId)
  * @param {string} actor_id An actor id, it could be set as fallback or
  *  if you keep token empty as the only way to find the actor
  * @param {string} skillId Id of the skill item
- * @return {Promise} a promise fot the BrCommonCard object
+ * @return {Promise} a promise for the BrCommonCard object
  */
  ```
 
