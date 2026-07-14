@@ -50,7 +50,7 @@ export function BRWSRoll() {
 }
 
 /**
- * Makes the br_card class accesible
+ * Makes the BrCommonCard class accessible
  *
  */
 export function expose_card_class() {
@@ -83,17 +83,17 @@ export function create_common_card(origin, render_data, template) {
                 : null;
     }
 
-    const br_message = new BrCommonCard(undefined);
-    br_message.actor_id = actor.id;
+    const brCard = new BrCommonCard(undefined);
+    brCard.actor_id = actor.id;
 
     if (actor !== origin) {
-        br_message.token_id = origin.id;
+        brCard.token_id = origin.id;
     } else if (actor.isToken) {
-        br_message.token_id = actor.token.id;
+        brCard.token_id = actor.token.id;
     }
 
-    br_message.generateRenderData(render_data, template);
-    return br_message;
+    brCard.generateRenderData(render_data, template);
+    return brCard;
 }
 
 /**
@@ -161,9 +161,9 @@ export function get_actor_from_ids(token_id, actor_id) {
 
 /**
  * Saves a card as a macro
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  */
-function save_macro(br_card) {
+function save_macro(brCard) {
     let macro_slot = 0;
     let { page } = ui.hotbar;
     // Starting from the current hotbar page, find the first empty slot
@@ -177,10 +177,10 @@ function save_macro(br_card) {
         }
         page = page < 5 ? page + 1 : 1;
     } while (macro_slot === 0 && page !== ui.hotbar.page);
-    const command = create_macro_command_from_card(br_card);
+    const command = create_macro_command_from_card(brCard);
     Macro.create({
-        name: br_card.render_data.header.title,
-        img: br_card.render_data.header.img || "icons/svg/aura.svg",
+        name: brCard.render_data.header.title,
+        img: brCard.render_data.header.img || "icons/svg/aura.svg",
         type: "script",
         command: command,
         scope: "global",
@@ -197,73 +197,73 @@ function save_macro(br_card) {
 
 /**
  * Saves a card as a macro
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  */
-function toggle_mods_popup(element, br_card) {
+function toggle_mods_popup(element, brCard) {
     if (game.brsw.manualModsPopup) {
         game.brsw.manualModsPopup.close();
     } else {
         const rect = element.getBoundingClientRect();
         new ManualModifiersPopup({
             anchorPosition: { x: rect.x, y: rect.y },
-            br_card,
+            brCard,
         }).render(true);
     }
 }
 
 /**
  * Connects the listener for all chat cards
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  * @param {HTMLElement} html - html of the card
  */
-export function activate_common_listeners(br_card, html) {
+export function activate_common_listeners(brCard, html) {
     // The message will be rendered at creation and each time a flag is added
     // Actor will be undefined if this is called before flags are set
-    if (br_card.actor) {
+    if (brCard.actor) {
         const actor_img = html.querySelector(".brws-actor-img");
         if (actor_img) {
             actor_img.classList.add("bound");
             actor_img.addEventListener("click", async (ev) => {
-                await manage_sheet(br_card.actor);
+                await manage_sheet(brCard.actor);
             });
         }
         const vehicle_img = html.querySelector(".brws-vehicle-img");
         if (vehicle_img) {
             vehicle_img.classList.add("bound");
             vehicle_img.addEventListener("click", async (ev) => {
-                await manage_sheet(br_card.vehicle_actor);
+                await manage_sheet(brCard.vehicle_actor);
             });
         }
         html
             .querySelector(".br2-unshake-card")
             ?.addEventListener("click", async (ev) => {
-                create_unshaken_card(br_card.message, undefined).catch(() => {
+                create_unshaken_card(brCard.message, undefined).catch(() => {
                     console.error("BR2 unable to show unshaken card");
                 });
             });
         html
             .querySelector(".br2-unstun-card")
             ?.addEventListener("click", async (ev) => {
-                create_unstun_card(br_card.message, undefined).catch(() => {
+                create_unstun_card(brCard.message, undefined).catch(() => {
                     console.error("BR2 unable to show unstun card");
                 });
             });
     }
-    if (br_card.message.isOwner) {
+    if (brCard.message.isOwner) {
         html
             .querySelector(".brsw-selected-actions")
             ?.addEventListener("click", () => {
-                game.brsw.dialog.show_card(br_card);
+                game.brsw.dialog.show_card(brCard);
             });
     }
     // Collapsible
-    manage_collapsables(html, br_card.message);
+    manage_collapsables(html, brCard.message);
     // Old rolls
-    if (br_card.message.isOwner) {
+    if (brCard.message.isOwner) {
         const old_rolls = html.querySelectorAll(".brsw-old-roll");
         for (const old_roll of old_rolls) {
             old_roll.addEventListener("click", async (ev) => {
-                await old_roll_clicked(ev, br_card);
+                await old_roll_clicked(ev, brCard);
             });
         }
     }
@@ -285,7 +285,7 @@ export function activate_common_listeners(br_card, html) {
                 },
             ],
             async (values) => {
-                await add_modifier(br_card, {
+                await add_modifier(brCard, {
                     label: values.label,
                     value: values.value,
                 });
@@ -303,7 +303,7 @@ export function activate_common_listeners(br_card, html) {
                 { id: "value", label: label_mod, default_value: value },
             ],
             async (values) => {
-                await edit_modifier(br_card, parseInt(index), {
+                await edit_modifier(brCard, parseInt(index), {
                     name: values.Label,
                     value: values.value,
                     extra_class: parseInt(values.value) < 0 ? " brsw-red-text" : "",
@@ -323,14 +323,14 @@ export function activate_common_listeners(br_card, html) {
             async (values) => {
                 const new_value = values.new_result;
                 // Actual roll manipulation
-                await override_die_result(br_card, die_index, new_value);
+                await override_die_result(brCard, die_index, new_value);
             },
         );
     });
     // Delete modifiers
     addEventListenerAll(html, ".brsw-delete-modifier", "click", async (ev) => {
         ev.stopPropagation();
-        await delete_modifier(br_card, parseInt(ev.currentTarget.dataset.index));
+        await delete_modifier(brCard, parseInt(ev.currentTarget.dataset.index));
     });
     // Edit TNs
     addEventListenerAll(html, ".brsw-edit-tn", "click", (ev) => {
@@ -340,7 +340,7 @@ export function activate_common_listeners(br_card, html) {
             game.i18n.localize("BRSW.EditTN"),
             [{ id: "tn", label: tn_trans, default_value: old_tn }],
             async (values) => {
-                await edit_tn(br_card, values.tn, "");
+                await edit_tn(brCard, values.tn, "");
             },
         );
     });
@@ -349,7 +349,7 @@ export function activate_common_listeners(br_card, html) {
         ev.stopPropagation();
         const { index } = ev.currentTarget.dataset;
         get_tn_from_target(
-            br_card,
+            brCard,
             parseInt(index),
             ev.currentTarget.classList.contains("brsw-selected-tn"),
         ).catch((e) => {
@@ -359,28 +359,28 @@ export function activate_common_listeners(br_card, html) {
     // Repeat card
     html.querySelector(".brsw-repeat-card")?.addEventListener("click", (ev) => {
         // noinspection JSIgnoredPromiseFromCall
-        duplicate_message(br_card.message, ev);
+        duplicate_message(brCard.message, ev);
     });
     // Save a macro using the current settings
     html.querySelector(".brsw-save-macro")?.addEventListener("click", () => {
-        save_macro(br_card);
+        save_macro(brCard);
     });
     // Open the manual mods popup
     html
         .querySelector(".brsw-manual-mods")
         ?.addEventListener("click", (event) => {
             event.stopPropagation();
-            toggle_mods_popup(event.target, br_card);
+            toggle_mods_popup(event.target, brCard);
         });
     // Popout card
     html.querySelector(".brsw-popout-button")?.addEventListener("click", () => {
-        br_card.showPopout();
+        brCard.showPopout();
     });
 }
 
-function create_macro_command_from_card(br_card) {
+function create_macro_command_from_card(brCard) {
     let actions_stored = "";
-    Utils.forEachActionGroup(br_card, group => {
+    Utils.forEachActionGroup(brCard, group => {
         for (const action of group.actions) {
             actions_stored += `'${action.code.id}':` + action.selected + `,`;
         }
@@ -389,30 +389,30 @@ function create_macro_command_from_card(br_card) {
     let card_function_name = "";
     let roll_function = "";
     let id = "";
-    if (br_card.item_id) {
+    if (brCard.item_id) {
         card_function_name = "create_item_card_from_id";
         roll_function =
             "game.brsw.roll_item(message, $(message.content), false, behaviour.includes('damage'));";
-        id = br_card.item_id;
-    } else if (br_card.skill_id) {
+        id = brCard.item_id;
+    } else if (brCard.skill_id) {
         card_function_name = "create_skill_card_from_id";
         roll_function = "game.brsw.roll_skill(message, $(message.content), false);";
-        id = br_card.skill_id;
-    } else if (br_card.attribute_name) {
+        id = brCard.skill_id;
+    } else if (brCard.attribute_name) {
         card_function_name = "create_attribute_card_from_id";
         roll_function =
             "game.brsw.roll_attribute(message, $(message.content), false);";
-        id = br_card.attribute_name;
+        id = brCard.attribute_name;
     }
     return `
   let behaviour = game.brsw.get_action_from_click(event);
   if (behaviour === 'system') {
-    game.swade.rollItemMacro(\`${br_card.render_data.header.title}\`);
+    game.swade.rollItemMacro(\`${brCard.render_data.header.title}\`);
     return;
   }
   let message = await game.brsw.${card_function_name}(
-    '${br_card.token_id}',
-    '${br_card.actor_id}',
+    '${brCard.token_id}',
+    '${brCard.actor_id}',
     '${id}',
     {actions_stored:{${actions_stored}}});
   if (event) {
@@ -489,7 +489,7 @@ export function getActionFromClick(event) {
  *
  * @param old_options - Options used as default
  */
-export function get_roll_options(old_options, br_card) {
+export function get_roll_options(old_options, brCard) {
     const modifiers = old_options?.additionalMods || [];
     const dmg_modifiers = old_options?.dmgMods || [];
     const tn = old_options?.tn || 4;
@@ -498,23 +498,23 @@ export function get_roll_options(old_options, br_card) {
     let rof = old_options?.rof || 1;
     // We only check for modifiers when there are no old ones.
     if (!old_options?.hasOwnProperty("additionalMods")) {
-        if (br_card.manual_mods) {
-            if (br_card.manual_mods.trait_mods?.length) {
-                const total = br_card.manual_mods.trait_mods.reduce(
+        if (brCard.manual_mods) {
+            if (brCard.manual_mods.trait_mods?.length) {
+                const total = brCard.manual_mods.trait_mods.reduce(
                     (acc, val) => acc + parseInt(val),
                     0,
                 );
                 modifiers.push(total);
             }
-            if (br_card.manual_mods.dmg_modifiers?.length) {
-                const total = br_card.manual_mods.dmg_modifiers.reduce(
+            if (brCard.manual_mods.dmg_modifiers?.length) {
+                const total = brCard.manual_mods.dmg_modifiers.reduce(
                     (acc, val) => acc + parseInt(val),
                     0,
                 );
                 dmg_modifiers.push(total);
             }
-            if (br_card.manual_mods.rof) {
-                rof = parseInt(br_card.manual_mods.rof);
+            if (brCard.manual_mods.rof) {
+                rof = parseInt(brCard.manual_mods.rof);
             }
         }
         const dice_tray_input = $("input.dice-tray__input");
@@ -623,16 +623,16 @@ export function calculate_damage_results(rolls) {
 
 /**
  * Updates a message using a new render_data
- * @param {ChatMessage, BrCommonCard} br_message
+ * @param {ChatMessage, BrCommonCard} brCard
  * @param render_data
  */
-export async function update_message(br_message, render_data) {
-    if (br_message.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD) {
-        render_data.skill = Utils.getItemTrait(br_message.item, br_message.actor);
+export async function update_message(brCard, render_data) {
+    if (brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD) {
+        render_data.skill = Utils.getItemTrait(brCard.item, brCard.actor);
     }
-    br_message.generateRenderData(render_data, undefined);
-    await br_message.render();
-    await br_message.save();
+    brCard.generateRenderData(render_data, undefined);
+    await brCard.render();
+    await brCard.save();
 }
 
 /**
@@ -715,13 +715,13 @@ function get_actor_own_modifiers(actor, roll_options) {
 
 /**
  * Get all the options needed for a new roll
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  * @param extra_data
  * @param trait_dice
  * @param roll_options - An object with the current roll_options
  */
 async function get_new_roll_options(
-    br_card,
+    brCard,
     extra_data,
     trait_dice,
     roll_options,
@@ -733,26 +733,26 @@ async function get_new_roll_options(
         canvas.tokens.controlled.forEach((token) => {
             // noinspection JSUnresolvedVariable
             if (
-                token.actor !== br_card.actor &&
-                token.actor !== br_card.vehicle_actor
+                token.actor !== brCard.actor &&
+                token.actor !== brCard.vehicle_actor
             ) {
                 targetToken = token;
             }
         });
     }
 
-    if (targetToken && br_card.skill) {
-        const origin_token = br_card.token;
+    if (targetToken && brCard.skill) {
+        const origin_token = brCard.token;
         const target_data = await get_tn_from_token(
-            br_card.skill,
+            brCard.skill,
             targetToken,
             origin_token,
-            br_card.actor,
-            br_card.item,
+            brCard.actor,
+            brCard.item,
             extra_data,
         );
-        br_card.trait_roll.tn = target_data.value;
-        br_card.trait_roll.tn_reason = target_data.reason;
+        brCard.trait_roll.tn = target_data.value;
+        brCard.trait_roll.tn_reason = target_data.reason;
         extra_options.target_modifiers = target_data.modifiers;
     }
 
@@ -765,7 +765,7 @@ async function get_new_roll_options(
         extra_options.rof = extra_data.rof;
     }
 
-    const options = get_roll_options(extra_options, br_card);
+    const options = get_roll_options(extra_options, brCard);
     roll_options.rof = options.rof || 1;
 
     // Trait modifier
@@ -777,11 +777,11 @@ async function get_new_roll_options(
     }
 
     get_below_chat_modifiers(options, roll_options);
-    get_actor_own_modifiers(br_card.actor, roll_options);
+    get_actor_own_modifiers(brCard.actor, roll_options);
 
     // Armor min str
-    if (br_card.skill?.system.attribute === "agility") {
-        const armor_penalty = get_actor_armor_minimum_strength(br_card.actor);
+    if (brCard.skill?.system.attribute === "agility") {
+        const armor_penalty = get_actor_armor_minimum_strength(brCard.actor);
         if (armor_penalty) {
             roll_options.modifiers.push(armor_penalty);
         }
@@ -802,32 +802,32 @@ async function get_new_roll_options(
     }
 
     //Conviction
-    const conviction_modifier = await check_and_roll_conviction(br_card.actor);
+    const conviction_modifier = await check_and_roll_conviction(brCard.actor);
     if (conviction_modifier) {
         roll_options.modifiers.push(conviction_modifier);
     }
 
     // Joker
-    if (br_card.token && has_joker(br_card.token.id)) {
+    if (brCard.token && has_joker(brCard.token.id)) {
         roll_options.modifiers.push(
             new TraitModifier(
                 "Joker",
-                br_card.actor.getFlag("swade", "jokerBonus") ?? 2,
+                brCard.actor.getFlag("swade", "jokerBonus") ?? 2,
             ),
         );
     }
 
     // Encumbrance
     const npcsUseEncumbrance = SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.npcsUseEncumbrance);
-    if ((br_card.actor.type === "character" || npcsUseEncumbrance) &&
-        br_card.actor.system.encumbered &&
-        (br_card.attribute_name === "agility" || br_card.skill?.system.attribute === "agility")) {
+    if ((brCard.actor.type === "character" || npcsUseEncumbrance) &&
+        brCard.actor.system.encumbered &&
+        (brCard.attribute_name === "agility" || brCard.skill?.system.attribute === "agility")) {
         roll_options.modifiers.push(new TraitModifier(game.i18n.localize("SWADE.Encumbered"), -2),);
     }
 
     // Vehicle
-    if (br_card.vehicle_actor) {
-        const vehicle = br_card.vehicle_actor;
+    if (brCard.vehicle_actor) {
+        const vehicle = brCard.vehicle_actor;
         let handling = vehicle.system.handling;
         handling -= Math.max(
             vehicle.system.wounds.value - vehicle.system.wounds.ignored,
@@ -842,19 +842,19 @@ async function get_new_roll_options(
 
 /**
  * Get the options for a re-roll
- * @param {BrCommonCard} br_card - The card to get the options from
+ * @param {BrCommonCard} brCard - The card to get the options from
  * @param {Object} extra_data
  */
-async function get_reroll_options(br_card, extra_data) {
+async function get_reroll_options(brCard, extra_data) {
     // Reroll, clear out old reroll mods so we don't double add
     // This doesn't use filter() because the array is referenced elsewhere
-    br_card.trait_roll.modifiers.splice(
+    brCard.trait_roll.modifiers.splice(
         0,
-        br_card.trait_roll.modifiers.length,
-        ...br_card.trait_roll.modifiers.filter((mod) => !mod.isReroll)
+        brCard.trait_roll.modifiers.length,
+        ...brCard.trait_roll.modifiers.filter((mod) => !mod.isReroll)
     );
     //Reroll any dice modifiers
-    const modifiers = br_card.trait_roll.modifiers;
+    const modifiers = brCard.trait_roll.modifiers;
     for (let i = 0; i < modifiers.length; ++i) {
         if (modifiers[i].dice) {
             modifiers[i] = new TraitModifier(modifiers[i].name, modifiers[i].dice.formula);
@@ -862,24 +862,24 @@ async function get_reroll_options(br_card, extra_data) {
         }
     }
     // Modifiers from effects
-    if (br_card.trait_roll.reroll_mode === "benny") {
-        for (const mod of br_card.actor.system.stats.globalMods.bennyTrait) {
+    if (brCard.trait_roll.reroll_mode === "benny") {
+        for (const mod of brCard.actor.system.stats.globalMods.bennyTrait) {
             const new_modifier = new TraitModifier(mod.label, mod.value);
             new_modifier.isReroll = true;
-            br_card.trait_roll.modifiers.push(new_modifier);
+            brCard.trait_roll.modifiers.push(new_modifier);
         }
     }
     // Modifiers from actions
     if (extra_data.reroll_modifier &&
-        (!br_card.trait_roll.reroll_mode ||
-            br_card.trait_roll.reroll_mode === extra_data.reroll_mode)) {
+        (!brCard.trait_roll.reroll_mode ||
+            brCard.trait_roll.reroll_mode === extra_data.reroll_mode)) {
         const new_modifier = new TraitModifier(
             extra_data.reroll_modifier.name,
             extra_data.reroll_modifier.value,
         );
         new_modifier.isReroll = true;
         new_modifier.evaluate();
-        br_card.trait_roll.modifiers.push(new_modifier);
+        brCard.trait_roll.modifiers.push(new_modifier);
     }
 }
 
@@ -987,20 +987,20 @@ function create_roll_string(trait_dice, rof) {
 
 /**
  * Makes a roll trait
- * @param {BrCommonCard}br_card
+ * @param {BrCommonCard}brCard
  * @param trait_dice - An object representing a trait dice
  * @param dice_label - Label for the trait die
  * @param extra_data - Extra data to add to render options
  */
-export async function roll_trait(br_card, trait_dice, dice_label, extra_data) {
-    const { actor } = br_card;
+export async function roll_trait(brCard, trait_dice, dice_label, extra_data) {
+    const { actor } = brCard;
     const roll_options = { modifiers: [], rof: undefined };
-    if (!br_card.trait_roll.is_rolled) {
-        await get_new_roll_options(br_card, extra_data, trait_dice, roll_options);
+    if (!brCard.trait_roll.is_rolled) {
+        await get_new_roll_options(brCard, extra_data, trait_dice, roll_options);
     } else {
-        roll_options.modifiers = br_card.trait_roll.modifiers;
-        roll_options.rof = br_card.trait_roll.rof;
-        await get_reroll_options(br_card, extra_data);
+        roll_options.modifiers = brCard.trait_roll.modifiers;
+        roll_options.rof = brCard.trait_roll.rof;
+        await get_reroll_options(brCard, extra_data);
     }
     let roll_string = create_roll_string(trait_dice, roll_options.rof);
     // Wild Die
@@ -1013,9 +1013,9 @@ export async function roll_trait(br_card, trait_dice, dice_label, extra_data) {
     }
     if ((actor.isWildcard || extra_data.add_wild_die) && wild_die_formula) {
         roll_string += wild_die_formula;
-        br_card.trait_roll.wild_die = true;
+        brCard.trait_roll.wild_die = true;
     } else {
-        br_card.trait_roll.wild_die = false;
+        brCard.trait_roll.wild_die = false;
     }
     if (
         extra_data.total_aiming_ignorable_penalties > 0 &&
@@ -1024,44 +1024,44 @@ export async function roll_trait(br_card, trait_dice, dice_label, extra_data) {
         //We are aiming and we have penalties that we can ignore
         apply_aiming_ignore(extra_data);
     }
-    br_card.trait_roll.modifiers = roll_options.modifiers;
+    brCard.trait_roll.modifiers = roll_options.modifiers;
     if (extra_data.tn) {
-        br_card.trait_roll.tn = extra_data.tn;
-        br_card.trait_roll.tn_reason = extra_data.tn_reason;
+        brCard.trait_roll.tn = extra_data.tn;
+        brCard.trait_roll.tn_reason = extra_data.tn_reason;
     }
-    br_card.trait_roll.arcaneActivationOffset = extra_data.arcaneActivationOffset;
+    brCard.trait_roll.arcaneActivationOffset = extra_data.arcaneActivationOffset;
 
     const roll = new Roll(roll_string);
     await roll.evaluate();
-    await br_card.trait_roll.add_roll(roll);
-    await roll_dice(br_card.message, br_card.trait_roll, roll);
-    await br_card.render();
-    await br_card.save();
+    await brCard.trait_roll.add_roll(roll);
+    await roll_dice(brCard.message, brCard.trait_roll, roll);
+    await brCard.render();
+    await brCard.save();
 }
 
 /**
  * Function that exchanges roll when clicked
  * @param event - mouse click event
- * @param {BrCommonCard } br_card - The card to be updated
+ * @param {BrCommonCard } brCard - The card to be updated
  */
-async function old_roll_clicked(event, br_card) {
+async function old_roll_clicked(event, brCard) {
     let index = parseInt(event.currentTarget.dataset.index);
-    if (index >= br_card.trait_roll.selected_roll_index) {
+    if (index >= brCard.trait_roll.selected_roll_index) {
         index += 1;
     }
-    br_card.trait_roll.selected_roll_index = index;
+    brCard.trait_roll.selected_roll_index = index;
     if (
-        br_card.item &&
-        !isNaN(parseInt(br_card.item.system.pp)) &&
-        br_card.render_data.used_pp
+        brCard.item &&
+        !isNaN(parseInt(brCard.item.system.pp)) &&
+        brCard.render_data.used_pp
     ) {
-        br_card.render_data.used_pp = await spendPP(
-            br_card,
-            br_card.render_data.used_pp,
+        brCard.render_data.used_pp = await spendPP(
+            brCard,
+            brCard.render_data.used_pp,
         );
     }
-    await br_card.render();
-    br_card
+    await brCard.render();
+    brCard
         .save()
         .catch((err) =>
             console.error("Error while selecting and old roll: " + err),
@@ -1070,21 +1070,21 @@ async function old_roll_clicked(event, br_card) {
 
 /**
  * Overrides the rolled result of a singular die in a given roll
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  * @param {int} die_index
  * @param {int, string} new_value
  */
-async function override_die_result(br_card, die_index, new_value) {
-    br_card.trait_roll.current_roll.dice[die_index].raw_total =
+async function override_die_result(brCard, die_index, new_value) {
+    brCard.trait_roll.current_roll.dice[die_index].raw_total =
         parseInt(new_value);
-    await br_card.trait_roll.recalculate_trait_results(
-        br_card.trait_roll.tn,
-        br_card.trait_roll.wild_die,
+    await brCard.trait_roll.recalculate_trait_results(
+        brCard.trait_roll.tn,
+        brCard.trait_roll.wild_die,
     );
-    await br_card.render();
-    await br_card.save();
+    await brCard.render();
+    await brCard.save();
     // Rerun macros.
-    const macro_actions = br_card.getSelectedActions().filter((action) => {
+    const macro_actions = brCard.getSelectedActions().filter((action) => {
         return action.code.hasOwnProperty("runSkillMacro");
     });
     if (macro_actions) {
@@ -1092,27 +1092,27 @@ async function override_die_result(br_card, die_index, new_value) {
         for (const macro of macro_actions) {
             macros.push(macro.code.runSkillMacro);
         }
-        await runMacros(macros, br_card);
+        await runMacros(macros, brCard);
     }
 }
 
 /**
  * Add a modifier to a message
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  * @param modifier - A {name, value} modifier
  */
-async function add_modifier(br_card, modifier) {
+async function add_modifier(brCard, modifier) {
     if (modifier.value) {
         const name = modifier.label || game.i18n.localize("BRSW.ManuallyAdded");
         const new_mod = new TraitModifier(name, modifier.value);
         await new_mod.evaluate();
         if (new_mod.dice) {
-            await roll_dice(br_card.message, br_card.trait_roll, new_mod.dice);
+            await roll_dice(brCard.message, brCard.trait_roll, new_mod.dice);
         }
-        br_card.trait_roll.modifiers.push(new_mod);
-        await br_card.trait_roll.recalculate_trait_results();
-        await br_card.render();
-        br_card.save().catch(() => {
+        brCard.trait_roll.modifiers.push(new_mod);
+        await brCard.trait_roll.recalculate_trait_results();
+        await brCard.render();
+        brCard.save().catch(() => {
             console.error("Error saving a card after adding a modifier");
         });
     }
@@ -1120,34 +1120,34 @@ async function add_modifier(br_card, modifier) {
 
 /**
  * Deletes a modifier from a message
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  * @param {int} index - Index of the modifier to delete.
  */
-async function delete_modifier(br_card, index) {
-    br_card.trait_roll.modifiers.splice(index, 1);
-    await br_card.trait_roll.recalculate_trait_results();
-    await br_card.render();
-    br_card.save().catch(() => {
+async function delete_modifier(brCard, index) {
+    brCard.trait_roll.modifiers.splice(index, 1);
+    await brCard.trait_roll.recalculate_trait_results();
+    await brCard.render();
+    brCard.save().catch(() => {
         console.error("Error saving a card after deleting a modifier");
     });
 }
 
 /**
  * Edits one modifier
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  * @param {int} index
  * @param {Object} new_modifier
  */
-async function edit_modifier(br_card, index, new_modifier) {
+async function edit_modifier(brCard, index, new_modifier) {
     // noinspection JSCheckFunctionSignatures
     // Add float modifier support
     const mod_value = parseFloat(new_modifier.value);
     if (mod_value) {
-        br_card.trait_roll.modifiers[index].label = new_modifier.label;
-        br_card.trait_roll.modifiers[index].value = mod_value;
-        await br_card.trait_roll.recalculate_trait_results();
-        await br_card.render();
-        br_card.save().catch(() => {
+        brCard.trait_roll.modifiers[index].label = new_modifier.label;
+        brCard.trait_roll.modifiers[index].value = mod_value;
+        await brCard.trait_roll.recalculate_trait_results();
+        await brCard.render();
+        brCard.save().catch(() => {
             console.error("Error saving a card after editing a modifier");
         });
     }
@@ -1156,18 +1156,18 @@ async function edit_modifier(br_card, index, new_modifier) {
 /**
  * Changes the of one of the rolls.
  *
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  * @param {int} new_tn
  * @param {string} reason - If it is set the reason will be changed
  */
-async function edit_tn(br_card, new_tn, reason) {
-    br_card.trait_roll.tn = new_tn;
+async function edit_tn(brCard, new_tn, reason) {
+    brCard.trait_roll.tn = new_tn;
     if (reason) {
-        br_card.trait_roll.tn_reason = reason;
+        brCard.trait_roll.tn_reason = reason;
     }
-    await br_card.trait_roll.recalculate_trait_results();
-    await br_card.render();
-    br_card.save().catch(() => {
+    await brCard.trait_roll.recalculate_trait_results();
+    await brCard.render();
+    brCard.save().catch(() => {
         console.error("Error saving a card after editing a TN");
     });
 }
@@ -1175,16 +1175,16 @@ async function edit_tn(br_card, new_tn, reason) {
 /**
  * Change the TNs of a roll from a token (targeted or selected)
  *
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  * @param {int} index
  * @param {boolean} selected - True to select targeted, false for selected
  */
-async function get_tn_from_target(br_card, index, selected) {
+async function get_tn_from_target(brCard, index, selected) {
     let targetToken;
     if (selected) {
         canvas.tokens.controlled.forEach((token) => {
             // noinspection JSUnresolvedVariable
-            if (token.actor !== br_card.actor) {
+            if (token.actor !== brCard.actor) {
                 targetToken = token;
             }
         });
@@ -1193,17 +1193,17 @@ async function get_tn_from_target(br_card, index, selected) {
     }
     if (targetToken) {
         const extra_data = { modifiers: [] };
-        const origin_token = br_card.token;
+        const origin_token = brCard.token;
         const target = await get_tn_from_token(
-            br_card.skill,
+            brCard.skill,
             targetToken,
             origin_token,
-            br_card.actor,
-            br_card.item,
+            brCard.actor,
+            brCard.item,
             extra_data,
         );
         if (target.value) {
-            await edit_tn(br_card, target.value, target.reason).catch(() => {
+            await edit_tn(brCard, target.value, target.reason).catch(() => {
                 console.error("Error editing TN");
             });
         }
@@ -1211,18 +1211,18 @@ async function get_tn_from_target(br_card, index, selected) {
         calculate_distance(
             origin_token,
             targetToken,
-            br_card.item,
+            brCard.item,
             tn,
-            br_card.skill,
+            brCard.skill,
             extra_data,
         );
-        br_card.trait_roll.delete_range_modifiers();
-        br_card.trait_roll.modifiers = br_card.trait_roll.modifiers.concat(
+        brCard.trait_roll.delete_range_modifiers();
+        brCard.trait_roll.modifiers = brCard.trait_roll.modifiers.concat(
             tn.modifiers,
         );
-        await br_card.trait_roll.recalculate_trait_results();
-        await br_card.render();
-        await br_card.save();
+        await brCard.trait_roll.recalculate_trait_results();
+        await brCard.render();
+        await brCard.save();
     }
 }
 
@@ -1252,25 +1252,25 @@ async function duplicate_message(message, event) {
     data.timestamp = new Date().getTime();
     delete data._id;
     const new_message = await ChatMessage.create(data);
-    const br_card = new BrCommonCard(new_message);
-    br_card.trait_roll = new TraitRoll();
-    br_card.render_data.damage_rolls = [];
-    await br_card.render();
-    await br_card.save();
+    const brCard = new BrCommonCard(new_message);
+    brCard.trait_roll = new TraitRoll();
+    brCard.render_data.damage_rolls = [];
+    await brCard.render();
+    await brCard.save();
     const action = getActionFromClick(event);
     if (action.includes("dialog")) {
-        game.brsw.dialog.show_card(br_card);
+        game.brsw.dialog.show_card(brCard);
     } else if (action.includes("trait")) {
         // noinspection JSUnresolvedVariable
-        const br_card = new BrCommonCard(message);
-        const card_type = br_card.type;
+        const brCard = new BrCommonCard(message);
+        const card_type = brCard.type;
         if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ATTRIBUTE_CARD) {
-            await roll_attribute(br_card, false);
+            await roll_attribute(brCard, false);
         } else if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_SKILL_CARD) {
-            await roll_skill(br_card, false);
+            await roll_skill(brCard, false);
         } else if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD) {
             const roll_damage = action.includes("damage");
-            await roll_item(br_card, $(br_card.message.content), false, roll_damage);
+            await roll_item(brCard, $(brCard.message.content), false, roll_damage);
         }
     }
     return new_message;

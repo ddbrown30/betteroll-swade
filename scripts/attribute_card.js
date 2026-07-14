@@ -43,7 +43,7 @@ async function create_attribute_card(
     translated_name +
     " " +
     trait_to_string(actor.system.attributes[name.toLowerCase()]);
-  const br_message = create_common_card(
+  const brCard = create_common_card(
     origin,
     {
       header: { type: game.i18n.localize("BRSW.Attribute"), title: title },
@@ -52,11 +52,11 @@ async function create_attribute_card(
     "modules/betterrolls-swade2/templates/attribute_card.hbs",
   );
   // We always set the actor (as a fallback, and the token if possible)
-  br_message.attribute_name = name;
-  br_message.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ATTRIBUTE_CARD;
-  await br_message.render(actions_stored);
-  await br_message.save();
-  return br_message;
+  brCard.attribute_name = name;
+  brCard.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ATTRIBUTE_CARD;
+  await brCard.render(actions_stored);
+  await brCard.save();
+  return brCard;
 }
 
 /**
@@ -108,11 +108,11 @@ async function attribute_click_listener(ev, target) {
   // The attribute id placement is sheet dependent.
   const attribute_id = ev.currentTarget.dataset.attribute;
   // Show card
-  const br_card = await create_attribute_card(target, attribute_id);
+  const brCard = await create_attribute_card(target, attribute_id);
   if (action.includes("dialog")) {
-    game.brsw.dialog.show_card(br_card);
+    game.brsw.dialog.show_card(brCard);
   } else if (action.includes("trait")) {
-    await roll_attribute(br_card, false);
+    await roll_attribute(brCard, false);
   }
 }
 
@@ -149,27 +149,27 @@ export function activate_attribute_card_listeners(card, html) {
 /**
  * Roll an attribute showing from an existing card
  *
- * @param {BrCommonCard} br_card The card being rolled
+ * @param {BrCommonCard} brCard The card being rolled
  * @param {boolean} expend_bennie True if we want to spend a bennie
  */
-export async function roll_attribute(br_card, expend_bennie) {
+export async function roll_attribute(brCard, expend_bennie) {
   const extra_data = { modifiers: [] };
   const macros = [];
-  for (const action of br_card.getSelectedActions()) {
-    process_common_actions(action.code, extra_data, macros, br_card.actor);
+  for (const action of brCard.getSelectedActions()) {
+    process_common_actions(action.code, extra_data, macros, brCard.actor);
   }
-  if (br_card.trait_roll.is_rolled) {
-    br_card.trait_roll.reroll_mode = expend_bennie ? "benny" : "free";
+  if (brCard.trait_roll.is_rolled) {
+    brCard.trait_roll.reroll_mode = expend_bennie ? "benny" : "free";
   }
   if (expend_bennie) {
-    await spend_bennie(br_card.actor);
+    await spend_bennie(brCard.actor);
   }
   await roll_trait(
-    br_card,
-    br_card.actor.system.attributes[br_card.attribute_name],
+    brCard,
+    brCard.actor.system.attributes[brCard.attribute_name],
     game.i18n.localize("BRSW.AbilityDie"),
     extra_data,
   );
   // noinspection ES6MissingAwait
-  runMacros(macros, br_card);
+  runMacros(macros, brCard);
 }

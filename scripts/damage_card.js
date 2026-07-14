@@ -47,7 +47,7 @@ export async function create_damage_card(
     const damageResult = await apply_damage(token, wounds, 0);
     let showInjury = Utils.shouldShowInjury(heavyDamage);
     showInjury = showInjury && can_soak && actor.system.wounds.max > 1;
-    const br_message = create_common_card(
+    const brCard = create_common_card(
         token,
         {
             header: {
@@ -69,14 +69,14 @@ export async function create_damage_card(
     );
     if (wounds === 0) {
         //If we're not dealing any wounds, don't bother popping out the card since there's no action required
-        br_message.popoutShown = true;
+        brCard.popoutShown = true;
     }
-    br_message.update_list = { ...br_message.update_list, ...{ user: user.id } };
-    br_message.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_DMG_CARD;
-    await br_message.render();
-    await br_message.save();
-    Hooks.call("BRSW-AfterShowDamageCard", actor, wounds, br_message);
-    return br_message.message;
+    brCard.update_list = { ...brCard.update_list, ...{ user: user.id } };
+    brCard.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_DMG_CARD;
+    await brCard.render();
+    await brCard.save();
+    Hooks.call("BRSW-AfterShowDamageCard", actor, wounds, brCard);
+    return brCard.message;
 }
 
 /**
@@ -197,10 +197,10 @@ async function apply_damage(token_or_token_id, wounds, soaked = 0) {
  * @param {ChatMessage} message
  */
 async function undo_damage(message) {
-    const br_card = new BrCommonCard(message);
-    const { actor, render_data } = br_card;
+    const brCard = new BrCommonCard(message);
+    const { actor, render_data } = brCard;
     await actor.update({ "system.wounds.value": render_data.undo_values.wounds });
-    if (br_card.token) {
+    if (brCard.token) {
         // Remove incapacitation and shaken
         await actor.toggleStatusEffect("shaken", {
             active: render_data.undo_values.shaken,
@@ -217,7 +217,7 @@ async function undo_damage(message) {
  * @param html Html produced
  */
 export function activate_damage_card_listeners(message, html) {
-    const br_card = new BrCommonCard(message);
+    const brCard = new BrCommonCard(message);
     html.querySelector(".brsw-undo-damage")?.addEventListener("click", async () => {
         await undo_damage(message);
     });
@@ -231,44 +231,44 @@ export function activate_damage_card_listeners(message, html) {
             spend_bennie = true;
         }
         // noinspection JSIgnoredPromiseFromCall
-        roll_soak(br_card, spend_bennie);
+        roll_soak(brCard, spend_bennie);
     });
     html.querySelector(".brsw-show-incapacitation")?.addEventListener("click", () => {
         // noinspection JSIgnoredPromiseFromCall
-        br_card.closePopout(); //We assume we're done with the card at this point so close any popouts
-        create_incapacitation_card(br_card.token_id).catch(() => {
+        brCard.closePopout(); //We assume we're done with the card at this point so close any popouts
+        create_incapacitation_card(brCard.token_id).catch(() => {
             console.error("Error creating incapacitation card");
         });
     });
     html.querySelector(".brsw-mark-defeated")?.addEventListener("click", async () => {
-        await br_card.actor.toggleStatusEffect("incapacitated", { active: false });
-        await br_card.actor.toggleStatusEffect("bleeding-out", { active: false });
-        await br_card.actor.toggleStatusEffect("dead", { active: true });
+        await brCard.actor.toggleStatusEffect("incapacitated", { active: false });
+        await brCard.actor.toggleStatusEffect("bleeding-out", { active: false });
+        await brCard.actor.toggleStatusEffect("dead", { active: true });
     });
     html.querySelector(".brsw-injury-button")?.addEventListener("click", () => {
         // noinspection JSIgnoredPromiseFromCall
-        create_injury_card(br_card.token_id, "gritty");
+        create_injury_card(brCard.token_id, "gritty");
     });
 }
 
 /**
  * Males a soak roll
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  * @param {Boolean} use_bennie
  */
-async function roll_soak(br_card, use_bennie) {
+async function roll_soak(brCard, use_bennie) {
     if (use_bennie) {
-        await spend_bennie(br_card.actor);
+        await spend_bennie(brCard.actor);
     }
 
-    let undo_wound_modifier = Math.min(br_card.actor.system.wounds.value, 3) - br_card.render_data.undo_values.wounds;
+    let undo_wound_modifier = Math.min(brCard.actor.system.wounds.value, 3) - brCard.render_data.undo_values.wounds;
 
-    const ignored_wounds = parseInt(br_card.actor.system.wounds.ignored) + (parseInt(br_card.actor.system.woundsOrFatigue.ignored) || 0);
+    const ignored_wounds = parseInt(brCard.actor.system.wounds.ignored) + (parseInt(brCard.actor.system.woundsOrFatigue.ignored) || 0);
 
     if (ignored_wounds) {
         undo_wound_modifier = Math.max(
             0,
-            Math.min(br_card.actor.system.wounds.value, 3) - ignored_wounds - Math.max(0, br_card.render_data.undo_values.wounds - ignored_wounds),
+            Math.min(brCard.actor.system.wounds.value, 3) - ignored_wounds - Math.max(0, brCard.render_data.undo_values.wounds - ignored_wounds),
         );
     }
 
@@ -280,7 +280,7 @@ async function roll_soak(br_card, use_bennie) {
     ];
 
     if (
-        br_card.actor.items.find((item) => {
+        brCard.actor.items.find((item) => {
             return (
                 item.type === "edge" &&
                 item.name.toLowerCase().includes(game.i18n.localize("BRSW.EdgeName.IronJaw").toLowerCase())
@@ -291,7 +291,7 @@ async function roll_soak(br_card, use_bennie) {
     }
 
     // Active effects
-    const soak_active_effects = br_card.actor.appliedEffects.filter((e) =>
+    const soak_active_effects = brCard.actor.appliedEffects.filter((e) =>
         e.changes.find((ch) => ch.key === "brsw.soak-modifier" || ch.key === "system.attributes.vigor.soakBonus")
     );
 
@@ -304,19 +304,19 @@ async function roll_soak(br_card, use_bennie) {
     }
 
     // Unarmored hero
-    if (game.settings.get("swade", "unarmoredHero") && br_card.actor.isUnarmored) {
+    if (game.settings.get("swade", "unarmoredHero") && brCard.actor.isUnarmored) {
         soak_modifiers.push({ name: game.i18n.localize("BRSW.UnarmoredHero"), value: 2 });
     }
 
     await roll_trait(
-        br_card,
-        br_card.actor.system.attributes.vigor,
+        brCard,
+        brCard.actor.system.attributes.vigor,
         game.i18n.localize("BRSW.SoakRoll"),
         { modifiers: soak_modifiers },
     );
 
     let result = 0;
-    for (const roll of br_card.trait_roll.rolls) {
+    for (const roll of brCard.trait_roll.rolls) {
         for (const die of roll.dice) {
             if (die.result !== null) {
                 result = Math.max(die.final_total, result);
@@ -325,21 +325,21 @@ async function roll_soak(br_card, use_bennie) {
     }
 
     if (result >= 4) {
-        br_card.render_data.soaked = Math.floor(result / 4);
+        brCard.render_data.soaked = Math.floor(result / 4);
 
-        await br_card.actor.update({ "system.wounds.value": br_card.render_data.undo_values.wounds });
+        await brCard.actor.update({ "system.wounds.value": brCard.render_data.undo_values.wounds });
 
         const damageResult = await apply_damage(
-            br_card.token,
-            br_card.render_data.wounds,
-            br_card.render_data.soaked,
+            brCard.token,
+            brCard.render_data.wounds,
+            brCard.render_data.soaked,
         );
 
-        br_card.render_data.text = damageResult.text;
-        br_card.render_data.show_incapacitation = damageResult.incapacitated && br_card.actor.isWildcard;
-        br_card.render_data.showInjury = Utils.shouldShowInjury(br_card.render_data.heavyDamage) && br_card.render_data.wounds > br_card.render_data.soaked;
+        brCard.render_data.text = damageResult.text;
+        brCard.render_data.show_incapacitation = damageResult.incapacitated && brCard.actor.isWildcard;
+        brCard.render_data.showInjury = Utils.shouldShowInjury(brCard.render_data.heavyDamage) && brCard.render_data.wounds > brCard.render_data.soaked;
 
-        await br_card.render();
-        await br_card.save();
+        await brCard.render();
+        await brCard.save();
     }
 }

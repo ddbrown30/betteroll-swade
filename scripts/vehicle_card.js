@@ -43,7 +43,7 @@ async function vehicle_click_listener(ev, vehicle) {
     }
 
     // Show card
-    const br_card = await game.brsw.create_skill_card(
+    const brCard = await game.brsw.create_skill_card(
         driverActor.actor,
         skill.id,
         {
@@ -51,9 +51,9 @@ async function vehicle_click_listener(ev, vehicle) {
         },
     );
     if (action.includes("dialog")) {
-        game.brsw.dialog.show_card(br_card);
+        game.brsw.dialog.show_card(brCard);
     } else if (action.includes("trait")) {
-        await roll_skill(br_card, false);
+        await roll_skill(brCard, false);
     }
 }
 

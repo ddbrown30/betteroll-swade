@@ -119,32 +119,32 @@ Hooks.on(`ready`, async () => {
 
 // Hooks on render
 
-function activateCardListeners(card, html, message) {
-    activate_common_listeners(card, html);
-    if (card.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ATTRIBUTE_CARD) {
-        activate_attribute_card_listeners(card, html);
-    } else if (card.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_SKILL_CARD) {
-        activate_skill_card_listeners(card, html);
-    } else if (card.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD) {
-        activate_item_card_listeners(card, html);
-    } else if (card.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_DMG_CARD) {
+function activateCardListeners(brCard, html, message) {
+    activate_common_listeners(brCard, html);
+    if (brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ATTRIBUTE_CARD) {
+        activate_attribute_card_listeners(brCard, html);
+    } else if (brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_SKILL_CARD) {
+        activate_skill_card_listeners(brCard, html);
+    } else if (brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD) {
+        activate_item_card_listeners(brCard, html);
+    } else if (brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_DMG_CARD) {
         activate_damage_card_listeners(message, html);
-    } else if (card.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_INC_CARD) {
+    } else if (brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_INC_CARD) {
         activate_incapacitation_card_listeners(message, html);
     } else if (
-        card.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_UNSHAKE_CARD ||
-        card.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_UNSTUN_CARD
+        brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_UNSHAKE_CARD ||
+        brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_UNSTUN_CARD
     ) {
-        activate_remove_status_card_listeners(card, html, card.type);
+        activate_remove_status_card_listeners(brCard, html, brCard.type);
     }
 }
 
 Hooks.on("renderChatMessageHTML", (message, html, options) => {
-    const br_card = message.getFlag("betterrolls-swade2", "br_data");
-    if (br_card) {
+    const brData = message.getFlag("betterrolls-swade2", "br_data");
+    if (brData) {
         // This chat card is one of ours
-        const card = new BrCommonCard(message);
-        activateCardListeners(card, html, message);
+        const brCard = new BrCommonCard(message);
+        activateCardListeners(brCard, html, message);
 
         // Hide forms to non-master, non owner
         if (!message.isOwner) {
@@ -172,11 +172,11 @@ Hooks.on("renderChatMessageHTML", (message, html, options) => {
         const damageSection = html.querySelector(".brsw-damage-section");
         if (damageSection) {
             //If we have damage, show the damage section
-            damageSection.hidden = !br_card.damage;
+            damageSection.hidden = !brCard.damage;
         }
 
         if (Object.keys(message.apps).length < 1) { // Don't create a popout when rendering popouts
-            card.createPopout();
+            brCard.createPopout();
         }
 
         const headerTitle = html.querySelector(".brsw-header-title");
@@ -205,7 +205,7 @@ Hooks.on("renderChatMessageHTML", (message, html, options) => {
                 }
             }
         }
-        Hooks.call("BRSW-CardRendered", card);
+        Hooks.call("BRSW-CardRendered", brCard);
     }
 });
 
@@ -277,9 +277,9 @@ function create_attribute_macro(data) {
       game.swade.rollItemMacro("${data.attribute}");
     } else {
       origin = await fromUuid("${data.uuid}");
-      const br_card = await game.brsw.create_atribute_card(origin, "${data.attribute}");
+      const brCard = await game.brsw.create_atribute_card(origin, "${data.attribute}");
       if (behaviour.includes('trait')) {
-        game.brsw.roll_attribute(br_card, false);
+        game.brsw.roll_attribute(brCard, false);
       }
     }
   `;

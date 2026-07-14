@@ -50,7 +50,7 @@ async function create_skill_card(
         return item.id === skill_id;
     });
     const extra_name = skill.name + " " + trait_to_string(skill.system);
-    const br_message = create_common_card(
+    const brCard = create_common_card(
         origin,
         {
             header: {
@@ -63,20 +63,20 @@ async function create_skill_card(
         },
         "modules/betterrolls-swade2/templates/skill_card.hbs",
     );
-    br_message.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_SKILL_CARD;
-    br_message.skill_id = skill.id;
+    brCard.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_SKILL_CARD;
+    brCard.skill_id = skill.id;
     if (vehicle) {
-        br_message.vehicle_actor_id = vehicle.actor?.id || vehicle.id;
+        brCard.vehicle_actor_id = vehicle.actor?.id || vehicle.id;
         if (
             vehicle instanceof TokenDocument ||
             vehicle instanceof foundry.canvas.placeables.Token
         ) {
-            br_message.vehicle_token_id = vehicle.id;
+            brCard.vehicle_token_id = vehicle.id;
         }
     }
-    await br_message.render(actions_stored);
-    await br_message.save();
-    return br_message;
+    await brCard.render(actions_stored);
+    await brCard.save();
+    return brCard;
 }
 
 /**
@@ -130,11 +130,11 @@ async function skill_click_listener(ev, target) {
         ev.currentTarget.parentElement.parentElement.dataset.itemId ||
         ev.currentTarget.parentElement.dataset.itemId;
     // Show card
-    const br_card = await create_skill_card(target, skill_id);
+    const brCard = await create_skill_card(target, skill_id);
     if (action.includes("dialog")) {
-        game.brsw.dialog.show_card(br_card);
+        game.brsw.dialog.show_card(brCard);
     } else if (action.includes("trait")) {
-        await roll_skill(br_card, false);
+        await roll_skill(brCard, false);
     }
 }
 
@@ -158,19 +158,19 @@ export function activate_skill_listeners(app, html) {
 
 /**
  * Activate the listeners in the skill card
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  * @param html Html produced
  */
-export function activate_skill_card_listeners(br_card, html) {
+export function activate_skill_card_listeners(brCard, html) {
     addEventListenerAll(html, ".brsw-roll-button", "click", async (ev) => {
         ev.stopPropagation();
         await roll_skill(
-            br_card,
+            brCard,
             ev.currentTarget.classList.contains("roll-bennie-button"),
         );
     });
     html.querySelector(".brsw-header-img").addEventListener("click", (_) => {
-        const { render_data, actor } = br_card;
+        const { render_data, actor } = brCard;
         const item = actor.items.get(render_data.trait_id);
         item.sheet.render(true);
     });
@@ -179,29 +179,29 @@ export function activate_skill_card_listeners(br_card, html) {
 /**
  * Roll an existing skill card
  *
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  * @param {boolean} expend_bennie True if we want to spend a bennie
  */
-export async function roll_skill(br_card, expend_bennie) {
+export async function roll_skill(brCard, expend_bennie) {
     const extra_data = { modifiers: [] };
     const macros = [];
     // Actions
-    for (const action of br_card.getSelectedActions()) {
-        process_common_actions(action.code, extra_data, macros, br_card.actor);
+    for (const action of brCard.getSelectedActions()) {
+        process_common_actions(action.code, extra_data, macros, brCard.actor);
     }
-    if (br_card.trait_roll.is_rolled) {
-        br_card.trait_roll.reroll_mode = expend_bennie ? "benny" : "free";
+    if (brCard.trait_roll.is_rolled) {
+        brCard.trait_roll.reroll_mode = expend_bennie ? "benny" : "free";
     }
     if (expend_bennie) {
-        await spend_bennie(br_card.actor);
+        await spend_bennie(brCard.actor);
     }
     await roll_trait(
-        br_card,
-        br_card.skill.system,
+        brCard,
+        brCard.skill.system,
         game.i18n.localize("BRSW.SkillDie"),
         extra_data,
     );
-    await runMacros(macros, br_card);
+    await runMacros(macros, brCard);
 }
 
 /**

@@ -26,7 +26,7 @@ export async function create_incapacitation_card(token_id) {
         token_name: token.name,
     });
     const text_after = game.i18n.localize("BRSW.IncapacitatedMustVigor");
-    let br_message = await create_common_card(
+    let brCard = await create_common_card(
         token,
         {
             header: {
@@ -41,11 +41,11 @@ export async function create_incapacitation_card(token_id) {
         },
         "modules/betterrolls-swade2/templates/incapacitation_card.hbs",
     );
-    br_message.update_list = { ...br_message.update_list, ...{ user: user.id } };
-    br_message.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_INC_CARD;
-    await br_message.render();
-    await br_message.save();
-    return br_message.message;
+    brCard.update_list = { ...brCard.update_list, ...{ user: user.id } };
+    brCard.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_INC_CARD;
+    await brCard.render();
+    await brCard.save();
+    return brCard.message;
 }
 
 /**
@@ -61,14 +61,14 @@ export function incapacitation_card_hooks() {
  * Checks if a benny has been expended and rolls in the incapacitation table.
  * @param ev
  */
-function roll_incapacitation_clicked(ev, br_card) {
+function roll_incapacitation_clicked(ev, brCard) {
     ev.stopPropagation();
     let spend_bennie = false;
     if (ev.currentTarget.classList.contains("roll-bennie-button")) {
         spend_bennie = true;
     }
     // noinspection JSIgnoredPromiseFromCall
-    roll_incapacitation(br_card, spend_bennie);
+    roll_incapacitation(brCard, spend_bennie);
 }
 
 /**
@@ -77,15 +77,15 @@ function roll_incapacitation_clicked(ev, br_card) {
  * @param html Html produced
  */
 export function activate_incapacitation_card_listeners(message, html) {
-    const br_card = new BrCommonCard(message);
+    const brCard = new BrCommonCard(message);
     addEventListenerAll(html, ".brsw-vigor-button, .brsw-roll-button", "click", (ev) => {
-        roll_incapacitation_clicked(ev, br_card);
+        roll_incapacitation_clicked(ev, brCard);
     });
     html.querySelector(".brsw-injury-button")?.addEventListener("click", (ev) => {
         // noinspection JSIgnoredPromiseFromCall
-        br_card.closePopout(); //We assume we're done with the card at this point so close any popouts
+        brCard.closePopout(); //We assume we're done with the card at this point so close any popouts
         create_injury_card(
-            br_card.token_id,
+            brCard.token_id,
             ev.currentTarget.dataset.injuryType,
         ).catch(() => {
             console.error("Error creating injury card");
@@ -95,46 +95,46 @@ export function activate_incapacitation_card_listeners(message, html) {
 
 /**
  * Males a vigor incapacitation roll
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  * @param {boolean} spend_benny
  */
-async function roll_incapacitation(br_card, spend_benny) {
+async function roll_incapacitation(brCard, spend_benny) {
     if (spend_benny) {
-        await spend_bennie(br_card.actor);
+        await spend_bennie(brCard.actor);
     }
     await roll_trait(
-        br_card,
-        br_card.actor.system.attributes.vigor,
+        brCard,
+        brCard.actor.system.attributes.vigor,
         game.i18n.localize("BRSW.IncapacitationRoll"),
         {},
     );
     let result = 0;
-    for (let roll of br_card.trait_roll.rolls) {
+    for (let roll of brCard.trait_roll.rolls) {
         for (let die of roll.dice) {
             if (die.result !== null) {
                 result = Math.max(die.final_total, result);
             }
         }
     }
-    br_card.render_data.show_roll_injury = true;
-    br_card.render_data.injury_type = "none";
-    if (br_card.trait_roll.current_roll.is_fumble) {
-        br_card.render_data.text_after = `</p><p>${game.i18n.localize(
+    brCard.render_data.show_roll_injury = true;
+    brCard.render_data.injury_type = "none";
+    if (brCard.trait_roll.current_roll.is_fumble) {
+        brCard.render_data.text_after = `</p><p>${game.i18n.localize(
             "BRSW.Fumble",
-        )}</p><p>${br_card.token.name} ${game.i18n.localize("BRSW.IsDead")}</p>`;
-        br_card.render_data.show_roll_injury = false; // For what...
-        await br_card.actor.toggleStatusEffect("incapacitated", { active: false });
-        await br_card.actor.toggleStatusEffect("dead", { active: true });
+        )}</p><p>${brCard.token.name} ${game.i18n.localize("BRSW.IsDead")}</p>`;
+        brCard.render_data.show_roll_injury = false; // For what...
+        await brCard.actor.toggleStatusEffect("incapacitated", { active: false });
+        await brCard.actor.toggleStatusEffect("dead", { active: true });
     } else if (result < 4) {
-        br_card.render_data.text_after = game.i18n.localize(
+        brCard.render_data.text_after = game.i18n.localize(
             "BRSW.BleedingOutResult",
         );
-        br_card.render_data.injury_type = "permanent";
-        if (br_card.actor.statuses.has("incapacitated")) {
-            await br_card.actor.toggleStatusEffect("incapacitated", {
+        brCard.render_data.injury_type = "permanent";
+        if (brCard.actor.statuses.has("incapacitated")) {
+            await brCard.actor.toggleStatusEffect("incapacitated", {
                 active: false,
             });
-            await br_card.actor.toggleStatusEffect("incapacitated", {
+            await brCard.actor.toggleStatusEffect("incapacitated", {
                 active: true,
                 overlay: false,
             });
@@ -142,22 +142,22 @@ async function roll_incapacitation(br_card, spend_benny) {
         // noinspection ES6MissingAwait
         const ignoreBleedOut =
             game.settings.get("swade", "heroesNeverDie") ||
-            br_card.actor.getFlag("swade", "ignoreBleedOut");
+            brCard.actor.getFlag("swade", "ignoreBleedOut");
         if (!ignoreBleedOut) {
-            br_card.actor.toggleStatusEffect("bleeding-out", { active: true, overlay: true })
+            brCard.actor.toggleStatusEffect("bleeding-out", { active: true, overlay: true })
                 .catch(() => {
                     console.error("Error while applying bleeding out");
                 });
         } //make bleeding out overlay
     } else if (result < 8) {
-        br_card.render_data.text_after = game.i18n.localize("BRSW.TempInjury");
-        br_card.render_data.injury_type = "temporal-wounds";
+        brCard.render_data.text_after = game.i18n.localize("BRSW.TempInjury");
+        brCard.render_data.injury_type = "temporal-wounds";
     } else {
-        br_card.render_data.text_after = game.i18n.localize("BRSW.TempInjury24");
-        br_card.render_data.injury_type = "temporal-24";
+        brCard.render_data.text_after = game.i18n.localize("BRSW.TempInjury24");
+        brCard.render_data.injury_type = "temporal-24";
     }
-    await br_card.render();
-    await br_card.save();
+    await brCard.render();
+    await brCard.save();
 }
 
 /**
@@ -197,7 +197,7 @@ export async function create_injury_card(token_id, reason) {
         }
     }
     let injury_effect = await create_injury_effect(actor, reason, first_result, second_result);
-    let br_message = await create_common_card(
+    let brCard = await create_common_card(
         token,
         {
             header: {
@@ -212,13 +212,13 @@ export async function create_injury_card(token_id, reason) {
         },
         "modules/betterrolls-swade2/templates/injury_card.hbs",
     );
-    br_message.update_list = { ...br_message.update_list, ...{ user: user.id } };
-    br_message.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_INJ_CARD;
-    br_message.popoutShown = true; //The injury result has no action, so we don't show the popout
-    await br_message.render();
-    await br_message.save();
-    Hooks.call("BRSW-InjuryAEApplied", br_message, injury_effect, reason);
-    return br_message.message;
+    brCard.update_list = { ...brCard.update_list, ...{ user: user.id } };
+    brCard.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_INJ_CARD;
+    brCard.popoutShown = true; //The injury result has no action, so we don't show the popout
+    await brCard.render();
+    await brCard.save();
+    Hooks.call("BRSW-InjuryAEApplied", brCard, injury_effect, reason);
+    return brCard.message;
 }
 
 /**

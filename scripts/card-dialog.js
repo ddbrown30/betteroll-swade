@@ -18,8 +18,8 @@ class BrCardDialog {
     return document.getElementById("br-card-dialog");
   }
 
-  show_card(br_card) {
-    this.BrCard = br_card;
+  show_card(brCard) {
+    this.BrCard = brCard;
     this.render().catch((err) => {
       console.error("Error rendering dialog", err);
     });

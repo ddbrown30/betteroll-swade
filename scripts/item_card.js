@@ -83,7 +83,7 @@ export async function create_item_card(
 
     const trait = Utils.getItemTrait(item, actor);
 
-    const br_message = create_common_card(
+    const brCard = create_common_card(
         origin,
         {
             header: { type: "Item", title: item.name, img: item.img },
@@ -104,22 +104,22 @@ export async function create_item_card(
         "modules/betterrolls-swade2/templates/item_card.hbs",
     );
 
-    br_message.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD;
-    br_message.damage = !!item.system.damage;
-    br_message.item_id = item_id;
-    br_message.applicable_effects = get_applicable_effects(item);
-    br_message.pp_modifiers = is_power ? get_pp_mods(item) : {};
-    br_message.checkWarnings(br_message.render_data);
+    brCard.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD;
+    brCard.damage = !!item.system.damage;
+    brCard.item_id = item_id;
+    brCard.applicable_effects = get_applicable_effects(item);
+    brCard.pp_modifiers = is_power ? get_pp_mods(item) : {};
+    brCard.checkWarnings(brCard.render_data);
 
-    await br_message.render(actions_stored);
-    await br_message.save();
+    await brCard.render(actions_stored);
+    await brCard.save();
 
     //If we have any actions that override damage, our damage value will need to be updated
-    br_message.refreshDamageFromActions();
+    brCard.refreshDamageFromActions();
 
-    call_create_item_card_hooks(item, br_message);
+    call_create_item_card_hooks(item, brCard);
 
-    return br_message;
+    return brCard;
 }
 
 function get_applicable_effects(item) {
@@ -230,20 +230,20 @@ function get_pp_mods(item) {
     return pp_mods;
 }
 
-export function calc_pp_cost(br_card) {
-    if (br_card.item.system.innate && !SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.innatePowersSpendPP)) {
+export function calc_pp_cost(brCard) {
+    if (brCard.item.system.innate && !SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.innatePowersSpendPP)) {
         return 0;
     }
 
-    let ppCost = br_card.item.system.pp;
+    let ppCost = brCard.item.system.pp;
 
-    ppCost += br_card.pp_modifiers.extraCost;
+    ppCost += brCard.pp_modifiers.extraCost;
 
-    if (br_card.pp_modifiers.additionalRecipientsMod.name) {
-        ppCost += br_card.pp_modifiers.additionalRecipientsMod.cost * br_card.pp_modifiers.additionalRecipientsMod.count;
+    if (brCard.pp_modifiers.additionalRecipientsMod.name) {
+        ppCost += brCard.pp_modifiers.additionalRecipientsMod.cost * brCard.pp_modifiers.additionalRecipientsMod.count;
     }
 
-    const modGroups = [br_card.pp_modifiers.genericMods, br_card.pp_modifiers.powerMods];
+    const modGroups = [brCard.pp_modifiers.genericMods, brCard.pp_modifiers.powerMods];
     for (const group of modGroups) {
         for (const mod of group) {
             if (mod.selected) {
@@ -282,14 +282,14 @@ function create_item_card_tooltip(item) {
     return tooltip;
 }
 
-function call_create_item_card_hooks(item, br_message) {
+function call_create_item_card_hooks(item, brCard) {
     // For the moment, assume that no roll is made if there is no skill. Hopefully, in the future, there will be a better way.
     if (
         (item.type === "gear" && item.system.actions.trait === "") ||
         item.system.actions?.trait.toLowerCase() === "none" ||
         (item.system.hasOwnProperty("actions") === false && item.type !== "skill")
     ) {
-        Hooks.call("BRSW-CreateItemCardNoRoll", br_message);
+        Hooks.call("BRSW-CreateItemCardNoRoll", brCard);
     }
 }
 
@@ -395,19 +395,19 @@ async function item_click_listener(ev, target, currentTarget) {
         }
     }
     // Show card
-    const br_card = await create_item_card(target, item_id, {
+    const brCard = await create_item_card(target, item_id, {
         actions_stored: actions_stored,
     });
     if (action.includes("dialog")) {
-        game.brsw.dialog.show_card(br_card);
-    } else if (br_card.skill && action.includes("trait")) {
-        await roll_item(br_card, "", false, action.includes("damage"));
-    } else if (br_card.damage && action.includes("damage")) {
-        await roll_dmg(br_card, "");
+        game.brsw.dialog.show_card(brCard);
+    } else if (brCard.skill && action.includes("trait")) {
+        await roll_item(brCard, "", false, action.includes("damage"));
+    } else if (brCard.damage && action.includes("damage")) {
+        await roll_dmg(brCard, "");
     }
     // Shortcut for rolling damage
     if (ev.target.classList.contains("damage-roll")) {
-        await roll_dmg(br_card, $(br_card.message.content), false, false);
+        await roll_dmg(brCard, $(brCard.message.content), false, false);
     }
 }
 
@@ -438,29 +438,29 @@ export function activate_item_listeners(app, html) {
 /**
  * Creates a template preview
  * @param ev javascript click event
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  */
-function preview_template(ev, br_card) {
+function preview_template(ev, brCard) {
     let type = ev.currentTarget.dataset.size;
     if (type === "cone") {
         type = "swcone";
     }
-    swade.util.createRegionFromPreset(type, br_card.item);
+    swade.util.createRegionFromPreset(type, brCard.item);
     Hooks.call(
         "BRSW-BeforePreviewingTemplate",
         CONFIG.SWADE.activeMeasuredTemplatePreview,
-        br_card,
+        brCard,
         ev,
     );
 }
 
 /**
  * Activate the listeners in the item card
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  * @param html Html produced
  */
-export function activate_item_card_listeners(br_card, html) {
-    const { actor, item } = br_card;
+export function activate_item_card_listeners(brCard, html) {
+    const { actor, item } = brCard;
     html.querySelector(".brsw-header-img")?.addEventListener("click", (_) => {
         item.sheet.render(true);
     });
@@ -468,7 +468,7 @@ export function activate_item_card_listeners(br_card, html) {
     addEventListenerAll(html, ".brsw-roll-button", "click", async (ev) => {
         ev.stopPropagation();
         await roll_item(
-            br_card,
+            brCard,
             html,
             ev.currentTarget.classList.contains("roll-bennie-button"),
         );
@@ -481,7 +481,7 @@ export function activate_item_card_listeners(br_card, html) {
         (ev) => {
             // noinspection JSIgnoredPromiseFromCall
             roll_dmg(
-                br_card,
+                brCard,
                 html,
                 ev.currentTarget.classList.contains("brsw-damage-bennie-button"),
                 {},
@@ -497,24 +497,24 @@ export function activate_item_card_listeners(br_card, html) {
         //This won't affect change the popout or vice versa,
         //but doing that would require an update to the chat message which would refresh the render which is disruptive
         ev.target.parentElement.querySelector(".brsw-shots-pp").innerText =
-            br_card.itemShots;
+            brCard.itemShots;
     });
 
     html.querySelector(".brsw-pp-manual")?.addEventListener("click", async (ev) => {
-        await new PPManagementDialog({ brCard: br_card }).wait({ force: true });
+        await new PPManagementDialog({ brCard: brCard }).wait({ force: true });
 
         //Update the pp text of the card we just clicked on.
         //This won't affect the popout or vice versa,
         //but doing that would require an update to the chat message which would refresh the render which is disruptive
         if (game.settings.get("swade", "noPowerPoints")) {
             const ppPenalty = ev.target.parentElement.parentElement.querySelector(".brsw-pp-penalty");
-            ppPenalty.innerText = -Math.ceil(calc_pp_cost(br_card) / 2);
+            ppPenalty.innerText = -Math.ceil(calc_pp_cost(brCard) / 2);
         } else {
             const ppRemaining = ev.target.parentElement.parentElement.querySelector(".brsw-shots-pp");
-            ppRemaining.innerText = br_card.itemShots;
+            ppRemaining.innerText = brCard.itemShots;
 
             const ppCost = ev.target.parentElement.parentElement.querySelector(".brsw-pp-cost");
-            ppCost.innerText = calc_pp_cost(br_card);
+            ppCost.innerText = calc_pp_cost(brCard);
         }
     });
 
@@ -528,23 +528,23 @@ export function activate_item_card_listeners(br_card, html) {
     });
 
     addEventListenerAll(html, ".brsw-target-tough", "click", (ev) => {
-        edit_toughness(br_card, ev.currentTarget.dataset.index);
+        edit_toughness(brCard, ev.currentTarget.dataset.index);
     });
 
     addEventListenerAll(html, ".brsw-add-damage-d6", "click", (ev) => {
-        add_damage_dice(br_card, ev.currentTarget.dataset.index);
+        add_damage_dice(brCard, ev.currentTarget.dataset.index);
     });
 
     addEventListenerAll(html, ".brsw-half-damage", "click", (ev) => {
-        half_damage(br_card, ev.currentTarget.dataset.index);
+        half_damage(brCard, ev.currentTarget.dataset.index);
     });
 
     addEventListenerAll(html, ".brsw-add-damage-number", "click", (ev) => {
-        show_fixed_damage_dialog(ev, br_card);
+        show_fixed_damage_dialog(ev, brCard);
     });
 
     addEventListenerAll(html, ".brsw-template-button", "click", (ev) => {
-        preview_template(ev, br_card);
+        preview_template(ev, brCard);
     });
 
     html.querySelector("#roll-damage")?.addEventListener("dragstart", (ev) => {
@@ -553,7 +553,7 @@ export function activate_item_card_listeners(br_card, html) {
             JSON.stringify({
                 type: "target_click",
                 tag_id: "roll-damage",
-                message_id: br_card.message.id,
+                message_id: brCard.message.id,
             }),
         );
     });
@@ -564,7 +564,7 @@ export function activate_item_card_listeners(br_card, html) {
             JSON.stringify({
                 type: "target_click",
                 tag_id: "roll-raise-damage",
-                message_id: br_card.message.id,
+                message_id: brCard.message.id,
             }),
         );
     });
@@ -575,19 +575,19 @@ export function activate_item_card_listeners(br_card, html) {
     });
 
     html.querySelector(".brsw-pp-toggle")?.addEventListener("click", async (ev) => {
-        br_card.render_data.subtractPP = !br_card.render_data.subtractPP;
-        await br_card.render();
-        await br_card.save();
+        brCard.render_data.subtractPP = !brCard.render_data.subtractPP;
+        await brCard.render();
+        await brCard.save();
     });
 
     html.querySelector(".brsw-use-consumable-button")?.addEventListener("click", (ev) => {
-        br_card.item.consume();
+        brCard.item.consume();
     });
 
     addEventListenerAll(html, ".brsw-macro-button", "click", (ev) => {
         const action =
-            br_card.item.system.actions.additional[ev.currentTarget.dataset.macro];
-        execute_macro(action, br_card).catch((err) => {
+            brCard.item.system.actions.additional[ev.currentTarget.dataset.macro];
+        execute_macro(action, brCard).catch((err) => {
             console.error("Error in macro", err);
         });
     });
@@ -595,7 +595,7 @@ export function activate_item_card_listeners(br_card, html) {
     addEventListenerAll(html, ".brsw-resist-button", "click", (ev) => {
         roll_resist(
             ev.currentTarget.dataset.trait,
-            br_card,
+            brCard,
             parseInt(ev.currentTarget.dataset.traitMod),
         ).catch((err) => {
             console.error(`Error while rolling resistance ${err}`);
@@ -607,10 +607,10 @@ export function activate_item_card_listeners(br_card, html) {
  * Makes an attribute card for a resist roll
  *
  * @param {string} trait - The trait that will be rolled
- * @param {BrCommonCard} br_card - The card from where we get the TN
+ * @param {BrCommonCard} brCard - The card from where we get the TN
  * @param {integer} trait_mod
  */
-async function roll_resist(trait, br_card, trait_mod) {
+async function roll_resist(trait, brCard, trait_mod) {
     if (canvas.tokens.controlled.length === 0) {
         ui.notifications.warn(game.i18n.localize("BRSW.NoTokenSelectedError"));
         return;
@@ -629,7 +629,7 @@ async function roll_resist(trait, br_card, trait_mod) {
                 Utils.traitFromString(token.actor, trait).id,
             );
         }
-        new_card.trait_roll.tn = get_trait_roll_difficulty(br_card);
+        new_card.trait_roll.tn = get_trait_roll_difficulty(brCard);
         new_card.trait_roll.tn_reason = game.i18n.localize("BRSW.ResistingRoll");
         if (!isNaN(trait_mod)) {
             const localized_name = game.i18n.localize("BRSW.ResistingRoll");
@@ -655,13 +655,13 @@ async function roll_resist(trait, br_card, trait_mod) {
 /**
  * Calculates the difficulty of a resist trait roll
  *
- * @param {Object} br_card - The card object containing trait roll information.
+ * @param {Object} brCard - The card object containing trait roll information.
  * @return {number} - The calculated difficulty of the trait roll.
  */
-function get_trait_roll_difficulty(br_card) {
-    if (br_card.item && br_card.item.type === "power") {
+function get_trait_roll_difficulty(brCard) {
+    if (brCard.item && brCard.item.type === "power") {
         if (
-            br_card.item.system.description.indexOf(
+            brCard.item.system.description.indexOf(
                 game.i18n.localize("BRSW.Opposed"),
             ) === -1
         ) {
@@ -669,10 +669,10 @@ function get_trait_roll_difficulty(br_card) {
             return 4;
         }
     }
-    const results = br_card.trait_roll.current_roll.dice.map((die) => {
+    const results = brCard.trait_roll.current_roll.dice.map((die) => {
         return die.result;
     });
-    return Math.max(...results) + br_card.trait_roll.tn;
+    return Math.max(...results) + brCard.trait_roll.tn;
 }
 
 export async function displayPPChangeCard(actor, chatData) {
@@ -696,17 +696,17 @@ export async function displayPPChangeCard(actor, chatData) {
 /**
  * Discount pps from an actor © Javier or Arcane Device © Salieri
  *
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  * @param prevSpentPP PP we already spent on a previous roll
  */
-export async function spendPP(br_card, prevSpentPP) {
+export async function spendPP(brCard, prevSpentPP) {
     if (game.settings.get("swade", "noPowerPoints")) {
         return 0;
     }
 
     prevSpentPP ??= 0;
-    const actor = br_card.actor;
-    const item = br_card.item;
+    const actor = brCard.actor;
+    const item = brCard.item;
 
     if (item.system.innate && !SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.innatePowersSpendPP)) {
         return 0;
@@ -714,12 +714,12 @@ export async function spendPP(br_card, prevSpentPP) {
 
     let success = false;
     let raise = false;
-    for (const roll of br_card.trait_roll.current_roll.dice) {
+    for (const roll of brCard.trait_roll.current_roll.dice) {
         if (roll.result === null) continue;
 
         //Subtract any arcaneActivationOffset from the roll result to get the activation roll
         //This is for cases like missing with bolt due to cover but the power still activates
-        const rollResult = roll.result - (br_card.trait_roll.arcaneActivationOffset ?? 0);
+        const rollResult = roll.result - (brCard.trait_roll.arcaneActivationOffset ?? 0);
         success = success || rollResult >= 0;
         raise = raise || rollResult >= 4;
     }
@@ -740,7 +740,7 @@ export async function spendPP(br_card, prevSpentPP) {
         dataKey = `system.powerPoints.${item.system.arcane}.value`;
     }
 
-    const basePPCost = success ? calc_pp_cost(br_card) : 1;
+    const basePPCost = success ? calc_pp_cost(brCard) : 1;
     let ppCost = basePPCost;
 
     if (raise) {
@@ -754,8 +754,8 @@ export async function spendPP(br_card, prevSpentPP) {
         }
     }
 
-    br_card.render_data.used_pp = ppCost;
-    await br_card.save();
+    brCard.render_data.used_pp = ppCost;
+    await brCard.save();
 
     const newPP = currentPP - ppCost + prevSpentPP;
     if (newPP < 0) {
@@ -846,39 +846,39 @@ async function findMacro(macro_name_or_id) {
 /**
  * Roll and existing item card
  *
- * @param {BrCommonCard } br_message Message that originates this roll
+ * @param {BrCommonCard } brCard Message that originates this roll
  * @param {string} html Html code to parse for extra options
  * @param {boolean} expend_bennie Whenever to expend a bennie
  * @param {boolean} roll_damage true if we want to auto-roll damage
  *
  * @return {Promise<void>}
  */
-export async function roll_item(br_message, html, expend_bennie, roll_damage) {
+export async function roll_item(brCard, html, expend_bennie, roll_damage) {
     const macros = [];
     let shots_override; // Override the number of shots used
     let shots_modifier = 0; // Modifier to the number of shots
     const extra_data = { modifiers: [] };
-    if (br_message.trait_roll.is_rolled) {
-        br_message.trait_roll.reroll_mode = expend_bennie ? "benny" : "free";
+    if (brCard.trait_roll.is_rolled) {
+        brCard.trait_roll.reroll_mode = expend_bennie ? "benny" : "free";
     }
 
     if (expend_bennie) {
-        await spend_bennie(br_message.actor);
+        await spend_bennie(brCard.actor);
     }
 
-    extra_data.rof = br_message.item.system.rof || 1;
+    extra_data.rof = brCard.item.system.rof || 1;
     if (SettingsUtils.getUserSetting(USER_SETTING_KEYS.defaultRateOfFire) === "single_shot") {
         extra_data.rof = 1;
     }
 
     // Actions
-    for (const action of br_message.getSelectedActions()) {
+    for (const action of brCard.getSelectedActions()) {
         if (action.code.skillOverride) {
             const trait = Utils.traitFromString(
-                br_message.actor,
+                brCard.actor,
                 action.code.skillOverride,
             );
-            br_message.skill_id = trait.id;
+            brCard.skill_id = trait.id;
         }
         if (action.code.resourcesUsed) {
             const shots_used = action.code.resourcesUsed;
@@ -890,17 +890,17 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
                 shots_override = parseInt(shots_used);
             }
         }
-        process_common_actions(action.code, extra_data, macros, br_message.actor);
+        process_common_actions(action.code, extra_data, macros, brCard.actor);
     }
 
     // Check for minimum strength
     if (
-        br_message.item.system.minStr &&
-        Utils.isShootingSkill(Utils.getItemTrait(br_message.item, br_message.actor))
+        brCard.item.system.minStr &&
+        Utils.isShootingSkill(Utils.getItemTrait(brCard.item, brCard.actor))
     ) {
         const penalty = process_minimum_str_modifiers(
-            br_message.item,
-            br_message.actor,
+            brCard.item,
+            brCard.actor,
             "BRSW.NotEnoughStrength",
         );
         if (penalty) {
@@ -909,25 +909,25 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
     }
 
     // Trademark weapon
-    if (br_message.item.system.trademark) {
+    if (brCard.item.system.trademark) {
         extra_data.modifiers.push(
             new TraitModifier(
                 game.i18n.localize("BRSW.TrademarkWeapon"),
-                br_message.item.system.trademark,
+                brCard.item.system.trademark,
             ),
         );
     }
 
     // Offhand
-    if (br_message.item.system.equipStatus === 2) {
-        let is_ambidextrous = br_message.actor.items.find(
+    if (brCard.item.system.equipStatus === 2) {
+        let is_ambidextrous = brCard.actor.items.find(
             (item) =>
                 item.type === "edge" &&
                 item.name.toLowerCase() ===
                 game.i18n.localize("BRSW.EdgeName.Ambidextrous").toLowerCase(),
         );
         is_ambidextrous =
-            is_ambidextrous || br_message.actor.getFlag("swade", "ambidextrous");
+            is_ambidextrous || brCard.actor.getFlag("swade", "ambidextrous");
         if (!is_ambidextrous) {
             extra_data.modifiers.push(
                 new TraitModifier(game.i18n.localize("BRSW.Offhand"), -2),
@@ -936,10 +936,10 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
     }
 
     // Item properties tab
-    if (br_message.item.system.actions.traitMod) {
+    if (brCard.item.system.actions.traitMod) {
         const new_modifier = new TraitModifier(
             game.i18n.localize("BRSW.ItemPropertiesTraitMod"),
-            br_message.item.system.actions.traitMod,
+            brCard.item.system.actions.traitMod,
         );
         await new_modifier.evaluate();
         extra_data.modifiers.push(new_modifier);
@@ -947,10 +947,10 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
 
     // Item global modifiers
     if (
-        br_message.item.type === "weapon" &&
-        br_message.actor.system.stats.globalMods.attack
+        brCard.item.type === "weapon" &&
+        brCard.actor.system.stats.globalMods.attack
     ) {
-        for (const modifier of br_message.actor.system.stats.globalMods.attack) {
+        for (const modifier of brCard.actor.system.stats.globalMods.attack) {
             extra_data.modifiers.push(
                 new TraitModifier(modifier.label, modifier.value),
             );
@@ -958,8 +958,8 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
     }
 
     // Target global modifiers.
-    const targets = br_message.targets;
-    if (targets.length > 0 && Utils.isWeaponOrBolt(br_message.item)) {
+    const targets = brCard.targets;
+    if (targets.length > 0 && Utils.isWeaponOrBolt(brCard.item)) {
         function addMods(mods) {
             for (const modifier of mods) {
                 if (modifier.ignore) continue;
@@ -971,59 +971,59 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
         if (target && target.actor) {
             const targetGlobalMods = target.actor.system.stats.globalMods;
             addMods(targetGlobalMods.targetAttack);
-            if (Utils.isMeleeAttack(br_message.item, target.actor, br_message.skill)) {
+            if (Utils.isMeleeAttack(brCard.item, target.actor, brCard.skill)) {
                 addMods(targetGlobalMods.targetAttackMelee);
-            } else if (Utils.isRangedAttack(br_message.item, target.actor, br_message.skill)) {
+            } else if (Utils.isRangedAttack(brCard.item, target.actor, brCard.skill)) {
                 addMods(targetGlobalMods.targetAttackRanged);
             }
         }
     }
 
     await roll_trait(
-        br_message,
-        br_message.skill.system,
+        brCard,
+        brCard.skill.system,
         game.i18n.localize("BRSW.SkillDie"),
         extra_data,
     );
 
     // Ammo management
     if (
-        parseInt(br_message.item.system.shots) ||
-        br_message.item.system.autoReload
+        parseInt(brCard.item.system.shots) ||
+        brCard.item.system.autoReload
     ) {
         const dis_ammo_selected = html
             ? !!html.querySelector(".twbr\\:bg-red-700.brsw-ammo-toggle")
             : SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.defaultAmmoManagement);
         if (dis_ammo_selected || macros.length) {
-            br_message.render_data.used_shots =
-                shots_override || ROF_BULLETS[br_message.trait_roll.rof || 1];
-            if (dis_ammo_selected && br_message.trait_roll.rolls.length === 1) {
-                await br_message.item.consume(br_message.render_data.used_shots);
+            brCard.render_data.used_shots =
+                shots_override || ROF_BULLETS[brCard.trait_roll.rof || 1];
+            if (dis_ammo_selected && brCard.trait_roll.rolls.length === 1) {
+                await brCard.item.consume(brCard.render_data.used_shots);
             }
         }
     }
 
     // Power points management
-    const subtractPP = br_message.render_data.subtractPP;
-    const previous_pp = br_message.trait_roll.old_rolls.length ? br_message.render_data.used_pp : 0;
-    if (subtractPP && !isNaN(parseInt(br_message.item.system.pp)) && br_message.item.type === "power") {
-        br_message.render_data.used_pp = await spendPP(
-            br_message,
+    const subtractPP = brCard.render_data.subtractPP;
+    const previous_pp = brCard.trait_roll.old_rolls.length ? brCard.render_data.used_pp : 0;
+    if (subtractPP && !isNaN(parseInt(brCard.item.system.pp)) && brCard.item.type === "power") {
+        brCard.render_data.used_pp = await spendPP(
+            brCard,
             previous_pp,
         );
     }
 
-    await br_message.render();
-    await br_message.save();
+    await brCard.render();
+    await brCard.save();
 
-    await runMacros(macros, br_message);
+    await runMacros(macros, brCard);
 
     //Call a hook after roll for other modules
-    Hooks.call("BRSW-RollItem", br_message, html);
-    if (roll_damage && br_message.damage) {
-        br_message.trait_roll.current_roll.dice.forEach((roll) => {
+    Hooks.call("BRSW-RollItem", brCard, html);
+    if (roll_damage && brCard.damage) {
+        brCard.trait_roll.current_roll.dice.forEach((roll) => {
             if (roll.result !== null && roll.result >= 0) {
-                roll_dmg(br_message, html, false, {}, roll.result > 3);
+                roll_dmg(brCard, html, false, {}, roll.result > 3);
             }
         });
     }
@@ -1115,8 +1115,8 @@ async function roll_dmg_target(
     total_modifiers,
     message,
 ) {
-    const br_card = new BrCommonCard(message);
-    const { actor, item } = br_card;
+    const brCard = new BrCommonCard(message);
+    const { actor, item } = brCard;
     const current_damage_roll = JSON.parse(JSON.stringify(damage_roll));
     // @zk-sn: If strength is 1, make @str not explode: fix for #211 (Str 1 can't be rolled)
     const shortcuts = actor.getRollData();
@@ -1282,29 +1282,29 @@ function calc_min_str_penalty(item, actor, damageFormulas, damage_roll) {
 
 /**
  * Calculates the modifier from jokers to the damage roll.
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  * @param damage_roll
  */
-function joker_modifiers(br_card, damage_roll) {
-    const token_id = br_card.token?.id;
+function joker_modifiers(brCard, damage_roll) {
+    const token_id = brCard.token?.id;
     if (token_id && has_joker(token_id)) {
         damage_roll.brswroll.modifiers.push(
             new DamageModifier(
                 "Joker",
-                br_card.actor.getFlag("swade", "jokerBonus") ?? 2,
+                brCard.actor.getFlag("swade", "jokerBonus") ?? 2,
             ),
         );
     }
 }
 
 async function getDamageModsFromActions(
-    br_card,
+    brCard,
     damageFormulas,
     damage_roll,
     macros,
     expend_bennie,
 ) {
-    for (const action of br_card.getSelectedActions()) {
+    for (const action of brCard.getSelectedActions()) {
         if (action.code.isHeavyWeapon) {
             damageFormulas.heavy_weapon = true;
         }
@@ -1312,7 +1312,7 @@ async function getDamageModsFromActions(
         if (action.code.dmgMod) {
             let dmgMod = action.code.dmgMod;
             if (action.code.isWildAttack) {
-                const newDamage = br_card.actor?.getFlag('swade', 'wildAttackDamage');
+                const newDamage = brCard.actor?.getFlag('swade', 'wildAttackDamage');
                 if (newDamage != undefined) {
                     //wildAttackDamage replaces the default mod
                     dmgMod = newDamage;
@@ -1323,7 +1323,7 @@ async function getDamageModsFromActions(
             const new_modifier = new DamageModifier(
                 action_name,
                 dmgMod,
-                br_card.actor?.getRollData(),
+                brCard.actor?.getRollData(),
             );
 
             await new_modifier.evaluate();
@@ -1335,7 +1335,7 @@ async function getDamageModsFromActions(
         }
 
         if (action.code.self_add_status) {
-            set_or_update_condition(action.code.self_add_status, br_card.actor).catch(
+            set_or_update_condition(action.code.self_add_status, brCard.actor).catch(
                 () => {
                     console.error("BR2: Unable to update condition");
                 },
@@ -1367,7 +1367,7 @@ async function getDamageModsFromActions(
                 new DamageModifier(
                     game.i18n.localize(action.code.name),
                     action.code.rerollDamageMod,
-                    br_card.actor?.getRollData(),
+                    brCard.actor?.getRollData(),
                 ),
             );
         }
@@ -1388,7 +1388,7 @@ async function getDamageModsFromActions(
 
 /**
  * Rolls damage dor an item
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  * @param html
  * @param expend_bennie
  * @param default_options
@@ -1397,14 +1397,14 @@ async function getDamageModsFromActions(
  * @return {Promise<void>}*
  */
 export async function roll_dmg(
-    br_card,
+    brCard,
     html,
     expend_bennie,
     default_options,
     raise,
     target_token_id,
 ) {
-    const { render_data, actor, item } = br_card;
+    const { render_data, actor, item } = brCard;
     const raise_die_size = item.system.bonusDamageDie || 6;
     const number_raise_dice = item.system.bonusDamageDice || 1;
     let raiseFormula = `+${number_raise_dice}d${raise_die_size}x`;
@@ -1427,7 +1427,7 @@ export async function roll_dmg(
     }
 
     // Calculate modifiers
-    const options = get_roll_options(default_options, br_card);
+    const options = get_roll_options(default_options, brCard);
 
     // Shotgun
     if (damageFormulas.damage?.includes("1-3d6") && item.type === "weapon") {
@@ -1437,14 +1437,14 @@ export async function roll_dmg(
 
     const damage_roll = { label: "---", brswroll: new BRWSRoll(), raise: raise };
     get_chat_dmg_modifiers(options, damage_roll);
-    joker_modifiers(br_card, damage_roll);
+    joker_modifiers(brCard, damage_roll);
 
     // Item properties tab
     if (item.system.actions.dmgMod) {
         const new_modifier = new DamageModifier(
             game.i18n.localize("BRSW.ItemPropertiesDmgMod"),
             item.system.actions.dmgMod,
-            br_card.actor?.getRollData(),
+            brCard.actor?.getRollData(),
         );
         await new_modifier.evaluate();
         damage_roll.brswroll.modifiers.push(new_modifier);
@@ -1457,7 +1457,7 @@ export async function roll_dmg(
 
     // Actions
     await getDamageModsFromActions(
-        br_card,
+        brCard,
         damageFormulas,
         damage_roll,
         macros,
@@ -1498,14 +1498,14 @@ export async function roll_dmg(
         damageFormulas.raise = removeExplode(damageFormulas.raise);
     }
 
-    const targets = await get_dmg_targets(target_token_id, br_card);
+    const targets = await get_dmg_targets(target_token_id, brCard);
     if (!raise) {
         damageFormulas.raise = "";
     }
 
     // Gang Up on Damage
-    if (Utils.isMeleeAttack(item, actor, br_card.skill) && actor?.system.stats?.gangUpDamage && targets[0]) {
-        const gangUp = calculateGangUp(br_card.token, targets[0]);
+    if (Utils.isMeleeAttack(item, actor, brCard.skill) && actor?.system.stats?.gangUpDamage && targets[0]) {
+        const gangUp = calculateGangUp(brCard.token, targets[0]);
         if (gangUp.bonus) {
             damage_roll.brswroll.modifiers.push(
                 new DamageModifier(gangUp.name, gangUp.bonus)
@@ -1527,19 +1527,19 @@ export async function roll_dmg(
                     damageFormulas,
                     target,
                     total_modifiers,
-                    br_card.message,
+                    brCard.message,
                 ),
             );
             first_roll = false; // Only roll once without targets.
         }
     }
 
-    await update_message(br_card, render_data);
+    await update_message(brCard, render_data);
 
     // Run macros
-    await runMacros(macros, br_card);
+    await runMacros(macros, brCard);
 
-    Hooks.call("BRSW-RollDamage", br_card, html);
+    Hooks.call("BRSW-RollDamage", brCard, html);
 }
 
 function get_global_modifiers(
@@ -1569,9 +1569,9 @@ function get_global_modifiers(
 /**
  * Return an array of actors from a token id or targeted tokens
  * @param {string} token_id
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  */
-async function get_dmg_targets(token_id, br_card) {
+async function get_dmg_targets(token_id, brCard) {
     if (token_id) {
         const token = canvas.tokens.get(token_id);
         if (token) {
@@ -1581,8 +1581,8 @@ async function get_dmg_targets(token_id, br_card) {
     let targets = await game.user.targets;
     if (targets.size > 0) {
         targets = Array.from(targets).filter((token) => token.actor);
-    } else if (br_card.targets.length > 0) {
-        targets = br_card.targets;
+    } else if (brCard.targets.length > 0) {
+        targets = brCard.targets;
     } else {
         targets = [undefined];
     }
@@ -1591,11 +1591,11 @@ async function get_dmg_targets(token_id, br_card) {
 
 /**
  * Add a d6 to a damage roll
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  * @param {int} index
  */
-async function add_damage_dice(br_card, index) {
-    const render_data = br_card.message.getFlag(
+async function add_damage_dice(brCard, index) {
+    const render_data = brCard.message.getFlag(
         "betterrolls-swade2",
         "render_data",
     );
@@ -1628,12 +1628,12 @@ async function add_damage_dice(br_card, index) {
             die.options.colorset = damage_theme;
         });
     }
-    await roll_dice(br_card.message, render_data.damage_rolls[index].brswroll, roll);
+    await roll_dice(brCard.message, render_data.damage_rolls[index].brswroll, roll);
     // noinspection JSIgnoredPromiseFromCall
-    await update_message(br_card, render_data);
+    await update_message(brCard, render_data);
 }
 
-function show_fixed_damage_dialog(event, br_card) {
+function show_fixed_damage_dialog(event, brCard) {
     // noinspection AnonymousFunctionJS
     const target = event.currentTarget;
     simple_form(
@@ -1643,7 +1643,7 @@ function show_fixed_damage_dialog(event, br_card) {
             { label: "Value", default_value: 0 },
         ],
         (values) => {
-            add_fixed_damage(target, br_card, values);
+            add_fixed_damage(target, brCard, values);
         },
     );
 }
@@ -1653,29 +1653,29 @@ function show_fixed_damage_dialog(event, br_card) {
  * @param event
  * @param form_results
  */
-async function add_fixed_damage(target, br_card, form_results) {
+async function add_fixed_damage(target, brCard, form_results) {
     const modifier = parseInt(form_results.Value);
     if (!modifier) {
         return;
     }
     const { index } = target.dataset;
-    const render_data = br_card.message.getFlag("betterrolls-swade2", "render_data");
+    const render_data = brCard.message.getFlag("betterrolls-swade2", "render_data");
     const damage_rolls = render_data.damage_rolls[index].brswroll;
     damage_rolls.modifiers.push({ value: modifier, name: form_results.Label });
     damage_rolls.rolls[0].result += modifier;
     render_data.damage_rolls[index].damageResult = calculate_damage_results(
         damage_rolls.rolls,
     );
-    await update_message(br_card, render_data);
+    await update_message(brCard, render_data);
 }
 
 /**
  * Change damage to half
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  * @param {number} index
  */
-async function half_damage(br_card, index) {
-    const render_data = br_card.message.getFlag(
+async function half_damage(brCard, index) {
+    const render_data = brCard.message.getFlag(
         "betterrolls-swade2",
         "render_data",
     );
@@ -1689,17 +1689,17 @@ async function half_damage(br_card, index) {
     render_data.damage_rolls[index].damageResult = calculate_damage_results(
         damage_rolls.rolls,
     );
-    await update_message(br_card, render_data);
+    await update_message(brCard, render_data);
 }
 
 /**
  * Changes the damage target of one of the rolls.
  *
- * @param {BrCommonCard} br_card
+ * @param {BrCommonCard} brCard
  * @param {int} index
  */
-async function edit_toughness(br_card, index) {
-    const { render_data, actor } = br_card;
+async function edit_toughness(brCard, index) {
+    const { render_data, actor } = brCard;
     const defense_values = get_target_defense(actor);
     const damage_rolls = render_data.damage_rolls[index].brswroll.rolls;
     damage_rolls[0].tn = defense_values.toughness;
@@ -1709,7 +1709,7 @@ async function edit_toughness(br_card, index) {
     render_data.damage_rolls[index].damageResult =
         calculate_damage_results(damage_rolls);
     // noinspection JSIgnoredPromiseFromCall
-    await update_message(br_card, render_data);
+    await update_message(brCard, render_data);
 }
 
 /**
@@ -1809,7 +1809,7 @@ function has_heavy_armor(target, location = "torso") {
     );
 }
 
-async function execute_macro(action, br_card) {
+async function execute_macro(action, brCard) {
     if (!action.uuid) {
         return null;
     }
@@ -1824,25 +1824,25 @@ async function execute_macro(action, br_card) {
     //The System uses an item actor if macroActor is set to 'self' or the first selected tokens actor if not.
     let targetActor, targetToken;
     if (action.macroActor === "self") {
-        targetActor = br_card.actor;
-        targetToken = br_card.token;
+        targetActor = brCard.actor;
+        targetToken = brCard.token;
     } else if (action.macroActor === "target") {
-        targetToken = game.user.targets.first() || br_card.token;
+        targetToken = game.user.targets.first() || brCard.token;
         targetActor = targetToken.actor;
     } else {
         targetToken =
             game.canvas.tokens.controlled.length < 1
-                ? br_card.token
+                ? brCard.token
                 : game.canvas.tokens.controlled[0];
         targetActor =
             game.canvas.tokens.controlled.length < 1
-                ? br_card.actor
+                ? brCard.actor
                 : game.canvas.tokens.controlled[0].actor;
     }
     await macro.execute({
         actor: targetActor,
         token: targetToken,
-        item: br_card.item,
+        item: brCard.item,
     });
     return null;
 }
