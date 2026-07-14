@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.16.1
+* Fixed an error when auto-rolling damage
+
 # Version 5.16.0
 * Added support for Arcane Protection
 * Fixed using complex selectors with defaultChecked
