@@ -22,7 +22,7 @@ import {
 import { TraitRoll } from "./rolls.js";
 import {
     calculate_distance,
-    get_tn_from_token,
+    getTNFromToken,
     roll_skill,
 } from "./skill_card.js";
 import {
@@ -91,6 +91,8 @@ export function create_common_card(origin, render_data, template) {
     } else if (actor.isToken) {
         brCard.token_id = actor.token.id;
     }
+
+    brCard.setTrait(render_data.trait);
 
     brCard.generateRenderData(render_data, template);
     return brCard;
@@ -394,15 +396,15 @@ function create_macro_command_from_card(brCard) {
         roll_function =
             "game.brsw.roll_item(message, $(message.content), false, behaviour.includes('damage'));";
         id = brCard.item_id;
-    } else if (brCard.skill_id) {
+    } else if (brCard.skill) {
         card_function_name = "create_skill_card_from_id";
         roll_function = "game.brsw.roll_skill(message, $(message.content), false);";
-        id = brCard.skill_id;
-    } else if (brCard.attribute_name) {
+        id = brCard.trait.id;
+    } else if (brCard.attribute) {
         card_function_name = "create_attribute_card_from_id";
         roll_function =
             "game.brsw.roll_attribute(message, $(message.content), false);";
-        id = brCard.attribute_name;
+        id = brCard.trait.name;
     }
     return `
   let behaviour = game.brsw.get_action_from_click(event);
@@ -741,9 +743,9 @@ async function get_new_roll_options(
         });
     }
 
-    if (targetToken && brCard.skill) {
+    if (targetToken) {
         const origin_token = brCard.token;
-        const target_data = await get_tn_from_token(
+        const target_data = await getTNFromToken(
             brCard.skill,
             targetToken,
             origin_token,
@@ -780,7 +782,7 @@ async function get_new_roll_options(
     get_actor_own_modifiers(brCard.actor, roll_options);
 
     // Armor min str
-    if (brCard.skill?.system.attribute === "agility") {
+    if (brCard.skill?.system.attribute === "agility" || brCard.attribute === "agility") {
         const armor_penalty = get_actor_armor_minimum_strength(brCard.actor);
         if (armor_penalty) {
             roll_options.modifiers.push(armor_penalty);
@@ -821,7 +823,7 @@ async function get_new_roll_options(
     const npcsUseEncumbrance = SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.npcsUseEncumbrance);
     if ((brCard.actor.type === "character" || npcsUseEncumbrance) &&
         brCard.actor.system.encumbered &&
-        (brCard.attribute_name === "agility" || brCard.skill?.system.attribute === "agility")) {
+        (brCard.attribute === "agility" || brCard.skill?.system.attribute === "agility")) {
         roll_options.modifiers.push(new TraitModifier(game.i18n.localize("SWADE.Encumbered"), -2),);
     }
 
@@ -995,6 +997,7 @@ function create_roll_string(trait_dice, rof) {
 export async function roll_trait(brCard, trait_dice, dice_label, extra_data) {
     const { actor } = brCard;
     const roll_options = { modifiers: [], rof: undefined };
+
     if (!brCard.trait_roll.is_rolled) {
         await get_new_roll_options(brCard, extra_data, trait_dice, roll_options);
     } else {
@@ -1002,7 +1005,9 @@ export async function roll_trait(brCard, trait_dice, dice_label, extra_data) {
         roll_options.rof = brCard.trait_roll.rof;
         await get_reroll_options(brCard, extra_data);
     }
+
     let roll_string = create_roll_string(trait_dice, roll_options.rof);
+
     // Wild Die
     let wild_die_formula = `+1d${trait_dice["wild-die"].sides}x`;
     if (extra_data.hasOwnProperty("wildDieFormula")) {
@@ -1011,30 +1016,33 @@ export async function roll_trait(brCard, trait_dice, dice_label, extra_data) {
             wild_die_formula = `+${wild_die_formula}`;
         }
     }
+
     if ((actor.isWildcard || extra_data.add_wild_die) && wild_die_formula) {
         roll_string += wild_die_formula;
         brCard.trait_roll.wild_die = true;
     } else {
         brCard.trait_roll.wild_die = false;
     }
-    if (
-        extra_data.total_aiming_ignorable_penalties > 0 &&
-        extra_data.aiming_ignore_data?.length > 0
-    ) {
+
+    if (extra_data.total_aiming_ignorable_penalties > 0 && extra_data.aiming_ignore_data?.length > 0) {
         //We are aiming and we have penalties that we can ignore
         apply_aiming_ignore(extra_data);
     }
+
     brCard.trait_roll.modifiers = roll_options.modifiers;
+
     if (extra_data.tn) {
         brCard.trait_roll.tn = extra_data.tn;
         brCard.trait_roll.tn_reason = extra_data.tn_reason;
     }
+
     brCard.trait_roll.arcaneActivationOffset = extra_data.arcaneActivationOffset;
 
     const roll = new Roll(roll_string);
     await roll.evaluate();
     await brCard.trait_roll.add_roll(roll);
     await roll_dice(brCard.message, brCard.trait_roll, roll);
+
     await brCard.render();
     await brCard.save();
 }
@@ -1194,7 +1202,7 @@ async function get_tn_from_target(brCard, index, selected) {
     if (targetToken) {
         const extra_data = { modifiers: [] };
         const origin_token = brCard.token;
-        const target = await get_tn_from_token(
+        const target = await getTNFromToken(
             brCard.skill,
             targetToken,
             origin_token,

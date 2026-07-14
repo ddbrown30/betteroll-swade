@@ -26,7 +26,7 @@ import {
  * Creates a chat card for a skill
  *
  * @param {Token, SwadeActor} origin  The actor or token who is creating this card
- * @param {string} skill_id The id of the skill that we want to show
+ * @param {string} skillId The id of the skill that we want to show
  * @param {object} actions_stored An object with action ids as properties
  *   and a boolean meaning if they need to set on or off
  * @param {SwadeActor} vehicle
@@ -34,7 +34,7 @@ import {
  */
 async function create_skill_card(
     origin,
-    skill_id,
+    skillId,
     { actions_stored = {}, vehicle } = {},
 ) {
     let actor;
@@ -46,9 +46,7 @@ async function create_skill_card(
     } else {
         actor = origin;
     }
-    const skill = actor.items.find((item) => {
-        return item.id === skill_id;
-    });
+    const skill = actor.items.get(skillId);
     const extra_name = skill.name + " " + trait_to_string(skill.system);
     const brCard = create_common_card(
         origin,
@@ -58,13 +56,12 @@ async function create_skill_card(
                 title: extra_name,
                 img: skill.img,
             },
-            trait_id: skill.id,
+            trait: skill,
             description: skill.system.description,
         },
         "modules/betterrolls-swade2/templates/skill_card.hbs",
     );
     brCard.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_SKILL_CARD;
-    brCard.skill_id = skill.id;
     if (vehicle) {
         brCard.vehicle_actor_id = vehicle.actor?.id || vehicle.id;
         if (
@@ -86,7 +83,7 @@ async function create_skill_card(
  *  before actor
  * @param {string} actor_id An actor id, it could be set as fallback or
  *  if you keep token empty as the only way to find the actor
- * @param {string} skill_id Id of the skill item
+ * @param {string} skillId Id of the skill item
  * @param {object} actions_stored An object with action ids as properties
  *   and a boolean meaning if they need to set on or off
  * @return {Promise} a promise fot the ChatMessage object
@@ -94,11 +91,11 @@ async function create_skill_card(
 function create_skill_card_from_id(
     token_id,
     actor_id,
-    skill_id,
+    skillId,
     { actions_stored = {} } = {},
 ) {
     const actor = get_actor_from_ids(token_id, actor_id);
-    return create_skill_card(actor, skill_id, {
+    return create_skill_card(actor, skillId, {
         actions_stored: actions_stored,
     });
 }
@@ -126,11 +123,11 @@ async function skill_click_listener(ev, target) {
     ev.preventDefault();
     ev.stopPropagation();
     // First term for PC, second one for NPCs
-    const skill_id =
+    const skillId =
         ev.currentTarget.parentElement.parentElement.dataset.itemId ||
         ev.currentTarget.parentElement.dataset.itemId;
     // Show card
-    const brCard = await create_skill_card(target, skill_id);
+    const brCard = await create_skill_card(target, skillId);
     if (action.includes("dialog")) {
         game.brsw.dialog.show_card(brCard);
     } else if (action.includes("trait")) {
@@ -171,7 +168,7 @@ export function activate_skill_card_listeners(brCard, html) {
     });
     html.querySelector(".brsw-header-img").addEventListener("click", (_) => {
         const { render_data, actor } = brCard;
-        const item = actor.items.get(render_data.trait_id);
+        const item = actor.items.get(render_data.trait.id);
         item.sheet.render(true);
     });
 }
@@ -353,7 +350,7 @@ async function get_vehicle_tn(tn, targetToken) {
  * @param {Token} origin_token
  * @param {Item} item
  */
-export async function get_tn_from_token(
+export async function getTNFromToken(
     skill,
     targetToken,
     origin_token,

@@ -88,7 +88,7 @@ export async function create_item_card(
         {
             header: { type: "Item", title: item.name, img: item.img },
             notes: notes,
-            trait_id: trait ? trait.id || trait : false,
+            trait: trait ?? false,
             ammo: ammoEnabled,
             subtract_selected: subtract_select,
             subtractPP: is_power
@@ -113,9 +113,6 @@ export async function create_item_card(
 
     await brCard.render(actions_stored);
     await brCard.save();
-
-    //If we have any actions that override damage, our damage value will need to be updated
-    brCard.refreshDamageFromActions();
 
     call_create_item_card_hooks(item, brCard);
 
@@ -300,7 +297,7 @@ function call_create_item_card_hooks(item, brCard) {
  *  before actor
  * @param {string} actor_id An actor id, it could be set as fallback or
  *  if you keep token empty as the only way to find the actor
- * @param {string} skill_id Id of the item
+ * @param {string} itemId Id of the item
  * @param {object} actions_stored An object with action ids as properties
  *   and a boolean meaning if they need to set on or off
  * @return {Promise} a promise for the BrCommonCard object
@@ -308,7 +305,7 @@ function call_create_item_card_hooks(item, brCard) {
 function create_item_card_from_id(
     token_id,
     actor_id,
-    skill_id,
+    itemId,
     { actions_stored = {} } = {},
 ) {
     let origin;
@@ -321,7 +318,7 @@ function create_item_card_from_id(
     if (!origin && actor_id) {
         origin = game.actors.get(actor_id);
     }
-    return create_item_card(origin, skill_id, {
+    return create_item_card(origin, itemId, {
         actions_stored: actions_stored,
     });
 }
@@ -400,7 +397,7 @@ async function item_click_listener(ev, target, currentTarget) {
     });
     if (action.includes("dialog")) {
         game.brsw.dialog.show_card(brCard);
-    } else if (brCard.skill && action.includes("trait")) {
+    } else if (brCard.trait && action.includes("trait")) {
         await roll_item(brCard, "", false, action.includes("damage"));
     } else if (brCard.damage && action.includes("damage")) {
         await roll_dmg(brCard, "");
@@ -597,9 +594,7 @@ export function activate_item_card_listeners(brCard, html) {
             ev.currentTarget.dataset.trait,
             brCard,
             parseInt(ev.currentTarget.dataset.traitMod),
-        ).catch((err) => {
-            console.error(`Error while rolling resistance ${err}`);
-        });
+        );
     });
 }
 
@@ -660,18 +655,20 @@ async function roll_resist(trait, brCard, trait_mod) {
  */
 function get_trait_roll_difficulty(brCard) {
     if (brCard.item && brCard.item.type === "power") {
-        if (
-            brCard.item.system.description.indexOf(
-                game.i18n.localize("BRSW.Opposed"),
-            ) === -1
-        ) {
+        if (brCard.item.system.description.indexOf(game.i18n.localize("BRSW.Opposed")) === -1) {
             // If this is a power, and we can't find opposed in the description, it is probably a flat check.
             return 4;
         }
     }
+
+    if (!brCard.trait_roll.current_roll) {
+        return brCard.trait_roll.tn;
+    }
+
     const results = brCard.trait_roll.current_roll.dice.map((die) => {
         return die.result;
     });
+
     return Math.max(...results) + brCard.trait_roll.tn;
 }
 
@@ -878,7 +875,7 @@ export async function roll_item(brCard, html, expend_bennie, roll_damage) {
                 brCard.actor,
                 action.code.skillOverride,
             );
-            brCard.skill_id = trait.id;
+            brCard.setTrait(trait);
         }
         if (action.code.resourcesUsed) {
             const shots_used = action.code.resourcesUsed;
@@ -971,7 +968,7 @@ export async function roll_item(brCard, html, expend_bennie, roll_damage) {
         if (target && target.actor) {
             const targetGlobalMods = target.actor.system.stats.globalMods;
             addMods(targetGlobalMods.targetAttack);
-            if (Utils.isMeleeAttack(brCard.item, target.actor, brCard.skill)) {
+            if (Utils.isMeleeAttack(brCard.item, brCard.skill)) {
                 addMods(targetGlobalMods.targetAttackMelee);
             } else if (Utils.isRangedAttack(brCard.item, target.actor, brCard.skill)) {
                 addMods(targetGlobalMods.targetAttackRanged);
@@ -981,7 +978,7 @@ export async function roll_item(brCard, html, expend_bennie, roll_damage) {
 
     await roll_trait(
         brCard,
-        brCard.skill.system,
+        brCard.traitDie,
         game.i18n.localize("BRSW.SkillDie"),
         extra_data,
     );
@@ -1504,7 +1501,7 @@ export async function roll_dmg(
     }
 
     // Gang Up on Damage
-    if (Utils.isMeleeAttack(item, actor, brCard.skill) && actor?.system.stats?.gangUpDamage && targets[0]) {
+    if (Utils.isMeleeAttack(item, brCard.skill) && actor?.system.stats?.gangUpDamage && targets[0]) {
         const gangUp = calculateGangUp(brCard.token, targets[0]);
         if (gangUp.bonus) {
             damage_roll.brswroll.modifiers.push(
