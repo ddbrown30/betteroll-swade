@@ -103,16 +103,22 @@ export async function create_item_card(
         },
         "modules/betterrolls-swade2/templates/item_card.hbs",
     );
+
     br_message.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD;
     br_message.damage = !!item.system.damage;
     br_message.item_id = item_id;
     br_message.applicable_effects = get_applicable_effects(item);
     br_message.pp_modifiers = is_power ? get_pp_mods(item) : {};
     br_message.checkWarnings(br_message.render_data);
+
     await br_message.render(actions_stored);
     await br_message.save();
+
+    //If we have any actions that override damage, our damage value will need to be updated
+    br_message.refreshDamageFromActions();
+
     call_create_item_card_hooks(item, br_message);
-    // eslint-disable-next-line consistent-return
+
     return br_message;
 }
 
@@ -1014,7 +1020,7 @@ export async function roll_item(br_message, html, expend_bennie, roll_damage) {
 
     //Call a hook after roll for other modules
     Hooks.call("BRSW-RollItem", br_message, html);
-    if (roll_damage) {
+    if (roll_damage && br_message.damage) {
         br_message.trait_roll.current_roll.dice.forEach((roll) => {
             if (roll.result !== null && roll.result >= 0) {
                 roll_dmg(br_message, html, false, {}, roll.result > 3);
@@ -1408,7 +1414,7 @@ export async function roll_dmg(
     const damageFormulas = {
         damage: damage,
         raise: raiseFormula,
-        ap: parseInt(item.system.ap),
+        ap: parseInt(item.system.ap ?? 0),
         multiplier: 1,
         explodes: true,
         heavy_weapon: false,
