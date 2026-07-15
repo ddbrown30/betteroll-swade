@@ -974,9 +974,11 @@ function set_wild_die_theme(wildDie) {
  */
 function createRollString(traitDie, rof, traitName) {
     const sides = traitDie.die.sides;
+    const flavor = traitName ? `[${traitName}]` : "";
     //Don't explode on a d1 otherwise it will explode infinitely
-    const die = `1d${sides}${sides !== 1 ? "x" : ""}[${traitName}]`;
-    return [die, ...Array.from({ length: rof - 1 }, () => die)].join("+");
+    const die = `1d${sides}${sides !== 1 ? "x" : ""}${flavor}`;
+    const count = Math.max(1, Number(rof) || 1);
+    return [die, ...Array.from({ length: count - 1 }, () => die)].join("+");
 }
 
 /**
