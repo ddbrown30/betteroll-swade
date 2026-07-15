@@ -63,7 +63,7 @@ export async function create_damage_card(
             show_incapacitation: damageResult.incapacitated && actor.isWildcard,
             showInjury: showInjury,
             heavyDamage: heavyDamage,
-            attribute_name: "vigor",
+            trait: Utils.traitFromString(actor, "vigor"),
         },
         "modules/betterrolls-swade2/templates/damage_card.hbs",
     );
@@ -236,9 +236,7 @@ export function activate_damage_card_listeners(message, html) {
     html.querySelector(".brsw-show-incapacitation")?.addEventListener("click", () => {
         // noinspection JSIgnoredPromiseFromCall
         brCard.closePopout(); //We assume we're done with the card at this point so close any popouts
-        create_incapacitation_card(brCard.token_id).catch(() => {
-            console.error("Error creating incapacitation card");
-        });
+        create_incapacitation_card(brCard.token_id);
     });
     html.querySelector(".brsw-mark-defeated")?.addEventListener("click", async () => {
         await brCard.actor.toggleStatusEffect("incapacitated", { active: false });

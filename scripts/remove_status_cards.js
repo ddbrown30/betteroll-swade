@@ -11,7 +11,7 @@ import {
 } from "./cards_common.js";
 import { get_owner } from "./damage_card.js";
 import { TraitModifier } from "./modifiers.js";
-import { SettingsUtils, addEventListenerAll } from "./utils.js";
+import { SettingsUtils, Utils, addEventListenerAll } from "./utils.js";
 
 /**
  * Shows the unshaken card
@@ -54,7 +54,7 @@ async function create_remove_status_card(original_message, actor, type) {
       roll_title: roll_title,
       text: text,
       show_roll_injury: false,
-      attribute_name: "spirit",
+      trait: Utils.traitFromString(actor, "spirit"),
     },
     "modules/betterrolls-swade2/templates/remove_status_card.hbs",
   );

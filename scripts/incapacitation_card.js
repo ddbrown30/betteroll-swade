@@ -10,7 +10,7 @@ import {
     spend_bennie,
 } from "./cards_common.js";
 import { get_owner } from "./damage_card.js";
-import { SettingsUtils, addEventListenerAll } from "./utils.js";
+import { Utils, addEventListenerAll } from "./utils.js";
 
 
 /**
@@ -26,7 +26,7 @@ export async function create_incapacitation_card(token_id) {
         token_name: token.name,
     });
     const text_after = game.i18n.localize("BRSW.IncapacitatedMustVigor");
-    let brCard = await create_common_card(
+    const brCard = await create_common_card(
         token,
         {
             header: {
@@ -37,7 +37,7 @@ export async function create_incapacitation_card(token_id) {
             text: text,
             text_after: text_after,
             show_roll_injury: false,
-            attribute_name: "vigor",
+            trait: Utils.traitFromString(actor, "vigor"),
         },
         "modules/betterrolls-swade2/templates/incapacitation_card.hbs",
     );
