@@ -309,7 +309,7 @@ async function roll_soak(brCard, use_bennie) {
     await roll_trait(
         brCard,
         brCard.actor.system.attributes.vigor,
-        game.i18n.localize("BRSW.SoakRoll"),
+        game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS.vigor),
         { modifiers: soak_modifiers },
     );
 

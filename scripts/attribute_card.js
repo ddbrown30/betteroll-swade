@@ -159,7 +159,7 @@ export async function roll_attribute(brCard, expend_bennie) {
   await roll_trait(
     brCard,
     brCard.actor.system.attributes[brCard.attribute],
-    game.i18n.localize("BRSW.AbilityDie"),
+    game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS[brCard.attribute]),
     extra_data,
   );
   // noinspection ES6MissingAwait

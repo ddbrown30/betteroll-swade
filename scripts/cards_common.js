@@ -967,49 +967,43 @@ function set_wild_die_theme(wildDie) {
 
 /**
  * Creates a roll string from a trait a number of dice
- * @param trait_dice
+ * @param traitDie
  * @param rof
+ * @param traitName
  * @return {string}
  */
-function create_roll_string(trait_dice, rof) {
-    let roll_string = `1d${trait_dice.die.sides}x`;
-    // @zk-sn: If roll is a 1d1x (example: Strength score of 1), change it to 1d1 to prevent exploding die recursion.  (Fix for #211)
-    if (roll_string === `1d1x`) {
-        roll_string = `1d1`;
-        for (let i = 0; i < rof - 1; i++) {
-            roll_string += `+1d${trait_dice.die.sides}`;
-        }
-    } else {
-        for (let i = 0; i < rof - 1; i++) {
-            roll_string += `+1d${trait_dice.die.sides}x`;
-        }
-    }
-    return roll_string;
+function createRollString(traitDie, rof, traitName) {
+    const sides = traitDie.die.sides;
+    const flavor = traitName ? `[${traitName}]` : "";
+    //Don't explode on a d1 otherwise it will explode infinitely
+    const die = `1d${sides}${sides !== 1 ? "x" : ""}${flavor}`;
+    const count = Math.max(1, Number(rof) || 1);
+    return [die, ...Array.from({ length: count - 1 }, () => die)].join("+");
 }
 
 /**
  * Makes a roll trait
  * @param {BrCommonCard}brCard
- * @param trait_dice - An object representing a trait dice
- * @param dice_label - Label for the trait die
+ * @param traitDie - An object representing a trait die
+ * @param traitName - Label for the trait die
  * @param extra_data - Extra data to add to render options
  */
-export async function roll_trait(brCard, trait_dice, dice_label, extra_data) {
+export async function roll_trait(brCard, traitDie, traitName, extra_data) {
     const { actor } = brCard;
     const roll_options = { modifiers: [], rof: undefined };
 
     if (!brCard.trait_roll.is_rolled) {
-        await get_new_roll_options(brCard, extra_data, trait_dice, roll_options);
+        await get_new_roll_options(brCard, extra_data, traitDie, roll_options);
     } else {
         roll_options.modifiers = brCard.trait_roll.modifiers;
         roll_options.rof = brCard.trait_roll.rof;
         await get_reroll_options(brCard, extra_data);
     }
 
-    let roll_string = create_roll_string(trait_dice, roll_options.rof);
+    let rollString = createRollString(traitDie, roll_options.rof, traitName);
 
     // Wild Die
-    let wild_die_formula = `+1d${trait_dice["wild-die"].sides}x`;
+    let wild_die_formula = `+1d${traitDie["wild-die"].sides}x`;
     if (extra_data.hasOwnProperty("wildDieFormula")) {
         wild_die_formula = extra_data.wildDieFormula;
         if (wild_die_formula.charAt(0) !== "+") {
@@ -1018,7 +1012,7 @@ export async function roll_trait(brCard, trait_dice, dice_label, extra_data) {
     }
 
     if ((actor.isWildcard || extra_data.add_wild_die) && wild_die_formula) {
-        roll_string += wild_die_formula;
+        rollString += wild_die_formula;
         brCard.trait_roll.wild_die = true;
     } else {
         brCard.trait_roll.wild_die = false;
@@ -1038,7 +1032,7 @@ export async function roll_trait(brCard, trait_dice, dice_label, extra_data) {
 
     brCard.trait_roll.arcaneActivationOffset = extra_data.arcaneActivationOffset;
 
-    const roll = new Roll(roll_string);
+    const roll = new Roll(rollString);
     await roll.evaluate();
     await brCard.trait_roll.add_roll(roll);
     await roll_dice(brCard.message, brCard.trait_roll, roll);

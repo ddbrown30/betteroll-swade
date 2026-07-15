@@ -105,7 +105,7 @@ async function roll_incapacitation(brCard, spend_benny) {
     await roll_trait(
         brCard,
         brCard.actor.system.attributes.vigor,
-        game.i18n.localize("BRSW.IncapacitationRoll"),
+        game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS.vigor),
         {},
     );
     let result = 0;
