@@ -979,7 +979,7 @@ export async function roll_item(brCard, html, expend_bennie, roll_damage) {
     await roll_trait(
         brCard,
         brCard.traitDie,
-        game.i18n.localize("BRSW.SkillDie"),
+        brCard.render_data.trait?.name,
         extra_data,
     );
 
@@ -1185,26 +1185,26 @@ async function roll_dmg_target(
     let last_string_term = "";
     for (const term of roll.terms) {
         if (term.hasOwnProperty("_faces")) {
-            const new_die = {
+            const newDie = {
                 faces: term._faces,
                 results: [],
                 extra_class: "",
             };
-            new_die.label = term.flavor
+            newDie.label = term.flavor
                 ? `${term.flavor.charAt(0).toUpperCase()}${term.flavor.slice(1)}`
                 : game.i18n.localize("SWADE.Dmg");
-            new_die.label += ` (d${term._faces})`;
+            newDie.label += ` (d${term._faces})`;
             for (const result of term.results) {
-                new_die.results.push(result.result);
+                newDie.results.push(result.result);
                 if (result.result >= term._faces) {
-                    new_die.extra_class = " brsw-blue-text";
+                    newDie.extra_class = " brsw-blue-text";
                     if (!current_damage_roll.brswroll.rolls[0].extra_class) {
                         current_damage_roll.brswroll.rolls[0].extra_class =
                             " brsw-blue-text";
                     }
                 }
             }
-            current_damage_roll.brswroll.dice.push(new_die);
+            current_damage_roll.brswroll.dice.push(newDie);
         } else {
             if (term.number) {
                 const modifier_value = parseInt(last_string_term + term.number);
@@ -1474,7 +1474,6 @@ export async function roll_dmg(
                     : `${match}${damageType}`,
         );
 
-        damageFormulas.damage = addDamageType(damageFormulas.damage, damageType);
         damageFormulas.raise = addDamageType(damageFormulas.raise, damageType);
     }
 
@@ -1601,19 +1600,19 @@ async function add_damage_dice(brCard, index) {
     await roll.evaluate();
     damage_rolls.rolls[0].result += roll.total;
     roll.terms.forEach((term) => {
-        const new_die = {
+        const newDie = {
             faces: term.faces,
             results: [],
             extra_class: "",
             label: game.i18n.localize("SWADE.Dmg"),
         };
         if (term.total > term.faces) {
-            new_die.extra_class = " brsw-blue-text";
+            newDie.extra_class = " brsw-blue-text";
         }
         term.results.forEach((result) => {
-            new_die.results.push(result.result);
+            newDie.results.push(result.result);
         });
-        damage_rolls.dice.push(new_die);
+        damage_rolls.dice.push(newDie);
     });
     render_data.damage_rolls[index].damageResult = calculate_damage_results(
         damage_rolls.rolls,

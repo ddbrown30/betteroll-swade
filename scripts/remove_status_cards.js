@@ -136,7 +136,7 @@ async function roll_unshaken(brCard, use_bennie) {
     await roll_trait(
       brCard,
       brCard.actor.system.attributes.spirit,
-      game.i18n.localize("BRSW.SpiritRoll"),
+      game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS.spirit),
       { modifiers: modifiers },
     );
     let result = 0;
@@ -274,7 +274,7 @@ async function roll_unstun(brCard) {
   await roll_trait(
     brCard,
     brCard.actor.system.attributes.vigor,
-    game.i18n.localize("BRSW.VigorRoll"),
+    game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS.vigor),
     extra_options,
   );
   let result = 0;

@@ -195,7 +195,7 @@ export async function roll_skill(brCard, expend_bennie) {
     await roll_trait(
         brCard,
         brCard.skill.system,
-        game.i18n.localize("BRSW.SkillDie"),
+        brCard.skill.name,
         extra_data,
     );
     await runMacros(macros, brCard);

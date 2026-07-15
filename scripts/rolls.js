@@ -91,14 +91,15 @@ class SingleRoll {
   add_roll(roll, wild_die, modifiers) {
     roll.terms.forEach((term) => {
       if (term.hasOwnProperty("_faces")) {
-        let new_die = new Die(null);
+        let newDie = new Die(null);
         if (term.total === 1) {
-          new_die.extra_class = " brsw-red-text";
+          newDie.extra_class = " brsw-red-text";
         }
-        new_die.sides = term.faces;
-        new_die.raw_total = term.total;
-        new_die.modifiers = modifiers;
-        this.dice.push(new_die);
+        newDie.sides = term.faces;
+        newDie.raw_total = term.total;
+        newDie.modifiers = modifiers;
+        newDie.label = term.flavor ?? newDie.label;
+        this.dice.push(newDie);
       }
     });
     if (wild_die) {
