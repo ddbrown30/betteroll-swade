@@ -169,6 +169,8 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
             // Check that the keys are supported
             const SUPPORTED_KEYS = [
                 "add_wild_die",
+                "aiming_ignores",
+                "aimingIgnoreMod",
                 "and_selector",
                 "apMod",
                 "avoid_exploding_damage",
@@ -182,6 +184,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
                 "group_single",
                 "group",
                 "id",
+                "ignoresArcaneActivation",
                 "multiplyDmgMod",
                 "name",
                 "not_selector",
