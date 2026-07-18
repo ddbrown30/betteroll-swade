@@ -7,10 +7,11 @@ export class TraitModifier {
    * @param {string} label
    * @param {String, Number} expression
    */
-  constructor(label, expression, rollData) {
+  constructor(label, expression, { rollData = undefined, type = "" }={}) {
     this.name = label;
     this.value = 0;
     this.dice = null;
+    this.type = type;
     if (isNaN(expression)) {
       if (expression.indexOf("d") >= 0 || expression.indexOf("@") >= 0) {
         // This is a die expression
