@@ -228,11 +228,7 @@ export class TraitRoll {
   }
 
   delete_range_modifiers() {
-    for (let modifer of this.modifiers) {
-      if (modifer.name.startsWith(game.i18n.localize("BRSW.Range"))) {
-        this.modifiers.splice(this.modifiers.indexOf(modifer), 1);
-      }
-    }
+    this.modifiers = this.modifiers.filter(modifier => modifier.type !== "range");
   }
 
   _deep_update_modifiers() {

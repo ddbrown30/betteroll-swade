@@ -173,4 +173,11 @@ export class BRSW2_CONST {
         strength: "SWADE.AttrStr",
         vigor: "SWADE.AttrVig",
     };
+
+    // Translation strings for ranges
+    static RANGE_STRINGS = {
+        [-2]: "BRSW.RangeMedium",
+        [-4]: "BRSW.RangeLong",
+        [-8]: "BRSW.RangeExtreme",
+    };
 }

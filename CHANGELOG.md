@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.18.0
+* Improved range calculation and display
+
 # Version 5.17.1
 * Fixed attribute traits
 * We now use the trait name as the die label in the roll results

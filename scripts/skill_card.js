@@ -222,54 +222,49 @@ function calculate_generic_distance_modifier(
 ) {
     const range = item.system.range.split("/");
     if (origin_token.document.elevation !== targetToken.document.elevation) {
-        const h_diff = Math.abs(
+        const elevationDiff = Math.abs(
             origin_token.document.elevation - targetToken.document.elevation,
         );
-        distance = Math.sqrt(Math.pow(h_diff, 2) + Math.pow(distance, 2));
+        distance = Math.sqrt(Math.pow(elevationDiff, 2) + Math.pow(distance, 2));
     }
-    let distance_penalty = 0;
-    let rangeEffects;
-    if (!Utils.isShootingSkill(skill)) {
-        // Throwing skill them
-        rangeEffects = origin_token.actor.appliedEffects.find((e) =>
-            e.changes.find((ch) => ch.key === "brsw.thrown-range-modifier"),
-        );
-        if (rangeEffects) {
-            if (rangeEffects.disabled) {
-                rangeEffects = null;
-            } else {
-                rangeEffects = rangeEffects.changes.find(
-                    (ch) => ch.key === "brsw.thrown-range-modifier",
-                ).value;
-            }
+
+    let rangeEffects = 0;
+    if (Utils.isThrowingSkill(skill)) {
+        rangeEffects = origin_token.actor.appliedEffects
+            .filter(effect => !effect.disabled)
+            .reduce((total, effect) => {
+                const change = effect.changes.find(ch => ch.key === "brsw.thrown-range-modifier");
+                return total + (change ? Number(change.value) : 0);
+            }, 0);
+    }
+
+    let distancePenalty = 0;
+    for (let i = 0; i < Math.min(3, range.length); i++) {
+        range[i] = Number(range[i]) + rangeEffects * (2 ** i);
+        if (range[i] < distance) {
+            distancePenalty = i < 2 ? (i + 1) * 2 : 8;
         }
     }
-    const extreme_range = 0;
-    for (let i = 0; i < 3 && i < range.length; i++) {
-        let range_int = parseInt(range[i]);
-        if (rangeEffects) {
-            range_int += rangeEffects * (i + 1);
-        }
-        if (range_int && range_int < distance) {
-            distance_penalty = i < 2 ? (i + 1) * 2 : 8;
-        }
-    }
-    if (extreme_range && distance > extreme_range * 4) {
+
+    const extremeRange = range.length ? range[range.length - 1] * 4 : 0;
+    if (extremeRange && distance > extremeRange) {
         tn.modifiers.push(
             new TraitModifier(game.i18n.localize("BRSW.OverExtremeRange"), -999),
         );
     }
-    if (distance_penalty) {
+
+    if (distancePenalty) {
+        const rangeString = BRSW2_CONST.RANGE_STRINGS[-distancePenalty] ?? "BRSW.Range";
         tn.modifiers.push(
             new TraitModifier(
-                game.i18n.localize("BRSW.Range") + " " + distance.toFixed(2),
-                -distance_penalty,
+                game.i18n.format(rangeString, { distance: distance.toFixed(1) }),
+                -distancePenalty,
+                { type: "range" }
             ),
         );
         //Range penalties can be ignored by aiming so add it to the total
-        extra_data.total_aiming_ignorable_penalties =
-            extra_data.total_aiming_ignorable_penalties ?? 0;
-        extra_data.total_aiming_ignorable_penalties += distance_penalty;
+        extra_data.total_aiming_ignorable_penalties = extra_data.total_aiming_ignorable_penalties ?? 0;
+        extra_data.total_aiming_ignorable_penalties += distancePenalty;
     }
 }
 
