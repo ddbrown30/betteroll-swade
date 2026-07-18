@@ -228,7 +228,7 @@ export class TraitRoll {
   }
 
   delete_range_modifiers() {
-    this.modifiers = this.modifiers.filter(modifier => !modifier.type === "range");
+    this.modifiers = this.modifiers.filter(modifier => modifier.type !== "range");
   }
 
   _deep_update_modifiers() {

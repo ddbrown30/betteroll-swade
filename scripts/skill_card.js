@@ -234,7 +234,7 @@ function calculate_generic_distance_modifier(
             .filter(effect => !effect.disabled)
             .reduce((total, effect) => {
                 const change = effect.changes.find(ch => ch.key === "brsw.thrown-range-modifier");
-                return total + (change ? change.value : 0);
+                return total + (change ? Number(change.value) : 0);
             }, 0);
     }
 
