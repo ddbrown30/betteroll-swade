@@ -2,6 +2,7 @@
 
 # Version 5.18.0
 * Improved range calculation and display
+* Fixed attributes in non-English languages
 
 # Version 5.17.1
 * Fixed attribute traits
