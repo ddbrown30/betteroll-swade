@@ -32,14 +32,14 @@ async function create_attribute_card(origin, name, { actions_stored = {} } = {},
     actor = origin;
   }
 
-  const translated_name = game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS[name]);
-  const title = translated_name + " " + trait_to_string(actor.system.attributes[name.toLowerCase()]);
+  const translatedName = game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS[name]);
+  const title = translatedName + " " + trait_to_string(actor.system.attributes[name.toLowerCase()]);
 
   const brCard = create_common_card(
     origin,
     {
       header: { type: game.i18n.localize("BRSW.Attribute"), title: title },
-      trait: Utils.traitFromString(actor, name),
+      trait: Utils.traitFromString(actor, translatedName),
     },
     "modules/betterrolls-swade2/templates/attribute_card.hbs",
   );

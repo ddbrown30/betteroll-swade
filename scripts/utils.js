@@ -386,20 +386,18 @@ export class Utils {
         let trait = actor.items.find((skill) => {
             return (
                 skill.type === "skill" &&
-                skill.name.toLowerCase().replace("★ ", "") ===
-                traitLower.replace("★ ", "")
+                skill.name.toLowerCase().replace("★ ", "") === traitLower.replace("★ ", "")
             );
         });
 
         if (!trait) {
             // Time to check for an attribute
             for (const attribute of BRSW2_CONST.ATTRIBUTES) {
-                const translation = game.i18n.localize(
-                    BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS[attribute],
-                );
+                const translation = game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS[attribute]);
                 if (traitLower === translation.toLowerCase()) {
                     trait = { system: structuredClone(actor.system.attributes[attribute]) };
-                    trait.name = translation;
+                    trait.name = attribute;
+                    break;
                 }
             }
         }
