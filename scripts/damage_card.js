@@ -1,7 +1,6 @@
 // Functions for the damage card
 /* global game, canvas, CONST, Token, CONFIG, Hooks, succ, console */
 import { BrCommonCard } from "./BrCommonCard.js";
-import { WORLD_SETTING_KEYS } from "./brsw2-config.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
 import {
     are_bennies_available,
@@ -13,7 +12,7 @@ import {
     create_incapacitation_card,
     create_injury_card,
 } from "./incapacitation_card.js";
-import { SettingsUtils, Utils, addEventListenerAll } from "./utils.js";
+import { Utils, addEventListenerAll } from "./utils.js";
 
 /**
  * Shows a damage card and applies damage to the token/actor
@@ -67,9 +66,9 @@ export async function create_damage_card(
         },
         "modules/betterrolls-swade2/templates/damage_card.hbs",
     );
-    if (wounds === 0) {
+    if (damageResult.wounds === 0) {
         //If we're not dealing any wounds, don't bother popping out the card since there's no action required
-        brCard.popoutShown = true;
+        brCard.showPopout = false;
     }
     brCard.update_list = { ...brCard.update_list, ...{ user: user.id } };
     brCard.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_DMG_CARD;
@@ -107,7 +106,7 @@ export function get_owner(actor) {
  */
 async function apply_damage(token_or_token_id, wounds, soaked = 0) {
     if (wounds < 0) {
-        return ("", false);
+        return { text: "", incapacitated: false, wounds: 0 };
     }
     const token =
         token_or_token_id instanceof foundry.canvas.placeables.Token
@@ -118,7 +117,7 @@ async function apply_damage(token_or_token_id, wounds, soaked = 0) {
     // noinspection JSUnresolvedVariable
     const initial_shaken = token.actor.system.status.isShaken;
     // We test for double shaken
-    let damage_wounds = wounds;
+    let damageWounds = wounds;
     let final_shaken = true; // Any damage also shakes the token
     let text = "";
     if (wounds < 1 && initial_shaken) {
@@ -133,9 +132,9 @@ async function apply_damage(token_or_token_id, wounds, soaked = 0) {
         });
         if (has_hardy || token.actor.getFlag("swade", "hardy")) {
             text += game.i18n.localize("BRSW.HardyActivated");
-            damage_wounds = 0;
+            damageWounds = 0;
         } else {
-            damage_wounds = 1;
+            damageWounds = 1;
         }
     }
     text += wounds
@@ -143,15 +142,15 @@ async function apply_damage(token_or_token_id, wounds, soaked = 0) {
             token_name: token.name,
             wounds: wounds,
         })
-        : damage_wounds
+        : damageWounds
             ? game.i18n.format("BRSW.DoubleShaken", { token_name: token.name })
             : game.i18n.format("BRSW.TokenShaken", { token_name: token.name });
     // Now we look for soaking
     if (soaked) {
-        damage_wounds -= soaked;
-        if (damage_wounds <= 0) {
+        damageWounds -= soaked;
+        if (damageWounds <= 0) {
             // All damage soaked, remove shaken
-            damage_wounds = 0;
+            damageWounds = 0;
             final_shaken = false;
             text += game.i18n.localize("BRSW.AllSoaked");
         } else {
@@ -159,7 +158,7 @@ async function apply_damage(token_or_token_id, wounds, soaked = 0) {
         }
     }
     // Final damage
-    let final_wounds = initial_wounds + damage_wounds;
+    let final_wounds = initial_wounds + damageWounds;
     const incapacitated = final_wounds > token.actor.system.wounds.max;
     const downed_condition = token.actor.isWildcard ? "incapacitated" : "dead";
     if (incapacitated) {
@@ -189,7 +188,7 @@ async function apply_damage(token_or_token_id, wounds, soaked = 0) {
         initial_shaken,
         soaked,
     );
-    return { text: text, incapacitated: incapacitated };
+    return { text, incapacitated, wounds: damageWounds };
 }
 
 /**

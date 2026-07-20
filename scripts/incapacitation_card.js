@@ -87,9 +87,7 @@ export function activate_incapacitation_card_listeners(message, html) {
         create_injury_card(
             brCard.token_id,
             ev.currentTarget.dataset.injuryType,
-        ).catch(() => {
-            console.error("Error creating injury card");
-        });
+        );
     });
 }
 
@@ -214,7 +212,8 @@ export async function create_injury_card(token_id, reason) {
     );
     brCard.update_list = { ...brCard.update_list, ...{ user: user.id } };
     brCard.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_INJ_CARD;
-    brCard.popoutShown = true; //The injury result has no action, so we don't show the popout
+    brCard.basicRoll = true;
+    brCard.showPopout = false; //The injury result has no action, so we don't show the popout
     await brCard.render();
     await brCard.save();
     Hooks.call("BRSW-InjuryAEApplied", brCard, injury_effect, reason);
@@ -265,7 +264,7 @@ export async function create_injury_effect(actor, reason, first_result, second_r
                     ? "BRSW.TempInjuryName"
                     : "BRSW.TempInjury24Name";
         new_effect.name += game.i18n.localize(injury_duration_name);
-        new_effect.icon = "/systems/swade/assets/icons/skills/medical-pack.svg";
+        new_effect.img = "/systems/swade/assets/icons/skills/medical-pack.svg";
         injury_effect = await actor.createEmbeddedDocuments("ActiveEffect", [
             new_effect,
         ]);

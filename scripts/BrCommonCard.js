@@ -9,6 +9,7 @@ import { calc_pp_cost } from "./item_card.js";
 import { get_actions, process_action } from "./global_actions.js";
 import { brAction } from "./actions.js";
 import { are_bennies_available, trait_to_string } from "./cards_common.js";
+import { BRSW2_CONST } from "./brsw2-const.js";
 
 /**
  * Stores a flag with the render data, deletes data can't be stored
@@ -53,7 +54,7 @@ export class BrCommonCard {
         this.update_list = {}; // List of properties pending to be updated
         this.resist_buttons = [];
         this.trait_roll = new TraitRoll();
-        this.popoutShown = false;
+        this.showPopout = true;
         this.manual_mods = {};
         this.applicable_effects = [];
         this.pp_modifiers = {};
@@ -69,33 +70,29 @@ export class BrCommonCard {
         }
     }
 
+    compileMessageFlags() {
+        const messageFlags = this.message?.flags["betterrolls-swade2"] || {};
+        messageFlags.br_data = JSON.parse(JSON.stringify(this.get_data()));
+        store_render_flag(messageFlags, this.render_data);
+        return messageFlags;
+    }
+
     async save() {
         if (!this.message) {
             await this.render();
         }
         const { update_list } = this;
         update_list.id = this.message.id;
-        update_list.flags = this.message.flags;
-        const br_flags = this.message.flags["betterrolls-swade2"] || {};
-        br_flags.br_data = JSON.parse(JSON.stringify(this.get_data()));
-        // Temporary
-        store_render_flag(br_flags, this.render_data);
-        update_list.flags["betterrolls-swade2"] = br_flags;
+        update_list.flags ??= {};
+        update_list.flags = {
+            ...update_list.flags,
+            "betterrolls-swade2": this.compileMessageFlags(),
+        };
         await this.message.update(update_list);
         this.update_list = {};
     }
 
-    createPopout() {
-        if (game.user.id !== this.message.author.id || this.popoutShown) {
-            return;
-        }
-
-        if (SettingsUtils.getUserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.autoPopoutChat)) {
-            this.showPopout();
-        }
-    }
-
-    showPopout() {
+    async createPopout() {
         const top = cascade_starting_left + game.brsw.cascade_count * cascade_left_increment;
         const left = cascade_starting_top + game.brsw.cascade_count * cascade_top_increment;
 
@@ -108,12 +105,6 @@ export class BrCommonCard {
             message: this.message,
             position: { top: top, left: left },
         }).render(true);
-
-        this.popoutShown = true;
-
-        this.save().catch(() => {
-            console.error("Error saving card data after popout rendering");
-        });
     }
 
     closePopout() {
@@ -144,7 +135,7 @@ export class BrCommonCard {
             trait_roll: this.trait_roll,
             resist_buttons: this.resist_buttons,
             damage: this.damage,
-            popoutShown: this.popoutShown,
+            showPopout: this.showPopout,
             manual_mods: this.manual_mods,
             applicable_effects: this.applicable_effects,
             pp_modifiers: this.pp_modifiers,
@@ -171,7 +162,7 @@ export class BrCommonCard {
             "macro_buttons",
             "resist_buttons",
             "damage",
-            "popoutShown",
+            "showPopout",
             "manual_mods",
             "applicable_effects",
             "pp_modifiers",
@@ -187,10 +178,6 @@ export class BrCommonCard {
                 "betterrolls-swade2",
                 "render_data",
             );
-        }
-        //Backwards compatibility so that we don't show a bunch of old popouts
-        if (data.popup_shown !== undefined) {
-            this.popoutShown = true;
         }
     }
 
@@ -911,44 +898,40 @@ export class BrCommonCard {
      * @returns {Promise<void>}
      */
     async render(stored_selections = {}) {
-        if (!Object.keys(this.action_sections).length) {
-            this.populateActions(stored_selections);
+        //Basic rolls are just dice rolls without any of our normal fancy features
+        if (!this.basicRoll) {
+            if (!Object.keys(this.action_sections).length) {
+                this.populateActions(stored_selections);
 
-            if (this.item) {
-                this.selectFallbackActions();
-                this.showActions = this.shouldShowActionsMenu();
+                if (this.item) {
+                    this.selectFallbackActions();
+                    this.showActions = this.shouldShowActionsMenu();
+                }
             }
+
+            if (this.item && this.macro_buttons.length === 0) {
+                this.populateMacroButtons();
+            }
+
+            this.setTraitUsingSkillOverride();
+            this.refreshDamageFromActions();
+
+            this.getTrait();
+
+            this.pp_cost = this.render_data.is_power ? calc_pp_cost(this) : 0;
         }
 
-        if (this.item && this.macro_buttons.length === 0) {
-            this.populateMacroButtons();
-        }
-
-        this.setTraitUsingSkillOverride();
-        this.refreshDamageFromActions();
-
-        this.getTrait();
-
-        this.pp_cost = this.render_data.is_power ? calc_pp_cost(this) : 0;
-        const new_content = await foundry.applications.handlebars.renderTemplate(
+        const newContent = await foundry.applications.handlebars.renderTemplate(
             this.render_data.template,
             this.getDataRender(),
         );
 
-        await foundry.applications.ux.TextEditor.implementation.enrichHTML(new_content);
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(newContent);
 
         if (this.message) {
-            this.update_list.content = new_content;
+            this.update_list.content = newContent;
         } else {
-            await this.createFoundryMessage(new_content);
-
-            //If auto-popout is disabled, mark our popout as shown so that we won't show a bunch of old popouts if it's later enabled
-            this.popoutShown = !SettingsUtils.getUserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.autoPopoutChat);
-
-            if (!this.message.author.active) {
-                //If the author isn't connected, mark the popout as shown so that we don't pop it out when they connect
-                this.popoutShown = true;
-            }
+            await this.createFoundryMessage(newContent);
         }
     }
 
@@ -1051,26 +1034,28 @@ export class BrCommonCard {
     /**
      * Creates the Foundry message object
      */
-    async createFoundryMessage(new_content) {
-        const chatData = await this.createBasicChatData();
-        if (new_content) {
-            chatData.content = new_content;
-        }
-        this.message = await ChatMessage.create(chatData);
+    async createFoundryMessage(content) {
+        const chatData = await this.createBasicChatData(content);
+        this.message = await ChatMessage.create(chatData, { notify: false });
     }
 
     /**
      * Creates the basic chat data common to most cards
      * @return {Object} An object suitable to create a ChatMessage
      */
-    async createBasicChatData() {
+    async createBasicChatData(content) {
         const whisperData = getWhisperData();
+        const brFlags = this.compileMessageFlags();
+        brFlags.creator = game.user.id;
         const chatData = {
             author: getAuthor(this.actor),
-            content: "<p>Default content, likely an error in Better Rolls</p>",
+            content: content ?? "<p>Default content, likely an error in Better Rolls</p>",
             speaker: ChatMessage.getSpeaker({ actor: this.actor }),
             blind: whisperData.blind,
-            flags: { core: { canPopout: true } },
+            flags: {
+                core: { canPopout: true },
+                "betterrolls-swade2": brFlags,
+            },
         };
         if (whisperData.whisper) {
             chatData.whisper = whisperData.whisper;

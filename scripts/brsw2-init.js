@@ -139,6 +139,21 @@ function activateCardListeners(brCard, html, message) {
     }
 }
 
+Hooks.on("createChatMessage", (message, options, userId) => {
+    const brData = message.getFlag("betterrolls-swade2", "br_data");
+    if (brData) {
+        if (brData.showPopout) {
+            const relevantMessage = message.getFlag("betterrolls-swade2", "creator") === game.user.id || message.author.id === game.user.id;
+            if (relevantMessage && SettingsUtils.getUserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.autoPopoutChat)) {
+                const brCard = new BrCommonCard(message);
+                brCard.createPopout();
+            } else {
+                ui.chat.notify(message, { newMessage: true });
+            }
+        }
+    }
+});
+
 Hooks.on("renderChatMessageHTML", (message, html, options) => {
     const brData = message.getFlag("betterrolls-swade2", "br_data");
     if (brData) {
@@ -173,10 +188,6 @@ Hooks.on("renderChatMessageHTML", (message, html, options) => {
         if (damageSection) {
             //If we have damage, show the damage section
             damageSection.hidden = !brCard.damage;
-        }
-
-        if (Object.keys(message.apps).length < 1) { // Don't create a popout when rendering popouts
-            brCard.createPopout();
         }
 
         const headerTitle = html.querySelector(".brsw-header-title");
