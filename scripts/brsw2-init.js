@@ -147,10 +147,10 @@ Hooks.on("createChatMessage", (message, options, userId) => {
             if (relevantMessage && SettingsUtils.getUserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.autoPopoutChat)) {
                 const brCard = new BrCommonCard(message);
                 brCard.createPopout();
-            } else {
-                ui.chat.notify(message, { newMessage: true });
+                return;
             }
         }
+        ui.chat.notify(message, { newMessage: true });
     }
 });
 
