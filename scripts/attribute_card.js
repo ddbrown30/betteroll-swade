@@ -10,7 +10,7 @@ import {
   process_common_actions,
   roll_trait,
   spend_bennie,
-  trait_to_string,
+  dieToString,
 } from "./cards_common.js";
 import { runMacros } from "./item_card.js";
 import { Utils, addEventListenerAll } from "./utils.js";
@@ -33,7 +33,7 @@ async function create_attribute_card(origin, name, { actions_stored = {} } = {},
   }
 
   const translatedName = game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS[name]);
-  const title = translatedName + " " + trait_to_string(actor.system.attributes[name.toLowerCase()]);
+  const title = translatedName + " " + dieToString(actor.system.attributes[name.toLowerCase()]);
 
   const brCard = create_common_card(
     origin,

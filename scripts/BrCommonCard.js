@@ -8,7 +8,7 @@ import { broofa, getAuthor, getWhisperData, SettingsUtils, Utils } from "./utils
 import { calc_pp_cost } from "./item_card.js";
 import { get_actions, process_action } from "./global_actions.js";
 import { brAction } from "./actions.js";
-import { are_bennies_available, trait_to_string } from "./cards_common.js";
+import { are_bennies_available, dieToString } from "./cards_common.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
 
 /**
@@ -862,7 +862,7 @@ export class BrCommonCard {
 
             this.render_data.trait = trait;
             this.render_data.traitTitle = trait
-                ? trait.name + " " + trait_to_string(trait.system)
+                ? (trait.translatedName ?? trait.name) + " " + dieToString(trait.system)
                 : "";
         }
     }
