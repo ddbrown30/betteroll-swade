@@ -539,7 +539,7 @@ export function get_roll_options(old_options, brCard) {
  * Function to convert trait dice and modifiers into a string
  * @param trait
  */
-export function dieToString(trait) {
+export function traitToDieString(trait) {
     const { sides, modifier } = trait.die;
     const mod = Number(modifier);
     return `d${sides}${mod ? (mod > 0 ? "+" : "") + mod : ""}`;

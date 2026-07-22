@@ -11,7 +11,7 @@ import {
     process_common_actions,
     roll_trait,
     spend_bennie,
-    dieToString,
+    traitToDieString,
 } from "./cards_common.js";
 import { runMacros } from "./item_card.js";
 import { TraitModifier } from "./modifiers.js";
@@ -47,7 +47,7 @@ async function create_skill_card(
         actor = origin;
     }
     const skill = actor.items.get(skillId);
-    const extra_name = skill.name + " " + dieToString(skill.system);
+    const extra_name = skill.name + " " + traitToDieString(skill.system);
     const brCard = create_common_card(
         origin,
         {
