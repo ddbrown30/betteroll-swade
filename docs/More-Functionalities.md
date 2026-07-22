@@ -104,7 +104,7 @@ game.brsw.GLOBAL_ACTIONS
 game.brsw.getRollOptions(old_options)
 /**
  * Gets the roll options from the card html. Don't use, it is here just
- * for compatibility (to keep old macros from breaking). Use the brCommondCard
+ * for compatibility (to keep old macros from breaking). Use the brCommonCard
  * class, as it is much more powerful and clean.
  *
  * @param old_options - Options used as default
