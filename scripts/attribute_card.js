@@ -73,7 +73,7 @@ function createAttributeCardFromId(
 /**
  * Hooks the public functions to a global object
  */
-export function attribute_card_hooks() {
+export function exposeAttributeAPI() {
   Utils.exposeAPI("createAttributeCard", createAttributeCard, "create_atribute_card");
   Utils.exposeAPI("createAttributeCardFromId", createAttributeCardFromId, "create_attribute_card_from_id");
   Utils.exposeAPI("rollAttribute", rollAttribute, "roll_attribute");

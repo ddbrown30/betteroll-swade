@@ -5,7 +5,7 @@ import { BrCommonCard } from "./BrCommonCard.js";
 import {
     activate_attribute_card_listeners,
     activate_attribute_listeners,
-    attribute_card_hooks,
+    exposeAttributeAPI,
 } from "./attribute_card.js";
 import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
@@ -66,7 +66,7 @@ Hooks.on(`ready`, async () => {
     updateCachedUserSettings();
 
     // Create a base object to hook functions
-    attribute_card_hooks();
+    exposeAttributeAPI();
     skill_card_hooks();
     expose_item_functions();
     expose_global_actions_functions();
