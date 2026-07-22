@@ -12,7 +12,7 @@ import { BRSW2_CONST } from "./brsw2-const.js";
 import { setup_dialog } from "./card-dialog.js";
 import {
     activate_common_listeners,
-    expose_card_class,
+    exposeCardClass,
     getActionFromClick,
 } from "./cards_common.js";
 import { create_unshaken_wrapper, create_unstun_wrapper } from "./combat.js";
@@ -20,7 +20,7 @@ import { activate_damage_card_listeners } from "./damage_card.js";
 import {
     exposeGlobalActionsAPI,
     registerActions,
-    register_gm_actions_settings
+    registerGMActionsSettings
 } from "./global_actions.js";
 import { setup_chat_button } from "./gm_actions.js";
 import {
@@ -39,7 +39,7 @@ import {
     activate_skill_listeners,
     exposeSkillCardAPI,
 } from "./skill_card.js";
-import { SettingsUtils, TelemetryUtils, cacheSkillData, measureDistance } from "./utils.js";
+import { SettingsUtils, TelemetryUtils, Utils, cacheSkillData, measureDistance } from "./utils.js";
 import { activate_vehicle_listeners } from "./vehicle_card.js";
 
 // Init Hook
@@ -47,13 +47,13 @@ Hooks.on(`init`, () => {
     game.brsw = {};
     game.brsw.CONST = BRSW2_CONST;
     game.brsw.cascade_count = 0;
-    game.brsw.get_action_from_click = getActionFromClick;
-    game.brsw.measureDistance = measureDistance;
+    Utils.exposeAPI("getActionFromClick", getActionFromClick, "get_action_from_click");
+    Utils.exposeAPI("measureDistance", measureDistance);
 
     registerSettings();
 
     registerActions();
-    register_gm_actions_settings();
+    registerGMActionsSettings();
 });
 
 // Base Hook
@@ -70,7 +70,7 @@ Hooks.on(`ready`, async () => {
     exposeSkillCardAPI();
     exposeItemCardAPI();
     exposeGlobalActionsAPI();
-    expose_card_class();
+    exposeCardClass();
     exposeIncapacitationCardAPI();
     setup_chat_button();
     await cacheSkillData();
@@ -256,7 +256,7 @@ Hooks.on("dropCanvasData", (canvas, item) => {
 function create_macro_command(data, actor_id, token_id) {
     const bt = "`";
     return `
-            let behaviour = game.brsw.get_action_from_click(event);
+            let behaviour = game.brsw.getActionFromClick(event);
             if (behaviour === 'system') {
                 game.swade.rollItemMacro(${bt}${data.name}${bt});
                 return;
@@ -283,7 +283,7 @@ function create_macro_command(data, actor_id, token_id) {
 
 function create_attribute_macro(data) {
     return `
-    let behaviour = game.brsw.get_action_from_click(event);
+    let behaviour = game.brsw.getActionFromClick(event);
     if (behaviour === 'system') {
       game.swade.rollItemMacro("${data.attribute}");
     } else {

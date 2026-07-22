@@ -54,7 +54,7 @@ export function BRWSRoll() {
  * Makes the BrCommonCard class accessible
  *
  */
-export function expose_card_class() {
+export function exposeCardClass() {
     game.brsw.BrCommonCard = BrCommonCard;
 }
 
@@ -396,7 +396,7 @@ function create_macro_command_from_card(brCard) {
         id = brCard.trait.name;
     }
     return `
-  let behaviour = game.brsw.get_action_from_click(event);
+  let behaviour = game.brsw.getActionFromClick(event);
   if (behaviour === 'system') {
     game.swade.rollItemMacro(\`${brCard.render_data.header.title}\`);
     return;

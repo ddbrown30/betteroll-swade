@@ -79,9 +79,9 @@ game.brsw.dialog
 ```
 
 ```js
-game.brsw.get_action_from_click(event)
+game.brsw.getActionFromClick(event)
 /**
-/* Given a js event it checks the setting for the kind of action that shoul be done
+/* Given a js event it checks the setting for the kind of action that should be done
 /* i.e. show the card, show and roll, do a system roll, etc..
 */
 ```

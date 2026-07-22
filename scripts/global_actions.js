@@ -507,7 +507,7 @@ function get_gm_actions() {
     return gm_actions;
 }
 
-export function register_gm_actions_settings() {
+export function registerGMActionsSettings() {
     SettingsUtils.registerSetting("gm_actions", {
         name: "GM Actions",
         default: get_gm_actions(),
