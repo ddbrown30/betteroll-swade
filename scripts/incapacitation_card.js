@@ -14,7 +14,7 @@ import { Utils, addEventListenerAll } from "./utils.js";
 
 
 /**
- * Shows an incapacitation card an
+ * Shows an incapacitation card
  * @param {string} token_id As it comes from damage its target is always a token
  */
 export async function createIncapacitationCard(token_id) {
