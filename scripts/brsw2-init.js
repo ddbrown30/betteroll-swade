@@ -30,7 +30,7 @@ import {
 import {
     activate_item_card_listeners,
     activate_item_listeners,
-    expose_item_functions,
+    exposeItemCardAPI,
 } from "./item_card.js";
 import { activate_remove_status_card_listeners } from "./remove_status_cards.js";
 import { migrateOptionalRules, registerDSNSettings, registerSettings, updateCachedUserSettings, updateCachedWorldSettings } from "./settings.js";
@@ -68,7 +68,7 @@ Hooks.on(`ready`, async () => {
     // Create a base object to hook functions
     exposeAttributeAPI();
     exposeSkillCardAPI();
-    expose_item_functions();
+    exposeItemCardAPI();
     expose_global_actions_functions();
     expose_card_class();
     incapacitation_card_hooks();
@@ -266,7 +266,7 @@ function create_macro_command(data, actor_id, token_id) {
                 message = await game.brsw.createSkillCardFromId('${token_id}', '${actor_id}', '${data._id
         }');
             } else {
-                message = await game.brsw.create_item_card_from_id('${token_id}', '${actor_id}', '${data._id
+                message = await game.brsw.createItemCardFromId('${token_id}', '${actor_id}', '${data._id
         }');
             }
             if (event) {
@@ -274,7 +274,7 @@ function create_macro_command(data, actor_id, token_id) {
                     if (${data.type === "skill"}) {
                         game.brsw.rollSkill(message, $(message.content), false)
                     } else {
-                        game.brsw.roll_item(message, $(message.content), false, behaviour.includes('damage'))
+                        game.brsw.rollItem(message, $(message.content), false, behaviour.includes('damage'))
                     }
                 }
             }

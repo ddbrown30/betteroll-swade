@@ -317,7 +317,7 @@
 * Actions: Added skill_linked_attribute selector (Dan Brown)
 * Bugfix: Better support for cases where there are no tokens in a scene. (Dan Brown)
 * Translations: Update Spanish translations. (Weblate team)
-* API: Expose create_damage_card for API usage (Dan Brown)
+* API: Expose createDamageCard for API usage (Dan Brown)
 * Bugfix: Toggle off dead when undoing damage (Dan Brown)
 * Bugfix: Fixed bug in dmgMod actions (Dan Brown)
 * V13 compatibility: Avoid showing the system default roll when clicking on same places.
@@ -1155,7 +1155,7 @@ NOTE: NO NEW FEATURES, JUST COMPATIBILITY WITH SWADE 3.2
 * Global actions: Added a selector for major hindrances
 * Bug: SKills in global actions were case-sensitive
 * Cards: Drag and drop now rolls damage when default action is "show card, roll trait and roll damage"
-* Macro support: Macros now pass html to roll_item, that means than token action HUD should now support default checked on global actions
+* Macro support: Macros now pass html to rollItem, that means than token action HUD should now support default checked on global actions
 * Bug: Added an await to avoid a race condition that could make damage rolls not happen at times.
 
 ## Version 2.58 aka More bugs, can I blame v9?

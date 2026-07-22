@@ -120,7 +120,7 @@ game.brsw.create_incapacitation_card(token_id)
 ```
 
 ```js
-game.brsw.create_item_card(origin, item_id)
+game.brsw.createItemCard(origin, item_id)
 /**
  * Creates a chat card for an item
  *
@@ -131,7 +131,7 @@ game.brsw.create_item_card(origin, item_id)
 ```
 
 ```js
-game.brsw.create_item_card_from_id(token_id, actor_id, itemid)
+game.brsw.createItemCardFromId(token_id, actor_id, itemid)
 /**
  * Creates an item card from a token or actor id, mainly for use in macros
  *
@@ -145,7 +145,7 @@ game.brsw.create_item_card_from_id(token_id, actor_id, itemid)
 ```
 
 ```js
-game.brsw.roll_item(brCard, html, expend_bennie, roll_damage)
+game.brsw.rollItem(brCard, html, expend_bennie, roll_damage)
 /**
  * Roll and existing item card
  *

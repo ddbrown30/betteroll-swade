@@ -21,7 +21,7 @@ import { Utils, addEventListenerAll } from "./utils.js";
  * @param {string} damage_text
  * @param {string} heavyDamage
  */
-export async function create_damage_card(
+export async function createDamageCard(
     token_id,
     damage,
     damage_text,

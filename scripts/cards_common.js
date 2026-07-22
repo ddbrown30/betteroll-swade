@@ -9,7 +9,7 @@ import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { WORLD_SETTING_KEYS } from "./brsw2-config.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
 import {
-    roll_item,
+    rollItem,
     runMacros,
     spendPP,
 } from "./item_card.js";
@@ -381,9 +381,9 @@ function create_macro_command_from_card(brCard) {
     let roll_function = "";
     let id = "";
     if (brCard.item_id) {
-        card_function_name = "create_item_card_from_id";
+        card_function_name = "createItemCardFromId";
         roll_function =
-            "game.brsw.roll_item(message, $(message.content), false, behaviour.includes('damage'));";
+            "game.brsw.rollItem(message, $(message.content), false, behaviour.includes('damage'));";
         id = brCard.item_id;
     } else if (brCard.skill) {
         card_function_name = "createSkillCardFromId";
@@ -1239,7 +1239,7 @@ async function duplicate_message(message, event) {
             await rollSkill(brCard, false);
         } else if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD) {
             const roll_damage = action.includes("damage");
-            await roll_item(brCard, $(brCard.message.content), false, roll_damage);
+            await rollItem(brCard, $(brCard.message.content), false, roll_damage);
         }
     }
     return new_message;

@@ -2,7 +2,7 @@
 /* globals Token, game, ui, fromUuid, fromUuidSync */
 
 import { getActionFromClick } from "./cards_common.js";
-import { create_item_card } from "./item_card.js";
+import { createItemCard } from "./item_card.js";
 import { rollSkill } from "./skill_card.js";
 import { Utils } from "./utils.js";
 
@@ -73,7 +73,7 @@ function vehicle_weapon_clicked(ev, vehicle) {
     }
 
     if (gunner) {
-        create_item_card(gunner, item.uuid);
+        createItemCard(gunner, item.uuid);
     } else {
         ui.notifications.error("BRSW.NoGunner");
     }
