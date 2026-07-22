@@ -5,6 +5,9 @@
 * We now only show a chat notification when not creating a popout. This cleans up the behaviour where you get both a popout and the chat notification when the sidebar is collapsed
 * Fixed the injury effect icon
 * Fixed injury rolls
+* Fixed the display of attributes on item cards
+* Fixed an error in the gang up calculation when a token was on a different level of the scene
+* Renamed and deprecated all of the old API functions to use camelCase
 
 # Version 5.18.0
 * Improved range calculation and display
@@ -1153,9 +1156,9 @@ NOTE: NO NEW FEATURES, JUST COMPATIBILITY WITH SWADE 3.2
 * Global actions: Added extra_text to global actions
 * Card: Dice results are now editable (tommycore)
 * Global actions: Added a selector for major hindrances
-* Bug: SKills in global actions were case-sensitive
+* Bug: Skills in global actions were case-sensitive
 * Cards: Drag and drop now rolls damage when default action is "show card, roll trait and roll damage"
-* Macro support: Macros now pass html to rollItem, that means than token action HUD should now support default checked on global actions
+* Macro support: Macros now pass html to rollItem, that means the token action HUD should now support default checked on global actions
 * Bug: Added an await to avoid a race condition that could make damage rolls not happen at times.
 
 ## Version 2.58 aka More bugs, can I blame v9?
