@@ -4,7 +4,7 @@
 // noinspection JSUnusedAssignment
 
 import { BrCommonCard } from "./BrCommonCard.js";
-import { roll_attribute } from "./attribute_card.js";
+import { rollAttribute } from "./attribute_card.js";
 import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { WORLD_SETTING_KEYS } from "./brsw2-config.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
@@ -390,9 +390,9 @@ function create_macro_command_from_card(brCard) {
         roll_function = "game.brsw.roll_skill(message, $(message.content), false);";
         id = brCard.trait.id;
     } else if (brCard.attribute) {
-        card_function_name = "create_attribute_card_from_id";
+        card_function_name = "createAttributeCardFromId";
         roll_function =
-            "game.brsw.roll_attribute(message, $(message.content), false);";
+            "game.brsw.rollAttribute(message, $(message.content), false);";
         id = brCard.trait.name;
     }
     return `
@@ -1234,7 +1234,7 @@ async function duplicate_message(message, event) {
         const brCard = new BrCommonCard(message);
         const card_type = brCard.type;
         if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ATTRIBUTE_CARD) {
-            await roll_attribute(brCard, false);
+            await rollAttribute(brCard, false);
         } else if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_SKILL_CARD) {
             await roll_skill(brCard, false);
         } else if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD) {

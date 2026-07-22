@@ -47,7 +47,7 @@ game.brsw.createAttributeCard()
 ```
 
 ```js
-game.brsw.create_attribute_card_from_id(token_id, actor_id, name)
+game.brsw.createAttributeCardFromId(token_id, actor_id, name)
 /**
  * Creates an attribute card from a token or actor id
  *
@@ -61,7 +61,7 @@ game.brsw.create_attribute_card_from_id(token_id, actor_id, name)
  ```
 
 ```js
-game.brsw.roll_attribute(brCard, expend_bennie)
+game.brsw.rollAttribute(brCard, expend_bennie)
 /**
  * Roll an attribute showing from an existing card
  *

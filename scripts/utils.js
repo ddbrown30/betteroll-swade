@@ -313,6 +313,20 @@ export function measureDistance(tokenA, tokenB) {
 }
 
 export class Utils {
+    static exposeAPI(name, fn, deprecatedName) {
+        game.brsw[name] = fn;
+
+        if (deprecatedName) {
+            game.brsw[deprecatedName] = (...args) => {
+                foundry.utils.logCompatibilityWarning(
+                    `game.brsw.${deprecatedName} is deprecated. Use game.brsw.${name} instead.`,
+                    { since: "5.19.0" }
+                );
+                return fn(...args);
+            };
+        }
+    }
+
     //Compares lhs and rhs for equality
     //This pulls operators from rhs for the comparison or defaults to === if none is present
     static check_equality_with_operators(lhs, rhs) {

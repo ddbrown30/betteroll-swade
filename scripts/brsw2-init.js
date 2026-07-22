@@ -290,7 +290,7 @@ function create_attribute_macro(data) {
       origin = await fromUuid("${data.uuid}");
       const brCard = await game.brsw.createAttributeCard(origin, "${data.attribute}");
       if (behaviour.includes('trait')) {
-        game.brsw.roll_attribute(brCard, false);
+        game.brsw.rollAttribute(brCard, false);
       }
     }
   `;
