@@ -351,7 +351,7 @@ async function item_click_listener(ev, target, currentTarget) {
     ev.stopImmediatePropagation();
     ev.preventDefault();
     ev.stopPropagation();
-    const actor = Utils.toActor(origin);
+    const actor = Utils.toActor(target);
     const item_action = ev.currentTarget.dataset.action;
     const item_id = ev.target.closest("[data-item-id]").dataset.itemId;
     const item = actor.items.find((item) => {
