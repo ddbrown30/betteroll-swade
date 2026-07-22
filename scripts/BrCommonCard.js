@@ -198,8 +198,6 @@ export class BrCommonCard {
         if (this.token_id) {
             const { token } = this;
             if (token) {
-                // Token can be undefined even with and id the scene is note
-                // ready or the token has been removed.
                 return token.actor;
             }
         }
@@ -238,7 +236,7 @@ export class BrCommonCard {
     }
 
     get item() {
-        let item = this.actor.items.find((item) => item.id === this.item_id);
+        let item = this.actor?.items.find((item) => item.id === this.item_id);
         if (!item) {
             item = fromUuidSync(this.item_id);
         }
