@@ -30,7 +30,7 @@ export default [
                 Actor: "readonly",
                 Item: "readonly",
                 Scene: "readonly",
-                Token: "readonly",
+                TokenDocument: "readonly",
                 ChatMessage: "readonly",
 
                 // UI / apps

@@ -3,7 +3,6 @@ import { MAX_NOPP_PENALTY_ACTION, MODULE_NAME, SETTING_KEYS, USER_FLAGS, USER_SE
 import { BRSW2_CONST } from "./brsw2-const.js";
 
 // Utility functions that can be used out of the module
-/* globals ChatMessage, game, console, foundry, ClientSetting, CONFIG */
 
 export function getWhisperData() {
     let whisper, blind;
@@ -29,24 +28,25 @@ export function getAuthor(actor) {
     }
 
     //Filter out the default and local user
-    const ownership = Object.entries(actor.ownership).filter(o => o[0] != "default" &&
-        o[0] != game.user.id &&
+    const ownership = Object.entries(actor.ownership).filter(o =>
+        o[0] !== "default" &&
+        o[0] !== game.user.id &&
         o[1] === CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER);
 
     //If we have no owners, use the GM
-    if (ownership.length == 0) {
+    if (ownership.length === 0) {
         return game.user.id;
     }
 
     //If we have exactly one owner, use that
-    if (ownership.length == 1) {
+    if (ownership.length === 1) {
         return ownership[0][0];
     }
 
     //If we have multiple owners, get the player that represents this actor
     //If there is none, fall back to the first owner in the list
     let fallbackAuthor;
-    for (let owner of ownership) {
+    for (const owner of ownership) {
         const user = game.users.get(owner[0]);
         if (user) {
             if (user.isGM) {
@@ -105,7 +105,7 @@ export async function cacheSkillData() {
         pack.metadata.name.toLowerCase().includes("skill"));
 
     for (const pack of skillPacks) {
-        let packIndex = await pack.getIndex({ fields: ["system"] });
+        const packIndex = await pack.getIndex({ fields: ["system"] });
         const skills = packIndex.filter(i => i.type === "skill");
         for (const skill of skills) {
             if (skill.system.swid && !game.brsw.SKILLS_DATA[skill.system.swid] && skill.system.attribute) {
@@ -742,7 +742,7 @@ export class SettingsUtils {
         }
 
         const worldSettings = Object.fromEntries(
-            Object.entries(WORLD_SETTINGS).filter(([key, value]) => value.value !== undefined && value.value !== value.default).map(([key, value]) => [
+            Object.entries(WORLD_SETTINGS).filter(([, value]) => value.value !== undefined && value.value !== value.default).map(([key, value]) => [
                 key,
                 value.value
             ])
@@ -770,7 +770,7 @@ export class SettingsUtils {
 
     static async setUserSettings() {
         const userSettings = Object.fromEntries(
-            Object.entries(USER_SETTINGS).filter(([key, value]) => value.value !== undefined && value.value !== value.default).map(([key, value]) => [
+            Object.entries(USER_SETTINGS).filter(([, value]) => value.value !== undefined && value.value !== value.default).map(([key, value]) => [
                 key,
                 value.value
             ])
@@ -790,7 +790,7 @@ export class SettingsUtils {
 
     static getModuleFlag(obj, flag) {
         if (!SettingsUtils.hasModuleFlags(obj)) {
-            return;
+            return undefined;
         }
 
         return obj.flags[MODULE_NAME][flag];
@@ -806,7 +806,7 @@ export class SettingsUtils {
 
     static getWorldSetting(key) {
         if (!WORLD_SETTINGS[key]) {
-            return;
+            return undefined;
         }
 
         return WORLD_SETTINGS[key].value !== undefined
@@ -816,7 +816,7 @@ export class SettingsUtils {
 
     static getUserSetting(key) {
         if (!USER_SETTINGS[key]) {
-            return;
+            return undefined;
         }
 
         return USER_SETTINGS[key].value !== undefined
@@ -828,28 +828,35 @@ export class SettingsUtils {
 export class TelemetryUtils {
     static POSTHOG_API_KEY = "phc_pTRr4oK26yQDbmFSkPuCNswLTtZABEHktpn9cNqYuAnr";
 
-    static async generateWorldInstallId() {
+    static #worldInstallIdPromise;
+    static generateWorldInstallId() {
         if (!game.user.isGM) {
-            return;
+            return "";
         }
 
-        let id = SettingsUtils.getSetting(SETTING_KEYS.telemetryWorldInstallId);
-        if (!id) {
-            id = foundry.utils.randomID();
-            await SettingsUtils.setSetting(SETTING_KEYS.telemetryWorldInstallId, id);
+        const id = SettingsUtils.getSetting(SETTING_KEYS.telemetryWorldInstallId);
+        if (id) {
+            return id;
         }
 
-        return id;
+        if (!this.#worldInstallIdPromise) {
+            this.#worldInstallIdPromise = (async () => {
+                const id = foundry.utils.randomID();
+                await SettingsUtils.setSetting(SETTING_KEYS.telemetryWorldInstallId, id);
+                return id;
+            })();
+        }
+        return this.#worldInstallIdPromise;
     }
 
     static async getWorldInstallId() {
         let id = SettingsUtils.getSetting(SETTING_KEYS.telemetryWorldInstallId);
+
         if (!id) {
             console.warn("Getting the world install ID before it has been set");
-
-            //Try generating it now
-            id = TelemetryUtils.generateWorldInstallId();
+            id = await TelemetryUtils.generateWorldInstallId();
         }
+
         return id;
     }
 
@@ -893,7 +900,7 @@ export class TelemetryUtils {
 
     static sendModuleReadyEvent() {
         const worldSettings = {};
-        let nonDefaultSettings = {};
+        const nonDefaultSettings = {};
 
         Object.entries(WORLD_SETTINGS).forEach(([k, v]) => {
             if (v.value !== undefined && v.value !== v.default) {
@@ -912,7 +919,7 @@ export class TelemetryUtils {
 
     static sendUserReadyEvent() {
         const userSettings = {};
-        let nonDefaultSettings = {};
+        const nonDefaultSettings = {};
 
         Object.entries(USER_SETTINGS).forEach(([k, v]) => {
             if (v.value !== undefined && v.value !== v.default) {
