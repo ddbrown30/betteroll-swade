@@ -394,9 +394,10 @@ export class Utils {
             // Time to check for an attribute
             for (const attribute of BRSW2_CONST.ATTRIBUTES) {
                 const translation = game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS[attribute]);
-                if (traitLower === translation.toLowerCase()) {
+                if (traitLower === attribute || traitLower === translation.toLowerCase()) {
                     trait = { system: structuredClone(actor.system.attributes[attribute]) };
                     trait.name = attribute;
+                    trait.translatedName = translation;
                     break;
                 }
             }

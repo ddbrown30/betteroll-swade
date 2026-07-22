@@ -539,13 +539,10 @@ export function get_roll_options(old_options, brCard) {
  * Function to convert trait dice and modifiers into a string
  * @param trait
  */
-export function trait_to_string(trait) {
-    let string = `d${trait.die.sides}`;
-    const modifier = parseInt(trait.die.modifier);
-    if (modifier) {
-        string = string + (modifier > 0 ? "+" : "") + modifier;
-    }
-    return string;
+export function traitToDieString(trait) {
+    const { sides, modifier } = trait.die;
+    const mod = Number(modifier);
+    return `d${sides}${mod ? (mod > 0 ? "+" : "") + mod : ""}`;
 }
 
 export async function detect_fumble(has_wild_die, num_fumble_results, dice) {
