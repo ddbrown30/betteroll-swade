@@ -36,7 +36,7 @@ game.brsw.add_actions(actions)
 You can learn more about this at: [GLOBAL ACTIONS API](https://github.com/ddbrown30/betteroll-swade/wiki/Global-Actions#api).
 
 ```js
-game.brsw.create_attribute_card()
+game.brsw.createAttributeCard()
 /**
  * Creates a chat card for an attribute
  *
