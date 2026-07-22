@@ -159,7 +159,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
         if (!error) {
             // Need to have an id, name
             for (const requisite of ["id", "name"]) {
-                if (Object.hasOwn(action, requisite)) {
+                if (!Object.hasOwn(action, requisite)) {
                     error = game.i18n.localize("BRSW.MissingJSON") + requisite;
                 }
             }
