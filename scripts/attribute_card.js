@@ -24,13 +24,8 @@ import { Utils, addEventListenerAll } from "./utils.js";
  *   and a boolean meaning if they need to set on or off
  * @return {Promise} A promise for the BrCommonCard object
  */
-async function create_attribute_card(origin, name, { actions_stored = {} } = {},) {
-  let actor;
-  if (origin instanceof TokenDocument || origin instanceof foundry.canvas.placeables.Token) {
-    actor = origin.actor;
-  } else {
-    actor = origin;
-  }
+async function createAttributeCard(origin, name, { actions_stored = {} } = {},) {
+  const actor = Utils.toActor(origin);
 
   const translatedName = game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS[name]);
   const title = translatedName + " " + traitToDieString(actor.system.attributes[name.toLowerCase()]);
@@ -70,7 +65,7 @@ function create_attribute_card_from_id(
   { actions_stored = {} } = {},
 ) {
   const actor = get_actor_from_ids(token_id, actor_id);
-  return create_attribute_card(actor, name, {
+  return createAttributeCard(actor, name, {
     actions_stored: actions_stored,
   });
 }
@@ -79,7 +74,14 @@ function create_attribute_card_from_id(
  * Hooks the public functions to a global object
  */
 export function attribute_card_hooks() {
-  game.brsw.create_atribute_card = create_attribute_card;
+  game.brsw.create_atribute_card = (...args) => {
+    foundry.utils.logCompatibilityWarning(
+      "game.brsw.create_atribute_card is deprecated. Use game.brsw.createAttributeCard instead.",
+      { since: "5.19.0" }
+    );
+    return createAttributeCard(...args);
+  };
+  game.brsw.createAttributeCard = createAttributeCard;
   game.brsw.create_attribute_card_from_id = create_attribute_card_from_id;
   game.brsw.roll_attribute = roll_attribute;
 }
@@ -100,7 +102,7 @@ async function attribute_click_listener(ev, target) {
   // The attribute id placement is sheet dependent.
   const attribute_id = ev.currentTarget.dataset.attribute;
   // Show card
-  const brCard = await create_attribute_card(target, attribute_id);
+  const brCard = await createAttributeCard(target, attribute_id);
   if (action.includes("dialog")) {
     game.brsw.dialog.show_card(brCard);
   } else if (action.includes("trait")) {

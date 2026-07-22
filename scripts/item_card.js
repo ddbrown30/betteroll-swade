@@ -32,7 +32,7 @@ import {
     addEventListenerAll,
     broofa,
     getAuthor,
-    get_targeted_token,
+    getTargetedToken,
     makeExplodable,
     set_or_update_condition,
     simple_form,
@@ -55,11 +55,7 @@ export async function create_item_card(
     item_id,
     { actions_stored = {} } = {},
 ) {
-    let actor = origin;
-    if (origin instanceof TokenDocument || origin instanceof foundry.canvas.placeables.Token) {
-        actor = origin.actor;
-    }
-
+    const actor = Utils.toActor(origin);
 
     let item = actor.items.find((item) => {
         return item.id === item_id;
@@ -355,13 +351,7 @@ async function item_click_listener(ev, target, currentTarget) {
     ev.stopImmediatePropagation();
     ev.preventDefault();
     ev.stopPropagation();
-    let actor =
-        target instanceof Actor
-            ? target
-            : target instanceof foundry.canvas.placeables.Token ||
-                target instanceof TokenDocument
-                ? target.actor
-                : null;
+    const actor = Utils.toActor(origin);
     const item_action = ev.currentTarget.dataset.action;
     const item_id = ev.target.closest("[data-item-id]").dataset.itemId;
     const item = actor.items.find((item) => {
@@ -611,21 +601,15 @@ async function roll_resist(trait, brCard, trait_mod) {
         return;
     }
     for (const token of canvas.tokens.controlled) {
-        const trait_lower = trait.toLowerCase();
-        let new_card;
-        if (BRSW2_CONST.ATTRIBUTES.includes(trait_lower)) {
-            new_card = await game.brsw.create_atribute_card(
-                token,
-                trait.toLowerCase(),
-            );
+        let newCard;
+        if (BRSW2_CONST.ATTRIBUTES.includes(trait.toLowerCase())) {
+            newCard = await game.brsw.createAttributeCard(token, trait.toLowerCase());
         } else {
-            new_card = await game.brsw.create_skill_card(
-                token,
-                Utils.traitFromString(token.actor, trait).id,
-            );
+            newCard = await game.brsw.create_skill_card(token, Utils.traitFromString(token.actor, trait).id);
         }
-        new_card.trait_roll.tn = get_trait_roll_difficulty(brCard);
-        new_card.trait_roll.tn_reason = game.i18n.localize("BRSW.ResistingRoll");
+
+        newCard.trait_roll.tn = getTraitRollDifficulty(brCard);
+        newCard.trait_roll.tn_reason = game.i18n.localize("BRSW.ResistingRoll");
         if (!isNaN(trait_mod)) {
             const localized_name = game.i18n.localize("BRSW.ResistingRoll");
             const resist_action = new brAction(localized_name, {
@@ -633,8 +617,9 @@ async function roll_resist(trait, brCard, trait_mod) {
                 button_name: localized_name,
                 skillMod: trait_mod,
             });
+
             resist_action.selected = true;
-            new_card.action_sections["none"].action_groups.resist_button = {
+            newCard.action_sections["none"].action_groups.resist_button = {
                 defaultChecked: "on",
                 name: localized_name,
                 id: broofa(),
@@ -642,8 +627,8 @@ async function roll_resist(trait, brCard, trait_mod) {
                 actions: [resist_action],
             };
         }
-        await new_card.render();
-        await new_card.save();
+        await newCard.render();
+        await newCard.save();
     }
 }
 
@@ -653,7 +638,7 @@ async function roll_resist(trait, brCard, trait_mod) {
  * @param {Object} brCard - The card object containing trait roll information.
  * @return {number} - The calculated difficulty of the trait roll.
  */
-function get_trait_roll_difficulty(brCard) {
+function getTraitRollDifficulty(brCard) {
     if (brCard.item && brCard.item.type === "power") {
         if (brCard.item.system.description.indexOf(game.i18n.localize("BRSW.Opposed")) === -1) {
             // If this is a power, and we can't find opposed in the description, it is probably a flat check.
@@ -1029,30 +1014,22 @@ export async function roll_item(brCard, html, expend_bennie, roll_damage) {
 // DAMAGE ROLLS
 /**
  * Gets the toughness value for the targeted token
- * @param {SwadeActor} acting_actor
+ * @param {SwadeActor} originActor
  * @param {Token} target
  * @param {string} location
  */
 function get_target_defense(
-    acting_actor,
+    originActor,
     target = undefined,
     location = "torso",
 ) {
-    let objective = target || get_targeted_token();
-    if (!objective) {
-        canvas.tokens.controlled.forEach((token) => {
-            // noinspection JSUnresolvedVariable
-            if (token.actor !== acting_actor) {
-                objective = token;
-            }
-        });
-    }
+    const objective = target || getTargetedToken([originActor]);
     const defense_values = {
         toughness: 4,
         armor: 0,
         name: game.i18n.localize("BRSW.Default"),
     };
-    if (objective && objective.actor) {
+    if (objective?.actor) {
         if (objective.actor.type !== "vehicle") {
             //Get the base toughness without armor
             const base_toughness =
@@ -1826,14 +1803,8 @@ async function execute_macro(action, brCard) {
         targetToken = game.user.targets.first() || brCard.token;
         targetActor = targetToken.actor;
     } else {
-        targetToken =
-            game.canvas.tokens.controlled.length < 1
-                ? brCard.token
-                : game.canvas.tokens.controlled[0];
-        targetActor =
-            game.canvas.tokens.controlled.length < 1
-                ? brCard.actor
-                : game.canvas.tokens.controlled[0].actor;
+        targetToken = game.canvas.tokens.controlled.length < 1 ? brCard.token : game.canvas.tokens.controlled[0];
+        targetActor = game.canvas.tokens.controlled.length < 1 ? brCard.actor : game.canvas.tokens.controlled[0].actor;
     }
     await macro.execute({
         actor: targetActor,

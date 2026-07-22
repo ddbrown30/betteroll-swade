@@ -288,7 +288,7 @@ function create_attribute_macro(data) {
       game.swade.rollItemMacro("${data.attribute}");
     } else {
       origin = await fromUuid("${data.uuid}");
-      const brCard = await game.brsw.create_atribute_card(origin, "${data.attribute}");
+      const brCard = await game.brsw.createAttributeCard(origin, "${data.attribute}");
       if (behaviour.includes('trait')) {
         game.brsw.roll_attribute(brCard, false);
       }

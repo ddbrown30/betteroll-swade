@@ -21,7 +21,7 @@ import {
 } from "./remove_status_cards.js";
 import { TraitRoll } from "./rolls.js";
 import {
-    calculate_distance,
+    calculateDistance,
     getTNFromToken,
     roll_skill,
 } from "./skill_card.js";
@@ -29,7 +29,8 @@ import {
     SettingsUtils,
     Utils,
     addEventListenerAll,
-    get_targeted_token,
+    getSelectedToken,
+    getTargetedToken,
     set_or_update_condition,
     simple_form,
     spendMastersBenny,
@@ -68,12 +69,7 @@ export function expose_card_class() {
  * @returns {BrCommonCard} The created common card.
  */
 export function create_common_card(origin, render_data, template) {
-    let actor;
-    if (origin instanceof TokenDocument || origin instanceof foundry.canvas.placeables.Token) {
-        actor = origin.actor;
-    } else {
-        actor = origin;
-    }
+    const actor = Utils.toActor(origin);
 
     if (render_data.tooltip) {
         render_data.tooltip = // Limit tooltip size.
@@ -349,14 +345,7 @@ export function activate_common_listeners(brCard, html) {
     // TNs from target
     addEventListenerAll(html, ".brsw-target-tn, .brsw-selected-tn", "click", (ev) => {
         ev.stopPropagation();
-        const { index } = ev.currentTarget.dataset;
-        get_tn_from_target(
-            brCard,
-            parseInt(index),
-            ev.currentTarget.classList.contains("brsw-selected-tn"),
-        ).catch((e) => {
-            console.error("ERROR getting_tn_from_target. Error:" + e);
-        });
+        getTNFromTarget(brCard, ev.currentTarget.classList.contains("brsw-selected-tn"));
     });
     // Repeat card
     html.querySelector(".brsw-repeat-card")?.addEventListener("click", (ev) => {
@@ -715,100 +704,88 @@ function get_actor_own_modifiers(actor, roll_options) {
 /**
  * Get all the options needed for a new roll
  * @param {BrCommonCard} brCard
- * @param extra_data
- * @param trait_dice
- * @param roll_options - An object with the current roll_options
+ * @param extraData
+ * @param traitDice
+ * @param rollOptions - An object with the current roll_options
  */
-async function get_new_roll_options(
+async function getNewRollOptions(
     brCard,
-    extra_data,
-    trait_dice,
-    roll_options,
+    extraData,
+    traitDice,
+    rollOptions,
 ) {
-    const extra_options = {};
+    const extraOptions = {};
 
-    let targetToken = get_targeted_token();
-    if (!targetToken) {
-        canvas.tokens.controlled.forEach((token) => {
-            // noinspection JSUnresolvedVariable
-            if (
-                token.actor !== brCard.actor &&
-                token.actor !== brCard.vehicle_actor
-            ) {
-                targetToken = token;
-            }
-        });
-    }
-
+    const targetToken = getTargetedToken([brCard.actor, brCard.vehicle_actor].filter(Boolean));
     if (targetToken) {
-        const origin_token = brCard.token;
-        const target_data = await getTNFromToken(
+        const originToken = brCard.token;
+        const targetData = await getTNFromToken(
             brCard.skill,
             targetToken,
-            origin_token,
+            originToken,
             brCard.actor,
             brCard.item,
-            extra_data,
+            extraData,
         );
-        brCard.trait_roll.tn = target_data.value;
-        brCard.trait_roll.tn_reason = target_data.reason;
-        extra_options.target_modifiers = target_data.modifiers;
+        brCard.trait_roll.tn = targetData.value;
+        brCard.trait_roll.tn_reason = targetData.reason;
+        extraOptions.target_modifiers = targetData.modifiers;
     }
 
-    if (extra_data.hasOwnProperty("tn")) {
-        extra_options.tn = extra_data.tn;
-        extra_options.tn_reason = extra_data.tn_reason.slice(0, 20);
+    if (extraData.hasOwnProperty("tn")) {
+        extraOptions.tn = extraData.tn;
+        extraOptions.tn_reason = extraData.tn_reason.slice(0, 20);
     }
 
-    if (extra_data.hasOwnProperty("rof")) {
-        extra_options.rof = extra_data.rof;
+    if (extraData.hasOwnProperty("rof")) {
+        extraOptions.rof = extraData.rof;
     }
 
-    const options = get_roll_options(extra_options, brCard);
-    roll_options.rof = options.rof || 1;
+    const options = get_roll_options(extraOptions, brCard);
+    rollOptions.rof = options.rof || 1;
 
     // Trait modifier
-    if (parseInt(trait_dice.die.modifier)) {
-        const mod_value = parseInt(trait_dice.die.modifier);
-        roll_options.modifiers.push(
+    if (parseInt(traitDice.die.modifier)) {
+        const mod_value = parseInt(traitDice.die.modifier);
+        rollOptions.modifiers.push(
             new TraitModifier(game.i18n.localize("BRSW.TraitMod"), mod_value),
         );
     }
 
-    get_below_chat_modifiers(options, roll_options);
-    get_actor_own_modifiers(brCard.actor, roll_options);
+    get_below_chat_modifiers(options, rollOptions);
+    get_actor_own_modifiers(brCard.actor, rollOptions);
 
     // Armor min str
     if (brCard.skill?.system.attribute === "agility" || brCard.attribute === "agility") {
         const armor_penalty = get_actor_armor_minimum_strength(brCard.actor);
         if (armor_penalty) {
-            roll_options.modifiers.push(armor_penalty);
+            rollOptions.modifiers.push(armor_penalty);
         }
     }
 
     // Target Mods
-    if (extra_options.target_modifiers) {
-        extra_options.target_modifiers.forEach((modifier) => {
-            roll_options.modifiers.push(modifier);
+    if (extraOptions.target_modifiers) {
+        extraOptions.target_modifiers.forEach((modifier) => {
+            rollOptions.modifiers.push(modifier);
         });
     }
 
     // Options set from card
-    if (extra_data.modifiers) {
-        extra_data.modifiers.forEach((modifier) => {
-            roll_options.modifiers.push(modifier);
+    if (extraData.modifiers) {
+        extraData.modifiers.forEach((modifier) => {
+            rollOptions.modifiers.push(modifier);
         });
     }
 
     //Conviction
     const conviction_modifier = await check_and_roll_conviction(brCard.actor);
     if (conviction_modifier) {
-        roll_options.modifiers.push(conviction_modifier);
+        rollOptions.modifiers.push(conviction_modifier);
     }
 
     // Joker
     if (brCard.token && has_joker(brCard.token.id)) {
-        roll_options.modifiers.push(
+        rollOptions.modifiers.push(
             new TraitModifier(
                 "Joker",
                 brCard.actor.getFlag("swade", "jokerBonus") ?? 2,
@@ -821,7 +798,7 @@ async function get_new_roll_options(
     if ((brCard.actor.type === "character" || npcsUseEncumbrance) &&
         brCard.actor.system.encumbered &&
         (brCard.attribute === "agility" || brCard.skill?.system.attribute === "agility")) {
-        roll_options.modifiers.push(new TraitModifier(game.i18n.localize("SWADE.Encumbered"), -2),);
+        rollOptions.modifiers.push(new TraitModifier(game.i18n.localize("SWADE.Encumbered"), -2),);
     }
 
     // Vehicle
@@ -834,7 +811,7 @@ async function get_new_roll_options(
         );
         handling = Math.max(handling, -4); //Handling cannot be lower than -4
         if (handling !== 0) {
-            roll_options.modifiers.push(new TraitModifier("Handling", handling));
+            rollOptions.modifiers.push(new TraitModifier("Handling", handling));
         }
     }
 }
@@ -990,7 +967,7 @@ export async function roll_trait(brCard, traitDie, traitName, extra_data) {
     const roll_options = { modifiers: [], rof: undefined };
 
     if (!brCard.trait_roll.is_rolled) {
-        await get_new_roll_options(brCard, extra_data, traitDie, roll_options);
+        await getNewRollOptions(brCard, extra_data, traitDie, roll_options);
     } else {
         roll_options.modifiers = brCard.trait_roll.modifiers;
         roll_options.rof = brCard.trait_roll.rof;
@@ -1175,50 +1152,43 @@ async function edit_tn(brCard, new_tn, reason) {
  * Change the TNs of a roll from a token (targeted or selected)
  *
  * @param {BrCommonCard} brCard
- * @param {int} index
  * @param {boolean} selected - True to select targeted, false for selected
  */
-async function get_tn_from_target(brCard, index, selected) {
-    let targetToken;
-    if (selected) {
-        canvas.tokens.controlled.forEach((token) => {
-            // noinspection JSUnresolvedVariable
-            if (token.actor !== brCard.actor) {
-                targetToken = token;
-            }
-        });
-    } else {
-        targetToken = get_targeted_token();
-    }
+async function getTNFromTarget(brCard, selected) {
+    const targetToken = selected ? getSelectedToken([brCard.actor]) : getTargetedToken([brCard.actor]);
     if (targetToken) {
         const extra_data = { modifiers: [] };
-        const origin_token = brCard.token;
+        const originToken = brCard.token;
         const target = await getTNFromToken(
             brCard.skill,
             targetToken,
-            origin_token,
+            originToken,
             brCard.actor,
             brCard.item,
             extra_data,
         );
+
         if (target.value) {
             await edit_tn(brCard, target.value, target.reason).catch(() => {
                 console.error("Error editing TN");
             });
         }
+
         const tn = { modifiers: [] };
-        calculate_distance(
-            origin_token,
+        calculateDistance(
+            originToken,
             targetToken,
             brCard.item,
             tn,
             brCard.skill,
             extra_data,
         );
+
         brCard.trait_roll.delete_range_modifiers();
         brCard.trait_roll.modifiers = brCard.trait_roll.modifiers.concat(
             tn.modifiers,
         );
+
         await brCard.trait_roll.recalculate_trait_results();
         await brCard.render();
         await brCard.save();

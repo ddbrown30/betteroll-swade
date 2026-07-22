@@ -172,17 +172,16 @@ export async function simple_form(title, fields, callback) {
 /**
  * Gets the first targeted token
  */
-export function get_targeted_token() {
-    /**
-     * Sets the difficulty as the parry value of the targeted
-     * or selected token
-     */
-    const targets = game.user.targets;
-    let objective;
-    if (targets.size) {
-        objective = Array.from(targets)[0];
-    }
-    return objective;
+export function getTargetedToken(originActors) {
+    return game.user.targets.first() ?? getSelectedToken(originActors);
+}
+
+/**
+ * Gets the first selected token
+ */
+export function getSelectedToken(originActors) {
+    const originActorIds = new Set(originActors.map(a => a.id));
+    return canvas.tokens.controlled.find((t) => !originActorIds.has(t.actor.id));
 }
 
 /**
@@ -217,24 +216,24 @@ export function addEventListenerAll(
 }
 
 function measurePath(waypoints) {
-    const use_grid_calc = SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.rangeCalcGrid);
+    const useGridCalc = SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.rangeCalcGrid);
     const path = canvas.grid.measurePath(waypoints);
-    return use_grid_calc ? path.distance : path.euclidean;
+    return useGridCalc ? path.distance : path.euclidean;
 }
 
-function getTokenGridSpaces(token) {
+function getTokenGridSpaces(tokenDoc) {
     const gridSpaces = [];
     if (canvas.grid.isGridless) {
         //If we have a gridless grid, divide our token into 1" sections based on the grid size
         //We'll use those as our occupied "spaces" even though there are none
-        const halfGrid = canvas.grid.size;
+        const halfGrid = canvas.grid.size / 2;
         const start = {
-            x: token.bounds.left + halfGrid,
-            y: token.bounds.top + halfGrid,
+            x: tokenDoc.x + halfGrid,
+            y: tokenDoc.y + halfGrid,
         };
         const dimensions = {
-            width: Math.max(1, Math.round(token.document.width)),
-            height: Math.max(1, Math.round(token.document.height)),
+            width: Math.max(1, Math.round(tokenDoc.width)),
+            height: Math.max(1, Math.round(tokenDoc.height)),
         };
 
         for (let i = 0; i < dimensions.width; ++i) {
@@ -247,7 +246,7 @@ function getTokenGridSpaces(token) {
             }
         }
     } else {
-        for (const space of token.document.getOccupiedGridSpaceOffsets()) {
+        for (const space of tokenDoc.getOccupiedGridSpaceOffsets()) {
             gridSpaces.push({ coords: canvas.grid.getCenterPoint(space) });
         }
     }
@@ -255,6 +254,8 @@ function getTokenGridSpaces(token) {
 }
 
 export function measureDistance(tokenA, tokenB) {
+    tokenA = Utils.toTokenDoc(tokenA);
+    tokenB = Utils.toTokenDoc(tokenB);
     if (!tokenA || !tokenB) {
         ui.notifications.error("measureDistance requires two tokens");
         return 0;
@@ -288,7 +289,7 @@ export function measureDistance(tokenA, tokenB) {
         }
     }
 
-    let measured_distance = measurePath([
+    let measuredDistance = measurePath([
         closestPair.a.coords,
         closestPair.b.coords,
     ]);
@@ -304,11 +305,11 @@ export function measureDistance(tokenA, tokenB) {
             };
 
             const distanceToEdge = (tokenA.scene.grid.distance / 2) / Math.max(Math.abs(dir.x), Math.abs(dir.y));
-            measured_distance -= (distanceToEdge * 2); //Times 2 because we're offsetting the distance for both tokens
+            measuredDistance -= (distanceToEdge * 2); //Times 2 because we're offsetting the distance for both tokens
         }
     }
 
-    return measured_distance;
+    return measuredDistance;
 }
 
 export class Utils {
@@ -634,6 +635,24 @@ export class Utils {
         }
 
         return false;
+    }
+
+    static toTokenDoc(entity) {
+        if (entity instanceof TokenDocument) { return entity; }
+        if (entity instanceof foundry.canvas.placeables.Token) { return entity.document; }
+        return null;
+    }
+
+    static toToken(entity) {
+        if (entity instanceof foundry.canvas.placeables.Token) { return entity; }
+        if (entity instanceof TokenDocument) { return entity.object; }
+        return null;
+    }
+
+    static toActor(entity) {
+        if (entity instanceof Actor) { return entity; }
+        if (entity instanceof TokenDocument || entity instanceof foundry.canvas.placeables.Token) { return entity.actor; }
+        return null;
     }
 }
 

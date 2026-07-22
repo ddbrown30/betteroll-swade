@@ -37,15 +37,7 @@ async function create_skill_card(
     skillId,
     { actions_stored = {}, vehicle } = {},
 ) {
-    let actor;
-    if (
-        origin instanceof TokenDocument ||
-        origin instanceof foundry.canvas.placeables.Token
-    ) {
-        actor = origin.actor;
-    } else {
-        actor = origin;
-    }
+    const actor = Utils.toActor(origin);
     const skill = actor.items.get(skillId);
     const extra_name = skill.name + " " + traitToDieString(skill.system);
     const brCard = create_common_card(
@@ -64,10 +56,7 @@ async function create_skill_card(
     brCard.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_SKILL_CARD;
     if (vehicle) {
         brCard.vehicle_actor_id = vehicle.actor?.id || vehicle.id;
-        if (
-            vehicle instanceof TokenDocument ||
-            vehicle instanceof foundry.canvas.placeables.Token
-        ) {
+        if (vehicle instanceof TokenDocument || vehicle instanceof foundry.canvas.placeables.Token) {
             brCard.vehicle_token_id = vehicle.id;
         }
     }
@@ -205,32 +194,32 @@ export async function roll_skill(brCard, expend_bennie) {
  * Calculates the distance modifier for normal weapons
  * @param item
  * @param distance
- * @param origin_token
+ * @param originToken
  * @param targetToken
  * @param skill
  * @param tn
  * @returns {number}
  */
-function calculate_generic_distance_modifier(
+function calculateGenericDistanceModifier(
     item,
     distance,
-    origin_token,
+    originToken,
     targetToken,
     skill,
     tn,
     extra_data,
 ) {
     const range = item.system.range.split("/");
-    if (origin_token.document.elevation !== targetToken.document.elevation) {
+    if (originToken.elevation !== targetToken.elevation) {
         const elevationDiff = Math.abs(
-            origin_token.document.elevation - targetToken.document.elevation,
+            originToken.elevation - targetToken.elevation,
         );
         distance = Math.sqrt(Math.pow(elevationDiff, 2) + Math.pow(distance, 2));
     }
 
     let rangeEffects = 0;
     if (Utils.isThrowingSkill(skill)) {
-        rangeEffects = origin_token.actor.appliedEffects
+        rangeEffects = originToken.actor.appliedEffects
             .filter(effect => !effect.disabled)
             .reduce((total, effect) => {
                 const change = effect.changes.find(ch => ch.key === "brsw.thrown-range-modifier");
@@ -270,29 +259,29 @@ function calculate_generic_distance_modifier(
 
 /**
  * Calculates the distance between tokens
- * @param origin_token
+ * @param originToken
  * @param targetToken
  * @param item
  * @param tn
  * @param {SwadeItem} skill
  * @return {boolean} True if parry should be used as the tn (tokens are adjacent)
  */
-export function calculate_distance(
-    origin_token,
+export function calculateDistance(
+    originToken,
     targetToken,
     item,
     tn,
     skill,
     extra_data,
 ) {
-    if (item.system.isVehicular && origin_token.actor.type !== "vehicle") {
+    if (item.system.isVehicular && originToken.actor.type !== "vehicle") {
         return false;
     }
     const grid_unit = canvas.grid.distance;
-    let use_parry_as_tn = false;
-    let distance = measureDistance(origin_token, targetToken);
+    let useParryAsTN = false;
+    let distance = measureDistance(originToken, targetToken);
     if (distance / grid_unit < 1 && item) {
-        use_parry_as_tn = item.type !== "power";
+        useParryAsTN = item.type !== "power";
     } else if (item) {
         if (grid_unit % 5 === 0) {
             distance /= 5;
@@ -302,10 +291,10 @@ export function calculate_distance(
                 ui.notifications.error(game.i18n.localize("BRSW.SpellOverRange"));
             }
         } else {
-            calculate_generic_distance_modifier(
+            calculateGenericDistanceModifier(
                 item,
                 distance,
-                origin_token,
+                originToken,
                 targetToken,
                 skill,
                 tn,
@@ -313,7 +302,7 @@ export function calculate_distance(
             );
         }
     }
-    return use_parry_as_tn;
+    return useParryAsTN;
 }
 
 /**
@@ -342,14 +331,14 @@ async function get_vehicle_tn(tn, targetToken) {
  *
  * @param {Item} skill
  * @param {Token} targetToken
- * @param {Token} origin_token
+ * @param {Token} originToken
  * @param {Item} item
  */
 export async function getTNFromToken(
     skill,
     targetToken,
-    origin_token,
-    origin_actor,
+    originToken,
+    originActor,
     item,
     extra_data,
 ) {
@@ -358,17 +347,21 @@ export async function getTNFromToken(
         value: 4,
         modifiers: [],
     };
-    const is_fighting = Utils.isFightingSkill(skill);
-    let use_parry_as_tn = is_fighting;
-    if (origin_token) {
-        if (is_fighting) {
-            const gangup = calculateGangUp(origin_token, targetToken);
-            if (gangup.bonus) {
-                tn.modifiers.push(new TraitModifier(gangup.name, gangup.bonus));
+
+    originToken = Utils.toTokenDoc(originToken);
+    targetToken = Utils.toTokenDoc(targetToken);
+
+    const isFighting = Utils.isFightingSkill(skill);
+    let useParryAsTN = isFighting;
+    if (originToken) {
+        if (isFighting) {
+            const gangUp = calculateGangUp(originToken, targetToken);
+            if (gangUp.bonus) {
+                tn.modifiers.push(new TraitModifier(gangUp.name, gangUp.bonus));
             }
         } else if (item && item.system.range) {
-            use_parry_as_tn = calculate_distance(
-                origin_token,
+            useParryAsTN = calculateDistance(
+                originToken,
                 targetToken,
                 item,
                 tn,
@@ -377,7 +370,7 @@ export async function getTNFromToken(
             );
         }
     }
-    if (use_parry_as_tn) {
+    if (useParryAsTN) {
         if (targetToken.actor.type !== "vehicle") {
             tn.reason = `${game.i18n.localize("SWADE.Parry")} - ${targetToken.name}`;
             tn.value = parseInt(targetToken.actor.system.stats.parry.value);
@@ -386,8 +379,8 @@ export async function getTNFromToken(
         }
     }
     // Size modifiers
-    if (shouldUseScale(origin_actor, targetToken, item, skill)) {
-        getScaleModifier(origin_actor, targetToken.actor, item, tn, extra_data);
+    if (shouldUseScale(originActor, targetToken, item, skill)) {
+        getScaleModifier(originActor, targetToken.actor, item, tn, extra_data);
     }
     if (
         targetToken.actor.system.status.isVulnerable ||
@@ -530,7 +523,7 @@ export function calculateGangUp(attackerToken, targetToken) {
         return 0;
     }
 
-    if (attackerToken.document.disposition * targetToken.document.disposition !== -1) {
+    if (attackerToken.disposition * targetToken.disposition !== -1) {
         return 0;
     }
 
@@ -553,8 +546,8 @@ export function calculateGangUp(attackerToken, targetToken) {
     //Get all the attacker allies that are next to the target
     const attackerAllies =
         scene.tokens?.filter((t) => {
-            if (t === attackerToken.document) return false;
-            if (t.disposition !== attackerToken.document.disposition) return false;
+            if (t === attackerToken) return false;
+            if (t.disposition !== attackerToken.disposition) return false;
             if (isIgnoredForGangUp(t)) return false;
             return withinRange(targetToken, t, meleeRange);
         });
@@ -582,8 +575,8 @@ export function calculateGangUp(attackerToken, targetToken) {
     //Get all the defender allies that are next to the target
     const defenderAllies =
         scene.tokens?.filter((t) => {
-            if (t === targetToken.document) return false;
-            if (t.disposition !== targetToken.document.disposition) return false;
+            if (t === targetToken) return false;
+            if (t.disposition !== targetToken.disposition) return false;
             if (isIgnoredForGangUp(t)) return false;
             return withinRange(targetToken, t, meleeRange);
         });
@@ -628,14 +621,11 @@ export function calculateGangUp(attackerToken, targetToken) {
 }
 
 function withinRange(origin, target, range, epsilon = Number.EPSILON) {
-    origin = origin instanceof TokenDocument ? origin.object : origin;
-    target = target instanceof TokenDocument ? target.object : target;
-    if (Math.abs(origin.document.elevation - target.document.elevation) >= 1) {
+    if (Math.abs(origin.elevation - target.elevation) >= 1) {
         return false;
     }
-    const grid_unit = canvas.grid.distance;
     let distance = measureDistance(origin, target);
-    distance /= grid_unit;
+    distance /= canvas.grid.distance;
     return distance <= (range + epsilon);
 }
 
