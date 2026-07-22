@@ -20,6 +20,7 @@ export default [
                 Hooks: "readonly",
                 CONFIG: "readonly",
                 foundry: "readonly",
+                fromUuid: "readonly",
 
                 // Canvas / rendering
                 canvas: "readonly",
