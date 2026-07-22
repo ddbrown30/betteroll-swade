@@ -164,7 +164,7 @@ The following variables are included in the scope when running a macro via `runS
 
 ## API
 
-You can define global actions within a module. To add actions, listen to the hook `brswReady` and call `game.brsw.add_actions`. If the id of an action matches one of the default actions in BR2, your action will replace it. See the example below.
+You can define global actions within a module. To add actions, listen to the hook `brswReady` and call `game.brsw.addActions`. If the id of an action matches one of the default actions in BR2, your action will replace it. See the example below.
 
 
 ```js
@@ -208,7 +208,7 @@ Hooks.once('brswReady', () => {
         }
     ];
 
-    game.brsw.add_actions(CUSTOM_BRSW_GLOBAL_ACTIONS);
+    game.brsw.addActions(CUSTOM_BRSW_GLOBAL_ACTIONS);
 })
 ```
 
@@ -217,7 +217,7 @@ user wants to use their own global actions.
 
 ```js
 if (game.settings.get("yourModuleID", "TurnOnOrOffMyModuleGlobalActions")) {
-    game.brsw.add_actions(CUSTOM_BRSW_GLOBAL_ACTIONS);
+    game.brsw.addActions(CUSTOM_BRSW_GLOBAL_ACTIONS);
 }
 ```
 

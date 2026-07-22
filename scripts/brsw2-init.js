@@ -18,7 +18,7 @@ import {
 import { create_unshaken_wrapper, create_unstun_wrapper } from "./combat.js";
 import { activate_damage_card_listeners } from "./damage_card.js";
 import {
-    expose_global_actions_functions,
+    exposeGlobalActionsAPI,
     registerActions,
     register_gm_actions_settings
 } from "./global_actions.js";
@@ -69,7 +69,7 @@ Hooks.on(`ready`, async () => {
     exposeAttributeAPI();
     exposeSkillCardAPI();
     exposeItemCardAPI();
-    expose_global_actions_functions();
+    exposeGlobalActionsAPI();
     expose_card_class();
     incapacitation_card_hooks();
     setup_chat_button();

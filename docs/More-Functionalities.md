@@ -25,7 +25,7 @@ The following information assumes a passing knowledge of both javascript and Fou
 The module exposes an API in game.brsw.
 
 ```js
-game.brsw.add_actions(actions)
+game.brsw.addActions(actions)
 /**
  * Adds an array of actions to the available ones. The array should be in the same format as builtin-actions.js.
  * The array is cleared when reloading and should be set again
@@ -101,7 +101,7 @@ game.brsw.GLOBAL_ACTIONS
 ```
 
 ```js
-game.brsw.get_roll_options(old_options)
+game.brsw.getRollOptions(old_options)
 /**
  * Gets the roll options from the card html. Don't use, it is here just
  * for compatibility (to keep old macros from breaking). Use the brCommondCard

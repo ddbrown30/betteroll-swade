@@ -4,7 +4,7 @@
 
 import { SYSTEM_GLOBAL_ACTION } from "./actions/builtin-actions.js";
 import * as BRSW2_CONFIG from "./brsw2-config.js";
-import { get_roll_options } from "./cards_common.js";
+import { getRollOptions } from "./cards_common.js";
 import { get_enabled_gm_actions } from "./gm_actions.js";
 import { check_for_actions_with_damage } from "./item_card.js";
 import {
@@ -43,7 +43,7 @@ export function registerActions() {
  * The array is cleared when reloading and should be set again
  * @param {Array} actions
  */
-function add_actions(actions) {
+function addActions(actions) {
     // Delete duplicate actions
     const actions_ids = actions.map((action) => action.id);
     const actions_to_delete = game.brsw.GLOBAL_ACTIONS.filter((action) =>
@@ -65,9 +65,9 @@ function process_not_selector(action, item, actor) {
 /**
  * Expose some functions to be used in macros.
  */
-export function expose_global_actions_functions() {
-    game.brsw.add_actions = add_actions;
-    game.brsw.get_roll_options = get_roll_options;
+export function exposeGlobalActionsAPI() {
+    Utils.exposeAPI("addActions", addActions, "add_actions");
+    Utils.exposeAPI("getRollOptions", getRollOptions, "get_roll_options");
 }
 
 /**

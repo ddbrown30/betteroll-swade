@@ -13,7 +13,7 @@ import {
     check_and_roll_conviction,
     create_common_card,
     getActionFromClick,
-    get_roll_options,
+    getRollOptions,
     has_joker,
     process_common_actions,
     process_minimum_str_modifiers,
@@ -1401,7 +1401,7 @@ export async function roll_dmg(
     }
 
     // Calculate modifiers
-    const options = get_roll_options(default_options, brCard);
+    const options = getRollOptions(default_options, brCard);
 
     // Shotgun
     if (damageFormulas.damage?.includes("1-3d6") && item.type === "weapon") {

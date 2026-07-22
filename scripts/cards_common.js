@@ -480,7 +480,7 @@ export function getActionFromClick(event) {
  *
  * @param old_options - Options used as default
  */
-export function get_roll_options(old_options, brCard) {
+export function getRollOptions(old_options, brCard) {
     const modifiers = old_options?.additionalMods || [];
     const dmg_modifiers = old_options?.dmgMods || [];
     const tn = old_options?.tn || 4;
@@ -741,7 +741,7 @@ async function getNewRollOptions(
         extraOptions.rof = extraData.rof;
     }
 
-    const options = get_roll_options(extraOptions, brCard);
+    const options = getRollOptions(extraOptions, brCard);
     rollOptions.rof = options.rof || 1;
 
     // Trait modifier
