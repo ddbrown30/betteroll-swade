@@ -1,5 +1,4 @@
 // Functions for cards representing vehicles
-/* globals Token, game, ui, fromUuid, fromUuidSync */
 
 import { getActionFromClick } from "./cards_common.js";
 import { createItemCard } from "./item_card.js";
