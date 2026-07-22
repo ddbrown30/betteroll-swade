@@ -37,7 +37,7 @@ import { migrateOptionalRules, registerDSNSettings, registerSettings, updateCach
 import {
     activate_skill_card_listeners,
     activate_skill_listeners,
-    skill_card_hooks,
+    exposeSkillCardAPI,
 } from "./skill_card.js";
 import { SettingsUtils, TelemetryUtils, cacheSkillData, measureDistance } from "./utils.js";
 import { activate_vehicle_listeners } from "./vehicle_card.js";
@@ -67,7 +67,7 @@ Hooks.on(`ready`, async () => {
 
     // Create a base object to hook functions
     exposeAttributeAPI();
-    skill_card_hooks();
+    exposeSkillCardAPI();
     expose_item_functions();
     expose_global_actions_functions();
     expose_card_class();
@@ -263,7 +263,7 @@ function create_macro_command(data, actor_id, token_id) {
             }
             let message;
             if (${data.type === "skill"}) {
-                message = await game.brsw.create_skill_card_from_id('${token_id}', '${actor_id}', '${data._id
+                message = await game.brsw.createSkillCardFromId('${token_id}', '${actor_id}', '${data._id
         }');
             } else {
                 message = await game.brsw.create_item_card_from_id('${token_id}', '${actor_id}', '${data._id
@@ -272,7 +272,7 @@ function create_macro_command(data, actor_id, token_id) {
             if (event) {
                 if (behaviour.includes('trait')) {
                     if (${data.type === "skill"}) {
-                        game.brsw.roll_skill(message, $(message.content), false)
+                        game.brsw.rollSkill(message, $(message.content), false)
                     } else {
                         game.brsw.roll_item(message, $(message.content), false, behaviour.includes('damage'))
                     }

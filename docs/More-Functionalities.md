@@ -159,7 +159,7 @@ game.brsw.roll_item(brCard, html, expend_bennie, roll_damage)
  ```
 
 ```js
-game.brsw.create_skill_card(origin, skillId)
+game.brsw.createSkillCard(origin, skillId)
 /**
  * Creates a chat card for a skill
  *
@@ -170,7 +170,7 @@ game.brsw.create_skill_card(origin, skillId)
  ```
 
 ```js
-game.brsw.create_skill_card_from_id(token_id, actor_id, skillId)
+game.brsw.createSkillCardFromId(token_id, actor_id, skillId)
 /**
  * Creates a skill card from a token or actor id, mainly for use in macros
  *
@@ -184,7 +184,7 @@ game.brsw.create_skill_card_from_id(token_id, actor_id, skillId)
  ```
 
 ```js
- game.brsw.roll_skill(brCard, expend_bennie)
+ game.brsw.rollSkill(brCard, expend_bennie)
  /**
  * Roll an existing skill card
  *

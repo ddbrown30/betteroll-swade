@@ -605,7 +605,7 @@ async function roll_resist(trait, brCard, trait_mod) {
         if (BRSW2_CONST.ATTRIBUTES.includes(trait.toLowerCase())) {
             newCard = await game.brsw.createAttributeCard(token, trait.toLowerCase());
         } else {
-            newCard = await game.brsw.create_skill_card(token, Utils.traitFromString(token.actor, trait).id);
+            newCard = await game.brsw.createSkillCard(token, Utils.traitFromString(token.actor, trait).id);
         }
 
         newCard.trait_roll.tn = getTraitRollDifficulty(brCard);

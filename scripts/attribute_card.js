@@ -6,7 +6,7 @@ import { BRSW2_CONST } from "./brsw2-const.js";
 import {
   create_common_card,
   getActionFromClick,
-  get_actor_from_ids,
+  getActorFromIds,
   process_common_actions,
   roll_trait,
   spend_bennie,
@@ -64,7 +64,7 @@ function createAttributeCardFromId(
   name,
   { actions_stored = {} } = {},
 ) {
-  const actor = get_actor_from_ids(token_id, actor_id);
+  const actor = getActorFromIds(token_id, actor_id);
   return createAttributeCard(actor, name, {
     actions_stored: actions_stored,
   });

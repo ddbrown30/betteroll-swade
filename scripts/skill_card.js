@@ -7,7 +7,7 @@ import { BRSW2_CONST } from "./brsw2-const.js";
 import {
     create_common_card,
     getActionFromClick,
-    get_actor_from_ids,
+    getActorFromIds,
     process_common_actions,
     roll_trait,
     spend_bennie,
@@ -32,7 +32,7 @@ import {
  * @param {SwadeActor} vehicle
  * @return {Promise} A promise for the ChatMessage object
  */
-async function create_skill_card(
+async function createSkillCard(
     origin,
     skillId,
     { actions_stored = {}, vehicle } = {},
@@ -68,23 +68,23 @@ async function create_skill_card(
 /**
  * Creates a skill card from a token or actor id, mainly for use in macros
  *
- * @param {string} token_id A token id, if it can be solved it will be used
+ * @param {string} tokenId A token id, if it can be solved it will be used
  *  before actor
- * @param {string} actor_id An actor id, it could be set as fallback or
+ * @param {string} actorId An actor id, it could be set as fallback or
  *  if you keep token empty as the only way to find the actor
  * @param {string} skillId Id of the skill item
  * @param {object} actions_stored An object with action ids as properties
  *   and a boolean meaning if they need to set on or off
  * @return {Promise} a promise for the ChatMessage object
  */
-function create_skill_card_from_id(
-    token_id,
-    actor_id,
+function createSkillCardFromId(
+    tokenId,
+    actorId,
     skillId,
     { actions_stored = {} } = {},
 ) {
-    const actor = get_actor_from_ids(token_id, actor_id);
-    return create_skill_card(actor, skillId, {
+    const actor = getActorFromIds(tokenId, actorId);
+    return createSkillCard(actor, skillId, {
         actions_stored: actions_stored,
     });
 }
@@ -92,10 +92,10 @@ function create_skill_card_from_id(
 /**
  * Hooks the public functions to a global object
  */
-export function skill_card_hooks() {
-    game.brsw.create_skill_card = create_skill_card;
-    game.brsw.create_skill_card_from_id = create_skill_card_from_id;
-    game.brsw.roll_skill = roll_skill;
+export function exposeSkillCardAPI() {
+    Utils.exposeAPI("createSkillCard", createSkillCard, "create_skill_card");
+    Utils.exposeAPI("createSkillCardFromId", createSkillCardFromId, "create_skill_card_from_id");
+    Utils.exposeAPI("rollSkill", rollSkill, "roll_skill");
 }
 
 /**
@@ -116,11 +116,11 @@ async function skill_click_listener(ev, target) {
         ev.currentTarget.parentElement.parentElement.dataset.itemId ||
         ev.currentTarget.parentElement.dataset.itemId;
     // Show card
-    const brCard = await create_skill_card(target, skillId);
+    const brCard = await createSkillCard(target, skillId);
     if (action.includes("dialog")) {
         game.brsw.dialog.show_card(brCard);
     } else if (action.includes("trait")) {
-        await roll_skill(brCard, false);
+        await rollSkill(brCard, false);
     }
 }
 
@@ -150,7 +150,7 @@ export function activate_skill_listeners(app, html) {
 export function activate_skill_card_listeners(brCard, html) {
     addEventListenerAll(html, ".brsw-roll-button", "click", async (ev) => {
         ev.stopPropagation();
-        await roll_skill(
+        await rollSkill(
             brCard,
             ev.currentTarget.classList.contains("roll-bennie-button"),
         );
@@ -168,7 +168,7 @@ export function activate_skill_card_listeners(brCard, html) {
  * @param {BrCommonCard} brCard
  * @param {boolean} expend_bennie True if we want to spend a bennie
  */
-export async function roll_skill(brCard, expend_bennie) {
+export async function rollSkill(brCard, expend_bennie) {
     const extra_data = { modifiers: [] };
     const macros = [];
     // Actions

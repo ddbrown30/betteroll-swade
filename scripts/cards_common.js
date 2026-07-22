@@ -23,7 +23,7 @@ import { TraitRoll } from "./rolls.js";
 import {
     calculateDistance,
     getTNFromToken,
-    roll_skill,
+    rollSkill,
 } from "./skill_card.js";
 import {
     SettingsUtils,
@@ -132,7 +132,7 @@ export async function spend_bennie(actor) {
  * @param token_id
  * @param actor_id
  */
-export function get_actor_from_ids(token_id, actor_id) {
+export function getActorFromIds(token_id, actor_id) {
     if (canvas.tokens) {
         let token;
         if (token_id) {
@@ -386,8 +386,8 @@ function create_macro_command_from_card(brCard) {
             "game.brsw.roll_item(message, $(message.content), false, behaviour.includes('damage'));";
         id = brCard.item_id;
     } else if (brCard.skill) {
-        card_function_name = "create_skill_card_from_id";
-        roll_function = "game.brsw.roll_skill(message, $(message.content), false);";
+        card_function_name = "createSkillCardFromId";
+        roll_function = "game.brsw.rollSkill(message, $(message.content), false);";
         id = brCard.trait.id;
     } else if (brCard.attribute) {
         card_function_name = "createAttributeCardFromId";
@@ -1236,7 +1236,7 @@ async function duplicate_message(message, event) {
         if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ATTRIBUTE_CARD) {
             await rollAttribute(brCard, false);
         } else if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_SKILL_CARD) {
-            await roll_skill(brCard, false);
+            await rollSkill(brCard, false);
         } else if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD) {
             const roll_damage = action.includes("damage");
             await roll_item(brCard, $(brCard.message.content), false, roll_damage);
