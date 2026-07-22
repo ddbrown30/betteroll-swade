@@ -2,8 +2,8 @@
 /* globals Token, game, ui, fromUuid, fromUuidSync */
 
 import { getActionFromClick } from "./cards_common.js";
-import { create_item_card } from "./item_card.js";
-import { roll_skill } from "./skill_card.js";
+import { createItemCard } from "./item_card.js";
+import { rollSkill } from "./skill_card.js";
 import { Utils } from "./utils.js";
 
 /**
@@ -43,7 +43,7 @@ async function vehicle_click_listener(ev, vehicle) {
     }
 
     // Show card
-    const brCard = await game.brsw.create_skill_card(
+    const brCard = await game.brsw.createSkillCard(
         driverActor.actor,
         skill.id,
         {
@@ -53,7 +53,7 @@ async function vehicle_click_listener(ev, vehicle) {
     if (action.includes("dialog")) {
         game.brsw.dialog.show_card(brCard);
     } else if (action.includes("trait")) {
-        await roll_skill(brCard, false);
+        await rollSkill(brCard, false);
     }
 }
 
@@ -73,7 +73,7 @@ function vehicle_weapon_clicked(ev, vehicle) {
     }
 
     if (gunner) {
-        create_item_card(gunner, item.uuid);
+        createItemCard(gunner, item.uuid);
     } else {
         ui.notifications.error("BRSW.NoGunner");
     }

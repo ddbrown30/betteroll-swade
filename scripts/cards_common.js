@@ -4,12 +4,12 @@
 // noinspection JSUnusedAssignment
 
 import { BrCommonCard } from "./BrCommonCard.js";
-import { roll_attribute } from "./attribute_card.js";
+import { rollAttribute } from "./attribute_card.js";
 import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { WORLD_SETTING_KEYS } from "./brsw2-config.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
 import {
-    roll_item,
+    rollItem,
     runMacros,
     spendPP,
 } from "./item_card.js";
@@ -23,7 +23,7 @@ import { TraitRoll } from "./rolls.js";
 import {
     calculateDistance,
     getTNFromToken,
-    roll_skill,
+    rollSkill,
 } from "./skill_card.js";
 import {
     SettingsUtils,
@@ -54,7 +54,7 @@ export function BRWSRoll() {
  * Makes the BrCommonCard class accessible
  *
  */
-export function expose_card_class() {
+export function exposeCardClass() {
     game.brsw.BrCommonCard = BrCommonCard;
 }
 
@@ -132,7 +132,7 @@ export async function spend_bennie(actor) {
  * @param token_id
  * @param actor_id
  */
-export function get_actor_from_ids(token_id, actor_id) {
+export function getActorFromIds(token_id, actor_id) {
     if (canvas.tokens) {
         let token;
         if (token_id) {
@@ -214,7 +214,7 @@ function toggle_mods_popup(element, brCard) {
  * @param {BrCommonCard} brCard
  * @param {HTMLElement} html - html of the card
  */
-export function activate_common_listeners(brCard, html) {
+export function activateCommonListeners(brCard, html) {
     // The message will be rendered at creation and each time a flag is added
     // Actor will be undefined if this is called before flags are set
     if (brCard.actor) {
@@ -381,22 +381,22 @@ function create_macro_command_from_card(brCard) {
     let roll_function = "";
     let id = "";
     if (brCard.item_id) {
-        card_function_name = "create_item_card_from_id";
+        card_function_name = "createItemCardFromId";
         roll_function =
-            "game.brsw.roll_item(message, $(message.content), false, behaviour.includes('damage'));";
+            "game.brsw.rollItem(message, $(message.content), false, behaviour.includes('damage'));";
         id = brCard.item_id;
     } else if (brCard.skill) {
-        card_function_name = "create_skill_card_from_id";
-        roll_function = "game.brsw.roll_skill(message, $(message.content), false);";
+        card_function_name = "createSkillCardFromId";
+        roll_function = "game.brsw.rollSkill(message, $(message.content), false);";
         id = brCard.trait.id;
     } else if (brCard.attribute) {
-        card_function_name = "create_attribute_card_from_id";
+        card_function_name = "createAttributeCardFromId";
         roll_function =
-            "game.brsw.roll_attribute(message, $(message.content), false);";
+            "game.brsw.rollAttribute(message, $(message.content), false);";
         id = brCard.trait.name;
     }
     return `
-  let behaviour = game.brsw.get_action_from_click(event);
+  let behaviour = game.brsw.getActionFromClick(event);
   if (behaviour === 'system') {
     game.swade.rollItemMacro(\`${brCard.render_data.header.title}\`);
     return;
@@ -480,7 +480,7 @@ export function getActionFromClick(event) {
  *
  * @param old_options - Options used as default
  */
-export function get_roll_options(old_options, brCard) {
+export function getRollOptions(old_options, brCard) {
     const modifiers = old_options?.additionalMods || [];
     const dmg_modifiers = old_options?.dmgMods || [];
     const tn = old_options?.tn || 4;
@@ -741,7 +741,7 @@ async function getNewRollOptions(
         extraOptions.rof = extraData.rof;
     }
 
-    const options = get_roll_options(extraOptions, brCard);
+    const options = getRollOptions(extraOptions, brCard);
     rollOptions.rof = options.rof || 1;
 
     // Trait modifier
@@ -1234,12 +1234,12 @@ async function duplicate_message(message, event) {
         const brCard = new BrCommonCard(message);
         const card_type = brCard.type;
         if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ATTRIBUTE_CARD) {
-            await roll_attribute(brCard, false);
+            await rollAttribute(brCard, false);
         } else if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_SKILL_CARD) {
-            await roll_skill(brCard, false);
+            await rollSkill(brCard, false);
         } else if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD) {
             const roll_damage = action.includes("damage");
-            await roll_item(brCard, $(brCard.message.content), false, roll_damage);
+            await rollItem(brCard, $(brCard.message.content), false, roll_damage);
         }
     }
     return new_message;

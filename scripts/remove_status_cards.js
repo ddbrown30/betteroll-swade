@@ -93,7 +93,7 @@ export async function create_unstun_card(original_message, token_id) {
  * @param html Html produced
  * @param card_type Type of card
  */
-export function activate_remove_status_card_listeners(
+export function activateRemoveStatusCardListeners(
   brCard,
   html,
   card_type,

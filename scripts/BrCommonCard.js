@@ -62,7 +62,7 @@ export class BrCommonCard {
             const data = this.message.getFlag("betterrolls-swade2", "br_data");
             if (data) {
                 this.load(data);
-                // TODO: Check if activate_common_listeners can be made a method of this class and simplified.
+                // TODO: Check if activateCommonListeners can be made a method of this class and simplified.
             }
         } else {
             this.id = broofa();
@@ -198,8 +198,6 @@ export class BrCommonCard {
         if (this.token_id) {
             const { token } = this;
             if (token) {
-                // Token can be undefined even with and id the scene is note
-                // ready or the token has been removed.
                 return token.actor;
             }
         }
@@ -238,7 +236,7 @@ export class BrCommonCard {
     }
 
     get item() {
-        let item = this.actor.items.find((item) => item.id === this.item_id);
+        let item = this.actor?.items.find((item) => item.id === this.item_id);
         if (!item) {
             item = fromUuidSync(this.item_id);
         }

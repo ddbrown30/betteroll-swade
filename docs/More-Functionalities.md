@@ -25,7 +25,7 @@ The following information assumes a passing knowledge of both javascript and Fou
 The module exposes an API in game.brsw.
 
 ```js
-game.brsw.add_actions(actions)
+game.brsw.addActions(actions)
 /**
  * Adds an array of actions to the available ones. The array should be in the same format as builtin-actions.js.
  * The array is cleared when reloading and should be set again
@@ -47,7 +47,7 @@ game.brsw.createAttributeCard()
 ```
 
 ```js
-game.brsw.create_attribute_card_from_id(token_id, actor_id, name)
+game.brsw.createAttributeCardFromId(token_id, actor_id, name)
 /**
  * Creates an attribute card from a token or actor id
  *
@@ -61,7 +61,7 @@ game.brsw.create_attribute_card_from_id(token_id, actor_id, name)
  ```
 
 ```js
-game.brsw.roll_attribute(brCard, expend_bennie)
+game.brsw.rollAttribute(brCard, expend_bennie)
 /**
  * Roll an attribute showing from an existing card
  *
@@ -79,9 +79,9 @@ game.brsw.dialog
 ```
 
 ```js
-game.brsw.get_action_from_click(event)
+game.brsw.getActionFromClick(event)
 /**
-/* Given a js event it checks the setting for the kind of action that shoul be done
+/* Given a js event it checks the setting for the kind of action that should be done
 /* i.e. show the card, show and roll, do a system roll, etc..
 */
 ```
@@ -101,10 +101,10 @@ game.brsw.GLOBAL_ACTIONS
 ```
 
 ```js
-game.brsw.get_roll_options(old_options)
+game.brsw.getRollOptions(old_options)
 /**
  * Gets the roll options from the card html. Don't use, it is here just
- * for compatibility (to keep old macros from breaking). Use the brCommondCard
+ * for compatibility (to keep old macros from breaking). Use the brCommonCard
  * class, as it is much more powerful and clean.
  *
  * @param old_options - Options used as default
@@ -112,15 +112,15 @@ game.brsw.get_roll_options(old_options)
 ```
 
 ```js
-game.brsw.create_incapacitation_card(token_id)
+game.brsw.createIncapacitationCard(token_id)
 /**
- * Shows an incapacitation card an
+ * Shows an incapacitation card
  * @param {string} token_id As it comes from damage its target is always a token
  */
 ```
 
 ```js
-game.brsw.create_item_card(origin, item_id)
+game.brsw.createItemCard(origin, item_id)
 /**
  * Creates a chat card for an item
  *
@@ -131,7 +131,7 @@ game.brsw.create_item_card(origin, item_id)
 ```
 
 ```js
-game.brsw.create_item_card_from_id(token_id, actor_id, itemid)
+game.brsw.createItemCardFromId(token_id, actor_id, itemid)
 /**
  * Creates an item card from a token or actor id, mainly for use in macros
  *
@@ -145,7 +145,7 @@ game.brsw.create_item_card_from_id(token_id, actor_id, itemid)
 ```
 
 ```js
-game.brsw.roll_item(brCard, html, expend_bennie, roll_damage)
+game.brsw.rollItem(brCard, html, expend_bennie, roll_damage)
 /**
  * Roll and existing item card
  *
@@ -159,7 +159,7 @@ game.brsw.roll_item(brCard, html, expend_bennie, roll_damage)
  ```
 
 ```js
-game.brsw.create_skill_card(origin, skillId)
+game.brsw.createSkillCard(origin, skillId)
 /**
  * Creates a chat card for a skill
  *
@@ -170,7 +170,7 @@ game.brsw.create_skill_card(origin, skillId)
  ```
 
 ```js
-game.brsw.create_skill_card_from_id(token_id, actor_id, skillId)
+game.brsw.createSkillCardFromId(token_id, actor_id, skillId)
 /**
  * Creates a skill card from a token or actor id, mainly for use in macros
  *
@@ -184,7 +184,7 @@ game.brsw.create_skill_card_from_id(token_id, actor_id, skillId)
  ```
 
 ```js
- game.brsw.roll_skill(brCard, expend_bennie)
+ game.brsw.rollSkill(brCard, expend_bennie)
  /**
  * Roll an existing skill card
  *

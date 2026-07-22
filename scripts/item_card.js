@@ -13,7 +13,7 @@ import {
     check_and_roll_conviction,
     create_common_card,
     getActionFromClick,
-    get_roll_options,
+    getRollOptions,
     has_joker,
     process_common_actions,
     process_minimum_str_modifiers,
@@ -22,7 +22,7 @@ import {
     spend_bennie,
     update_message,
 } from "./cards_common.js";
-import { create_damage_card } from "./damage_card.js";
+import { createDamageCard } from "./damage_card.js";
 import { DamageModifier, TraitModifier } from "./modifiers.js";
 import { PPManagementDialog } from "./pp_management_dialog.js";
 import { calculateGangUp } from "./skill_card.js";
@@ -50,7 +50,7 @@ const ROF_BULLETS = { 1: 1, 2: 5, 3: 10, 4: 20, 5: 40, 6: 50 };
  * @return {Promise} A promise for the BrCommonCard object
  */
 // eslint-disable-next-line complexity
-export async function create_item_card(
+export async function createItemCard(
     origin,
     item_id,
     { actions_stored = {} } = {},
@@ -298,7 +298,7 @@ function call_create_item_card_hooks(item, brCard) {
  *   and a boolean meaning if they need to set on or off
  * @return {Promise} a promise for the BrCommonCard object
  */
-function create_item_card_from_id(
+function createItemCardFromId(
     token_id,
     actor_id,
     itemId,
@@ -314,7 +314,7 @@ function create_item_card_from_id(
     if (!origin && actor_id) {
         origin = game.actors.get(actor_id);
     }
-    return create_item_card(origin, itemId, {
+    return createItemCard(origin, itemId, {
         actions_stored: actions_stored,
     });
 }
@@ -322,11 +322,11 @@ function create_item_card_from_id(
 /**
  * Hooks the public functions to a global object
  */
-export function expose_item_functions() {
-    game.brsw.create_item_card = create_item_card;
-    game.brsw.create_item_card_from_id = create_item_card_from_id;
-    game.brsw.roll_item = roll_item;
-    game.brsw.create_damage_card = create_damage_card;
+export function exposeItemCardAPI() {
+    Utils.exposeAPI("createItemCard", createItemCard, "create_item_card");
+    Utils.exposeAPI("createItemCardFromId", createItemCardFromId, "create_item_card_from_id");
+    Utils.exposeAPI("rollItem", rollItem, "roll_item");
+    Utils.exposeAPI("createDamageCard", createDamageCard, "create_damage_card");
 }
 
 /**
@@ -382,13 +382,13 @@ async function item_click_listener(ev, target, currentTarget) {
         }
     }
     // Show card
-    const brCard = await create_item_card(target, item_id, {
+    const brCard = await createItemCard(target, item_id, {
         actions_stored: actions_stored,
     });
     if (action.includes("dialog")) {
         game.brsw.dialog.show_card(brCard);
     } else if (brCard.trait && action.includes("trait")) {
-        await roll_item(brCard, "", false, action.includes("damage"));
+        await rollItem(brCard, "", false, action.includes("damage"));
     } else if (brCard.damage && action.includes("damage")) {
         await roll_dmg(brCard, "");
     }
@@ -446,7 +446,7 @@ function preview_template(ev, brCard) {
  * @param {BrCommonCard} brCard
  * @param html Html produced
  */
-export function activate_item_card_listeners(brCard, html) {
+export function activateItemCardListeners(brCard, html) {
     const { actor, item } = brCard;
     html.querySelector(".brsw-header-img")?.addEventListener("click", (_) => {
         item.sheet.render(true);
@@ -454,7 +454,7 @@ export function activate_item_card_listeners(brCard, html) {
 
     addEventListenerAll(html, ".brsw-roll-button", "click", async (ev) => {
         ev.stopPropagation();
-        await roll_item(
+        await rollItem(
             brCard,
             html,
             ev.currentTarget.classList.contains("roll-bennie-button"),
@@ -506,7 +506,7 @@ export function activate_item_card_listeners(brCard, html) {
     });
 
     addEventListenerAll(html, ".brsw-apply-damage", "click", (ev) => {
-        create_damage_card(
+        createDamageCard(
             ev.currentTarget.dataset.token,
             ev.currentTarget.dataset.damage,
             `${actor.name} - ${item.name}`,
@@ -605,7 +605,7 @@ async function roll_resist(trait, brCard, trait_mod) {
         if (BRSW2_CONST.ATTRIBUTES.includes(trait.toLowerCase())) {
             newCard = await game.brsw.createAttributeCard(token, trait.toLowerCase());
         } else {
-            newCard = await game.brsw.create_skill_card(token, Utils.traitFromString(token.actor, trait).id);
+            newCard = await game.brsw.createSkillCard(token, Utils.traitFromString(token.actor, trait).id);
         }
 
         newCard.trait_roll.tn = getTraitRollDifficulty(brCard);
@@ -835,7 +835,7 @@ async function findMacro(macro_name_or_id) {
  *
  * @return {Promise<void>}
  */
-export async function roll_item(brCard, html, expend_bennie, roll_damage) {
+export async function rollItem(brCard, html, expend_bennie, roll_damage) {
     const macros = [];
     let shots_override; // Override the number of shots used
     let shots_modifier = 0; // Modifier to the number of shots
@@ -1401,7 +1401,7 @@ export async function roll_dmg(
     }
 
     // Calculate modifiers
-    const options = get_roll_options(default_options, brCard);
+    const options = getRollOptions(default_options, brCard);
 
     // Shotgun
     if (damageFormulas.damage?.includes("1-3d6") && item.type === "weapon") {

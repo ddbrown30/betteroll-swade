@@ -6,7 +6,7 @@ import { BRSW2_CONST } from "./brsw2-const.js";
 import {
   create_common_card,
   getActionFromClick,
-  get_actor_from_ids,
+  getActorFromIds,
   process_common_actions,
   roll_trait,
   spend_bennie,
@@ -58,13 +58,13 @@ async function createAttributeCard(origin, name, { actions_stored = {} } = {},) 
  *   and a boolean meaning if they need to set on or off
  * @return {Promise} a promise for the ChatMessage object
  */
-function create_attribute_card_from_id(
+function createAttributeCardFromId(
   token_id,
   actor_id,
   name,
   { actions_stored = {} } = {},
 ) {
-  const actor = get_actor_from_ids(token_id, actor_id);
+  const actor = getActorFromIds(token_id, actor_id);
   return createAttributeCard(actor, name, {
     actions_stored: actions_stored,
   });
@@ -73,17 +73,10 @@ function create_attribute_card_from_id(
 /**
  * Hooks the public functions to a global object
  */
-export function attribute_card_hooks() {
-  game.brsw.create_atribute_card = (...args) => {
-    foundry.utils.logCompatibilityWarning(
-      "game.brsw.create_atribute_card is deprecated. Use game.brsw.createAttributeCard instead.",
-      { since: "5.19.0" }
-    );
-    return createAttributeCard(...args);
-  };
-  game.brsw.createAttributeCard = createAttributeCard;
-  game.brsw.create_attribute_card_from_id = create_attribute_card_from_id;
-  game.brsw.roll_attribute = roll_attribute;
+export function exposeAttributeAPI() {
+  Utils.exposeAPI("createAttributeCard", createAttributeCard, "create_atribute_card");
+  Utils.exposeAPI("createAttributeCardFromId", createAttributeCardFromId, "create_attribute_card_from_id");
+  Utils.exposeAPI("rollAttribute", rollAttribute, "roll_attribute");
 }
 
 /**
@@ -106,7 +99,7 @@ async function attribute_click_listener(ev, target) {
   if (action.includes("dialog")) {
     game.brsw.dialog.show_card(brCard);
   } else if (action.includes("trait")) {
-    await roll_attribute(brCard, false);
+    await rollAttribute(brCard, false);
   }
 }
 
@@ -127,12 +120,12 @@ export function activate_attribute_listeners(app, html) {
  * @param {BrCommonCard} card Message date
  * @param html Html produced
  */
-export function activate_attribute_card_listeners(card, html) {
+export function activateAttributeCardListeners(card, html) {
   const roll_buttons = html.querySelectorAll(".brsw-roll-button");
   for (const roll_button of roll_buttons) {
     roll_button.addEventListener("click", async (ev) => {
       ev.stopPropagation();
-      await roll_attribute(
+      await rollAttribute(
         card,
         ev.currentTarget.classList.contains("roll-bennie-button"),
       );
@@ -146,7 +139,7 @@ export function activate_attribute_card_listeners(card, html) {
  * @param {BrCommonCard} brCard The card being rolled
  * @param {boolean} expend_bennie True if we want to spend a bennie
  */
-export async function roll_attribute(brCard, expend_bennie) {
+export async function rollAttribute(brCard, expend_bennie) {
   const extra_data = { modifiers: [] };
   const macros = [];
   for (const action of brCard.getSelectedActions()) {

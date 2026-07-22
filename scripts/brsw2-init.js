@@ -3,43 +3,43 @@
     Macro, CONFIG, foundry, Item, ModuleManagement, $ */
 import { BrCommonCard } from "./BrCommonCard.js";
 import {
-    activate_attribute_card_listeners,
+    activateAttributeCardListeners,
     activate_attribute_listeners,
-    attribute_card_hooks,
+    exposeAttributeAPI,
 } from "./attribute_card.js";
 import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
-import { setup_dialog } from "./card-dialog.js";
+import { setupDialog } from "./card-dialog.js";
 import {
-    activate_common_listeners,
-    expose_card_class,
+    activateCommonListeners,
+    exposeCardClass,
     getActionFromClick,
 } from "./cards_common.js";
 import { create_unshaken_wrapper, create_unstun_wrapper } from "./combat.js";
-import { activate_damage_card_listeners } from "./damage_card.js";
+import { activateDamageCardListeners } from "./damage_card.js";
 import {
-    expose_global_actions_functions,
+    exposeGlobalActionsAPI,
     registerActions,
-    register_gm_actions_settings
+    registerGMActionsSettings
 } from "./global_actions.js";
-import { setup_chat_button } from "./gm_actions.js";
+import { setupChatButton } from "./gm_actions.js";
 import {
-    activate_incapacitation_card_listeners,
-    incapacitation_card_hooks,
+    activateIncapacitationCardListeners,
+    exposeIncapacitationCardAPI,
 } from "./incapacitation_card.js";
 import {
-    activate_item_card_listeners,
+    activateItemCardListeners,
     activate_item_listeners,
-    expose_item_functions,
+    exposeItemCardAPI,
 } from "./item_card.js";
-import { activate_remove_status_card_listeners } from "./remove_status_cards.js";
+import { activateRemoveStatusCardListeners } from "./remove_status_cards.js";
 import { migrateOptionalRules, registerDSNSettings, registerSettings, updateCachedUserSettings, updateCachedWorldSettings } from "./settings.js";
 import {
-    activate_skill_card_listeners,
+    activateSkillCardListeners,
     activate_skill_listeners,
-    skill_card_hooks,
+    exposeSkillCardAPI,
 } from "./skill_card.js";
-import { SettingsUtils, TelemetryUtils, cacheSkillData, measureDistance } from "./utils.js";
+import { SettingsUtils, TelemetryUtils, Utils, cacheSkillData, measureDistance } from "./utils.js";
 import { activate_vehicle_listeners } from "./vehicle_card.js";
 
 // Init Hook
@@ -47,13 +47,13 @@ Hooks.on(`init`, () => {
     game.brsw = {};
     game.brsw.CONST = BRSW2_CONST;
     game.brsw.cascade_count = 0;
-    game.brsw.get_action_from_click = getActionFromClick;
-    game.brsw.measureDistance = measureDistance;
+    Utils.exposeAPI("getActionFromClick", getActionFromClick, "get_action_from_click");
+    Utils.exposeAPI("measureDistance", measureDistance);
 
     registerSettings();
 
     registerActions();
-    register_gm_actions_settings();
+    registerGMActionsSettings();
 });
 
 // Base Hook
@@ -66,13 +66,13 @@ Hooks.on(`ready`, async () => {
     updateCachedUserSettings();
 
     // Create a base object to hook functions
-    attribute_card_hooks();
-    skill_card_hooks();
-    expose_item_functions();
-    expose_global_actions_functions();
-    expose_card_class();
-    incapacitation_card_hooks();
-    setup_chat_button();
+    exposeAttributeAPI();
+    exposeSkillCardAPI();
+    exposeItemCardAPI();
+    exposeGlobalActionsAPI();
+    exposeCardClass();
+    exposeIncapacitationCardAPI();
+    setupChatButton();
     await cacheSkillData();
 
     // Load partials.
@@ -98,8 +98,8 @@ Hooks.on(`ready`, async () => {
         game.swade.effectCallbacks.set("stunned", create_unstun_wrapper);
     }
 
-    compatibility_warnings();
-    setup_dialog();
+    compatibilityWarnings();
+    setupDialog();
 
     // Remove the first hook from the hotbarDrop, hoping it is the system's
     const system_event = Hooks.events.hotbarDrop.find(
@@ -120,22 +120,22 @@ Hooks.on(`ready`, async () => {
 // Hooks on render
 
 function activateCardListeners(brCard, html, message) {
-    activate_common_listeners(brCard, html);
+    activateCommonListeners(brCard, html);
     if (brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ATTRIBUTE_CARD) {
-        activate_attribute_card_listeners(brCard, html);
+        activateAttributeCardListeners(brCard, html);
     } else if (brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_SKILL_CARD) {
-        activate_skill_card_listeners(brCard, html);
+        activateSkillCardListeners(brCard, html);
     } else if (brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD) {
-        activate_item_card_listeners(brCard, html);
+        activateItemCardListeners(brCard, html);
     } else if (brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_DMG_CARD) {
-        activate_damage_card_listeners(message, html);
+        activateDamageCardListeners(message, html);
     } else if (brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_INC_CARD) {
-        activate_incapacitation_card_listeners(message, html);
+        activateIncapacitationCardListeners(message, html);
     } else if (
         brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_UNSHAKE_CARD ||
         brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_UNSTUN_CARD
     ) {
-        activate_remove_status_card_listeners(brCard, html, brCard.type);
+        activateRemoveStatusCardListeners(brCard, html, brCard.type);
     }
 }
 
@@ -256,25 +256,25 @@ Hooks.on("dropCanvasData", (canvas, item) => {
 function create_macro_command(data, actor_id, token_id) {
     const bt = "`";
     return `
-            let behaviour = game.brsw.get_action_from_click(event);
+            let behaviour = game.brsw.getActionFromClick(event);
             if (behaviour === 'system') {
                 game.swade.rollItemMacro(${bt}${data.name}${bt});
                 return;
             }
             let message;
             if (${data.type === "skill"}) {
-                message = await game.brsw.create_skill_card_from_id('${token_id}', '${actor_id}', '${data._id
+                message = await game.brsw.createSkillCardFromId('${token_id}', '${actor_id}', '${data._id
         }');
             } else {
-                message = await game.brsw.create_item_card_from_id('${token_id}', '${actor_id}', '${data._id
+                message = await game.brsw.createItemCardFromId('${token_id}', '${actor_id}', '${data._id
         }');
             }
             if (event) {
                 if (behaviour.includes('trait')) {
                     if (${data.type === "skill"}) {
-                        game.brsw.roll_skill(message, $(message.content), false)
+                        game.brsw.rollSkill(message, $(message.content), false)
                     } else {
-                        game.brsw.roll_item(message, $(message.content), false, behaviour.includes('damage'))
+                        game.brsw.rollItem(message, $(message.content), false, behaviour.includes('damage'))
                     }
                 }
             }
@@ -283,14 +283,14 @@ function create_macro_command(data, actor_id, token_id) {
 
 function create_attribute_macro(data) {
     return `
-    let behaviour = game.brsw.get_action_from_click(event);
+    let behaviour = game.brsw.getActionFromClick(event);
     if (behaviour === 'system') {
       game.swade.rollItemMacro("${data.attribute}");
     } else {
       origin = await fromUuid("${data.uuid}");
       const brCard = await game.brsw.createAttributeCard(origin, "${data.attribute}");
       if (behaviour.includes('trait')) {
-        game.brsw.roll_attribute(brCard, false);
+        game.brsw.rollAttribute(brCard, false);
       }
     }
   `;
@@ -364,7 +364,7 @@ Hooks.once("diceSoNiceReady", () => {
 });
 
 //Compatibility warnings:
-function compatibility_warnings() {
+function compatibilityWarnings() {
     if (game.modules.get("swade-tools")?.active) {
         new foundry.applications.api.DialogV2({
             window: { title: "BRSW.CompatibilityHeadline" },

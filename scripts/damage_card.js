@@ -9,8 +9,8 @@ import {
     spend_bennie,
 } from "./cards_common.js";
 import {
-    create_incapacitation_card,
-    create_injury_card,
+    createIncapacitationCard,
+    createInjuryCard,
 } from "./incapacitation_card.js";
 import { Utils, addEventListenerAll } from "./utils.js";
 
@@ -21,7 +21,7 @@ import { Utils, addEventListenerAll } from "./utils.js";
  * @param {string} damage_text
  * @param {string} heavyDamage
  */
-export async function create_damage_card(
+export async function createDamageCard(
     token_id,
     damage,
     damage_text,
@@ -215,7 +215,7 @@ async function undo_damage(message) {
  * @param message Message date
  * @param html Html produced
  */
-export function activate_damage_card_listeners(message, html) {
+export function activateDamageCardListeners(message, html) {
     const brCard = new BrCommonCard(message);
     html.querySelector(".brsw-undo-damage")?.addEventListener("click", async () => {
         await undo_damage(message);
@@ -235,7 +235,7 @@ export function activate_damage_card_listeners(message, html) {
     html.querySelector(".brsw-show-incapacitation")?.addEventListener("click", () => {
         // noinspection JSIgnoredPromiseFromCall
         brCard.closePopout(); //We assume we're done with the card at this point so close any popouts
-        create_incapacitation_card(brCard.token_id);
+        createIncapacitationCard(brCard.token_id);
     });
     html.querySelector(".brsw-mark-defeated")?.addEventListener("click", async () => {
         await brCard.actor.toggleStatusEffect("incapacitated", { active: false });
@@ -244,7 +244,7 @@ export function activate_damage_card_listeners(message, html) {
     });
     html.querySelector(".brsw-injury-button")?.addEventListener("click", () => {
         // noinspection JSIgnoredPromiseFromCall
-        create_injury_card(brCard.token_id, "gritty");
+        createInjuryCard(brCard.token_id, "gritty");
     });
 }
 

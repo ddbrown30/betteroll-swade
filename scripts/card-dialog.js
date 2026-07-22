@@ -1,7 +1,7 @@
 // A dialog to manage br cards
 /* global game, console, renderTemplate */
 
-export function setup_dialog() {
+export function setupDialog() {
   const dialog_element = document.createElement("dialog");
   dialog_element.setAttribute("id", "br-card-dialog");
   dialog_element.classList.add("twbr:bg-gray-700");
