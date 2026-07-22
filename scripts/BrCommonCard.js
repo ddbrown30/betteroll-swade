@@ -62,7 +62,7 @@ export class BrCommonCard {
             const data = this.message.getFlag("betterrolls-swade2", "br_data");
             if (data) {
                 this.load(data);
-                // TODO: Check if activate_common_listeners can be made a method of this class and simplified.
+                // TODO: Check if activateCommonListeners can be made a method of this class and simplified.
             }
         } else {
             this.id = broofa();

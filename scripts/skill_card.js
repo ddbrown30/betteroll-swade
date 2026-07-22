@@ -147,7 +147,7 @@ export function activate_skill_listeners(app, html) {
  * @param {BrCommonCard} brCard
  * @param html Html produced
  */
-export function activate_skill_card_listeners(brCard, html) {
+export function activateSkillCardListeners(brCard, html) {
     addEventListenerAll(html, ".brsw-roll-button", "click", async (ev) => {
         ev.stopPropagation();
         await rollSkill(

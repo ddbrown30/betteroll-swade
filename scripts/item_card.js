@@ -446,7 +446,7 @@ function preview_template(ev, brCard) {
  * @param {BrCommonCard} brCard
  * @param html Html produced
  */
-export function activate_item_card_listeners(brCard, html) {
+export function activateItemCardListeners(brCard, html) {
     const { actor, item } = brCard;
     html.querySelector(".brsw-header-img")?.addEventListener("click", (_) => {
         item.sheet.render(true);

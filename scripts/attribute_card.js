@@ -120,7 +120,7 @@ export function activate_attribute_listeners(app, html) {
  * @param {BrCommonCard} card Message date
  * @param html Html produced
  */
-export function activate_attribute_card_listeners(card, html) {
+export function activateAttributeCardListeners(card, html) {
   const roll_buttons = html.querySelectorAll(".brsw-roll-button");
   for (const roll_button of roll_buttons) {
     roll_button.addEventListener("click", async (ev) => {

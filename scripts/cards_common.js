@@ -214,7 +214,7 @@ function toggle_mods_popup(element, brCard) {
  * @param {BrCommonCard} brCard
  * @param {HTMLElement} html - html of the card
  */
-export function activate_common_listeners(brCard, html) {
+export function activateCommonListeners(brCard, html) {
     // The message will be rendered at creation and each time a flag is added
     // Actor will be undefined if this is called before flags are set
     if (brCard.actor) {

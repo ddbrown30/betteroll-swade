@@ -76,7 +76,7 @@ function roll_incapacitation_clicked(ev, brCard) {
  * @param message Message date
  * @param html Html produced
  */
-export function activate_incapacitation_card_listeners(message, html) {
+export function activateIncapacitationCardListeners(message, html) {
     const brCard = new BrCommonCard(message);
     addEventListenerAll(html, ".brsw-vigor-button, .brsw-roll-button", "click", (ev) => {
         roll_incapacitation_clicked(ev, brCard);

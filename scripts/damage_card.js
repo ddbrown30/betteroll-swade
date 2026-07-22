@@ -215,7 +215,7 @@ async function undo_damage(message) {
  * @param message Message date
  * @param html Html produced
  */
-export function activate_damage_card_listeners(message, html) {
+export function activateDamageCardListeners(message, html) {
     const brCard = new BrCommonCard(message);
     html.querySelector(".brsw-undo-damage")?.addEventListener("click", async () => {
         await undo_damage(message);

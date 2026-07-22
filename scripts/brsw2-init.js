@@ -3,39 +3,39 @@
     Macro, CONFIG, foundry, Item, ModuleManagement, $ */
 import { BrCommonCard } from "./BrCommonCard.js";
 import {
-    activate_attribute_card_listeners,
+    activateAttributeCardListeners,
     activate_attribute_listeners,
     exposeAttributeAPI,
 } from "./attribute_card.js";
 import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
-import { setup_dialog } from "./card-dialog.js";
+import { setupDialog } from "./card-dialog.js";
 import {
-    activate_common_listeners,
+    activateCommonListeners,
     exposeCardClass,
     getActionFromClick,
 } from "./cards_common.js";
 import { create_unshaken_wrapper, create_unstun_wrapper } from "./combat.js";
-import { activate_damage_card_listeners } from "./damage_card.js";
+import { activateDamageCardListeners } from "./damage_card.js";
 import {
     exposeGlobalActionsAPI,
     registerActions,
     registerGMActionsSettings
 } from "./global_actions.js";
-import { setup_chat_button } from "./gm_actions.js";
+import { setupChatButton } from "./gm_actions.js";
 import {
-    activate_incapacitation_card_listeners,
+    activateIncapacitationCardListeners,
     exposeIncapacitationCardAPI,
 } from "./incapacitation_card.js";
 import {
-    activate_item_card_listeners,
+    activateItemCardListeners,
     activate_item_listeners,
     exposeItemCardAPI,
 } from "./item_card.js";
-import { activate_remove_status_card_listeners } from "./remove_status_cards.js";
+import { activateRemoveStatusCardListeners } from "./remove_status_cards.js";
 import { migrateOptionalRules, registerDSNSettings, registerSettings, updateCachedUserSettings, updateCachedWorldSettings } from "./settings.js";
 import {
-    activate_skill_card_listeners,
+    activateSkillCardListeners,
     activate_skill_listeners,
     exposeSkillCardAPI,
 } from "./skill_card.js";
@@ -72,7 +72,7 @@ Hooks.on(`ready`, async () => {
     exposeGlobalActionsAPI();
     exposeCardClass();
     exposeIncapacitationCardAPI();
-    setup_chat_button();
+    setupChatButton();
     await cacheSkillData();
 
     // Load partials.
@@ -98,8 +98,8 @@ Hooks.on(`ready`, async () => {
         game.swade.effectCallbacks.set("stunned", create_unstun_wrapper);
     }
 
-    compatibility_warnings();
-    setup_dialog();
+    compatibilityWarnings();
+    setupDialog();
 
     // Remove the first hook from the hotbarDrop, hoping it is the system's
     const system_event = Hooks.events.hotbarDrop.find(
@@ -120,22 +120,22 @@ Hooks.on(`ready`, async () => {
 // Hooks on render
 
 function activateCardListeners(brCard, html, message) {
-    activate_common_listeners(brCard, html);
+    activateCommonListeners(brCard, html);
     if (brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ATTRIBUTE_CARD) {
-        activate_attribute_card_listeners(brCard, html);
+        activateAttributeCardListeners(brCard, html);
     } else if (brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_SKILL_CARD) {
-        activate_skill_card_listeners(brCard, html);
+        activateSkillCardListeners(brCard, html);
     } else if (brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD) {
-        activate_item_card_listeners(brCard, html);
+        activateItemCardListeners(brCard, html);
     } else if (brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_DMG_CARD) {
-        activate_damage_card_listeners(message, html);
+        activateDamageCardListeners(message, html);
     } else if (brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_INC_CARD) {
-        activate_incapacitation_card_listeners(message, html);
+        activateIncapacitationCardListeners(message, html);
     } else if (
         brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_UNSHAKE_CARD ||
         brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_UNSTUN_CARD
     ) {
-        activate_remove_status_card_listeners(brCard, html, brCard.type);
+        activateRemoveStatusCardListeners(brCard, html, brCard.type);
     }
 }
 
@@ -364,7 +364,7 @@ Hooks.once("diceSoNiceReady", () => {
 });
 
 //Compatibility warnings:
-function compatibility_warnings() {
+function compatibilityWarnings() {
     if (game.modules.get("swade-tools")?.active) {
         new foundry.applications.api.DialogV2({
             window: { title: "BRSW.CompatibilityHeadline" },
