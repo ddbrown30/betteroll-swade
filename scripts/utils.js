@@ -180,8 +180,8 @@ export function getTargetedToken(originActors) {
  * Gets the first selected token
  */
 export function getSelectedToken(originActors) {
-    const originActorIds = new Set(originActors.map(a => a.id));
-    return canvas.tokens.controlled.find((t) => !originActorIds.has(t.actor.id));
+    const originActorIds = new Set(originActors?.map(a => a.id) ?? []);
+    return canvas.tokens.controlled.find((t) => t.actor && !originActorIds.has(t.actor.id));
 }
 
 /**
