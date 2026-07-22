@@ -112,7 +112,7 @@ game.brsw.getRollOptions(old_options)
 ```
 
 ```js
-game.brsw.create_incapacitation_card(token_id)
+game.brsw.createIncapacitationCard(token_id)
 /**
  * Shows an incapacitation card an
  * @param {string} token_id As it comes from damage its target is always a token

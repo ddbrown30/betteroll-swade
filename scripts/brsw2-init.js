@@ -25,7 +25,7 @@ import {
 import { setup_chat_button } from "./gm_actions.js";
 import {
     activate_incapacitation_card_listeners,
-    incapacitation_card_hooks,
+    exposeIncapacitationCardAPI,
 } from "./incapacitation_card.js";
 import {
     activate_item_card_listeners,
@@ -71,7 +71,7 @@ Hooks.on(`ready`, async () => {
     exposeItemCardAPI();
     exposeGlobalActionsAPI();
     expose_card_class();
-    incapacitation_card_hooks();
+    exposeIncapacitationCardAPI();
     setup_chat_button();
     await cacheSkillData();
 

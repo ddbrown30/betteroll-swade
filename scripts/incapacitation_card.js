@@ -17,7 +17,7 @@ import { Utils, addEventListenerAll } from "./utils.js";
  * Shows an incapacitation card an
  * @param {string} token_id As it comes from damage its target is always a token
  */
-export async function create_incapacitation_card(token_id) {
+export async function createIncapacitationCard(token_id) {
     let token = canvas.tokens.get(token_id);
     let { actor } = token;
     let user = get_owner(actor);
@@ -51,10 +51,10 @@ export async function create_incapacitation_card(token_id) {
 /**
  * Hooks the public functions to a global object
  */
-export function incapacitation_card_hooks() {
-    game.brsw.create_incapacitation_card = create_incapacitation_card;
-    game.brsw.create_injury_card = create_injury_card;
-    game.brsw.create_injury_effect = create_injury_effect;
+export function exposeIncapacitationCardAPI() {
+    Utils.exposeAPI("createIncapacitationCard", createIncapacitationCard, "create_incapacitation_card");
+    Utils.exposeAPI("createInjuryCard", createInjuryCard, "create_injury_card");
+    Utils.exposeAPI("createInjuryEffect", createInjuryEffect, "create_injury_effect");
 }
 
 /**
@@ -84,7 +84,7 @@ export function activate_incapacitation_card_listeners(message, html) {
     html.querySelector(".brsw-injury-button")?.addEventListener("click", (ev) => {
         // noinspection JSIgnoredPromiseFromCall
         brCard.closePopout(); //We assume we're done with the card at this point so close any popouts
-        create_injury_card(
+        createInjuryCard(
             brCard.token_id,
             ev.currentTarget.dataset.injuryType,
         );
@@ -163,7 +163,7 @@ async function roll_incapacitation(brCard, spend_benny) {
  * @param token_id
  * @param {string} reason Reason for the injury
  */
-export async function create_injury_card(token_id, reason) {
+export async function createInjuryCard(token_id, reason) {
     let token = canvas.tokens.get(token_id);
     let { actor } = token;
     let user = get_owner(actor);
@@ -194,7 +194,7 @@ export async function create_injury_card(token_id, reason) {
             );
         }
     }
-    let injury_effect = await create_injury_effect(actor, reason, first_result, second_result);
+    let injury_effect = await createInjuryEffect(actor, reason, first_result, second_result);
     let brCard = await create_common_card(
         token,
         {
@@ -242,7 +242,7 @@ function read_table(table, value) {
  * @param {string} first_result The first result of an injury roll e.g. BRSW.Guts
  * @param {string} second_result The second result of an injury roll e.g. BRSW.Broken
  */
-export async function create_injury_effect(actor, reason, first_result, second_result) {
+export async function createInjuryEffect(actor, reason, first_result, second_result) {
     const active_effect_index = `${first_result}+${second_result}`;
     let new_effect;
     let injury_effect;
