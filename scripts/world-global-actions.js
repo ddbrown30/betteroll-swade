@@ -1,7 +1,7 @@
 
 import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { registerActions } from "./global_actions.js";
-import { SettingsUtils, addEventListenerAll } from "./utils.js";
+import { SettingsUtils } from "./utils.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -20,20 +20,20 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
         },
         position: { width: 800, height: 700 },
         actions: {
-            newAction: function (event, button) {
-                this.addAction(event, this.element);
+            newAction: function (event, _button) {
+                this.addAction(event);
             },
-            export: function (event, button) {
+            export: function (_event, _button) {
                 this.exportGlobalActions();
             },
-            import: function (event, button) {
+            import: function (_event, _button) {
                 this.importGlobalActions();
             },
-            trash: function (event, button) {
+            trash: function (event, _button) {
                 const row = event.target.parentElement.parentElement;
                 row.remove();
             },
-            accordion: function (event, button) {
+            accordion: function (event, _button) {
                 const actionContent = event.target.parentElement.nextElementSibling;
                 const isCollapsed = actionContent.classList.contains("brsw-collapsed");
 
@@ -74,7 +74,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
         }));
     }
 
-    async _prepareContext(options) {
+    _prepareContext(_options) {
         const formattedActions = [];
 
         for (const action of this.actions) {
@@ -100,17 +100,17 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
         return { actions: formattedActions };
     }
 
-    static async formHandler(event, form, formData) {
+    static async formHandler(_event, _form, formData) {
         const newWorldActions = [];
         const newInvalidActions = [];
-        for (let [formId, json] of Object.entries(formData.object)) {
-            formId = Number(formId);
-            if (this.actions.find(a => a.formId === formId)) {
+        for (const [formId, json] of Object.entries(formData.object)) {
+            const formIdNumber = Number(formId);
+            if (this.actions.find(a => a.formId === formIdNumber)) {
                 const newAction = JSON.parse(json);
                 delete newAction.formId; //We don't want the formId in the saved data
                 newWorldActions.push(newAction);
             } else {
-                const invalidAction = this.invalidActions.find(a => a.formId === formId);
+                const invalidAction = this.invalidActions.find(a => a.formId === formIdNumber);
                 newInvalidActions.push({
                     json: json,
                     error: invalidAction.error
@@ -124,7 +124,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
         registerActions();
     }
 
-    async _onRender(context, options) {
+    async _onRender(_context, _options) {
         this.editors = [];
 
         for (const textarea of this.element.querySelectorAll(".brsw-action-json")) {
@@ -159,7 +159,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
         if (!error) {
             // Need to have an id, name
             for (const requisite of ["id", "name"]) {
-                if (!action.hasOwnProperty(requisite)) {
+                if (!Object.hasOwn(action, requisite)) {
                     error = game.i18n.localize("BRSW.MissingJSON") + requisite;
                 }
             }
@@ -271,7 +271,7 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
         }
     }
 
-    async addAction(ev, html) {
+    async addAction(ev) {
         ev.preventDefault();
 
         const formId = this.nextFormId++;
@@ -323,10 +323,11 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
                     icon: "fas fa-file-import",
                     label: "Import",
                     action: "import",
-                    callback: async (event, target, dialog) => {
+                    callback: async (_event, _target, dialog) => {
                         const form = dialog.element.querySelector("form");
                         if (!form.data.files.length) {
-                            return ui.notifications.error("You did not upload a data file!");
+                            ui.notifications.error("You did not upload a data file!");
+                            return;
                         }
                         const jsonText = await foundry.utils.readTextFromFile(form.data.files[0]);
                         await SettingsUtils.setSetting(BRSW2_CONFIG.SETTING_KEYS.worldGlobalActions, JSON.parse(jsonText));

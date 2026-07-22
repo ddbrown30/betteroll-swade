@@ -1,7 +1,5 @@
 // Functions for cards representing skills
-/* globals TokenDocument, Token, game, CONST, canvas, console, Ray, succ, fromUuid, ui, $ */
 
-import { BrCommonCard } from "./BrCommonCard.js";
 import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
 import {
@@ -413,14 +411,12 @@ function shouldUseScale(origin_actor, targetToken, item, skill) {
  * Get the scale modifier
  **/
 
-function getScaleModifier(origin_actor, target_actor, item, tn, extra_data) {
-
-    const originScaleMod = sizeToScale(origin_actor?.system?.stats?.size || 1);
+function getScaleModifier(originActor, targetActor, item, tn, extra_data) {
+    const originScaleMod = sizeToScale(originActor?.system.stats.size ?? 0);
     const targetScaleMod = sizeToScale(
-        target_actor?.system?.size || // Vehicles
-        target_actor?.system?.stats?.size ||
-        1,
-    ); // actor or default
+        targetActor?.system.size ?? // Vehicles
+        targetActor?.system.stats.size ?? 0 // actor or default
+    );
 
     if (originScaleMod === targetScaleMod) {
         //Actors are the same scale so there is no mod
@@ -433,9 +429,7 @@ function getScaleModifier(origin_actor, target_actor, item, tn, extra_data) {
         return;
     }
 
-    tn.modifiers.push(
-        new TraitModifier(game.i18n.localize("BRSW.Scale"), scaleMod),
-    );
+    tn.modifiers.push(new TraitModifier(game.i18n.localize("BRSW.Scale"), scaleMod));
 
     if (extra_data.arcaneActivationOffset !== undefined) {
         //Scale does not affect arcane activation
@@ -443,31 +437,25 @@ function getScaleModifier(origin_actor, target_actor, item, tn, extra_data) {
     }
 
     // If the scale mod is negative, check if the attacking actor has the swat ability
-    if (scaleMod < 0 && origin_actor) {
-        let unignoredPenalty = scaleMod * -1;
+    if (scaleMod < 0 && originActor) {
+        let unignoredPenalty = -scaleMod;
 
-        const swat = origin_actor.items.find((item) => {
-            return (
-                item.type === "ability" &&
-                item.name
-                    .toLowerCase()
-                    .includes(game.i18n.localize("BRSW.Swat").toLowerCase())
-            );
+        const swatName = game.i18n.localize("BRSW.Swat");
+        const swatNameLower = swatName.toLowerCase();
+        const swatAbility = originActor.items.find((item) => {
+            return item.type === "ability" && item.name.toLowerCase().includes(swatNameLower);
         });
 
-        if (swat) {
+        if (swatAbility) {
             // The swat ability ignores up to 4 points of scale penalties
-            const swatMod = scaleMod < -4 ? 4 : scaleMod * -1;
+            const swatMod = Math.min(4, -scaleMod);
             unignoredPenalty -= swatMod;
-            tn.modifiers.push(
-                new TraitModifier(game.i18n.localize("BRSW.Swat"), swatMod),
-            );
+            tn.modifiers.push(new TraitModifier(swatName, swatMod));
         }
 
         if (unignoredPenalty > 0) {
             //Scale penalties can be ignored by aiming so add it to the total
-            extra_data.total_aiming_ignorable_penalties =
-                extra_data.total_aiming_ignorable_penalties ?? 0;
+            extra_data.total_aiming_ignorable_penalties ??= 0;
             extra_data.total_aiming_ignorable_penalties += unignoredPenalty;
         }
     }
@@ -480,23 +468,16 @@ function getScaleModifier(origin_actor, target_actor, item, tn, extra_data) {
  **/
 
 function sizeToScale(size) {
+    if (!Number.isFinite(size)) return 0;
+
     //p179 swade core
-    if (size === -4) {
-        return -6;
-    } else if (size === -3) {
-        return -4;
-    } else if (size === -2) {
-        return -2;
-    } else if (size >= -1 && size <= 3) {
-        return 0;
-    } else if (size >= 4 && size <= 7) {
-        return 2;
-    } else if (size >= 8 && size <= 11) {
-        return 4;
-    } else if (size >= 12) {
-        return 6;
-    }
-    return 0; // Failsafe.
+    if (size === -4) return -6;
+    if (size === -3) return -4;
+    if (size === -2) return -2;
+    if (size <= 3) return 0;
+    if (size <= 7) return 2;
+    if (size <= 11) return 4;
+    return 6;
 }
 
 /**
