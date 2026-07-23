@@ -46,6 +46,12 @@ class BrCardDialog {
       "modules/betterrolls-swade2/templates/card_dialog.hbs",
       { BrCard: this.BrCard, sections },
     );
+
+    const isDark = document.body.classList.contains('theme-dark');
+    const theme = isDark ? 'dark' : 'light';
+    this.dialog_element.classList.remove('theme-light', 'theme-dark');
+    this.dialog_element.classList.add(`theme-${theme}`);
+
     this.bind_events();
   }
 
@@ -95,7 +101,6 @@ class BrCardDialog {
       enabled_actions.push(button.dataset.actionId);
     }
     this.BrCard.setActiveActions(enabled_actions);
-
 
     this.BrCard.refreshPPModsFromActions();
 

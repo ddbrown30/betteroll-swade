@@ -101,10 +101,20 @@ export class BrCommonCard {
                 ? game.brsw.cascade_count + 1
                 : 0;
 
-        new CONFIG.ChatMessage.popoutClass({
+        const popout = new CONFIG.ChatMessage.popoutClass({
             message: this.message,
             position: { top: top, left: left },
-        }).render(true);
+        });
+
+        const isDark = document.body.classList.contains('theme-dark');
+        const theme = isDark ? 'dark' : 'light';
+        popout.render(true);
+        popout.addEventListener('render', () => {
+            if (popout.element) {
+                popout.element.classList.remove('theme-light', 'theme-dark');
+                popout.element.classList.add(`theme-${theme}`);
+            }
+        });
     }
 
     closePopout() {

@@ -358,7 +358,7 @@
     --tw-font-weight: var(--twbr-font-weight-semibold) !important;
     font-weight: var(--twbr-font-weight-semibold) !important;
   }
-  .twbr\:text-black {
+  .twbr\:text-black .theme-light {
     color: var(--twbr-color-black) !important;
   }
   .twbr\:text-blue-200 {

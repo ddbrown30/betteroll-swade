@@ -2,6 +2,46 @@
 @import "tailwindcss/theme.css" layer(theme) prefix(twbr) important;
 @import "tailwindcss/utilities.css" layer(utilities) prefix(twbr) important;
 
+@layer theme {
+  :root {
+    --twbr-color-gray-200: var(--color-border-light, #e0e0d8);
+    --twbr-color-gray-300: var(--color-border, #c9c7b8);
+    --twbr-color-gray-500: var(--color-background, #f0f0e8);
+    --twbr-color-gray-600: var(--color-background-alt, #e8e8e0);
+    --twbr-color-gray-700: var(--color-border-dark, #b5b3a8);
+    --twbr-color-gray-800: var(--color-text-dark, #191813);
+    --twbr-color-gray-900: var(--color-text, #191813);
+    --twbr-color-white: var(--color-text-light, #f0f0e8);
+    --twbr-color-black: var(--color-text-dark, #191813);
+    --twbr-color-red-600: var(--color-danger, #b53a2a);
+    --twbr-color-red-700: var(--color-danger, #b53a2a);
+    --twbr-color-red-900: var(--color-danger, #b53a2a);
+    --twbr-color-blue-200: var(--color-info, #2a5a8a);
+    --twbr-color-slate-400: var(--color-border, #c9c7b8);
+    --twbr-color-red-200: var(--color-danger-light, #e8b4a8);
+    --twbr-color-red-400: var(--color-danger, #b53a2a);
+  }
+
+  .theme-dark {
+    --twbr-color-gray-200: #3a3a3a;
+    --twbr-color-gray-300: #4a4a4a;
+    --twbr-color-gray-500: #2a2a2a;
+    --twbr-color-gray-600: #333333;
+    --twbr-color-gray-700: #4a4a4a;
+    --twbr-color-gray-800: #c9c7b8;
+    --twbr-color-gray-900: #c9c7b8;
+    --twbr-color-white: #c9c7b8;
+    --twbr-color-black: #c9c7b8;
+    --twbr-color-red-600: #cc5533;
+    --twbr-color-red-700: #cc5533;
+    --twbr-color-red-900: #cc5533;
+    --twbr-color-blue-200: #3a7aaa;
+    --twbr-color-slate-400: #4a4a4a;
+    --twbr-color-red-200: #7a3a2a;
+    --twbr-color-red-400: #cc5533;
+  }
+}
+
 @layer components {
     *,
     ::before,
