@@ -330,7 +330,9 @@ export class WorldGlobalActions extends HandlebarsApplicationMixin(ApplicationV2
                             return;
                         }
                         const jsonText = await foundry.utils.readTextFromFile(form.data.files[0]);
-                        await SettingsUtils.setSetting(BRSW2_CONFIG.SETTING_KEYS.worldGlobalActions, JSON.parse(jsonText));
+                        const importedActions = JSON.parse(jsonText);
+                        await SettingsUtils.setSetting(BRSW2_CONFIG.SETTING_KEYS.worldGlobalActions, importedActions);
+                        this.actions = importedActions.map(a => ({ action: a, formId: this.nextFormId++ }));
                         this.render(true);
                     },
                 },
