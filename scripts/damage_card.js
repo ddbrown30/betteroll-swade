@@ -229,21 +229,18 @@ export function activateDamageCardListeners(message, html) {
         ) {
             spend_bennie = true;
         }
-        // noinspection JSIgnoredPromiseFromCall
         roll_soak(brCard, spend_bennie);
     });
     html.querySelector(".brsw-show-incapacitation")?.addEventListener("click", () => {
-        // noinspection JSIgnoredPromiseFromCall
         brCard.closePopout(); //We assume we're done with the card at this point so close any popouts
         createIncapacitationCard(brCard.token_id);
     });
     html.querySelector(".brsw-mark-defeated")?.addEventListener("click", async () => {
         await brCard.actor.toggleStatusEffect("incapacitated", { active: false });
         await brCard.actor.toggleStatusEffect("bleeding-out", { active: false });
-        await brCard.actor.toggleStatusEffect("dead", { active: true });
+        await brCard.actor.toggleStatusEffect("dead", { active: true, overlay: true });
     });
     html.querySelector(".brsw-injury-button")?.addEventListener("click", () => {
-        // noinspection JSIgnoredPromiseFromCall
         createInjuryCard(brCard.token_id, "gritty");
     });
 }
@@ -339,4 +336,32 @@ async function roll_soak(brCard, use_bennie) {
         await brCard.render();
         await brCard.save();
     }
+}
+
+export function fitDamageTargetText(html, textMeasureContext) {
+    //Go over all the targets and shrink their names fit if needed
+    html.querySelectorAll(".brsw-damage-roll-target").forEach((rollTarget) => {
+        const maxWidth = 100;
+        let fontSize = 14;
+        while (fontSize > 8) {
+            let width = 0;
+            let lines = 1;
+
+            for (const word of rollTarget.textContent.trim().split(/\s+/)) {
+                const wordWidth = textMeasureContext.measureText(`${word} `).width;
+                if (width + wordWidth > maxWidth) {
+                    lines++;
+                    width = wordWidth;
+                } else {
+                    width += wordWidth;
+                }
+            }
+
+            if (lines <= 2) break;
+            fontSize--;
+        }
+
+        rollTarget.style.fontSize = `${fontSize}px`;
+    });
+
 }

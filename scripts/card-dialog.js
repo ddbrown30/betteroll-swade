@@ -1,11 +1,10 @@
 // A dialog to manage br cards
-/* global game, console, renderTemplate */
 
 export function setupDialog() {
-  const dialog_element = document.createElement("dialog");
-  dialog_element.setAttribute("id", "br-card-dialog");
-  dialog_element.classList.add("twbr:bg-gray-700");
-  document.body.insertAdjacentElement("beforeend", dialog_element);
+  const dialogElement = document.createElement("dialog");
+  dialogElement.setAttribute("id", "br-card-dialog");
+  dialogElement.classList.add("brsw-dialog-bg");
+  document.body.insertAdjacentElement("beforeend", dialogElement);
   game.brsw.dialog = new BrCardDialog();
 }
 
@@ -74,11 +73,11 @@ class BrCardDialog {
         "span",
       )) {
         if (element !== event.currentTarget) {
-          element.classList.remove("twbr:bg-red-700");
+          element.classList.remove("brsw-action-button-selected");
         }
       }
     }
-    event.currentTarget.classList.toggle("twbr:bg-red-700");
+    event.currentTarget.classList.toggle("brsw-action-button-selected");
   }
 
   close_card() {
@@ -88,13 +87,13 @@ class BrCardDialog {
   }
 
   async save_actions() {
-    const enabled_actions = [];
+    const enabledActions = [];
     for (const button of document.querySelectorAll(
-      ".brsw-action-button.twbr\\:bg-red-700",
+      ".brsw-action-button.brsw-action-button-selected",
     )) {
-      enabled_actions.push(button.dataset.actionId);
+      enabledActions.push(button.dataset.actionId);
     }
-    this.BrCard.setActiveActions(enabled_actions);
+    this.BrCard.setActiveActions(enabledActions);
 
 
     this.BrCard.refreshPPModsFromActions();

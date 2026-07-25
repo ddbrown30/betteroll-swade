@@ -1,59 +1,48 @@
-<div id="brc-{{id}}" class="twbr:flex twbr:flex-row twbr:mb-1 twbr:justify-between">
-  <div>
-    <img class="brws-actor-img twbr:w-8 twbr:h-8 twbr:min-w-8 twbr:rounded twbr:hover:ring-2
-            twbr:hover:ring-offset-1 twbr:hover:cursor-pointer" src="{{{actor.img}}}" alt="Actor portrait">
-  </div>
-  {{#if vehicle_actor}}
-    <div class="twbr:ml-1">
-      <img class="brws-vehicle-img twbr:w-8 twbr:h-8 twbr:min-w-8 twbr:rounded twbr:hover:ring-2
-                twbr:hover:ring-offset-1 twbr:hover:cursor-pointer" src="{{{vehicle_actor.img}}}" alt="Vehicle portrait">
+<div id="brc-{{id}}" class="brsw-card-header-row">
+    <div>
+        <img class="brsw-actor-img" src="{{{actor.img}}}" alt="Actor portrait">
     </div>
-  {{/if}}
-  <div class="twbr:grow twbr:text-center twbr:align-middle twbr:text-lg twbr:relative
-            twbr:overflow-clip twbr:hover:overflow-visible">
-    <span class="twbr:group twbr:border-b">
-      <a class="brsw-collapse-button brsw-header-title" data-collapse="brsw-description">{{header.title}}</a>
-      <span class="brsw-common-tools brsw-form twbr:flex">
-        <i class="brsw-repeat-card brsw-common-tool fas fa-redo twbr:hover:ring-2 twbr:hover:ring-offset-1 twbr:hover:cursor-pointer"></i>
-        {{#unless vehicle_actor}}
-          <i class="brsw-owner-trusted-only brsw-save-macro brsw-common-tool fa fa-save twbr:hover:ring-2
-              twbr:hover:ring-offset-1 twbr:hover:cursor-pointer"></i>
-        {{/unless}}
-        {{#if supports_manual_mods}}
-          <i class="brsw-manual-mods brsw-common-tool fas fa-plus-minus twbr:hover:ring-2 twbr:hover:ring-offset-1 twbr:hover:cursor-pointer"></i>
-        {{/if}}
-      </span>
-      {{#if tooltip}}
-        <div id="tooltip-description" role="tooltip" class="twbr:w-56 twbr:opacity-0 twbr:h-0 twbr:absolute twbr:transition-opacity
-                    twbr:group-hover:visible twbr:group-hover:delay-1000 twbr:group-hover:duration-500
-                    twbr:group-hover:opacity-100 twbr:group-hover:h-auto twbr:px-3 twbr:py-2
-                    twbr:text-sm twbr:font-medium twbr:text-white twbr:bg-gray-900 twbr:rounded-lg
-                    twbr:shadow-sm twbr:z-10">
-          {{{tooltip}}}
+    {{#if vehicle_actor}}
+        <div class="brsw-vehicle-img-wrapper">
+            <img class="brsw-vehicle-img" src="{{{vehicle_actor.img}}}" alt="Vehicle portrait">
         </div>
-      {{/if}}
-    </span>
-  </div>
-  <div class="twbr:flex">
-    <div class="twbr:w-8 twbr:h-8">
-      {{#if header.img}}
-        <img class="brsw-header-img twbr:w-8 twbr:h-8 twbr:rounded twbr:hover:ring-2
-                          twbr:hover:ring-offset-1 twbr:hover:cursor-pointer" src="{{{header.img}}}" alt="Item image">
-      {{/if}}
+    {{/if}}
+    <div class="brsw-header-title-wrapper">
+        <span class="brsw-header-title-group">
+            <a class="brsw-collapse-button brsw-header-title" data-collapse="brsw-description">{{header.title}}</a>
+            <span class="brsw-common-tools brsw-form">
+                <i class="brsw-repeat-card brsw-common-tool fas fa-redo"></i>
+                {{#unless vehicle_actor}}
+                    <i class="brsw-owner-trusted-only brsw-save-macro brsw-common-tool fa fa-save"></i>
+                {{/unless}}
+                {{#if supports_manual_mods}}
+                    <i class="brsw-manual-mods brsw-common-tool fas fa-plus-minus"></i>
+                {{/if}}
+            </span>
+            {{#if tooltip}}
+                <div id="tooltip-description" role="tooltip" class="brsw-tooltip">
+                    {{{tooltip}}}
+                </div>
+            {{/if}}
+        </span>
     </div>
-  </div>
+    <div class="brsw-header-img-wrapper">
+        <div class="brsw-header-img-slot">
+            {{#if header.img}}
+                <img class="brsw-header-img" src="{{{header.img}}}" alt="Item image">
+            {{/if}}
+        </div>
+    </div>
 </div>
 <div class="brsw-description {{#if collapse_descriptions}}brsw-collapsed{{/if}}">{{{description}}}</div>
-<div class="twbr:border-b-1 twbr:border-gray-200 brsw-groove-border"></div>
+<div class="brsw-header-divider brsw-groove-border"></div>
 {{#if warning}}
-  <div class="twbr:m-1 twbr:p-1 twbr:pl-4 twbr:pr-4 twbr:text-sm twbr:text-red-400
-            twbr:rounded-lg twbr:bg-gray-800">
-    {{{warning}}}
-  </div>
+    <div class="brsw-card-note brsw-card-note-warning">
+        {{{warning}}}
+    </div>
 {{/if}}
 {{#if extra_text}}
-  <div class="twbr:m-1 twbr:p-1 twbr:pl-4 twbr:pr-4 twbr:text-sm twbr:text-gray-300
-            twbr:rounded-lg twbr:bg-gray-800">
-    {{{extra_text}}}
-  </div>
+    <div class="brsw-card-note brsw-card-note-extra">
+        {{{extra_text}}}
+    </div>
 {{/if}}

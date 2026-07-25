@@ -1,91 +1,71 @@
 {{#each damage_rolls}}
-    <div class="brsw-roll-row twbr:flex twbr:justify-between">
-        <span class="brsw-clickable brsw-collapse-button twbr:max-w-1/2" data-collapse="brsw-damage-detail{{@index}}">
-            {{this.label}} :
-        </span>
-        <span class="twbr:flex">
-            {{#each this.brswroll.rolls}}
-                <span class="brsw-damage-roll{{this.extra_class}}">{{this.result}}</span>
-                {{#if this.ap}}
-                    <span class="brsw-ap-info" title="{{localize 'SWADE.APLong'}}">
-                        ({{localize "BRSW.ApShort"}} {{this.ap}})
-                    </span>
-                {{/if}}
-            {{/each}}
-            {{#if ../bennie_available}}
-                <button class="brsw-row-button brsw-damage-bennie-button brsw-form twbr:py-0.5 twbr:px-0.5
-                        twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg twbr:border twbr:border-solid
-                        twbr:focus:ring-4 twbr:focus:ring-gray-700 twbr:text-gray-800 twbr:border-gray-600
-                        twbr:hover:text-white twbr:hover:bg-gray-700" {{#if this.raise}}id="raise_roll" {{/if}} title="{{localize 'BRSW.Roll_and_bennie'}}" data-token="{{this.brswroll.rolls.0.target_id}}">
-                    <img src="{{{../benny_image}}}" class="brsw-button-image" alt="Reroll with benny">
-                </button>
-            {{/if}}
-        </span>
-        <span class="{{#if ../result_master_only}}brsw-master-only{{/if}} twbr:flex">
-            {{#each this.brswroll.rolls}}
-                {{#if this.tn}}
-                    <span title="{{this.result_text}}" class="twbr:flex twbr:items-center twbr:p-1">
-                        {{{this.result_icon}}}
-                    </span>
-                {{/if}}
-                {{#if ../damageResult}}
-                    {{#if this.target_id}}
-                        <button class="brsw-master-only brsw-row-button brsw-apply-damage twbr:py-0.5
-                                twbr:px-0.5 twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg twbr:border
-                                twbr:border-solid twbr:focus:ring-4 twbr:focus:ring-gray-700
-                                twbr:text-gray-800 twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700" title="{{localize 'BRSW.ApplyDamage'}}" data-token="{{this.target_id}}" data-damage="{{../damageResult}}" data-heavy-damage="{{../../item.system.isHeavyWeapon}}">
-                            <i class="fas fa-check"></i><i class="fas fa-tint"></i>
-                        </button>
-                    {{/if}}
-                {{/if}}
-            {{/each}}
-        </span>
-    </div>
-    <div class="brsw-damage-detail{{@index}} brsw-collapsed">
-        <div class="brsw-roll-detail-row">
-            <span>
+    {{#with (lookup this.brswroll.rolls 0) as | roll |}}
+        <div class="brsw-damage-roll-row">
+            <span class="brsw-damage-roll-target brsw-clickable brsw-collapse-button" data-collapse="brsw-damage-detail{{@index}}" data-target="{{roll.target_id}}">
+                {{../label}}:
             </span>
-            <span>
-                <span class="brsw-form brsw-clickable brsw-half-damage" title="{{localize 'BRSW.HalfDamage'}}" data-index="{{@index}}">
-                    <i class="fas fa-shield-alt"></i>
+            <span class="brsw-damage-roll-damage">
+                <span class="{{roll.extra_class}}">{{roll.result}}{{#if roll.ap}} ({{localize "BRSW.ApShort"}} {{roll.ap}}){{/if}}</span>
+                <button class="brsw-row-button brsw-damage-bennie-button brsw-form brsw-icon-button" {{#if roll.raise}}id="raise_roll" {{/if}}
+                        {{#if ../../bennie_available}}title="{{localize 'BRSW.Roll_and_bennie'}}" {{/if}} data-target="{{roll.target_id}}"
+                        {{#unless ../../bennie_available}}disabled{{/unless}}>
+                    <img src="{{{../../benny_image}}}" class="brsw-button-image" alt="Reroll with benny">
+                </button>
+            </span>
+            <span class="brsw-damage-roll-result {{#if ../result_master_only}} brsw-master-only{{/if}}">
+                <span title="{{roll.result_text}}" class="brsw-result-icon">
+                    {{{roll.result_icon}}}
                 </span>
-                <span class="brsw-form brsw-clickable brsw-add-damage-number" data-index="{{@index}}" title="{{localize 'BRSW.AddDamage'}}">
-                    <i class="fas fa-plus"></i> <i class="fas fa-scroll"></i>
-                </span>
-                <span class="brsw-form brsw-clickable brsw-add-damage-d6" data-index="{{@index}}" title="{{localize 'BRSW.AddD6Damage'}}">
-                    <i class="fas fa-plus"></i> <i class="fas fa-dice-six"></i>
-                </span>
-                <i class="brsw-target-tough brsw-clickable fas fa-bullseye brsw-form" data-index="{{@index}}" title="{{localize 'BRSW.TGTargetSelected'}}"></i>
+                <button class="brsw-apply-damage brsw-master-only" disabled
+                        data-target="{{roll.target_id}}" data-damage="{{../damageResult}}" data-heavy-damage="{{../../item.system.isHeavyWeapon}}">
+                    <i class="fas fa-check"></i>
+                </button>
             </span>
         </div>
-        {{#each this.brswroll.dice as |current_dice|}}
-            <div class="brsw-roll-detail-row{{this.extra_class}}">
-                <span>{{this.label}}</span>
-                <span>{{#each this.results}}
-                        <span class="brsw-d{{current_dice.faces}} brsw-dice-image">{{this}}</span>
-                    {{/each}}</span>
-            </div>
-        {{/each}}
-        {{#each this.brswroll.modifiers}}
-            <div class="brsw-roll-detail-row{{this.extra_class}}">
-                <span>{{this.name}}</span>
-                {{#if this.dice}}
-                    <span>{{#each this.dice.terms as |current_term|}}
-                            {{#each this.results}}
-                                <span class="brsw-d{{current_term.faces}} brsw-dice-image">{{this.result}}</span>
-                            {{/each}}
-                        {{/each}}</span>
-                {{else}}
-                    <span>
-                        {{this.value}}
+        <div class="brsw-damage-detail{{@index}} brsw-collapsed">
+            <div class="brsw-roll-detail-row">
+                <span>
+                </span>
+                <span>
+                    <span class="brsw-form brsw-clickable brsw-half-damage" title="{{localize 'BRSW.HalfDamage'}}" data-index="{{@index}}">
+                        <i class="fas fa-shield-alt"></i>
                     </span>
-                {{/if}}
+                    <span class="brsw-form brsw-clickable brsw-add-damage-number" data-index="{{@index}}" title="{{localize 'BRSW.AddDamage'}}">
+                        <i class="fas fa-plus"></i> <i class="fas fa-scroll"></i>
+                    </span>
+                    <span class="brsw-form brsw-clickable brsw-add-damage-d6" data-index="{{@index}}" title="{{localize 'BRSW.AddD6Damage'}}">
+                        <i class="fas fa-plus"></i> <i class="fas fa-dice-six"></i>
+                    </span>
+                    <i class="brsw-target-tough brsw-clickable fas fa-bullseye brsw-form" data-index="{{@index}}" title="{{localize 'BRSW.TGTargetSelected'}}"></i>
+                </span>
             </div>
-        {{/each}}
-        {{#each this.brswroll.rolls}}
+            {{#each ../brswroll.dice as |current_dice|}}
+                <div class="brsw-roll-detail-row {{this.extra_class}}">
+                    <span>{{this.label}}</span>
+                    <span>{{#each this.results}}
+                            <span class="brsw-d{{current_dice.faces}} brsw-dice-image">{{this}}</span>
+                        {{/each}}</span>
+                </div>
+            {{/each}}
+            {{#each ../brswroll.modifiers}}
+                <div class="brsw-roll-detail-row {{this.extra_class}}">
+                    <span>{{this.name}}</span>
+                    {{#if this.dice}}
+                        <span>{{#each this.dice.terms as |current_term|}}
+                                {{#each this.results}}
+                                    <span class="brsw-d{{current_term.faces}} brsw-dice-image">{{this.result}}</span>
+                                {{/each}}
+                            {{/each}}</span>
+                    {{else}}
+                        <span>
+                            {{this.value}}
+                        </span>
+                    {{/if}}
+                </div>
+            {{/each}}
             <div class="brsw-damage-calculation">
-                {{localize "SWADE.Tough"}} {{this.tn}}, {{localize "SWADE.APLong"}} {{this.ap}}, {{localize "SWADE.Armor"}} {{this.armor}}
+                {{localize "SWADE.Tough"}} {{roll.tn}}, {{localize "SWADE.APLong"}} {{roll.ap}}, {{localize "SWADE.Armor"}} {{roll.armor}}
             </div>
-        {{/each}}
-    </div>
+        </div>
+    {{/with}}
 {{/each}}
