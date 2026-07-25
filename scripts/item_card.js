@@ -108,7 +108,6 @@ export async function createItemCard(
     brCard.checkWarnings(brCard.render_data);
 
     await brCard.render(actions_stored);
-    await brCard.save();
 
     call_create_item_card_hooks(item, brCard);
 

@@ -59,7 +59,6 @@ async function createSkillCard(
         }
     }
     await brCard.render(actions_stored);
-    await brCard.save();
     return brCard;
 }
 
