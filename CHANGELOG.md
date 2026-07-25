@@ -1,5 +1,9 @@
 # Changelog
 
+# Version 5.20.0
+* Improved damage row display
+* Removed Tailwind
+
 # Version 5.19.0
 * Improved chat popout handling
 * We now only show a chat notification when not creating a popout. This cleans up the behaviour where you get both a popout and the chat notification when the sidebar is collapsed
