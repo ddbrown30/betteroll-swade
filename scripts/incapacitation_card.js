@@ -44,7 +44,6 @@ export async function createIncapacitationCard(token_id) {
     brCard.update_list = { ...brCard.update_list, ...{ user: user.id } };
     brCard.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_INC_CARD;
     await brCard.render();
-    await brCard.save();
     return brCard.message;
 }
 
@@ -215,7 +214,6 @@ export async function createInjuryCard(token_id, reason) {
     brCard.basicRoll = true;
     brCard.showPopout = false; //The injury result has no action, so we don't show the popout
     await brCard.render();
-    await brCard.save();
     Hooks.call("BRSW-InjuryAEApplied", brCard, injury_effect, reason);
     return brCard.message;
 }

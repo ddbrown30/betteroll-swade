@@ -42,7 +42,6 @@ async function createAttributeCard(origin, name, { actions_stored = {} } = {},) 
   brCard.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ATTRIBUTE_CARD;
 
   await brCard.render(actions_stored);
-  await brCard.save();
   return brCard;
 }
 

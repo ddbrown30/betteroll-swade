@@ -62,7 +62,6 @@ async function create_remove_status_card(original_message, actor, type) {
   brCard.type = type;
   brCard.token_id = token_id;
   await brCard.render();
-  await brCard.save();
   return brCard.message;
 }
 

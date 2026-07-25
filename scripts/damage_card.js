@@ -73,7 +73,6 @@ export async function createDamageCard(
     brCard.update_list = { ...brCard.update_list, ...{ user: user.id } };
     brCard.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_DMG_CARD;
     await brCard.render();
-    await brCard.save();
     Hooks.call("BRSW-AfterShowDamageCard", actor, wounds, brCard);
     return brCard.message;
 }
