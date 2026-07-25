@@ -339,15 +339,26 @@ async function roll_soak(brCard, use_bennie) {
 }
 
 export function fitDamageTargetText(html, textMeasureContext) {
-    //Go over all the targets and shrink their names fit if needed
+    const maxWidth = 100;
+    const maxLines = 2;
+    const minFontSize = 8;
+    const maxFontSize = 14;
+
     html.querySelectorAll(".brsw-damage-roll-target").forEach((rollTarget) => {
-        const maxWidth = 100;
-        let fontSize = 14;
-        while (fontSize > 8) {
+        const words = rollTarget.textContent.trim().split(/\s+/);
+
+        let minSize = minFontSize;
+        let maxSize = maxFontSize;
+
+        //Run a binary search to find the minimum font size that will fit our text
+        while (minSize + 1 < maxSize) {
+            const fontSize = (minSize + maxSize) / 2;
+            textMeasureContext.font = `${fontSize}px Signika`;
+
             let width = 0;
             let lines = 1;
 
-            for (const word of rollTarget.textContent.trim().split(/\s+/)) {
+            for (const word of words) {
                 const wordWidth = textMeasureContext.measureText(`${word} `).width;
                 if (width + wordWidth > maxWidth) {
                     lines++;
@@ -357,11 +368,15 @@ export function fitDamageTargetText(html, textMeasureContext) {
                 }
             }
 
-            if (lines <= 2) break;
-            fontSize--;
+            if (lines <= maxLines) {
+                //We've found a size that fits our max lines, so we can't be smaller than this
+                minSize = fontSize;
+            } else {
+                //This doesn't fit which means we can't be larger than this
+                maxSize = fontSize;
+            }
         }
 
-        rollTarget.style.fontSize = `${fontSize}px`;
+        rollTarget.style.fontSize = `${minSize}px`;
     });
-
 }
