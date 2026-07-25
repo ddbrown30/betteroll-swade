@@ -229,21 +229,18 @@ export function activateDamageCardListeners(message, html) {
         ) {
             spend_bennie = true;
         }
-        // noinspection JSIgnoredPromiseFromCall
         roll_soak(brCard, spend_bennie);
     });
     html.querySelector(".brsw-show-incapacitation")?.addEventListener("click", () => {
-        // noinspection JSIgnoredPromiseFromCall
         brCard.closePopout(); //We assume we're done with the card at this point so close any popouts
         createIncapacitationCard(brCard.token_id);
     });
     html.querySelector(".brsw-mark-defeated")?.addEventListener("click", async () => {
         await brCard.actor.toggleStatusEffect("incapacitated", { active: false });
         await brCard.actor.toggleStatusEffect("bleeding-out", { active: false });
-        await brCard.actor.toggleStatusEffect("dead", { active: true });
+        await brCard.actor.toggleStatusEffect("dead", { active: true, overlay: true });
     });
     html.querySelector(".brsw-injury-button")?.addEventListener("click", () => {
-        // noinspection JSIgnoredPromiseFromCall
         createInjuryCard(brCard.token_id, "gritty");
     });
 }
@@ -339,4 +336,47 @@ async function roll_soak(brCard, use_bennie) {
         await brCard.render();
         await brCard.save();
     }
+}
+
+export function fitDamageTargetText(html, textMeasureContext) {
+    const maxWidth = 100;
+    const maxLines = 2;
+    const minFontSize = 8;
+    const maxFontSize = 14;
+
+    html.querySelectorAll(".brsw-damage-roll-target").forEach((rollTarget) => {
+        const words = rollTarget.textContent.trim().split(/\s+/);
+
+        let minSize = minFontSize;
+        let maxSize = maxFontSize;
+
+        //Run a binary search to find the minimum font size that will fit our text
+        while (minSize + 1 < maxSize) {
+            const fontSize = (minSize + maxSize) / 2;
+            textMeasureContext.font = `${fontSize}px Signika`;
+
+            let width = 0;
+            let lines = 1;
+
+            for (const word of words) {
+                const wordWidth = textMeasureContext.measureText(`${word} `).width;
+                if (width + wordWidth > maxWidth) {
+                    lines++;
+                    width = wordWidth;
+                } else {
+                    width += wordWidth;
+                }
+            }
+
+            if (lines <= maxLines) {
+                //We've found a size that fits our max lines, so we can't be smaller than this
+                minSize = fontSize;
+            } else {
+                //This doesn't fit which means we can't be larger than this
+                maxSize = fontSize;
+            }
+        }
+
+        rollTarget.style.fontSize = `${minSize}px`;
+    });
 }

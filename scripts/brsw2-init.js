@@ -16,7 +16,7 @@ import {
     getActionFromClick,
 } from "./cards_common.js";
 import { create_unshaken_wrapper, create_unstun_wrapper } from "./combat.js";
-import { activateDamageCardListeners } from "./damage_card.js";
+import { activateDamageCardListeners, fitDamageTargetText } from "./damage_card.js";
 import {
     exposeGlobalActionsAPI,
     registerActions,
@@ -154,6 +154,16 @@ Hooks.on("createChatMessage", (message, options, userId) => {
     }
 });
 
+Hooks.on("hideNPCNamesChatMessageUpdated", (message, html, options) => {
+    const brData = message.getFlag("betterrolls-swade2", "br_data");
+    if (brData) {
+        //We just updated the chat card to replace a name
+        //Re-fit our target name so it's consistent with the replaced name
+        const textMeasureContext = document.createElement("canvas").getContext("2d");
+        fitDamageTargetText(html, textMeasureContext);
+    }
+});
+
 Hooks.on("renderChatMessageHTML", (message, html, options) => {
     const brData = message.getFlag("betterrolls-swade2", "br_data");
     if (brData) {
@@ -190,20 +200,27 @@ Hooks.on("renderChatMessageHTML", (message, html, options) => {
             damageSection.hidden = !brCard.damage;
         }
 
+        const textMeasureContext = document.createElement("canvas").getContext("2d");
+
         const headerTitle = html.querySelector(".brsw-header-title");
         if (headerTitle) {
-            function measureTextWidth(text, font) {
-                const canvas = document.createElement("canvas");
-                const ctx = canvas.getContext("2d");
-                ctx.font = font;
-                return ctx.measureText(text).width;
-            }
-
-            const width = measureTextWidth(headerTitle.textContent, "18px Signika");
+            textMeasureContext.font = `18px Signika`;
+            const width = textMeasureContext.measureText(headerTitle.textContent).width;
             const maxWidth = 168;
             const defaultFontSize = 18;
             const fontSize = width > 0 ? Math.min(defaultFontSize, defaultFontSize * (maxWidth / width)) : defaultFontSize;
             headerTitle.style.setProperty("font-size", `${fontSize}px`);
+        }
+
+        fitDamageTargetText(html, textMeasureContext);
+
+        if (game.user.isGM) {
+            const applyDamageTitle = game.i18n.localize("BRSW.ApplyDamage");
+            html.querySelectorAll(".brsw-apply-damage").forEach((applyButton) => {
+                const targetId = applyButton.dataset.target;
+                applyButton.disabled = !targetId;
+                applyButton.title = targetId ? applyDamageTitle : "";
+            });
         }
 
         // Scroll the chat to the bottom if this is the last message

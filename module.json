@@ -72,9 +72,6 @@
   "styles": [
     {
       "src": "css/brsw-styles.css"
-    },
-    {
-      "src": "css/brsw-tw-styles.css"
     }
   ],
   "flags": {

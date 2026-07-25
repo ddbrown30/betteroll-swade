@@ -1,26 +1,20 @@
 {{>"modules/betterrolls-swade2/templates/common_card_header.hbs"}}
-<div class="twbr:border-t-1 twbr:mt-1 twbr:p-1">
+<div class="brsw-card-row brsw-card-row-divider">
     {{{text}}}{{{text_after}}}
 </div>
 {{#if trait_roll.rolls}}
     {{>"modules/betterrolls-swade2/templates/trait_roll_partial.hbs"}}
     {{>"modules/betterrolls-swade2/templates/trait_result_partial.hbs"}}
 {{else}}
-    <div class="brsw-button-row brsw-form twbr:border-t-1 twbr:mt-1 twbr:p-1">
-        <button class="brsw-vigor-button brsw-form twbr:py-0.5 twbr:px-5 twbr:focus:outline-hidden
-                twbr:bg-white twbr:rounded-lg twbr:border twbr:border-solid twbr:focus:ring-4
-                twbr:focus:ring-gray-700 twbr:text-gray-800 twbr:border-gray-600
-                twbr:hover:text-white twbr:hover:bg-gray-700 twbr:w-full">
+    <div class="brsw-button-row brsw-form brsw-card-row brsw-card-row-divider">
+        <button class="brsw-vigor-button brsw-form brsw-full-button">
             <i class="fas fa-dice"></i> {{localize 'BRSW.IncapacitationRoll'}}
         </button>
     </div>
 {{/if}}
 {{#if show_roll_injury}}
-    <div class="brsw-button-row brsw-form twbr:border-t-1 twbr:mt-1 twbr:p-1">
-        <button class="brsw-injury-button twbr:py-0.5 twbr:px-5 twbr:focus:outline-hidden
-                twbr:bg-white twbr:rounded-lg twbr:border twbr:border-solid twbr:focus:ring-4
-                twbr:focus:ring-gray-700 twbr:text-gray-800 twbr:border-gray-600
-                twbr:hover:text-white twbr:hover:bg-gray-700 twbr:w-full"
+    <div class="brsw-button-row brsw-form brsw-card-row brsw-card-row-divider">
+        <button class="brsw-injury-button brsw-full-button"
                 data-injury-type="{{injury_type}}">
             {{localize 'BRSW.RollInjury'}}
         </button>

@@ -8,7 +8,7 @@ import { brAction } from "./actions.js";
 import { USER_SETTING_KEYS, WORLD_SETTING_KEYS } from "./brsw2-config.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
 import {
-    BRWSRoll,
+    BRSWRoll,
     calculate_damage_results,
     check_and_roll_conviction,
     create_common_card,
@@ -473,7 +473,7 @@ export function activateItemCardListeners(brCard, html) {
                 ev.currentTarget.classList.contains("brsw-damage-bennie-button"),
                 {},
                 ev.currentTarget.id.includes("raise"),
-                ev.currentTarget.dataset.token,
+                ev.currentTarget.dataset.target,
             );
         },
     );
@@ -507,7 +507,7 @@ export function activateItemCardListeners(brCard, html) {
 
     addEventListenerAll(html, ".brsw-apply-damage", "click", (ev) => {
         createDamageCard(
-            ev.currentTarget.dataset.token,
+            ev.currentTarget.dataset.target,
             ev.currentTarget.dataset.damage,
             `${actor.name} - ${item.name}`,
             ev.currentTarget.dataset.heavyDamage,
@@ -557,8 +557,7 @@ export function activateItemCardListeners(brCard, html) {
     });
 
     html.querySelector(".brsw-ammo-toggle")?.addEventListener("click", (ev) => {
-        ev.currentTarget.classList.toggle("twbr:bg-red-700");
-        ev.currentTarget.classList.toggle("twbr:bg-gray-500");
+        ev.currentTarget.classList.toggle("brsw-toggle-active");
     });
 
     html.querySelector(".brsw-pp-toggle")?.addEventListener("click", async (ev) => {
@@ -974,7 +973,7 @@ export async function rollItem(brCard, html, expend_bennie, roll_damage) {
         brCard.item.system.autoReload
     ) {
         const dis_ammo_selected = html
-            ? !!html.querySelector(".twbr\\:bg-red-700.brsw-ammo-toggle")
+            ? !!html.querySelector(".brsw-ammo-toggle.brsw-toggle-active")
             : SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.defaultAmmoManagement);
         if (dis_ammo_selected || macros.length) {
             brCard.render_data.used_shots =
@@ -1156,7 +1155,7 @@ async function roll_dmg_target(
         tn: defense_values.toughness,
         armor: defense_values.armor,
         ap: damageFormulas.ap || 0,
-        target_id: defense_values.token_id || 0,
+        target_id: defense_values.token_id || null,
     });
 
     let last_string_term = "";
@@ -1409,7 +1408,7 @@ export async function roll_dmg(
         damageFormulas.damage = "3d6";
     }
 
-    const damage_roll = { label: "---", brswroll: new BRWSRoll(), raise: raise };
+    const damage_roll = { label: "---", brswroll: new BRSWRoll(), raise: raise };
     get_chat_dmg_modifiers(options, damage_roll);
     joker_modifiers(brCard, damage_roll);
 
@@ -1677,7 +1676,7 @@ async function edit_toughness(brCard, index) {
     const damage_rolls = render_data.damage_rolls[index].brswroll.rolls;
     damage_rolls[0].tn = defense_values.toughness;
     damage_rolls[0].armor = defense_values.armor;
-    damage_rolls[0].target_id = defense_values.token_id || 0;
+    damage_rolls[0].target_id = defense_values.token_id || null;
     render_data.damage_rolls[index].label = defense_values.name;
     render_data.damage_rolls[index].damageResult =
         calculate_damage_results(damage_rolls);

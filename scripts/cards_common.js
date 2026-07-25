@@ -41,7 +41,7 @@ import {
  * support, please use the new classes in rolls.js
  * @constructor
  */
-export function BRWSRoll() {
+export function BRSWRoll() {
     this.rolls = []; // Array with all the dice rolled {sides, result,
     // extra_class, tn, result_txt, result_icons, ap, armor, target_id}
     this.modifiers = []; // Array of modifiers {name, value, extra_class, dice}
@@ -218,14 +218,14 @@ export function activateCommonListeners(brCard, html) {
     // The message will be rendered at creation and each time a flag is added
     // Actor will be undefined if this is called before flags are set
     if (brCard.actor) {
-        const actor_img = html.querySelector(".brws-actor-img");
+        const actor_img = html.querySelector(".brsw-actor-img");
         if (actor_img) {
             actor_img.classList.add("bound");
             actor_img.addEventListener("click", async (ev) => {
                 await manage_sheet(brCard.actor);
             });
         }
-        const vehicle_img = html.querySelector(".brws-vehicle-img");
+        const vehicle_img = html.querySelector(".brsw-vehicle-img");
         if (vehicle_img) {
             vehicle_img.classList.add("bound");
             vehicle_img.addEventListener("click", async (ev) => {
@@ -595,10 +595,9 @@ export function calculate_damage_results(rolls) {
             roll.result_text = game.i18n.localize("BRSW.Wound");
             roll.result_icon = '<i class="brsw-red-text fas fa-tint"></i>';
         } else {
-            const raises = Math.floor(result / 4);
-            roll.result_text = game.i18n.localize("BRSW.Wounds") + " " + raises;
-            roll.result_icon =
-                raises.toString() + " " + '<i class="brsw-red-text fas fa-tint"></i>';
+            const wounds = Math.floor(result / 4);
+            roll.result_text = game.i18n.localize("BRSW.Wounds") + " " + wounds;
+            roll.result_icon = wounds.toString() + " " + '<i class="brsw-red-text fas fa-tint"></i>';
         }
     }
     if (result < 0) {
@@ -862,7 +861,7 @@ async function get_reroll_options(brCard, extra_data) {
 /**
  * Handle the feedback of rolling the dice
  * @param {ChatMessage} message
- * @param {BRWSRoll} brswroll
+ * @param {BRSWRoll} brswroll
  * @param {Roll} roll
  */
 export async function roll_dice(message, brswroll, roll) {
@@ -876,7 +875,7 @@ export async function roll_dice(message, brswroll, roll) {
 /**
  * Show the 3d dice for a roll
  * @param {ChatMessage} message
- * @param {BRWSRoll} brswroll
+ * @param {BRSWRoll} brswroll
  * @param {Roll} roll
  */
 async function show_3d_dice(message, brswroll, roll) {

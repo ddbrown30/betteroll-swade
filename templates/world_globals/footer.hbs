@@ -1,29 +1,16 @@
 <footer>
-    <button type="button" data-action="newAction"
-            class="brsw-new-action twbr:py-0.5 twbr:px-5 twbr:mt-2 twbr:font-medium
-            twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg twbr:border twbr:border-solid
-            twbr:focus:z-10 twbr:focus:ring-4 twbr:focus:ring-gray-700 twbr:text-gray-800
-            twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700">
+    <button type="button" data-action="newAction" class="brsw-new-action brsw-footer-button">
         <i class="fas fa-plus"></i> {{localize "BRSW.NewAction"}}
     </button>
     <div class="brsw-action-button-group">
-        <button type="submit"
-                class="twbr:py-0.5 twbr:px-5 twbr:mb-2 twbr:mt-2
-                twbr:font-medium twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg twbr:border
-                twbr:border-solid twbr:focus:z-10 twbr:focus:ring-4 twbr:focus:ring-gray-700
-                twbr:text-gray-800 twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700">
-            <i class="fas fa-save"></i> {{localize "BRSW.Save"}}</button>
-        <button type="button" data-action="export"
-                class="brsw-export-json twbr:py-0.5 twbr:px-5 twbr:mb-2 twbr:mt-2
-                twbr:font-medium twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg twbr:border
-                twbr:border-solid twbr:focus:z-10 twbr:focus:ring-4 twbr:focus:ring-gray-700
-                twbr:text-gray-800 twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700">
-            <i class="fas fa-save"></i> {{localize "BRSW.Export"}}</button>
-        <button type="button" data-action="import"
-                class="brsw-import-json twbr:py-0.5 twbr:px-5 twbr:mb-2 twbr:mt-2
-                twbr:font-medium twbr:focus:outline-hidden twbr:bg-white twbr:rounded-lg twbr:border
-                twbr:border-solid twbr:focus:z-10 twbr:focus:ring-4 twbr:focus:ring-gray-700
-                twbr:text-gray-800 twbr:border-gray-600 twbr:hover:text-white twbr:hover:bg-gray-700">
-            <i class="fas fa-file-import"></i> {{localize "BRSW.Import"}}</button>
+        <button type="submit" class="brsw-footer-button">
+            <i class="fas fa-save"></i> {{localize "BRSW.Save"}}
+        </button>
+        <button type="button" data-action="export" class="brsw-export-json brsw-footer-button">
+            <i class="fas fa-save"></i> {{localize "BRSW.Export"}}
+        </button>
+        <button type="button" data-action="import" class="brsw-import-json brsw-footer-button">
+            <i class="fas fa-file-import"></i> {{localize "BRSW.Import"}}
+        </button>
     </div>
 </footer>
