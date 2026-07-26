@@ -3,7 +3,7 @@
         <legend>{{{localize "BRSW.PPManagement.GenericMods"}}}</legend>
         <div class="pp-mod-selection" name="generic-mods">
             {{#each genericMods}}
-                <button class="pp-mod {{#if selected}}selected{{/if}}" type="button" data-action="toggleMod" data-modName="{{name}}">
+                <button class="pp-mod {{#if selected}}selected{{/if}}" type="button" data-action="toggleMod" data-modName="{{name}}" data-modCost="{{cost}}">
                     {{{localize name}}} [{{cost}}PP]
                 </button>
             {{/each}}
@@ -14,7 +14,7 @@
             <legend>{{localize "BRSW.PPManagement.PowerMods"}}</legend>
             <div class="pp-mod-selection" name="power-mods">
                 {{#each powerMods}}
-                    <button class="pp-mod {{#if selected}}selected{{/if}}" type="button" data-action="toggleMod" data-modName="{{name}}">
+                    <button class="pp-mod {{#if selected}}selected{{/if}}" type="button" data-action="toggleMod" data-modName="{{name}}" data-modCost="{{cost}}">
                         {{#if isEpic}}<i class="fas fa-star" style="color: #db8f26;"></i>{{/if}}{{name}} [{{cost}}PP]
                     </button>
                 {{/each}}

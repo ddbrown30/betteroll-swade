@@ -194,14 +194,13 @@ function get_pp_mods(item) {
     if (modifiers.length) {
         for (let mod of modifiers) {
             for (let cost of mod.costs) {
-                if (cost !== "+0") {
-                    pp_mods.powerMods.push({
-                        name: Utils.toTitleCase(mod.name),
-                        cost: cost,
-                        isEpic: mod.isEpic,
-                        selected: false,
-                    });
-                }
+                pp_mods.powerMods.push({
+                    name: Utils.toTitleCase(mod.name),
+                    cost: cost,
+                    isEpic: mod.isEpic,
+                    selected: false,
+                    exclusiveGroup: mod.costs.length > 1 ? mod.name : undefined,
+                });
             }
         }
 

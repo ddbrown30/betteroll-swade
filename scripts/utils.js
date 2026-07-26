@@ -358,8 +358,25 @@ export class Utils {
         }[op];
     }
 
+    //Converts a string to headline case
     static toTitleCase(str) {
-        return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+        const minorWords = new Set([
+            "a", "an", "the",
+            "and", "but", "or", "nor",
+            "as", "at", "by", "for", "from",
+            "in", "into", "of", "on", "onto",
+            "per", "to", "up", "via", "with"
+        ]);
+
+        return str
+            .toLowerCase()
+            .split(/\s+/)
+            .map((word, index, words) => {
+                if (index !== 0 && index !== words.length - 1 && minorWords.has(word)) {
+                    return word;
+                }
+                return word.charAt(0).toUpperCase() + word.slice(1);
+            }).join(" ");
     }
 
     static forEachActionGroup(brCard, callbackFn) {
