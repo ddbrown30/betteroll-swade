@@ -19,7 +19,7 @@ import { SettingsUtils, Utils, addEventListenerAll } from "./utils.js";
  * @param {SwadeActor} actor
  * @param {Number} type
  */
-async function create_remove_status_card(original_message, actor, type) {
+async function createRemoveStatusCard(original_message, actor, type) {
   let token_id;
   if (original_message) {
     const originalCard = new BrCommonCard(original_message);
@@ -65,8 +65,8 @@ async function create_remove_status_card(original_message, actor, type) {
   return brCard.message;
 }
 
-export async function create_unshaken_card(original_message, token_id) {
-  await create_remove_status_card(
+export async function createUnshakeCard(original_message, token_id) {
+  await createRemoveStatusCard(
     original_message,
     token_id,
     BRSW2_CONST.BRSW_CARD_TYPES.TYPE_UNSHAKE_CARD,
@@ -78,8 +78,8 @@ export async function create_unshaken_card(original_message, token_id) {
  * @param {ChatMessage} original_message
  * @param {Number} token_id
  */
-export async function create_unstun_card(original_message, token_id) {
-  await create_remove_status_card(
+export async function createUnstunCard(original_message, token_id) {
+  await createRemoveStatusCard(
     original_message,
     token_id,
     BRSW2_CONST.BRSW_CARD_TYPES.TYPE_UNSTUN_CARD,
@@ -158,8 +158,7 @@ async function roll_unshaken(brCard, use_bennie) {
           { name: brCard.actor.name },
         );
       }
-      brCard.actor.toggleStatusEffect("shaken", { active: false })
-        .catch(console.error("Error removing shaken") || false);
+      brCard.actor.toggleStatusEffect("shaken", { active: false });
     } else {
       brCard.render_data.text = game.i18n.format("BRSW.UnshakeFailure", {
         name: brCard.actor.name,

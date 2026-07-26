@@ -15,7 +15,7 @@ import {
     exposeCardClass,
     getActionFromClick,
 } from "./cards_common.js";
-import { create_unshaken_wrapper, create_unstun_wrapper } from "./combat.js";
+import { createUnshakeWrapper, createUnstunWrapper } from "./combat.js";
 import { activateDamageCardListeners, fitDamageTargetText } from "./damage_card.js";
 import {
     exposeGlobalActionsAPI,
@@ -94,8 +94,8 @@ Hooks.on(`ready`, async () => {
 
     // Add a hook to control combat flow.
     if (SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.autoStatusCards)) {
-        game.swade.effectCallbacks.set("shaken", create_unshaken_wrapper);
-        game.swade.effectCallbacks.set("stunned", create_unstun_wrapper);
+        game.swade.effectCallbacks.set("shaken", createUnshakeWrapper);
+        game.swade.effectCallbacks.set("stunned", createUnstunWrapper);
     }
 
     compatibilityWarnings();
