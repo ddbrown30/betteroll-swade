@@ -3,6 +3,7 @@
 # Version 5.20.0
 * Improved damage row display
 * Removed Tailwind
+* Fixed selection of PP mods when there are multiple with the same name e.g. Area of Effect (+2/+3)
 
 # Version 5.19.0
 * Improved chat popout handling

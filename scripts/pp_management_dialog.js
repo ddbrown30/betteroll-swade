@@ -21,7 +21,8 @@ export class PPManagementDialog extends HandlebarsApplicationMixin(ApplicationV2
         const isGeneric = button.closest("div").getAttribute("name") === "generic-mods";
         const mods = isGeneric ? this.brCard.pp_modifiers.genericMods : this.brCard.pp_modifiers.powerMods;
         const modName = button.dataset.modname;
-        const mod = mods.find(m => m.name == modName);
+        const modCost = button.dataset.modcost;
+        const mod = mods.find(m => m.name === modName && m.cost === modCost);
 
         if (mod.exclusiveGroup) {
           const groupMods = mods.filter(m => m != mod && m.exclusiveGroup === mod.exclusiveGroup);
@@ -206,7 +207,7 @@ export class PPManagementDialog extends HandlebarsApplicationMixin(ApplicationV2
   }
 
   selectMod(mod, isGeneric) {
-    const button = this.element.querySelector(`[data-modName="${mod.name}"`);
+    const button = this.element.querySelector(`[data-modName="${mod.name}"][data-modCost="${mod.cost}"]`);
     button.classList.add("selected");
     if (isGeneric) {
       if (mod.actionId) {
@@ -225,7 +226,7 @@ export class PPManagementDialog extends HandlebarsApplicationMixin(ApplicationV2
   }
 
   deselectMod(mod, isGeneric) {
-    const button = this.element.querySelector(`[data-modName="${mod.name}"`);
+    const button = this.element.querySelector(`[data-modName="${mod.name}"][data-modCost="${mod.cost}"]`);
     button.classList.remove("selected");
     if (isGeneric) {
       if (mod.actionId) {
