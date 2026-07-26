@@ -16,8 +16,8 @@ import {
 import { ManualModifiersPopup } from "./manual_mods_popup.js";
 import { TraitModifier } from "./modifiers.js";
 import {
-    create_unshaken_card,
-    create_unstun_card,
+    createUnshakeCard,
+    createUnstunCard,
 } from "./remove_status_cards.js";
 import { TraitRoll } from "./rolls.js";
 import {
@@ -235,16 +235,12 @@ export function activateCommonListeners(brCard, html) {
         html
             .querySelector(".br2-unshake-card")
             ?.addEventListener("click", async (ev) => {
-                create_unshaken_card(brCard.message, undefined).catch(() => {
-                    console.error("BR2 unable to show unshaken card");
-                });
+                createUnshakeCard(brCard.message, undefined);
             });
         html
             .querySelector(".br2-unstun-card")
             ?.addEventListener("click", async (ev) => {
-                create_unstun_card(brCard.message, undefined).catch(() => {
-                    console.error("BR2 unable to show unstun card");
-                });
+                createUnstunCard(brCard.message, undefined);
             });
     }
     if (brCard.message.isOwner) {
