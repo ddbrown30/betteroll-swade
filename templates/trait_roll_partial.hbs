@@ -51,7 +51,7 @@
                 <span>{{this.label}}</span>
                 <span class="brsw-die-results">
                     {{#each this.unexploded}}
-                        <span class="brsw-d{{current_dice.sides}} brsw-dice-image">{{this}}</span>
+                        <span class="brsw-d{{current_dice.sides}} brsw-dice-image" data-text="{{this}}">{{this}}</span>
                     {{/each}}
                 </span>
             </div>

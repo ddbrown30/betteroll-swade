@@ -4,7 +4,7 @@ export function setupDialog() {
   const dialogElement = document.createElement("dialog");
   dialogElement.setAttribute("id", "br-card-dialog");
   dialogElement.classList.add("brsw-dialog-bg");
-  document.body.insertAdjacentElement("beforeend", dialogElement);
+  document.querySelector("#interface").insertAdjacentElement("beforeend", dialogElement);
   game.brsw.dialog = new BrCardDialog();
 }
 

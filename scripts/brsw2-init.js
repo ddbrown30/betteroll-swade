@@ -167,6 +167,8 @@ Hooks.on("hideNPCNamesChatMessageUpdated", (message, html, options) => {
 Hooks.on("renderChatMessageHTML", (message, html, options) => {
     const brData = message.getFlag("betterrolls-swade2", "br_data");
     if (brData) {
+        html.classList.add("brsw-chat-message");
+
         // This chat card is one of ours
         const brCard = new BrCommonCard(message);
         activateCardListeners(brCard, html, message);
