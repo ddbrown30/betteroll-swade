@@ -47,7 +47,8 @@
 
 .themed.theme-dark .brsw-allow-dark-mode {
     --brsw-chat-message-color: var(--color-light-2);
-    --brsw-button-bg-color: var(--color-light-2);
+    --brsw-button-bg-color: var(--color-cool-5-50);
+    --brsw-button-color: var(--color-light-3);
     --brsw-color-blue: rgb(47, 137, 255);
     --brsw-card-note-warning-color: #ff393d;
     --brsw-card-note-bg-color: var(--brsw-color-gray-700);
@@ -794,9 +795,9 @@
     margin-bottom: calc(var(--brsw-spacing) * 2);
     font-weight: var(--brsw-font-weight-medium);
     background-color: var(--brsw-button-bg-color);
+    color: var(--brsw-button-color);
     border-radius: var(--brsw-radius-lg);
     border: 1px solid var(--brsw-color-gray-600);
-    color: var(--brsw-color-gray-800);
     width: 100%;
 }
 
@@ -987,7 +988,7 @@
     background-color: var(--brsw-button-bg-color);
     border-radius: var(--brsw-radius-lg);
     border: 1px solid var(--brsw-color-gray-600);
-    color: var(--brsw-color-gray-800);
+    color: var(--brsw-button-color);
 }
 
 .brsw-undo-damage:hover {
@@ -1010,7 +1011,7 @@
     background-color: var(--brsw-button-bg-color);
     border-radius: var(--brsw-radius-lg);
     border: 1px solid var(--brsw-color-gray-600);
-    color: var(--brsw-color-gray-800);
+    color: var(--brsw-button-color);
     width: 100%;
 }
 
@@ -1074,7 +1075,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background-color: rgb(141,141,141);
+    background-color: #40404a;
     mask: url("/icons/svg/combat.svg") center / 2em 2em no-repeat;
     z-index: -1;
 }
@@ -1107,8 +1108,8 @@
 }
 
 .brsw-apply-damage:not(:disabled) {
-    background: white;
-    color: var(--brsw-color-gray-800);
+    background-color: var(--brsw-button-bg-color);
+    color: var(--brsw-button-color);
 }
 
 .brsw-apply-damage:not(:disabled):hover {
@@ -1131,7 +1132,7 @@
     background-color: var(--brsw-button-bg-color);
     border-radius: var(--brsw-radius-lg);
     border: 1px solid var(--brsw-color-gray-600);
-    color: var(--brsw-color-gray-800);
+    color: var(--brsw-button-color);
 }
 
 .brsw-icon-button:hover {
@@ -1203,7 +1204,7 @@
     background-color: var(--brsw-button-bg-color);
     border-radius: var(--brsw-radius-lg);
     border: 1px solid var(--brsw-color-gray-600);
-    color: var(--brsw-color-gray-800);
+    color: var(--brsw-button-color);
 }
 
 .brsw-reroll-button:hover {
@@ -1221,7 +1222,7 @@
     background-color: var(--brsw-button-bg-color);
     border-radius: var(--brsw-radius-lg);
     border: 1px solid var(--brsw-color-gray-600);
-    color: var(--brsw-color-gray-800);
+    color: var(--brsw-button-color);
 }
 
 .brsw-footer-button:hover {
@@ -1366,7 +1367,7 @@
     background-color: var(--brsw-button-bg-color);
     border-radius: var(--brsw-radius-lg);
     border: 1px solid var(--brsw-color-gray-600);
-    color: var(--brsw-color-gray-800);
+    color: var(--brsw-button-color);
     width: 100%;
     text-wrap-mode: nowrap;
 }

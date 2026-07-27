@@ -335,7 +335,7 @@ function registerUserSettings() {
     SettingsUtils.registerBR2UserSetting(USER_SETTING_KEYS.allowDarkMode, {
         name: "BRSW.Settings.AllowDarkMode.Name",
         hint: "BRSW.Settings.AllowDarkMode.Hint",
-        default: true,
+        default: false,
         type: Boolean,
         onChange: () => {
             const messages = game.messages.contents.filter(m => m.getFlag("betterrolls-swade2", "br_data"));
