@@ -2,14 +2,14 @@
 /* globals game, ChatPopout, console, canvas, Hooks, renderTemplate, TextEditor, ChatMessage,
      Roll, CONST */
 
+import { brAction } from "./actions.js";
 import * as BRSW2_CONFIG from "./brsw2-config.js";
+import { BRSW2_CONST } from "./brsw2-const.js";
+import { are_bennies_available, traitToDieString } from "./cards_common.js";
+import { get_actions, process_action } from "./global_actions.js";
+import { calc_pp_cost } from "./item_card.js";
 import { TraitRoll } from "./rolls.js";
 import { broofa, getAuthor, getWhisperData, SettingsUtils, Utils } from "./utils.js";
-import { calc_pp_cost } from "./item_card.js";
-import { get_actions, process_action } from "./global_actions.js";
-import { brAction } from "./actions.js";
-import { are_bennies_available, traitToDieString } from "./cards_common.js";
-import { BRSW2_CONST } from "./brsw2-const.js";
 
 /**
  * Stores a flag with the render data, deletes data can't be stored
@@ -950,7 +950,10 @@ export class BrCommonCard {
         data.selected_actions = this.getSelectedActions();
         data.hasFooterButtons = this.hasFooterButtons;
         data.skill_tooltip = this.skill_tooltip;
-        data.supports_manual_mods = !!(this.trait || this.damage);
+        data.showRepeat = BRSW2_CONST.ALLOW_SAVE_REPEAT_CARDS.has(this.type);
+        data.showSave = !this.vehicle_actor && BRSW2_CONST.ALLOW_SAVE_REPEAT_CARDS.has(this.type);
+        data.showManualMods = !!(this.trait || this.damage);
+        data.showTools = data.showRepeat || data.showSave || data.showManualMods;
         data.noPowerPoints = game.settings.get("swade", "noPowerPoints");
         data.ppPenalty = -Math.ceil(this.pp_cost / 2);
         data.shots_pp_info = this.itemShots;

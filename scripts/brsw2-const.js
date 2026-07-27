@@ -180,4 +180,10 @@ export class BRSW2_CONST {
         [-4]: "BRSW.RangeLong",
         [-8]: "BRSW.RangeExtreme",
     };
+
+    static ALLOW_SAVE_REPEAT_CARDS = new Set([
+        BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ATTRIBUTE_CARD,
+        BRSW2_CONST.BRSW_CARD_TYPES.TYPE_SKILL_CARD,
+        BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD,
+    ]);
 }

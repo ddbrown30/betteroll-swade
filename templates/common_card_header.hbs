@@ -10,15 +10,19 @@
     <div class="brsw-header-title-wrapper">
         <span class="brsw-header-title-group">
             <a class="brsw-collapse-button brsw-header-title" data-collapse="brsw-description">{{header.title}}</a>
-            <span class="brsw-common-tools brsw-form">
-                <i class="brsw-repeat-card brsw-common-tool fas fa-redo"></i>
-                {{#unless vehicle_actor}}
-                    <i class="brsw-owner-trusted-only brsw-save-macro brsw-common-tool fa fa-save"></i>
-                {{/unless}}
-                {{#if supports_manual_mods}}
-                    <i class="brsw-manual-mods brsw-common-tool fas fa-plus-minus"></i>
-                {{/if}}
-            </span>
+            {{#if showTools}}
+                <span class="brsw-common-tools brsw-form">
+                    {{#if showRepeat}}
+                        <i class="brsw-repeat-card brsw-common-tool fas fa-redo"></i>
+                    {{/if}}
+                    {{#if showSave}}
+                        <i class="brsw-owner-trusted-only brsw-save-macro brsw-common-tool fa fa-save"></i>
+                    {{/if}}
+                    {{#if showManualMods}}
+                        <i class="brsw-manual-mods brsw-common-tool fas fa-plus-minus"></i>
+                    {{/if}}
+                </span>
+            {{/if}}
             {{#if tooltip}}
                 <div id="tooltip-description" role="tooltip" class="brsw-tooltip">
                     {{{tooltip}}}
