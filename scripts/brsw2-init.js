@@ -218,7 +218,7 @@ Hooks.on("renderChatMessageHTML", (message, html, options) => {
             const applyDamageTitle = game.i18n.localize("BRSW.ApplyDamage");
             html.querySelectorAll(".brsw-apply-damage").forEach((applyButton) => {
                 const targetId = applyButton.dataset.target;
-                applyButton.disabled = !targetId;
+                applyButton.disabled = !targetId || Number(applyButton.dataset.damage) === 0;
                 applyButton.title = targetId ? applyDamageTitle : "";
             });
         }

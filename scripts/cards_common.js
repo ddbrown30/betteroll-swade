@@ -586,7 +586,7 @@ export function calculate_damage_results(rolls) {
             roll.result_icon = '<i class="brsw-red-text fas fa-minus-circle"></i>';
         } else if (result < 4) {
             roll.result_text = game.i18n.localize("BRSW.Shaken");
-            roll.result_icon = '<i class="brsw-blue-text fas fa-certificate"></i>';
+            roll.result_icon = '<i class="brsw-shaken-result fas fa-certificate"></i>';
         } else if (result < 8) {
             roll.result_text = game.i18n.localize("BRSW.Wound");
             roll.result_icon = '<i class="brsw-red-text fas fa-tint"></i>';

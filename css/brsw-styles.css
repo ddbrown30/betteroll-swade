@@ -404,15 +404,6 @@
     min-height: 1.75rem;
 }
 
-.brsw-ap-info {
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    font-size: 15px;
-    padding: 8px 0;
-    background-image: url("/icons/svg/lightning.svg");
-}
-
 .brsw-damage-calculation {
     border-bottom: 1px solid blue;
     margin: 4px;
@@ -962,13 +953,20 @@
 .brsw-damage-roll-damage {
     display: flex;
     align-items: center;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
     font-size: 15px;
     padding: 8px 0;
     padding-right: 4px;
     text-wrap-mode: nowrap;
+}
+
+.brsw-damage-roll-damage > span {
+    min-width: 2em;
+    text-align: center;
+    align-content: center;
+    min-height: stretch;
+    background-size: 2em 2em;
+    background-repeat: no-repeat;
+    background-position: center;
     background-image: url("/icons/svg/combat.svg");
 }
 
@@ -1009,9 +1007,14 @@
     background-color: var(--brsw-color-gray-700);
 }
 
+.brsw-shaken-result {
+    color: blue;
+}
+
 .brsw-result-icon {
     display: flex;
     align-items: center;
+    min-width: 1.5em;
 }
 
 .brsw-icon-button {
