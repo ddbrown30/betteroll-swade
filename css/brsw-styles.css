@@ -961,6 +961,7 @@
 
 .brsw-damage-roll-damage > span {
     min-width: 2em;
+    min-height: 2em;
     text-align: center;
     align-content: center;
     min-height: stretch;
