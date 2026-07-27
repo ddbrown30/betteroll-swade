@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.21.0
+* We now hide various header tools on certain cards
+
 # Version 5.20.1
 * Fixed some issues with the damage row
 
