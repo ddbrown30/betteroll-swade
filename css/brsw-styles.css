@@ -45,7 +45,7 @@
     --brsw-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.themed.theme-dark {
+.themed.theme-dark .brsw-allow-dark-mode {
     --brsw-chat-message-color: var(--color-light-2);
     --brsw-button-bg-color: var(--color-light-2);
     --brsw-color-blue: rgb(47, 137, 255);
@@ -53,17 +53,17 @@
     --brsw-card-note-bg-color: var(--brsw-color-gray-700);
 }
 
-.themed.theme-dark .brsw-chat-message {
+.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message {
     color: var(--brsw-chat-message-color);
     isolation: isolate;
 }
 
-.themed.theme-dark .brsw-chat-message:not(.blind):not(.whisper) {
+.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message:not(.blind):not(.whisper) {
     position: relative;
     background: none;
 }
 
-.themed.theme-dark .brsw-chat-message:not(.blind):not(.whisper)::before {
+.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message:not(.blind):not(.whisper)::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -73,20 +73,20 @@
     pointer-events: none;
 }
 
-.themed.theme-dark .brsw-chat-message > * {
+.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message > * {
     position: relative;
     z-index: 1;
 }
 
-.themed.theme-dark .brsw-chat-message.blind {
+.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message.blind {
     background: #4b294b;
 }
 
-.themed.theme-dark .brsw-chat-message.whisper:not(.blind) {
+.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message.whisper:not(.blind) {
     background: #3e3e4f;
 }
 
-.themed.theme-dark .brsw-chat-message .message-header {
+.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message .message-header {
     color: var(--brsw-chat-message-color);
 }
 
@@ -402,12 +402,12 @@
     margin-left: 2px;
 }
 
-.themed.theme-dark .brsw-dice-image {
+.themed.theme-dark .brsw-allow-dark-mode .brsw-dice-image {
     position: relative;
     -webkit-text-stroke: 2px black;
 }
 
-.themed.theme-dark .brsw-dice-image::before {
+.themed.theme-dark .brsw-allow-dark-mode .brsw-dice-image::before {
     content: attr(data-text);
     text-align: center;
     align-content: center;
@@ -558,12 +558,12 @@
     flex-direction: column;
 }
 
-.themed.theme-dark #br-card-dialog {
+.themed.theme-dark .brsw-allow-dark-mode #br-card-dialog {
     position: relative;
     background: none;
 }
 
-.themed.theme-dark #br-card-dialog::before {
+.themed.theme-dark .brsw-allow-dark-mode #br-card-dialog::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -1054,12 +1054,12 @@
     background-image: url("/icons/svg/combat.svg");
 }
 
-.themed.theme-dark .brsw-damage-roll-damage > span {
+.themed.theme-dark .brsw-allow-dark-mode .brsw-damage-roll-damage > span {
     background-image: none;
     position: relative;
 }
 
-.themed.theme-dark .brsw-damage-roll-damage > span::after {
+.themed.theme-dark .brsw-allow-dark-mode .brsw-damage-roll-damage > span::after {
     content: attr(data-text);
     text-align: center;
     align-content: center;
@@ -1070,7 +1070,7 @@
     -webkit-text-stroke: 2px black;
 }
 
-.themed.theme-dark .brsw-damage-roll-damage > span::before {
+.themed.theme-dark .brsw-allow-dark-mode .brsw-damage-roll-damage > span::before {
     content: "";
     position: absolute;
     inset: 0;

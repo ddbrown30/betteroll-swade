@@ -327,6 +327,8 @@
   "BRSW.Save": "Save",
   "BRSW.Scale": "Scale",
   "BRSW.Scar": "Hideous scar",
+  "BRSW.Settings.AllowDarkMode.Hint": "If disabled, Better Rolls will always use Light Mode regardless of Foundry settings",
+  "BRSW.Settings.AllowDarkMode.Name": "Allow Dark Mode",
   "BRSW.Settings.AltClickAction.Hint": "Select what happens when you click a name while pressing Alt",
   "BRSW.Settings.AltClickAction.Name": "Alt Click",
   "BRSW.Settings.AmmoManagement.Hint": "When marked Subtract ammo will be selected by default",
