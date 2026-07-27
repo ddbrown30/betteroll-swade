@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.20.1
+* Fixed some issues with the damage row
+
 # Version 5.20.0
 * Improved damage row display
 * Removed Tailwind
