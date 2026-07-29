@@ -1106,12 +1106,7 @@ async function roll_dmg_target(
     await roll.evaluate();
 
     // Heavy armor
-    if (
-        target &&
-        !item.system.isHeavyWeapon &&
-        !damageFormulas.heavy_weapon &&
-        has_heavy_armor(target, damageFormulas.location)
-    ) {
+    if (target && !item.system.isHeavyWeapon && !damageFormulas.heavy_weapon && hasHeavyArmor(target.actor, damageFormulas.location)) {
         const no_damage_mod = new DamageModifier(
             game.i18n.localize("BRSW.HeavyArmor"),
             -999999,
@@ -1770,9 +1765,9 @@ function get_template_from_item(item) {
  * Returns true if the target wears a Heavy Armor
  * @param {PlaceableObject} target
  */
-function has_heavy_armor(target, location = "torso") {
+function hasHeavyArmor(target, location = "torso") {
     // Equipped is equipStatus 3
-    return target.document.actor.itemTypes.armor.some(
+    return target.itemTypes.armor.some(
         (item) =>
             item.system.isHeavyArmor &&
             item.system.locations[location] &&
