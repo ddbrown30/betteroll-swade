@@ -19,7 +19,7 @@ import {
     process_minimum_str_modifiers,
     roll_dice,
     roll_trait,
-    spend_bennie,
+    spendBenny,
     update_message,
 } from "./cards_common.js";
 import { createDamageCard } from "./damage_card.js";
@@ -842,7 +842,7 @@ export async function rollItem(brCard, html, expend_bennie, roll_damage) {
     }
 
     if (expend_bennie) {
-        await spend_bennie(brCard.actor);
+        await spendBenny(brCard.actor);
     }
 
     extra_data.rof = brCard.item.system.rof || 1;
@@ -1394,7 +1394,7 @@ export async function roll_dmg(
 
     const macros = [];
     if (expend_bennie) {
-        await spend_bennie(actor);
+        await spendBenny(actor);
     }
 
     // Calculate modifiers

@@ -7,7 +7,7 @@ import { BRSW2_CONST } from "./brsw2-const.js";
 import {
     create_common_card,
     roll_trait,
-    spend_bennie,
+    spendBenny,
 } from "./cards_common.js";
 import { get_owner } from "./damage_card.js";
 import { Utils, addEventListenerAll } from "./utils.js";
@@ -62,12 +62,12 @@ export function exposeIncapacitationCardAPI() {
  */
 function roll_incapacitation_clicked(ev, brCard) {
     ev.stopPropagation();
-    let spend_bennie = false;
+    let spendBenny = false;
     if (ev.currentTarget.classList.contains("roll-bennie-button")) {
-        spend_bennie = true;
+        spendBenny = true;
     }
     // noinspection JSIgnoredPromiseFromCall
-    roll_incapacitation(brCard, spend_bennie);
+    roll_incapacitation(brCard, spendBenny);
 }
 
 /**
@@ -97,7 +97,7 @@ export function activateIncapacitationCardListeners(message, html) {
  */
 async function roll_incapacitation(brCard, spend_benny) {
     if (spend_benny) {
-        await spend_bennie(brCard.actor);
+        await spendBenny(brCard.actor);
     }
     await roll_trait(
         brCard,

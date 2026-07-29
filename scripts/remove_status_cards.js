@@ -7,7 +7,7 @@ import { BRSW2_CONST } from "./brsw2-const.js";
 import {
   create_common_card,
   roll_trait,
-  spend_bennie,
+  spendBenny,
 } from "./cards_common.js";
 import { get_owner } from "./damage_card.js";
 import { TraitModifier } from "./modifiers.js";
@@ -101,15 +101,15 @@ export function activateRemoveStatusCardListeners(
     card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_UNSHAKE_CARD ? roll_unshaken : roll_unstun;
   addEventListenerAll(html, ".brsw-spirit-button, .brsw-roll-button", "click", (ev) => {
     ev.stopPropagation();
-    let spend_bennie = false;
+    let spendBenny = false;
     if (
       ev.currentTarget.classList.contains("roll-bennie-button") ||
       ev.currentTarget.classList.contains("brsw-soak-button")
     ) {
-      spend_bennie = true;
+      spendBenny = true;
     }
     // noinspection JSIgnoredPromiseFromCall
-    roll_function(brCard, spend_bennie);
+    roll_function(brCard, spendBenny);
   });
 }
 
@@ -121,7 +121,7 @@ export function activateRemoveStatusCardListeners(
 async function roll_unshaken(brCard, use_bennie) {
   if (use_bennie) {
     // remove shaken
-    await spend_bennie(brCard.actor);
+    await spendBenny(brCard.actor);
     brCard.render_data.text = game.i18n.format("BRSW.UnshakeBennie", {
       name: brCard.actor.name,
     });

@@ -76,9 +76,8 @@ export function makeExplodable(expression) {
     );
 }
 
-export async function spendMastersBenny() {
-    // Spends one benny from the gamemaster stack
-    // noinspection ES6MissingAwait
+export async function spendGMBenny() {
+    // Spends one benny from the GM stack
     for (const user of game.users) {
         if (user.isGM) {
             const value = user.getFlag("swade", "bennies");
