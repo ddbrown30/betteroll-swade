@@ -31,6 +31,7 @@ import {
     addEventListenerAll,
     getSelectedToken,
     getTargetedToken,
+    getUserTargets,
     set_or_update_condition,
     simple_form,
     spendMastersBenny,
@@ -1290,14 +1291,9 @@ export function process_common_actions(action, extra_data, macros, actor) {
         extra_data.rof = action.dice;
     }
     if (action.tnOverride) {
-        if (
-            isNaN(action.tnOverride) &&
-            action.tnOverride.toLowerCase() === "parry" &&
-            game.user.targets
-        ) {
-            extra_data.tn = parseInt(
-                game.user.targets.first().actor.system.stats.parry.value,
-            );
+        const userTargets = getUserTargets();
+        if (isNaN(action.tnOverride) && action.tnOverride.toLowerCase() === "parry" && userTargets[0]) {
+            extra_data.tn = parseInt(userTargets[0].actor.system.stats.parry.value);
         } else {
             extra_data.tn = parseInt(action.tnOverride);
         }

@@ -33,6 +33,7 @@ import {
     broofa,
     getAuthor,
     getTargetedToken,
+    getUserTargets,
     makeExplodable,
     set_or_update_condition,
     simple_form,
@@ -1548,8 +1549,8 @@ async function get_dmg_targets(token_id, brCard) {
             return [token];
         }
     }
-    let targets = await game.user.targets;
-    if (targets.size > 0) {
+    let targets = getUserTargets();
+    if (targets.length > 0) {
         targets = Array.from(targets).filter((token) => token.actor);
     } else if (brCard.targets.length > 0) {
         targets = brCard.targets;
@@ -1797,7 +1798,7 @@ async function execute_macro(action, brCard) {
         targetActor = brCard.actor;
         targetToken = brCard.token;
     } else if (action.macroActor === "target") {
-        targetToken = game.user.targets.first() || brCard.token;
+        targetToken = getUserTargets()[0] || brCard.token;
         targetActor = targetToken.actor;
     } else {
         targetToken = game.canvas.tokens.controlled.length < 1 ? brCard.token : game.canvas.tokens.controlled[0];

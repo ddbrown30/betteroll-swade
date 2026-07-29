@@ -58,8 +58,8 @@ function addActions(actions) {
 /**
  * Process the not selector
  */
-function process_not_selector(action, item, actor) {
-    return !process_action(action.not_selector[0], item, actor);
+function process_not_selector(action, item, actor, userTargets) {
+    return !process_action(action.not_selector[0], item, actor, userTargets);
 }
 
 /**
@@ -77,10 +77,10 @@ export function exposeGlobalActionsAPI() {
  * @param actor
  * @return {boolean}
  */
-function process_and_selector(action, item, actor) {
+function process_and_selector(action, item, actor, userTargets) {
     let selected = true;
     for (const selection_option of action.and_selector) {
-        if (!process_action(selection_option, item, actor)) {
+        if (!process_action(selection_option, item, actor, userTargets)) {
             selected = false;
             break;
         }
@@ -95,10 +95,10 @@ function process_and_selector(action, item, actor) {
  * @param actor
  * @return {boolean}
  */
-function process_or_selector(action, item, actor) {
+function process_or_selector(action, item, actor, userTargets) {
     let selected = false;
     for (const selection_option of action.or_selector) {
-        if (process_action(selection_option, item, actor)) {
+        if (process_action(selection_option, item, actor, userTargets)) {
             selected = true;
             break;
         }
@@ -113,7 +113,7 @@ function process_or_selector(action, item, actor) {
  * @param actor
  * @return {boolean}
  */
-export function process_action(action, item, actor, useDefaultChecked) {
+export function process_action(action, item, actor, userTargets, useDefaultChecked) {
     let selected = false;
     const selectorObject = useDefaultChecked ? action.defaultChecked : action;
     if (selectorObject.hasOwnProperty("selector_type")) {
@@ -122,13 +122,14 @@ export function process_action(action, item, actor, useDefaultChecked) {
             selectorObject.selector_value,
             item,
             actor,
+            userTargets,
         );
     } else if (selectorObject.hasOwnProperty("and_selector")) {
-        selected = process_and_selector(selectorObject, item, actor);
+        selected = process_and_selector(selectorObject, item, actor, userTargets);
     } else if (selectorObject.hasOwnProperty("or_selector")) {
-        selected = process_or_selector(selectorObject, item, actor);
+        selected = process_or_selector(selectorObject, item, actor, userTargets);
     } else if (selectorObject.hasOwnProperty("not_selector")) {
-        selected = process_not_selector(selectorObject, item, actor);
+        selected = process_not_selector(selectorObject, item, actor, userTargets);
     }
     return selected;
 }
@@ -138,7 +139,7 @@ export function process_action(action, item, actor, useDefaultChecked) {
  * @param {Item} item
  * @param {SwadeActor} actor
  */
-export function get_actions(item, actor) {
+export function get_actions(item, actor, userTargets) {
     const availableActions = [];
 
     let disabledActions = SettingsUtils.getSetting(BRSW2_CONFIG.SETTING_KEYS.disabledSystemActions);
@@ -147,7 +148,7 @@ export function get_actions(item, actor) {
     }
 
     for (const action of game.brsw.GLOBAL_ACTIONS) {
-        if (!disabledActions.includes(action.id) && process_action(action, item, actor)) {
+        if (!disabledActions.includes(action.id) && process_action(action, item, actor, userTargets)) {
             availableActions.push(action);
         }
     }
@@ -166,7 +167,7 @@ export function get_actions(item, actor) {
  * @param actor actor been checked
  */
 // eslint-disable-next-line complexity
-function check_selector(type, value, item, actor) {
+function check_selector(type, value, item, actor, userTargets) {
     let selected = false;
     if (type === "skill") {
         if (item.type === "attribute") {
@@ -334,7 +335,7 @@ function check_selector(type, value, item, actor) {
         }
     } else if (type.indexOf("target_additional_stat_") === 0) {
         const additional_stat = type.slice(23);
-        for (const targeted_token of game.user.targets) {
+        for (const targeted_token of userTargets) {
             if (targeted_token?.actor?.system?.additionalStats.hasOwnProperty(additional_stat)) {
                 if (Utils.check_equality_with_operators(targeted_token.actor.system.additionalStats[additional_stat].value, value)) {
                     selected = true;
@@ -346,7 +347,7 @@ function check_selector(type, value, item, actor) {
         selected = actor.hasJoker;
     } else if (type === "target_has_edge") {
         const edge_name = game.i18n.localize(value);
-        for (const targeted_token of game.user.targets) {
+        for (const targeted_token of userTargets) {
             const edge = targeted_token.actor?.items.find((item) => {
                 return (
                     item.type === "edge" &&
@@ -360,7 +361,7 @@ function check_selector(type, value, item, actor) {
         selected = hasMastery == value;
     } else if (type === "target_has_hindrance") {
         const hindrance_name = game.i18n.localize(value);
-        for (const targeted_token of game.user.targets) {
+        for (const targeted_token of userTargets) {
             const hindrance = targeted_token.actor?.items.find((item) => {
                 return (
                     item.type === "hindrance" &&
@@ -372,7 +373,7 @@ function check_selector(type, value, item, actor) {
     } else if (type === "target_has_major_hindrance") {
         const hindrance_name = game.i18n.localize(value);
         // noinspection AnonymousFunctionJS
-        for (const targeted_token of game.user.targets) {
+        for (const targeted_token of userTargets) {
             const hindrance = targeted_token.actor?.items.find((item) => {
                 return (
                     item.type === "hindrance" &&
@@ -384,7 +385,7 @@ function check_selector(type, value, item, actor) {
         }
     } else if (type === "target_has_ability") {
         const ability_name = game.i18n.localize(value);
-        for (const targeted_token of game.user.targets) {
+        for (const targeted_token of userTargets) {
             const ability = targeted_token.actor?.items.find((item) => {
                 return (
                     item.type === "ability" &&
@@ -396,7 +397,7 @@ function check_selector(type, value, item, actor) {
     } else if (type === "target_has_effect") {
         selected = false;
         const abilityName = game.i18n.localize(value);
-        for (const targeted_token of game.user.targets) {
+        for (const targeted_token of userTargets) {
             const effect = targeted_token.actor?.appliedEffects.find(
                 (ef) => ef.name.toLowerCase().includes(abilityName.toLowerCase()), // jshint ignore:line
             );
@@ -408,11 +409,11 @@ function check_selector(type, value, item, actor) {
         const gm_actions = get_enabled_gm_actions();
         selected = !!gm_actions.find((a) => a.id == value);
     } else if (type === "faction") {
-        const token = actor.getActiveTokens()[0];
-        const targetToken = game.user.targets.first();
-        if (token && targetToken && token !== targetToken) {
-            const actor_disposition = token.document.disposition;
-            const target_disposition = game.user.targets.first().document.disposition;
+        const token = Utils.toTokenDoc(actor.getActiveTokens()[0]) ?? actor.prototypeToken;
+        const targetToken = userTargets[0];
+        if (token && targetToken && token.actor?.id !== targetToken.actor?.id) {
+            const actor_disposition = token.disposition;
+            const target_disposition = targetToken.disposition;
             if (value === "same") {
                 selected = actor_disposition === target_disposition;
             } else {
@@ -436,7 +437,7 @@ function check_selector(type, value, item, actor) {
     } else if (type === "item_value") {
         selected = check_document_value(item, value);
     } else if (type === "target_value") {
-        const targeted_token = game.user.targets.first();
+        const targeted_token = userTargets[0];
         if (targeted_token) {
             selected = check_document_value(targeted_token.actor, value);
         }
@@ -451,8 +452,8 @@ function check_selector(type, value, item, actor) {
             selected = !selected;
         }
     } else if (type === "range_less_than") {
-        const token = actor.getActiveTokens()[0];
-        const targetToken = game.user.targets.first();
+        const token = Utils.toTokenDoc(actor.getActiveTokens()[0]) ?? actor.prototypeToken;
+        const targetToken = userTargets[0];
         if (token && targetToken) {
             const distance = measureDistance(token, targetToken);
             selected = parseInt(value) >= distance;

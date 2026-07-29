@@ -170,10 +170,20 @@ export async function simple_form(title, fields, callback) {
 }
 
 /**
+ * Gets the user's list of targets
+ */
+export function getUserTargets() {
+    if (game.user.targets.size || !game.brsw.targetIds?.length) {
+        return Array.from(game.user.targets).map(t => Utils.toTokenDoc(t));
+    }
+    return game.brsw.targetIds.map(t => fromUuidSync(t)).filter(Boolean);
+}
+
+/**
  * Gets the first targeted token
  */
 export function getTargetedToken(originActors) {
-    return game.user.targets.first() ?? getSelectedToken(originActors);
+    return getUserTargets()[0] ?? getSelectedToken(originActors);
 }
 
 /**
@@ -181,7 +191,7 @@ export function getTargetedToken(originActors) {
  */
 export function getSelectedToken(originActors) {
     const originActorIds = new Set(originActors?.map(a => a.id) ?? []);
-    return canvas.tokens.controlled.find((t) => t.actor && !originActorIds.has(t.actor.id));
+    return Utils.toTokenDoc(canvas.tokens?.controlled.find((t) => t.actor && !originActorIds.has(t.actor.id)));
 }
 
 /**
