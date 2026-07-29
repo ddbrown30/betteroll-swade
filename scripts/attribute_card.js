@@ -9,7 +9,7 @@ import {
   getActorFromIds,
   process_common_actions,
   roll_trait,
-  spend_bennie,
+  spendBenny,
   traitToDieString,
 } from "./cards_common.js";
 import { runMacros } from "./item_card.js";
@@ -148,7 +148,7 @@ export async function rollAttribute(brCard, expend_bennie) {
     brCard.trait_roll.reroll_mode = expend_bennie ? "benny" : "free";
   }
   if (expend_bennie) {
-    await spend_bennie(brCard.actor);
+    await spendBenny(brCard.actor);
   }
   await roll_trait(
     brCard,

@@ -33,7 +33,7 @@ import {
     getTargetedToken,
     set_or_update_condition,
     simple_form,
-    spendMastersBenny,
+    spendGMBenny,
 } from "./utils.js";
 
 /**
@@ -111,17 +111,14 @@ export function are_bennies_available(actor) {
  * Expends a bennie
  * @param {SwadeActor} actor - Actor who is going to expend the bennie
  */
-export async function spend_bennie(actor) {
-    // Dice so Nice animation
-    if (actor.hasPlayerOwner) {
-        await actor.spendBenny();
-    } else if (actor.system.wildcard && actor.system.bennies.value > 0) {
+export async function spendBenny(actor) {
+    // Dice So Nice animation
+    if (actor.hasPlayerOwner || (actor.system.wildcard && actor.system.bennies.value > 0)) {
         await actor.spendBenny();
     } else {
-        await spendMastersBenny();
+        await spendGMBenny();
         if (game.dice3d) {
             const benny = await new Roll("1dB").roll();
-            // noinspection JSIgnoredPromiseFromCall,ES6MissingAwait
             game.dice3d.showForRoll(benny, game.user, true, null, false);
         }
     }
