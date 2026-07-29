@@ -477,7 +477,7 @@
 
 #br-card-dialog {
     width: fit-content;
-    max-width: min-content;
+    max-width: 100%;
     margin-right: 2%;
     padding: 3px;
     background: url("/ui/parchment.jpg") repeat;
@@ -514,7 +514,28 @@
 
 #br-card-dialog .brsw-action-section-groups {
     display: grid;
-    grid-template-columns: repeat(3, minmax(max-content, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 700px) {
+    #br-card-dialog .brsw-action-section-groups {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        min-width: 100%;
+    }
+
+    #br-card-dialog {
+        min-width: 96%;
+    }
+}
+
+@media (max-width: 500px) {
+    #br-card-dialog .brsw-action-section-groups {
+        grid-template-columns: 1fr;
+    }
+
+    #br-card-dialog {
+        min-width: 96%;
+    }
 }
 
 #br-card-dialog .brsw-action-group {
@@ -524,6 +545,8 @@
     margin: 0.5em;
     border-color: oklch(0.373 0.034 259.733);
     border-radius: 8px;
+
+    min-width: 0;
 }
 
 #br-card-dialog .brsw-action-group .brsw-action-group-name {
