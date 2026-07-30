@@ -1,7 +1,12 @@
 # Changelog
 
 # Version 5.21.0
+* Added dark mode support
 * We now hide various header tools on certain cards
+* Improved damage row appearance
+* Reworked how we get and use targets under the hood. I did a lot of testing on this but there still could be some bugs.
+* Added support for Player Pilot
+* Added Czech translations (majklvi)
 
 # Version 5.20.1
 * Fixed some issues with the damage row
