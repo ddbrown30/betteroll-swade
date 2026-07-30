@@ -68,14 +68,12 @@
     font-weight: var(--brsw-font-weight-bold);
 }
 
-.brsw-common-modifiers {
-    display: flex;
-}
-
 /* Styles for the card body */
 
 .brsw-common-modifiers {
+    display: flex;
     margin-bottom: 5px;
+    align-items: center;
 }
 
 .brsw-selectable {
