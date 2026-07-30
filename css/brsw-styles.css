@@ -48,7 +48,8 @@
     --brsw-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.themed.theme-dark .brsw-allow-dark-mode {
+.themed.theme-dark .brsw-allow-dark-mode,
+.theme-dark .brsw-allow-dark-mode#br-card-dialog {
     --brsw-chat-message-color: var(--color-light-2);
     --brsw-button-bg-color: var(--color-cool-5-50);
     --brsw-button-color: var(--color-light-3);
@@ -560,17 +561,16 @@
     flex-direction: column;
 }
 
-.themed.theme-dark .brsw-allow-dark-mode #br-card-dialog {
-    position: relative;
+.theme-dark .brsw-allow-dark-mode#br-card-dialog {
     background: none;
 }
 
-.themed.theme-dark .brsw-allow-dark-mode #br-card-dialog::before {
+.theme-dark .brsw-allow-dark-mode#br-card-dialog::before {
     content: "";
     position: absolute;
     inset: 0;
     background: url("/ui/parchment.jpg");
-    filter: brightness(15%);
+    filter: brightness(40%) contrast(250%);
     z-index: -1;
 }
 
@@ -605,21 +605,22 @@
 @media (max-width: 700px) {
     #br-card-dialog .brsw-action-section-groups {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        min-width: 100%;
+        max-width: 100%;
     }
 
     #br-card-dialog {
-        min-width: 96%;
+        max-width: 96%;
     }
 }
 
 @media (max-width: 500px) {
     #br-card-dialog .brsw-action-section-groups {
         grid-template-columns: 1fr;
+        max-width: 100%;
     }
 
     #br-card-dialog {
-        min-width: 96%;
+        max-width: 96%;
     }
 }
 
