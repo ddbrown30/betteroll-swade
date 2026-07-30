@@ -45,6 +45,7 @@ export const WORLD_SETTING_KEYS = {
 };
 
 export const USER_SETTING_KEYS = {
+    allowDarkMode: "allowDarkMode",
     autoPopoutChat: "auto_popout_chat",
     defaultRateOfFire: "default_rate_of_fire",
     expandDescriptions: "expand-descriptions",

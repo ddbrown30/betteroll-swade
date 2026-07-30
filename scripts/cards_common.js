@@ -34,7 +34,7 @@ import {
     getUserTargets,
     set_or_update_condition,
     simple_form,
-    spendMastersBenny,
+    spendGMBenny,
 } from "./utils.js";
 
 /**
@@ -112,17 +112,14 @@ export function are_bennies_available(actor) {
  * Expends a bennie
  * @param {SwadeActor} actor - Actor who is going to expend the bennie
  */
-export async function spend_bennie(actor) {
-    // Dice so Nice animation
-    if (actor.hasPlayerOwner) {
-        await actor.spendBenny();
-    } else if (actor.system.wildcard && actor.system.bennies.value > 0) {
+export async function spendBenny(actor) {
+    // Dice So Nice animation
+    if (actor.hasPlayerOwner || (actor.system.wildcard && actor.system.bennies.value > 0)) {
         await actor.spendBenny();
     } else {
-        await spendMastersBenny();
+        await spendGMBenny();
         if (game.dice3d) {
             const benny = await new Roll("1dB").roll();
-            // noinspection JSIgnoredPromiseFromCall,ES6MissingAwait
             game.dice3d.showForRoll(benny, game.user, true, null, false);
         }
     }
@@ -596,6 +593,8 @@ export function calculate_damage_results(rolls) {
             roll.result_text = game.i18n.localize("BRSW.Wounds") + " " + wounds;
             roll.result_icon = wounds.toString() + " " + '<i class="brsw-red-text fas fa-tint"></i>';
         }
+
+        roll.damageResultText = roll.result + (roll.ap ? `(${game.i18n.localize("BRSW.ApShort")} ${roll.ap})` : "");
     }
     if (result < 0) {
         result = 0;

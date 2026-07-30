@@ -143,14 +143,21 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         const canModifyWorld = game.user.hasPermission("SETTINGS_MODIFY");
         let requiresWorldReload = false;
         let requiresClientReload = false;
+        const changedCallbacks = [];
         for (let [k, v] of Object.entries(foundry.utils.expandObject(formData.object))) {
-            if (canModifyWorld && WORLD_SETTINGS[k] && WORLD_SETTINGS[k].value !== v) {
+            if (canModifyWorld && WORLD_SETTINGS[k] &&
+                (WORLD_SETTINGS[k].value !== undefined
+                    ? WORLD_SETTINGS[k].value !== v
+                    : WORLD_SETTINGS[k].default !== v)) {
                 WORLD_SETTINGS[k].value = v;
-                if (v === WORLD_SETTINGS[k].default) continue;
+                if (WORLD_SETTINGS[k].onChange) changedCallbacks.push(() => WORLD_SETTINGS[k].onChange(v));
                 requiresWorldReload = requiresWorldReload || !!WORLD_SETTINGS[k].requiresReload;
-            } else if (USER_SETTINGS[k] && USER_SETTINGS[k].value !== v) {
+            } else if (USER_SETTINGS[k] &&
+                (USER_SETTINGS[k].value !== undefined
+                    ? USER_SETTINGS[k].value !== v
+                    : USER_SETTINGS[k].default !== v)) {
                 USER_SETTINGS[k].value = v;
-                if (v === USER_SETTINGS[k].default) continue;
+                if (USER_SETTINGS[k].onChange) changedCallbacks.push(() => USER_SETTINGS[k].onChange(v));
                 requiresClientReload = requiresClientReload || !!USER_SETTINGS[k].requiresReload;
             }
         }
@@ -160,6 +167,8 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         }
 
         await SettingsUtils.setUserSettings();
+
+        changedCallbacks.forEach(cb => cb());
 
         if (requiresWorldReload || requiresClientReload) {
             await this.constructor.reloadConfirm({ world: requiresWorldReload });

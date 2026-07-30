@@ -76,9 +76,8 @@ export function makeExplodable(expression) {
     );
 }
 
-export async function spendMastersBenny() {
-    // Spends one benny from the gamemaster stack
-    // noinspection ES6MissingAwait
+export async function spendGMBenny() {
+    // Spends one benny from the GM stack
     for (const user of game.users) {
         if (user.isGM) {
             const value = user.getFlag("swade", "bennies");
@@ -848,6 +847,14 @@ export class SettingsUtils {
 
         return USER_SETTINGS[key].value !== undefined
             ? USER_SETTINGS[key].value
+            : USER_SETTINGS[key].default;
+    }
+
+    static allowDarkMode() {
+        const userSettings = SettingsUtils.getModuleFlag(game.user, USER_FLAGS.userSettings);
+        const key = USER_SETTING_KEYS.allowDarkMode;
+        return userSettings[key] !== undefined
+            ? userSettings[key]
             : USER_SETTINGS[key].default;
     }
 }

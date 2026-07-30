@@ -6,7 +6,7 @@ import {
     are_bennies_available,
     create_common_card,
     roll_trait,
-    spend_bennie,
+    spendBenny,
 } from "./cards_common.js";
 import {
     createIncapacitationCard,
@@ -221,14 +221,14 @@ export function activateDamageCardListeners(message, html) {
     });
     addEventListenerAll(html, ".brsw-soak-button, .brsw-roll-button", "click", (ev) => {
         ev.stopPropagation();
-        let spend_bennie = false;
+        let spendBenny = false;
         if (
             ev.currentTarget.classList.contains("roll-bennie-button") ||
             ev.currentTarget.classList.contains("brsw-soak-button")
         ) {
-            spend_bennie = true;
+            spendBenny = true;
         }
-        roll_soak(brCard, spend_bennie);
+        rollSoak(brCard, spendBenny);
     });
     html.querySelector(".brsw-show-incapacitation")?.addEventListener("click", () => {
         brCard.closePopout(); //We assume we're done with the card at this point so close any popouts
@@ -247,65 +247,48 @@ export function activateDamageCardListeners(message, html) {
 /**
  * Males a soak roll
  * @param {BrCommonCard} brCard
- * @param {Boolean} use_bennie
+ * @param {Boolean} useBenny
  */
-async function roll_soak(brCard, use_bennie) {
-    if (use_bennie) {
-        await spend_bennie(brCard.actor);
+async function rollSoak(brCard, useBenny) {
+    if (useBenny) {
+        await spendBenny(brCard.actor);
     }
 
-    let undo_wound_modifier = Math.min(brCard.actor.system.wounds.value, 3) - brCard.render_data.undo_values.wounds;
+    const wounds = Math.min(brCard.actor.system.wounds.value, 3);
+    const ignoredWounds = parseInt(brCard.actor.system.wounds.ignored) + (parseInt(brCard.actor.system.woundsOrFatigue.ignored) || 0);
 
-    const ignored_wounds = parseInt(brCard.actor.system.wounds.ignored) + (parseInt(brCard.actor.system.woundsOrFatigue.ignored) || 0);
+    const undoWounds = brCard.render_data.undo_values.wounds;
+    const undoWoundModifier = ignoredWounds ? Math.max(0, wounds - Math.max(ignoredWounds, undoWounds)) : wounds - undoWounds;
 
-    if (ignored_wounds) {
-        undo_wound_modifier = Math.max(
-            0,
-            Math.min(brCard.actor.system.wounds.value, 3) - ignored_wounds - Math.max(0, brCard.render_data.undo_values.wounds - ignored_wounds),
-        );
-    }
+    const soakModifiers = [];
 
-    const soak_modifiers = [
-        {
-            name: game.i18n.localize("BRSW.RemoveWounds"),
-            value: undo_wound_modifier,
-        },
-    ];
-
-    if (
-        brCard.actor.items.find((item) => {
-            return (
-                item.type === "edge" &&
-                item.name.toLowerCase().includes(game.i18n.localize("BRSW.EdgeName.IronJaw").toLowerCase())
-            );
-        })
-    ) {
-        soak_modifiers.push({ name: game.i18n.localize("BRSW.EdgeName.IronJaw"), value: 2 });
+    if (undoWoundModifier > 0) {
+        soakModifiers.push({ name: game.i18n.localize("BRSW.RemoveWounds"), value: undoWoundModifier });
     }
 
     // Active effects
-    const soak_active_effects = brCard.actor.appliedEffects.filter((e) =>
+    const soakActiveEffects = brCard.actor.appliedEffects.filter((e) =>
         e.changes.find((ch) => ch.key === "brsw.soak-modifier" || ch.key === "system.attributes.vigor.soakBonus")
     );
 
-    for (const effect of soak_active_effects) {
+    for (const effect of soakActiveEffects) {
         const change =
             effect.changes.find((ch) => ch.key === "brsw.soak-modifier") ||
             effect.changes.find((ch) => ch.key === "system.attributes.vigor.soakBonus");
 
-        soak_modifiers.push({ name: effect.label, value: parseInt(change.value) });
+        soakModifiers.push({ name: effect.name, value: parseInt(change.value) });
     }
 
     // Unarmored hero
     if (game.settings.get("swade", "unarmoredHero") && brCard.actor.isUnarmored) {
-        soak_modifiers.push({ name: game.i18n.localize("BRSW.UnarmoredHero"), value: 2 });
+        soakModifiers.push({ name: game.i18n.localize("BRSW.UnarmoredHero"), value: 2 });
     }
 
     await roll_trait(
         brCard,
         brCard.actor.system.attributes.vigor,
         game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS.vigor),
-        { modifiers: soak_modifiers },
+        { modifiers: soakModifiers },
     );
 
     let result = 0;

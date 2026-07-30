@@ -5,6 +5,7 @@
 
     --brsw-color-gray-200: oklch(0.928 0.006 264.531);
     --brsw-color-gray-300: oklch(0.872 0.01 258.338);
+    --brsw-color-gray-400: oklch(0.709 0.019 261.351);
     --brsw-color-gray-500: oklch(0.551 0.027 264.364);
     --brsw-color-gray-600: oklch(0.446 0.03 256.802);
     --brsw-color-gray-700: oklch(0.373 0.034 259.733);
@@ -17,7 +18,14 @@
     --brsw-color-red-border: oklch(0.577 0.245 27.325);
     --brsw-color-red-hover: oklch(0.396 0.141 25.723);
 
+    --brsw-color-blue: blue;
+
     --brsw-color-selected-tag-text: #ffe2dc;
+
+    --brsw-button-bg-color: white;
+
+    --brsw-card-note-warning-color: #FF6467;
+    --brsw-card-note-bg-color: var(--brsw-color-gray-800);
 
     --brsw-text-xs: 0.75rem;
     --brsw-text-xs-line-height: 1rem;
@@ -35,6 +43,52 @@
 
     --brsw-transition-duration: 150ms;
     --brsw-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.themed.theme-dark .brsw-allow-dark-mode {
+    --brsw-chat-message-color: var(--color-light-2);
+    --brsw-button-bg-color: var(--color-cool-5-50);
+    --brsw-button-color: var(--color-light-3);
+    --brsw-color-blue: rgb(47, 137, 255);
+    --brsw-card-note-warning-color: #ff393d;
+    --brsw-card-note-bg-color: var(--brsw-color-gray-700);
+}
+
+.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message {
+    color: var(--brsw-chat-message-color);
+    isolation: isolate;
+}
+
+.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message:not(.blind):not(.whisper) {
+    position: relative;
+    background: none;
+}
+
+.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message:not(.blind):not(.whisper)::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url("/ui/parchment.jpg");
+    filter: brightness(40%) contrast(250%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message > * {
+    position: relative;
+    z-index: 1;
+}
+
+.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message.blind {
+    background: #4b294b;
+}
+
+.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message.whisper:not(.blind) {
+    background: #3e3e4f;
+}
+
+.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message .message-header {
+    color: var(--brsw-chat-message-color);
 }
 
 /* General Styles */
@@ -347,6 +401,22 @@
     margin-left: 2px;
 }
 
+.themed.theme-dark .brsw-allow-dark-mode .brsw-dice-image {
+    position: relative;
+    -webkit-text-stroke: 2px black;
+}
+
+.themed.theme-dark .brsw-allow-dark-mode .brsw-dice-image::before {
+    content: attr(data-text);
+    text-align: center;
+    align-content: center;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    -webkit-text-stroke: 0;
+    color: var(--brsw-chat-message-color);
+}
+
 .brsw-button-image {
     border: none;
     vertical-align: text-bottom;
@@ -369,7 +439,7 @@
 }
 
 .brsw-blue-text {
-    color: blue !important;
+    color: var(--brsw-color-blue);
 }
 
 .brsw-green-text {
@@ -485,6 +555,20 @@
 
     display: flex;
     flex-direction: column;
+}
+
+.themed.theme-dark .brsw-allow-dark-mode #br-card-dialog {
+    position: relative;
+    background: none;
+}
+
+.themed.theme-dark .brsw-allow-dark-mode #br-card-dialog::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url("/ui/parchment.jpg");
+    filter: brightness(15%);
+    z-index: -1;
 }
 
 #br-card-dialog > div {
@@ -664,7 +748,7 @@
     font-weight: bold;
     border-style: none;
     margin: calc(var(--brsw-spacing) * 2);
-    color: black;
+    color: var(--brsw-chat-message-color);
 }
 
 .brsw-dialog-close-btn {
@@ -731,10 +815,10 @@
     margin-right: calc(var(--brsw-spacing) * 2);
     margin-bottom: calc(var(--brsw-spacing) * 2);
     font-weight: var(--brsw-font-weight-medium);
-    background-color: white;
+    background-color: var(--brsw-button-bg-color);
+    color: var(--brsw-button-color);
     border-radius: var(--brsw-radius-lg);
     border: 1px solid var(--brsw-color-gray-600);
-    color: var(--brsw-color-gray-800);
     width: 100%;
 }
 
@@ -904,11 +988,11 @@
     font-size: var(--brsw-text-sm);
     line-height: var(--brsw-text-sm-line-height);
     border-radius: var(--brsw-radius-lg);
-    background-color: var(--brsw-color-gray-800);
+    background-color: var(--brsw-card-note-bg-color);
 }
 
 .brsw-card-note-warning {
-    color: #FF6467;
+    color: var(--brsw-card-note-warning-color);
 }
 
 .brsw-card-note-extra {
@@ -926,10 +1010,10 @@
 .brsw-undo-damage {
     margin-top: calc(var(--brsw-spacing) * 2);
     padding: calc(var(--brsw-spacing) * 0.5);
-    background-color: white;
+    background-color: var(--brsw-button-bg-color);
     border-radius: var(--brsw-radius-lg);
     border: 1px solid var(--brsw-color-gray-600);
-    color: var(--brsw-color-gray-800);
+    color: var(--brsw-button-color);
 }
 
 .brsw-undo-damage:hover {
@@ -949,10 +1033,10 @@
 .brsw-full-button {
     padding-block: calc(var(--brsw-spacing) * 0.5);
     padding-inline: calc(var(--brsw-spacing) * 5);
-    background-color: white;
+    background-color: var(--brsw-button-bg-color);
     border-radius: var(--brsw-radius-lg);
     border: 1px solid var(--brsw-color-gray-600);
-    color: var(--brsw-color-gray-800);
+    color: var(--brsw-button-color);
     width: 100%;
 }
 
@@ -996,6 +1080,31 @@
     background-image: url("/icons/svg/combat.svg");
 }
 
+.themed.theme-dark .brsw-allow-dark-mode .brsw-damage-roll-damage > span {
+    background-image: none;
+    position: relative;
+}
+
+.themed.theme-dark .brsw-allow-dark-mode .brsw-damage-roll-damage > span::after {
+    content: attr(data-text);
+    text-align: center;
+    align-content: center;
+    position: absolute;
+    inset: 0;
+    color: black;
+    z-index: -1;
+    -webkit-text-stroke: 2px black;
+}
+
+.themed.theme-dark .brsw-allow-dark-mode .brsw-damage-roll-damage > span::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: #40404a;
+    mask: url("/icons/svg/combat.svg") center / 2em 2em no-repeat;
+    z-index: -1;
+}
+
 .brsw-damage-roll-result {
     display: inline-flex;
     align-items: center;
@@ -1024,8 +1133,8 @@
 }
 
 .brsw-apply-damage:not(:disabled) {
-    background: white;
-    color: var(--brsw-color-gray-800);
+    background-color: var(--brsw-button-bg-color);
+    color: var(--brsw-button-color);
 }
 
 .brsw-apply-damage:not(:disabled):hover {
@@ -1034,7 +1143,7 @@
 }
 
 .brsw-shaken-result {
-    color: blue;
+    color: var(--brsw-color-blue);
 }
 
 .brsw-result-icon {
@@ -1045,10 +1154,10 @@
 
 .brsw-icon-button {
     padding: calc(var(--brsw-spacing) * 0.5);
-    background-color: white;
+    background-color: var(--brsw-button-bg-color);
     border-radius: var(--brsw-radius-lg);
     border: 1px solid var(--brsw-color-gray-600);
-    color: var(--brsw-color-gray-800);
+    color: var(--brsw-button-color);
 }
 
 .brsw-icon-button:hover {
@@ -1117,10 +1226,10 @@
     padding-block: calc(var(--brsw-spacing) * 0.5);
     padding-inline: var(--brsw-spacing);
     font-weight: var(--brsw-font-weight-medium);
-    background-color: white;
+    background-color: var(--brsw-button-bg-color);
     border-radius: var(--brsw-radius-lg);
     border: 1px solid var(--brsw-color-gray-600);
-    color: var(--brsw-color-gray-800);
+    color: var(--brsw-button-color);
 }
 
 .brsw-reroll-button:hover {
@@ -1135,10 +1244,10 @@
     padding-inline: calc(var(--brsw-spacing) * 5);
     margin-top: calc(var(--brsw-spacing) * 2);
     font-weight: var(--brsw-font-weight-medium);
-    background-color: white;
+    background-color: var(--brsw-button-bg-color);
     border-radius: var(--brsw-radius-lg);
     border: 1px solid var(--brsw-color-gray-600);
-    color: var(--brsw-color-gray-800);
+    color: var(--brsw-button-color);
 }
 
 .brsw-footer-button:hover {
@@ -1280,10 +1389,10 @@
 .brsw-item-button {
     padding-block: calc(var(--brsw-spacing) * 0.5);
     font-weight: var(--brsw-font-weight-medium);
-    background-color: white;
+    background-color: var(--brsw-button-bg-color);
     border-radius: var(--brsw-radius-lg);
     border: 1px solid var(--brsw-color-gray-600);
-    color: var(--brsw-color-gray-800);
+    color: var(--brsw-button-color);
     width: 100%;
     text-wrap-mode: nowrap;
 }

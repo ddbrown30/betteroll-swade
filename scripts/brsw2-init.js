@@ -247,6 +247,11 @@ Hooks.on("createChatMessage", (message, _options, _userId) => {
 Hooks.on("renderChatMessageHTML", (message, html, _options) => {
     const brData = message.getFlag("betterrolls-swade2", "br_data");
     if (brData) {
+        html.classList.add("brsw-chat-message");
+        if (SettingsUtils.allowDarkMode()) {
+            html.classList.add("brsw-allow-dark-mode");
+        }
+
         // This chat card is one of ours
         const brCard = new BrCommonCard(message);
         activateCardListeners(brCard, html, message);

@@ -51,7 +51,7 @@
                 <span>{{this.label}}</span>
                 <span class="brsw-die-results">
                     {{#each this.unexploded}}
-                        <span class="brsw-d{{current_dice.sides}} brsw-dice-image">{{this}}</span>
+                        <span class="brsw-d{{current_dice.sides}} brsw-dice-image" data-text="{{this}}">{{this}}</span>
                     {{/each}}
                 </span>
             </div>
@@ -64,7 +64,7 @@
                         <span>
                             {{#each this.dice.terms as |current_term|}}
                                 {{#each this.results}}
-                                    <span class="brsw-d{{current_term.faces}} brsw-dice-image">{{this.result}}</span>
+                                    <span class="brsw-d{{current_term.faces}} brsw-dice-image" data-text="{{this.result}}">{{this.result}}</span>
                                 {{/each}}
                             {{/each}}
                         </span>
