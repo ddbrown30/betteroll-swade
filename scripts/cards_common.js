@@ -592,6 +592,8 @@ export function calculate_damage_results(rolls) {
             roll.result_text = game.i18n.localize("BRSW.Wounds") + " " + wounds;
             roll.result_icon = wounds.toString() + " " + '<i class="brsw-red-text fas fa-tint"></i>';
         }
+
+        roll.damageResultText = roll.result + (roll.ap ? `(${game.i18n.localize("BRSW.ApShort")} ${roll.ap})` : "");
     }
     if (result < 0) {
         result = 0;

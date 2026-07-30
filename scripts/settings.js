@@ -331,6 +331,25 @@ function registerUserSettings() {
         default: true,
         type: Boolean,
     });
+
+    SettingsUtils.registerBR2UserSetting(USER_SETTING_KEYS.allowDarkMode, {
+        name: "BRSW.Settings.AllowDarkMode.Name",
+        hint: "BRSW.Settings.AllowDarkMode.Hint",
+        default: false,
+        type: Boolean,
+        onChange: () => {
+            const messages = game.messages.contents.filter(m => m.getFlag("betterrolls-swade2", "br_data"));
+            for (const message of messages) {
+                ui.chat.updateMessage(message);
+
+                //Loop over all the apps of this message and trigger their render
+                //This is needed to refresh things like popped out chat cards
+                for (const app of Object.values(message.apps)) {
+                    app.render();
+                }
+            }
+        },
+    });
 }
 
 function cacheSettings(savedSettings, settingsCache) {

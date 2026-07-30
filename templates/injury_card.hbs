@@ -1,12 +1,12 @@
 {{>"modules/betterrolls-swade2/templates/common_card_header.hbs"}}
 <div>
   <div class="brsw-card-row">
-    <span class="brsw-d6 brsw-dice-image">{{first_roll.result}}</span>:
+    <span class="brsw-d6 brsw-dice-image" data-text="{{first_roll.result}}">{{first_roll.result}}</span>:
     <strong>{{first_location}}</strong>
   </div>
   {{#if second_location}}
   <div class="brsw-card-row">
-    <span class="brsw-d6 brsw-dice-image">{{second_roll.result}}</span>:
+    <span class="brsw-d6 brsw-dice-image" data-text="{{second_roll.result}}">{{second_roll.result}}</span>:
     <strong>{{second_location}}</strong>
   </div>
   {{/if}}
