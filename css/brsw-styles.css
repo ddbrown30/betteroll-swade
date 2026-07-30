@@ -1057,12 +1057,6 @@
     gap: 5px;
 }
 
-.brsw-damage-group {
-    display: grid;
-    grid-template-columns: subgrid;
-    grid-column: 1 / -1;
-}
-
 .brsw-damage-roll-row {
     display: grid;
     grid-template-columns: subgrid;
@@ -1070,6 +1064,10 @@
     gap: 5px;
     align-items: center;
     justify-items: end;
+}
+
+.brsw-damage-detail {
+    grid-column: 1 / -1;
 }
 
 .brsw-damage-roll-row > :nth-child(3n + 1) {
@@ -1088,9 +1086,10 @@
 .brsw-damage-roll-damage > span {
     min-width: 2em;
     min-height: 2em;
+    min-height: stretch;
+    margin-right: 0.25em;
     text-align: center;
     align-content: center;
-    min-height: stretch;
     background-size: 2em 2em;
     background-repeat: no-repeat;
     background-position: center;

@@ -329,7 +329,7 @@ export function fitDamageTargetText(html, textMeasureContext) {
 
     const tryFitDamageTargetText = () => {
         const damageTargetFontSize = parseFloat(getComputedStyle(damageRows).getPropertyValue("--damage-target-font-size"));
-        const availableWidth = Number.parseFloat(getComputedStyle(damageRows).gridTemplateColumns.split(" ")[0]) || 0;
+        const availableWidth = (Number.parseFloat(getComputedStyle(damageRows).gridTemplateColumns.split(" ")[0]) || 0);
         if (availableWidth <= 0) return false; // not laid out yet, keep waiting
 
         const damageRollRows = html.querySelectorAll(".brsw-damage-roll-row");
@@ -361,12 +361,12 @@ export function fitDamageTargetText(html, textMeasureContext) {
                     }
                 }
 
-                if (lines <= maxLines) {
-                    //We've found a size that fits our max lines, so we can't be smaller than this
-                    minSize = fontSize;
-                } else {
+                if (lines > maxLines || (words.length === 1 && width > availableWidth)) {
                     //This doesn't fit which means we can't be larger than this
                     maxSize = fontSize;
+                } else {
+                    //We've found a size that fits our max lines, so we can't be smaller than this
+                    minSize = fontSize;
                 }
             }
 
