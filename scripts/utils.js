@@ -851,7 +851,7 @@ export class SettingsUtils {
     }
 
     static allowDarkMode() {
-        const userSettings = SettingsUtils.getModuleFlag(game.user, USER_FLAGS.userSettings);
+        const userSettings = SettingsUtils.getModuleFlag(game.user, USER_FLAGS.userSettings) ?? {};
         const key = USER_SETTING_KEYS.allowDarkMode;
         return userSettings[key] !== undefined
             ? userSettings[key]
