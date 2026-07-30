@@ -549,7 +549,7 @@
 
 #br-card-dialog {
     width: fit-content;
-    max-width: 100%;
+    max-width: 96%;
     margin-right: 2%;
     padding: 3px;
     background: url("/ui/parchment.jpg") repeat;
@@ -605,22 +605,16 @@
 @media (max-width: 700px) {
     #br-card-dialog .brsw-action-section-groups {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        max-width: 100%;
     }
 
     #br-card-dialog {
-        max-width: 96%;
+        min-width: 96%;
     }
 }
 
 @media (max-width: 500px) {
     #br-card-dialog .brsw-action-section-groups {
         grid-template-columns: 1fr;
-        max-width: 100%;
-    }
-
-    #br-card-dialog {
-        max-width: 96%;
     }
 }
 
