@@ -20,13 +20,13 @@ import { SettingsUtils, Utils, addEventListenerAll } from "./utils.js";
  * @param {Number} type
  */
 async function createRemoveStatusCard(original_message, actor, type) {
-  let token_id;
+  let tokenId;
   if (original_message) {
     const originalCard = new BrCommonCard(original_message);
     actor = originalCard.actor;
-    token_id = originalCard.token.id;
+    tokenId = originalCard.token?.id ?? originalCard.token_id;
   } else if (actor) {
-    token_id = actor.token ? actor.token.id : actor.getActiveTokens()[0].id;
+    tokenId = actor.token ? actor.token.id : actor.getActiveTokens()[0].id;
   }
   if (!actor.system.status.isShaken && !actor.system.status.isStunned) {
     return;
@@ -60,7 +60,7 @@ async function createRemoveStatusCard(original_message, actor, type) {
   );
   brCard.update_list = { ...brCard.update_list, ...{ user: user.id } };
   brCard.type = type;
-  brCard.token_id = token_id;
+  brCard.token_id = tokenId;
   await brCard.render();
   return brCard.message;
 }
