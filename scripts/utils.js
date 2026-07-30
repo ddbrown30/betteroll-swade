@@ -385,7 +385,7 @@ export class Utils {
                 if (index !== 0 && index !== words.length - 1 && minorWords.has(word)) {
                     return word;
                 }
-                return word.charAt(0).toUpperCase() + word.slice(1);
+                return word.split("/").map(part => part.charAt(0).toUpperCase() + part.slice(1)).join("/");
             }).join(" ");
     }
 
