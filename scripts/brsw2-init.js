@@ -179,13 +179,42 @@ export function decorateCardHTML(brCard, html, message) {
     const textMeasureContext = document.createElement("canvas").getContext("2d");
 
     const headerTitle = html.querySelector(".brsw-header-title");
-    if (headerTitle) {
-        textMeasureContext.font = `18px Signika`;
-        const width = textMeasureContext.measureText(headerTitle.textContent).width;
-        const maxWidth = 168;
-        const defaultFontSize = 18;
-        const fontSize = width > 0 ? Math.min(defaultFontSize, defaultFontSize * (maxWidth / width)) : defaultFontSize;
-        headerTitle.style.setProperty("font-size", `${fontSize}px`);
+    const headerRow = headerTitle?.closest(".brsw-card-header-row");
+    if (headerTitle && headerRow) {
+        const tryFitHeaderTitle = () => {
+            //Measure the size of the everything else in the row
+            const headerWrapper = headerRow.querySelector(".brsw-header-title-wrapper");
+            const childRects = Array.from(headerRow.children)
+                .filter((child) => child !== headerWrapper)
+                .map((child) => child.getBoundingClientRect())
+                .filter((rect) => rect.width > 0 && rect.height > 0);
+
+            const reservedWidth = childRects.reduce((total, rect) => total + rect.width, 0);
+            const availableWidth = Math.max(0, headerRow.clientWidth - reservedWidth) * 0.9; //0.9 to give it a bit of room
+            if (availableWidth <= 0) return false; // not laid out yet, keep waiting
+
+            const referenceFontSize = 18;
+            textMeasureContext.font = `${referenceFontSize}px Signika`;
+            const textWidth = textMeasureContext.measureText(headerTitle.textContent).width;
+            const minFontSize = 10;
+            const headerFontSize = parseFloat(getComputedStyle(headerTitle).getPropertyValue("--header-font-size"));
+            const maxFontSize = Number.isFinite(headerFontSize) ? headerFontSize : referenceFontSize;
+            const fontSize = textWidth > 0
+                ? Math.min(maxFontSize, Math.max(minFontSize, referenceFontSize * (availableWidth / textWidth)))
+                : referenceFontSize;
+            headerTitle.style.setProperty("font-size", `${fontSize}px`);
+            return true;
+        };
+
+        if (!tryFitHeaderTitle()) {
+            //The DOM hasn't been finalized yet so we'll need to wait for a callback
+            const resizeObserver = new ResizeObserver(() => {
+                if (tryFitHeaderTitle()) resizeObserver.disconnect();
+            });
+            resizeObserver.observe(headerRow);
+            // Safety so it doesn't live forever
+            setTimeout(() => resizeObserver.disconnect(), 10000);
+        }
     }
 
     fitDamageTargetText(html, textMeasureContext);
