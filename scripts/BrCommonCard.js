@@ -9,7 +9,7 @@ import { are_bennies_available, traitToDieString } from "./cards_common.js";
 import { get_actions, process_action } from "./global_actions.js";
 import { calc_pp_cost } from "./item_card.js";
 import { TraitRoll } from "./rolls.js";
-import { broofa, getAuthor, getWhisperData, SettingsUtils, Utils } from "./utils.js";
+import { broofa, getAuthor, getUserTargets, getWhisperData, SettingsUtils, Utils } from "./utils.js";
 
 /**
  * Stores a flag with the render data, deletes data can't be stored
@@ -342,8 +342,8 @@ export class BrCommonCard {
 
     recover_targets_from_user() {
         this.target_ids = [];
-        for (const target of game.user.targets) {
-            this.target_ids.push(target.document.uuid);
+        for (const target of getUserTargets()) {
+            this.target_ids.push(target.uuid);
         }
     }
 
@@ -396,8 +396,9 @@ export class BrCommonCard {
 
     populateWorldActions() {
         const item = this.item || this.skill || { type: "attribute", name: this.attribute };
+        const userTargets = getUserTargets();
 
-        for (const global_action of get_actions(item, this.actor)) {
+        for (const global_action of get_actions(item, this.actor, userTargets)) {
             const name = game.i18n.localize(global_action.button_name);
             const section_name = (global_action.section ? global_action.section : "none").toLowerCase();
             const group_name = global_action.group || "BRSW.NoGroup";
@@ -429,7 +430,7 @@ export class BrCommonCard {
                 if (global_action.defaultChecked === "on") {
                     new_action.selected = true;
                 } else {
-                    new_action.selected = process_action(global_action, item, this.actor, true);
+                    new_action.selected = process_action(global_action, item, this.actor, userTargets, true);
                 }
             }
 

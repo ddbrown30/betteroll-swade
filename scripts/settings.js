@@ -337,7 +337,9 @@ function registerUserSettings() {
         hint: "BRSW.Settings.AllowDarkMode.Hint",
         default: false,
         type: Boolean,
-        onChange: () => {
+        onChange: (allow) => {
+            game.brsw.dialog?.dialogElement.classList.toggle("brsw-allow-dark-mode", allow);
+
             const messages = game.messages.contents.filter(m => m.getFlag("betterrolls-swade2", "br_data"));
             for (const message of messages) {
                 ui.chat.updateMessage(message);

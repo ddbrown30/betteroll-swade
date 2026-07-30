@@ -321,44 +321,67 @@ async function rollSoak(brCard, useBenny) {
 }
 
 export function fitDamageTargetText(html, textMeasureContext) {
-    const maxWidth = 100;
     const maxLines = 2;
-    const minFontSize = 8;
-    const maxFontSize = 14;
+    const referenceFontSize = 14;
 
-    html.querySelectorAll(".brsw-damage-roll-target").forEach((rollTarget) => {
-        const words = rollTarget.textContent.trim().split(/\s+/);
+    const damageRows = html.querySelector(".brsw-damage-rows");
+    if (!damageRows?.children.length) return;
 
-        let minSize = minFontSize;
-        let maxSize = maxFontSize;
+    const tryFitDamageTargetText = () => {
+        const damageTargetFontSize = parseFloat(getComputedStyle(damageRows).getPropertyValue("--damage-target-font-size"));
+        const availableWidth = (Number.parseFloat(getComputedStyle(damageRows).gridTemplateColumns.split(" ")[0]) || 0);
+        if (availableWidth <= 0) return false; // not laid out yet, keep waiting
 
-        //Run a binary search to find the minimum font size that will fit our text
-        while (minSize + 1 < maxSize) {
-            const fontSize = (minSize + maxSize) / 2;
-            textMeasureContext.font = `${fontSize}px Signika`;
+        const damageRollRows = html.querySelectorAll(".brsw-damage-roll-row");
+        for (const damageRollRow of damageRollRows) {
+            const damageRollTarget = damageRollRow.querySelector(".brsw-damage-roll-target");
 
-            let width = 0;
-            let lines = 1;
+            const minFontSize = 8;
+            const maxFontSize = Number.isFinite(damageTargetFontSize) ? damageTargetFontSize : referenceFontSize;
 
-            for (const word of words) {
-                const wordWidth = textMeasureContext.measureText(`${word} `).width;
-                if (width + wordWidth > maxWidth) {
-                    lines++;
-                    width = wordWidth;
+            let minSize = minFontSize;
+            let maxSize = maxFontSize;
+
+            //Run a binary search to find the minimum font size that will fit our text
+            while (minSize + 1 < maxSize) {
+                const fontSize = (minSize + maxSize) / 2;
+                textMeasureContext.font = `${fontSize}px Signika`;
+
+                let width = 0;
+                let lines = 1;
+
+                const words = damageRollTarget.textContent.trim().split(/\s+/);
+                for (const word of words) {
+                    const wordWidth = textMeasureContext.measureText(`${word} `).width;
+                    if (width + wordWidth > availableWidth) {
+                        lines++;
+                        width = wordWidth;
+                    } else {
+                        width += wordWidth;
+                    }
+                }
+
+                if (lines > maxLines || (words.length === 1 && width > availableWidth)) {
+                    //This doesn't fit which means we can't be larger than this
+                    maxSize = fontSize;
                 } else {
-                    width += wordWidth;
+                    //We've found a size that fits our max lines, so we can't be smaller than this
+                    minSize = fontSize;
                 }
             }
 
-            if (lines <= maxLines) {
-                //We've found a size that fits our max lines, so we can't be smaller than this
-                minSize = fontSize;
-            } else {
-                //This doesn't fit which means we can't be larger than this
-                maxSize = fontSize;
-            }
+            damageRollTarget.style.setProperty("font-size", `${minSize}px`);
         }
+        return true;
+    };
 
-        rollTarget.style.fontSize = `${minSize}px`;
-    });
+    if (!tryFitDamageTargetText()) {
+        //The DOM hasn't been finalized yet so we'll need to wait for a callback
+        const resizeObserver = new ResizeObserver(() => {
+            if (tryFitDamageTargetText()) resizeObserver.disconnect();
+        });
+        resizeObserver.observe(damageRows);
+        // Safety so it doesn't live forever
+        setTimeout(() => resizeObserver.disconnect(), 10000);
+    }
 }

@@ -22,6 +22,9 @@
 
     --brsw-color-selected-tag-text: #ffe2dc;
 
+    --brsw-chat-message-color: black;
+
+    --brsw-button-color: black;
     --brsw-button-bg-color: white;
 
     --brsw-card-note-warning-color: #FF6467;
@@ -45,7 +48,8 @@
     --brsw-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.themed.theme-dark .brsw-allow-dark-mode {
+.themed.theme-dark .brsw-allow-dark-mode,
+.theme-dark .brsw-allow-dark-mode#br-card-dialog {
     --brsw-chat-message-color: var(--color-light-2);
     --brsw-button-bg-color: var(--color-cool-5-50);
     --brsw-button-color: var(--color-light-3);
@@ -122,14 +126,12 @@
     font-weight: var(--brsw-font-weight-bold);
 }
 
-.brsw-common-modifiers {
-    display: flex;
-}
-
 /* Styles for the card body */
 
 .brsw-common-modifiers {
+    display: flex;
     margin-bottom: 5px;
+    align-items: center;
 }
 
 .brsw-selectable {
@@ -547,7 +549,7 @@
 
 #br-card-dialog {
     width: fit-content;
-    max-width: min-content;
+    max-width: 96%;
     margin-right: 2%;
     padding: 3px;
     background: url("/ui/parchment.jpg") repeat;
@@ -559,17 +561,16 @@
     flex-direction: column;
 }
 
-.themed.theme-dark .brsw-allow-dark-mode #br-card-dialog {
-    position: relative;
+.theme-dark .brsw-allow-dark-mode#br-card-dialog {
     background: none;
 }
 
-.themed.theme-dark .brsw-allow-dark-mode #br-card-dialog::before {
+.theme-dark .brsw-allow-dark-mode#br-card-dialog::before {
     content: "";
     position: absolute;
     inset: 0;
     background: url("/ui/parchment.jpg");
-    filter: brightness(15%);
+    filter: brightness(40%) contrast(250%);
     z-index: -1;
 }
 
@@ -598,7 +599,23 @@
 
 #br-card-dialog .brsw-action-section-groups {
     display: grid;
-    grid-template-columns: repeat(3, minmax(max-content, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 700px) {
+    #br-card-dialog .brsw-action-section-groups {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #br-card-dialog {
+        min-width: 96%;
+    }
+}
+
+@media (max-width: 500px) {
+    #br-card-dialog .brsw-action-section-groups {
+        grid-template-columns: 1fr;
+    }
 }
 
 #br-card-dialog .brsw-action-group {
@@ -608,6 +625,8 @@
     margin: 0.5em;
     border-color: oklch(0.373 0.034 259.733);
     border-radius: 8px;
+
+    min-width: 0;
 }
 
 #br-card-dialog .brsw-action-group .brsw-action-group-name {
@@ -943,6 +962,10 @@
     overflow: visible;
 }
 
+.brsw-header-title:not(.brsw-collapse-button):hover {
+    text-shadow: none;
+}
+
 .brsw-header-img-wrapper {
     display: flex;
 }
@@ -954,6 +977,10 @@
 
 .brsw-header-divider {
     border-bottom: 1px solid var(--brsw-color-gray-200);
+}
+
+.brsw-description {
+    margin: 0.5rem 0;
 }
 
 .brsw-card-note {
@@ -1022,12 +1049,23 @@
 
 /* Damage partial */
 
+.brsw-damage-rows {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) max-content max-content;
+    gap: 5px;
+}
+
 .brsw-damage-roll-row {
     display: grid;
-    grid-template-columns: auto 105px 60px;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
     gap: 5px;
     align-items: center;
     justify-items: end;
+}
+
+.brsw-damage-detail {
+    grid-column: 1 / -1;
 }
 
 .brsw-damage-roll-row > :nth-child(3n + 1) {
@@ -1046,9 +1084,10 @@
 .brsw-damage-roll-damage > span {
     min-width: 2em;
     min-height: 2em;
+    min-height: stretch;
+    margin-right: 0.25em;
     text-align: center;
     align-content: center;
-    min-height: stretch;
     background-size: 2em 2em;
     background-repeat: no-repeat;
     background-position: center;

@@ -3,24 +3,30 @@
         {{#if trait}}
             <div class="brsw-common-modifiers brsw-player-modifiers">
                 <span id="brsw-mods-Trait-label">{{localize "BRSW.TraitModifier"}}:</span>
-                {{#each trait_mods}}
-                    <span class="brsw-selectable brsw-clickable{{#if enabled}} brsw-selected{{/if}}" data-type="modifier" data-value="{{value}}">{{value}}</span>
-                {{/each}}
+                <div>
+                    {{#each trait_mods}}
+                        <span class="brsw-selectable brsw-clickable{{#if enabled}} brsw-selected{{/if}}" data-type="modifier" data-value="{{value}}">{{value}}</span>
+                    {{/each}}
+                </div>
             </div>
 
             <div class="brsw-common-modifiers brsw-player-modifiers">
                 <span id="brsw-mods-ROF-label">{{localize "BRSW.NumberTraitDice"}}:</span>
-                {{#each trait_dice}}
-                    <span class="brsw-selectable brsw-clickable{{#if enabled}} brsw-selected{{/if}}" data-type="rof" data-value="{{value}}">{{value}}</span>
-                {{/each}}
+                <div>
+                    {{#each trait_dice}}
+                        <span class="brsw-selectable brsw-clickable{{#if enabled}} brsw-selected{{/if}}" data-type="rof" data-value="{{value}}">{{value}}</span>
+                    {{/each}}
+                </div>
             </div>
         {{/if}}
         {{#if damage}}
             <div class="brsw-common-modifiers brsw-player-modifiers">
                 <span id="brsw-mods-Damage-label">{{localize "BRSW.DmgModifier"}}:</span>
-                {{#each damage_mods}}
-                    <span class="brsw-selectable brsw-clickable{{#if enabled}} brsw-selected{{/if}}" data-type="dmg_modifier" data-value="{{value}}">{{value}}</span>
-                {{/each}}
+                <div>
+                    {{#each damage_mods}}
+                        <span class="brsw-selectable brsw-clickable{{#if enabled}} brsw-selected{{/if}}" data-type="dmg_modifier" data-value="{{value}}">{{value}}</span>
+                    {{/each}}
+                </div>
             </div>
         {{/if}}
     </div>

@@ -33,6 +33,7 @@ import {
     broofa,
     getAuthor,
     getTargetedToken,
+    getUserTargets,
     makeExplodable,
     set_or_update_condition,
     simple_form,
@@ -593,7 +594,7 @@ export function activateItemCardListeners(brCard, html) {
  * @param {integer} trait_mod
  */
 async function roll_resist(trait, brCard, trait_mod) {
-    if (canvas.tokens.controlled.length === 0) {
+    if (!canvas.tokens?.controlled.length) {
         ui.notifications.warn(game.i18n.localize("BRSW.NoTokenSelectedError"));
         return;
     }
@@ -1105,12 +1106,7 @@ async function roll_dmg_target(
     await roll.evaluate();
 
     // Heavy armor
-    if (
-        target &&
-        !item.system.isHeavyWeapon &&
-        !damageFormulas.heavy_weapon &&
-        has_heavy_armor(target, damageFormulas.location)
-    ) {
+    if (target && !item.system.isHeavyWeapon && !damageFormulas.heavy_weapon && hasHeavyArmor(target.actor, damageFormulas.location)) {
         const no_damage_mod = new DamageModifier(
             game.i18n.localize("BRSW.HeavyArmor"),
             -999999,
@@ -1543,13 +1539,13 @@ function get_global_modifiers(
  */
 async function get_dmg_targets(token_id, brCard) {
     if (token_id) {
-        const token = canvas.tokens.get(token_id);
+        const token = canvas.tokens?.get(token_id);
         if (token) {
             return [token];
         }
     }
-    let targets = await game.user.targets;
-    if (targets.size > 0) {
+    let targets = getUserTargets();
+    if (targets.length > 0) {
         targets = Array.from(targets).filter((token) => token.actor);
     } else if (brCard.targets.length > 0) {
         targets = brCard.targets;
@@ -1769,9 +1765,9 @@ function get_template_from_item(item) {
  * Returns true if the target wears a Heavy Armor
  * @param {PlaceableObject} target
  */
-function has_heavy_armor(target, location = "torso") {
+function hasHeavyArmor(target, location = "torso") {
     // Equipped is equipStatus 3
-    return target.document.actor.itemTypes.armor.some(
+    return target.itemTypes.armor.some(
         (item) =>
             item.system.isHeavyArmor &&
             item.system.locations[location] &&
@@ -1797,11 +1793,11 @@ async function execute_macro(action, brCard) {
         targetActor = brCard.actor;
         targetToken = brCard.token;
     } else if (action.macroActor === "target") {
-        targetToken = game.user.targets.first() || brCard.token;
+        targetToken = getUserTargets()[0] || brCard.token;
         targetActor = targetToken.actor;
     } else {
-        targetToken = game.canvas.tokens.controlled.length < 1 ? brCard.token : game.canvas.tokens.controlled[0];
-        targetActor = game.canvas.tokens.controlled.length < 1 ? brCard.actor : game.canvas.tokens.controlled[0].actor;
+        targetToken = game.canvas.tokens?.controlled.length < 1 ? brCard.token : game.canvas.tokens?.controlled[0];
+        targetActor = game.canvas.tokens?.controlled.length < 1 ? brCard.actor : game.canvas.tokens?.controlled[0].actor;
     }
     await macro.execute({
         actor: targetActor,

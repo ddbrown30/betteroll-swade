@@ -85,7 +85,7 @@
         {{>"modules/betterrolls-swade2/templates/damage_partial.hbs"}}
     </div>
     {{#if swade_templates}}
-        <div class="brsw-form">
+        <div class="brsw-form brsw-swade-templates">
             <h4 class="brsw-item-subheading">
                 <i class="fa-solid fa-ruler-combined"></i> {{localize 'BRSW.Templates'}}
             </h4>
@@ -109,7 +109,7 @@
     {{/if}}
     {{#if hasFooterButtons}}
         {{#if macro_buttons}}
-            <div class="brsw-form">
+            <div class="brsw-form brsw-macro-buttons">
                 <h4 class="brsw-item-subheading">
                     <i class="fa-solid fa-code"></i> {{localize 'BRSW.Macros'}}
                 </h4>
@@ -121,7 +121,7 @@
             </div>
         {{/if}}
         {{#if resist_buttons}}
-            <div>
+            <div class="brsw-form brsw-resist-buttons">
                 <h4 class="brsw-item-subheading">
                     <i class="fa-solid fa-ban"></i> {{localize 'BRSW.Resistance'}}
                 </h4>

@@ -169,10 +169,20 @@ export async function simple_form(title, fields, callback) {
 }
 
 /**
+ * Gets the user's list of targets
+ */
+export function getUserTargets() {
+    if (game.user.targets.size || !game.brsw.targetIds?.length) {
+        return Array.from(game.user.targets).map(t => Utils.toTokenDoc(t));
+    }
+    return game.brsw.targetIds.map(t => fromUuidSync(t)).filter(Boolean);
+}
+
+/**
  * Gets the first targeted token
  */
 export function getTargetedToken(originActors) {
-    return game.user.targets.first() ?? getSelectedToken(originActors);
+    return getUserTargets()[0] ?? getSelectedToken(originActors);
 }
 
 /**
@@ -180,7 +190,7 @@ export function getTargetedToken(originActors) {
  */
 export function getSelectedToken(originActors) {
     const originActorIds = new Set(originActors?.map(a => a.id) ?? []);
-    return canvas.tokens.controlled.find((t) => t.actor && !originActorIds.has(t.actor.id));
+    return Utils.toTokenDoc(canvas.tokens?.controlled.find((t) => t.actor && !originActorIds.has(t.actor.id)));
 }
 
 /**
@@ -374,7 +384,7 @@ export class Utils {
                 if (index !== 0 && index !== words.length - 1 && minorWords.has(word)) {
                     return word;
                 }
-                return word.charAt(0).toUpperCase() + word.slice(1);
+                return word.split("/").map(part => part.charAt(0).toUpperCase() + part.slice(1)).join("/");
             }).join(" ");
     }
 
@@ -841,7 +851,7 @@ export class SettingsUtils {
     }
 
     static allowDarkMode() {
-        const userSettings = SettingsUtils.getModuleFlag(game.user, USER_FLAGS.userSettings);
+        const userSettings = SettingsUtils.getModuleFlag(game.user, USER_FLAGS.userSettings) ?? {};
         const key = USER_SETTING_KEYS.allowDarkMode;
         return userSettings[key] !== undefined
             ? userSettings[key]

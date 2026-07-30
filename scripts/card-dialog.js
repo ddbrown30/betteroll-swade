@@ -1,10 +1,17 @@
-// A dialog to manage br cards
+// A dialog to select card actions
+
+import { SettingsUtils } from "./utils.js";
 
 export function setupDialog() {
   const dialogElement = document.createElement("dialog");
   dialogElement.setAttribute("id", "br-card-dialog");
   dialogElement.classList.add("brsw-dialog-bg");
-  document.querySelector("#interface").insertAdjacentElement("beforeend", dialogElement);
+
+  if (SettingsUtils.allowDarkMode()) {
+    dialogElement.classList.add("brsw-allow-dark-mode");
+  }
+
+  document.body.insertAdjacentElement("beforeend", dialogElement);
   game.brsw.dialog = new BrCardDialog();
 }
 
@@ -13,7 +20,7 @@ class BrCardDialog {
     this.BrCard = null;
   }
 
-  get dialog_element() {
+  get dialogElement() {
     return document.getElementById("br-card-dialog");
   }
 
@@ -22,7 +29,7 @@ class BrCardDialog {
     this.render().catch((err) => {
       console.error("Error rendering dialog", err);
     });
-    this.dialog_element.showModal();
+    this.dialogElement.showModal();
   }
 
   async render() {
@@ -41,7 +48,7 @@ class BrCardDialog {
         return a.name > b.name ? 1 : -1;
       });
     }
-    this.dialog_element.innerHTML = await foundry.applications.handlebars.renderTemplate(
+    this.dialogElement.innerHTML = await foundry.applications.handlebars.renderTemplate(
       "modules/betterrolls-swade2/templates/card_dialog.hbs",
       { BrCard: this.BrCard, sections },
     );
@@ -82,8 +89,8 @@ class BrCardDialog {
 
   close_card() {
     this.BrCard = null;
-    this.dialog_element.innerHTML = "";
-    this.dialog_element.close();
+    this.dialogElement.innerHTML = "";
+    this.dialogElement.close();
   }
 
   async save_actions() {

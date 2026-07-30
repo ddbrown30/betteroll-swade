@@ -39,7 +39,7 @@ import {
     activate_skill_listeners,
     exposeSkillCardAPI,
 } from "./skill_card.js";
-import { SettingsUtils, TelemetryUtils, Utils, cacheSkillData, measureDistance } from "./utils.js";
+import { SettingsUtils, TelemetryUtils, Utils, cacheSkillData, getUserTargets, measureDistance } from "./utils.js";
 import { activate_vehicle_listeners } from "./vehicle_card.js";
 
 // Init Hook
@@ -72,6 +72,8 @@ Hooks.on(`ready`, async () => {
     exposeGlobalActionsAPI();
     exposeCardClass();
     exposeIncapacitationCardAPI();
+    Utils.exposeAPI("activateCardListeners", activateCardListeners);
+    Utils.exposeAPI("decorateCardHTML", decorateCardHTML);
     setupChatButton();
     await cacheSkillData();
 
@@ -119,7 +121,12 @@ Hooks.on(`ready`, async () => {
 
 // Hooks on render
 
-function activateCardListeners(brCard, html, message) {
+/**
+ * @param {BrCommonCard} brCard
+ * @param {HTMLElement} html Root element containing the rendered card markup
+ * @param {ChatMessage} message The parent chat message
+ */
+export function activateCardListeners(brCard, html, message) {
     activateCommonListeners(brCard, html);
     if (brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ATTRIBUTE_CARD) {
         activateAttributeCardListeners(brCard, html);
@@ -139,7 +146,90 @@ function activateCardListeners(brCard, html, message) {
     }
 }
 
-Hooks.on("createChatMessage", (message, options, userId) => {
+/**
+ * This function applies the final touches to the display of the chat card
+ * This is exposed to the API to allow other modules to apply the same behaviour to their messages
+ *
+ * @param {BrCommonCard} brCard
+ * @param {HTMLElement} html
+ * @param {ChatMessage} message
+ */
+export function decorateCardHTML(brCard, html, message) {
+    if (!message.isOwner) {
+        html.querySelectorAll(".brsw-form").forEach((e) => e.classList.add("brsw-collapsed"));
+        html.querySelector(".brsw-pp-toggle")?.remove();
+        html.querySelector(".brsw-pp-manual")?.remove();
+        html.querySelector(".brsw-ammo-toggle")?.remove();
+        html.querySelector(".brsw-ammo-manual")?.remove();
+    }
+
+    if (!game.user.isGM) {
+        html.querySelectorAll(".brsw-master-only").forEach((e) => e.remove());
+    }
+
+    if (!message.isOwner && !game.user.isTrusted) {
+        html.querySelectorAll(".brsw-owner-trusted-only").forEach((e) => e.remove());
+    }
+
+    const damageSection = html.querySelector(".brsw-damage-section");
+    if (damageSection) {
+        damageSection.hidden = !brCard.damage;
+    }
+
+    const textMeasureContext = document.createElement("canvas").getContext("2d");
+
+    const headerTitle = html.querySelector(".brsw-header-title");
+    const headerRow = headerTitle?.closest(".brsw-card-header-row");
+    if (headerTitle && headerRow) {
+        const tryFitHeaderTitle = () => {
+            //Measure the size of the everything else in the row
+            const headerWrapper = headerRow.querySelector(".brsw-header-title-wrapper");
+            const childRects = Array.from(headerRow.children)
+                .filter((child) => child !== headerWrapper)
+                .map((child) => child.getBoundingClientRect())
+                .filter((rect) => rect.width > 0 && rect.height > 0);
+
+            const reservedWidth = childRects.reduce((total, rect) => total + rect.width, 0);
+            const availableWidth = Math.max(0, headerRow.clientWidth - reservedWidth) * 0.9; //0.9 to give it a bit of room
+            if (availableWidth <= 0) return false; // not laid out yet, keep waiting
+
+            const referenceFontSize = 18;
+            textMeasureContext.font = `${referenceFontSize}px Signika`;
+            const textWidth = textMeasureContext.measureText(headerTitle.textContent).width;
+            const minFontSize = 10;
+            const headerFontSize = parseFloat(getComputedStyle(headerTitle).getPropertyValue("--header-font-size"));
+            const maxFontSize = Number.isFinite(headerFontSize) ? headerFontSize : referenceFontSize;
+            const fontSize = textWidth > 0
+                ? Math.min(maxFontSize, Math.max(minFontSize, referenceFontSize * (availableWidth / textWidth)))
+                : referenceFontSize;
+            headerTitle.style.setProperty("font-size", `${fontSize}px`);
+            return true;
+        };
+
+        if (!tryFitHeaderTitle()) {
+            //The DOM hasn't been finalized yet so we'll need to wait for a callback
+            const resizeObserver = new ResizeObserver(() => {
+                if (tryFitHeaderTitle()) resizeObserver.disconnect();
+            });
+            resizeObserver.observe(headerRow);
+            // Safety so it doesn't live forever
+            setTimeout(() => resizeObserver.disconnect(), 10000);
+        }
+    }
+
+    fitDamageTargetText(html, textMeasureContext);
+
+    if (game.user.isGM) {
+        const applyDamageTitle = game.i18n.localize("BRSW.ApplyDamage");
+        html.querySelectorAll(".brsw-apply-damage").forEach((applyButton) => {
+            const targetId = applyButton.dataset.target;
+            applyButton.disabled = !targetId || Number(applyButton.dataset.damage) === 0;
+            applyButton.title = targetId ? applyDamageTitle : "";
+        });
+    }
+}
+
+Hooks.on("createChatMessage", (message, _options, _userId) => {
     const brData = message.getFlag("betterrolls-swade2", "br_data");
     if (brData) {
         if (brData.showPopout) {
@@ -154,17 +244,7 @@ Hooks.on("createChatMessage", (message, options, userId) => {
     }
 });
 
-Hooks.on("hideNPCNamesChatMessageUpdated", (message, html, options) => {
-    const brData = message.getFlag("betterrolls-swade2", "br_data");
-    if (brData) {
-        //We just updated the chat card to replace a name
-        //Re-fit our target name so it's consistent with the replaced name
-        const textMeasureContext = document.createElement("canvas").getContext("2d");
-        fitDamageTargetText(html, textMeasureContext);
-    }
-});
-
-Hooks.on("renderChatMessageHTML", (message, html, options) => {
+Hooks.on("renderChatMessageHTML", (message, html, _options) => {
     const brData = message.getFlag("betterrolls-swade2", "br_data");
     if (brData) {
         html.classList.add("brsw-chat-message");
@@ -175,58 +255,7 @@ Hooks.on("renderChatMessageHTML", (message, html, options) => {
         // This chat card is one of ours
         const brCard = new BrCommonCard(message);
         activateCardListeners(brCard, html, message);
-
-        // Hide forms to non-master, non owner
-        if (!message.isOwner) {
-            html.querySelectorAll(".brsw-form").forEach((e) => e.classList.add("brsw-collapsed"));
-        }
-
-        if (!message.isOwner) {
-            //Remove the PP and ammo management buttons for non-owners
-            html.querySelector(".brsw-pp-toggle")?.remove();
-            html.querySelector(".brsw-pp-manual")?.remove();
-            html.querySelector(".brsw-ammo-toggle")?.remove();
-            html.querySelector(".brsw-ammo-manual")?.remove();
-        }
-
-        // Hide master only sections
-        if (!game.user.isGM) {
-            html.querySelectorAll(".brsw-master-only").forEach((e) => e.remove());
-        }
-
-        // Hide save macro button from non-owner, non-trusted players
-        if (!message.isOwner && !game.user.isTrusted) {
-            html.querySelectorAll(".brsw-owner-trusted-only").forEach((e) => e.remove());
-        }
-
-        const damageSection = html.querySelector(".brsw-damage-section");
-        if (damageSection) {
-            //If we have damage, show the damage section
-            damageSection.hidden = !brCard.damage;
-        }
-
-        const textMeasureContext = document.createElement("canvas").getContext("2d");
-
-        const headerTitle = html.querySelector(".brsw-header-title");
-        if (headerTitle) {
-            textMeasureContext.font = `18px Signika`;
-            const width = textMeasureContext.measureText(headerTitle.textContent).width;
-            const maxWidth = 168;
-            const defaultFontSize = 18;
-            const fontSize = width > 0 ? Math.min(defaultFontSize, defaultFontSize * (maxWidth / width)) : defaultFontSize;
-            headerTitle.style.setProperty("font-size", `${fontSize}px`);
-        }
-
-        fitDamageTargetText(html, textMeasureContext);
-
-        if (game.user.isGM) {
-            const applyDamageTitle = game.i18n.localize("BRSW.ApplyDamage");
-            html.querySelectorAll(".brsw-apply-damage").forEach((applyButton) => {
-                const targetId = applyButton.dataset.target;
-                applyButton.disabled = !targetId || Number(applyButton.dataset.damage) === 0;
-                applyButton.title = targetId ? applyDamageTitle : "";
-            });
-        }
+        decorateCardHTML(brCard, html, message);
 
         // Scroll the chat to the bottom if this is the last message
         if (game.messages.contents[game.messages.contents.length - 1] === message) {
@@ -242,6 +271,16 @@ Hooks.on("renderChatMessageHTML", (message, html, options) => {
     }
 });
 
+Hooks.on("hideNPCNamesChatMessageUpdated", (message, html, options) => {
+    const brData = message.getFlag("betterrolls-swade2", "br_data");
+    if (brData) {
+        //We just updated the chat card to replace a name
+        //Re-fit our target name so it's consistent with the replaced name
+        const textMeasureContext = document.createElement("canvas").getContext("2d");
+        fitDamageTargetText(html, textMeasureContext);
+    }
+});
+
 // Addon by JuanV, make attack target possible by drag and drop
 Hooks.on("dropCanvasData", (canvas, item) => {
     if (item.type === "Item" || item.type === "target_click") {
@@ -253,7 +292,7 @@ Hooks.on("dropCanvasData", (canvas, item) => {
             height: square_size,
             width: square_size,
         });
-        if (game.user.targets.size) {
+        if (getUserTargets().length) {
             if (item.type === "Item") {
                 Item.implementation.fromDropData(item).then((item) => {
                     let token_id;
