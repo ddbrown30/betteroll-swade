@@ -27,6 +27,12 @@
       "flags": {}
     },
     {
+      "lang": "cs",
+      "name": "Czech",
+      "path": "lang/cs.json",
+      "flags": {}
+    },
+    {
       "lang": "de",
       "name": "German",
       "path": "lang/de.json",
