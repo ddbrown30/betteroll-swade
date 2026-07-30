@@ -152,7 +152,7 @@ export class PPManagementDialog extends HandlebarsApplicationMixin(ApplicationV2
       Object.assign(this.brCard.pp_modifiers, foundry.utils.deepClone(this.brCardOld.pp_modifiers));
     }
 
-    await super.close(options);
+    await super.close({ animate: false, ...options });
   }
 
   /**
