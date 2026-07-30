@@ -515,5 +515,7 @@
     "BRSW.Yes": "Ano",
     "I18N.MAINTAINERS": [
         "Javier Rivera"
-    ]
+    ],
+    "BRSW.Settings.AllowDarkMode.Hint": "Když je zakázáno, Better Rolls bude vždy používat světlý režim bez ohledu na nastavení Foundry",
+    "BRSW.Settings.AllowDarkMode.Name": "Povolit tmavý režim"
 }
