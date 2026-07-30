@@ -962,6 +962,10 @@
     overflow: visible;
 }
 
+.brsw-header-title:not(.brsw-collapse-button):hover {
+    text-shadow: none;
+}
+
 .brsw-header-img-wrapper {
     display: flex;
 }

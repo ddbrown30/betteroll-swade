@@ -9,7 +9,7 @@
     {{/if}}
     <div class="brsw-header-title-wrapper">
         <span class="brsw-header-title-group">
-            <a class="brsw-collapse-button brsw-header-title" data-collapse="brsw-description">{{header.title}}</a>
+            <a class="{{#if description}}brsw-collapse-button{{/if}} brsw-header-title" data-collapse="brsw-description">{{header.title}}</a>
             {{#if showTools}}
                 <span class="brsw-common-tools brsw-form">
                     {{#if showRepeat}}
