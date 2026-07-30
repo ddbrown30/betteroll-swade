@@ -27,7 +27,7 @@ export async function createDamageCard(
     damage_text,
     heavyDamage,
 ) {
-    const token = canvas.tokens.get(token_id);
+    const token = canvas?.tokens.get(token_id);
     const { actor } = token;
     const user = get_owner(actor);
 

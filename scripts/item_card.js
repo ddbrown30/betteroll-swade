@@ -594,7 +594,7 @@ export function activateItemCardListeners(brCard, html) {
  * @param {integer} trait_mod
  */
 async function roll_resist(trait, brCard, trait_mod) {
-    if (canvas.tokens.controlled.length === 0) {
+    if (!canvas.tokens?.controlled.length) {
         ui.notifications.warn(game.i18n.localize("BRSW.NoTokenSelectedError"));
         return;
     }
@@ -1539,7 +1539,7 @@ function get_global_modifiers(
  */
 async function get_dmg_targets(token_id, brCard) {
     if (token_id) {
-        const token = canvas.tokens.get(token_id);
+        const token = canvas.tokens?.get(token_id);
         if (token) {
             return [token];
         }
@@ -1796,8 +1796,8 @@ async function execute_macro(action, brCard) {
         targetToken = getUserTargets()[0] || brCard.token;
         targetActor = targetToken.actor;
     } else {
-        targetToken = game.canvas.tokens.controlled.length < 1 ? brCard.token : game.canvas.tokens.controlled[0];
-        targetActor = game.canvas.tokens.controlled.length < 1 ? brCard.actor : game.canvas.tokens.controlled[0].actor;
+        targetToken = game.canvas.tokens?.controlled.length < 1 ? brCard.token : game.canvas.tokens?.controlled[0];
+        targetActor = game.canvas.tokens?.controlled.length < 1 ? brCard.actor : game.canvas.tokens?.controlled[0].actor;
     }
     await macro.execute({
         actor: targetActor,
