@@ -1,7 +1,7 @@
 # Changelog
 
 # Version 5.21.0
-* Added dark mode support
+* Added dark mode support. It can be disabled in the user settings independent of the Foundry UI setting.
 * We now hide various header tools on certain cards
 * Improved damage row appearance
 * Reworked how we get and use targets under the hood. I did a lot of testing on this but there still could be some bugs.
