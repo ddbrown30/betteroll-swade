@@ -70,11 +70,13 @@ export class ManualModifiersPopup extends HandlebarsApplicationMixin(Application
         this.element.style.right = `${right}px`;
 
         //Close the popup if we click outside of it
-        document.addEventListener("click", this.clickListener = (event) => {
-            if (!event.composedPath().includes(this.element)) {
-                this.close();
-            }
-        }, { passive: true });
+        if (!this.clickListener) {
+            document.addEventListener("click", this.clickListener = (event) => {
+                if (!event.composedPath().includes(this.element)) {
+                    this.close();
+                }
+            }, { passive: true });
+        }
 
         const modButtons = this.element.querySelectorAll(".brsw-selectable");
         for (const modButton of modButtons) {
