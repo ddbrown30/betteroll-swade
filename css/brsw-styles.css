@@ -49,7 +49,8 @@
 }
 
 .themed.theme-dark .brsw-allow-dark-mode,
-.theme-dark .brsw-allow-dark-mode#br-card-dialog {
+.theme-dark .brsw-allow-dark-mode#br-card-dialog,
+.theme-dark .chat-popout .brsw-allow-dark-mode.brsw-chat-message {
     --brsw-chat-message-color: var(--color-light-2);
     --brsw-button-bg-color: var(--color-cool-5-50);
     --brsw-button-color: var(--color-light-3);
@@ -58,17 +59,20 @@
     --brsw-card-note-bg-color: var(--brsw-color-gray-700);
 }
 
-.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message {
+.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message,
+.theme-dark .chat-popout .brsw-allow-dark-mode.brsw-chat-message {
     color: var(--brsw-chat-message-color);
     isolation: isolate;
 }
 
-.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message:not(.blind):not(.whisper) {
+.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message:not(.blind):not(.whisper),
+.theme-dark .chat-popout .brsw-allow-dark-mode.brsw-chat-message:not(.blind):not(.whisper) {
     position: relative;
     background: none;
 }
 
-.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message:not(.blind):not(.whisper)::before {
+.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message:not(.blind):not(.whisper)::before,
+.theme-dark .chat-popout .brsw-allow-dark-mode.brsw-chat-message:not(.blind):not(.whisper)::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -78,20 +82,24 @@
     pointer-events: none;
 }
 
-.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message > * {
+.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message > *,
+.theme-dark .chat-popout .brsw-allow-dark-mode.brsw-chat-message > * {
     position: relative;
     z-index: 1;
 }
 
-.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message.blind {
+.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message.blind,
+.theme-dark .chat-popout .brsw-allow-dark-mode.brsw-chat-message.blind {
     background: #4b294b;
 }
 
-.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message.whisper:not(.blind) {
+.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message.whisper:not(.blind),
+.theme-dark .chat-popout .brsw-allow-dark-mode.brsw-chat-message.whisper:not(.blind) {
     background: #3e3e4f;
 }
 
-.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message .message-header {
+.themed.theme-dark .brsw-allow-dark-mode.brsw-chat-message .message-header,
+.theme-dark .chat-popout .brsw-allow-dark-mode.brsw-chat-message .message-header {
     color: var(--brsw-chat-message-color);
 }
 
@@ -405,12 +413,14 @@
     margin-left: 2px;
 }
 
-.themed.theme-dark .brsw-allow-dark-mode .brsw-dice-image {
+.themed.theme-dark .brsw-allow-dark-mode .brsw-dice-image,
+.theme-dark .chat-popout .brsw-allow-dark-mode .brsw-dice-image {
     position: relative;
     -webkit-text-stroke: 2px black;
 }
 
-.themed.theme-dark .brsw-allow-dark-mode .brsw-dice-image::before {
+.themed.theme-dark .brsw-allow-dark-mode .brsw-dice-image::before,
+.theme-dark .chat-popout .brsw-allow-dark-mode .brsw-dice-image::before {
     content: attr(data-text);
     text-align: center;
     align-content: center;
@@ -1094,12 +1104,14 @@
     background-image: url("/icons/svg/combat.svg");
 }
 
-.themed.theme-dark .brsw-allow-dark-mode .brsw-damage-roll-damage > span {
+.themed.theme-dark .brsw-allow-dark-mode .brsw-damage-roll-damage > span,
+.theme-dark .chat-popout .brsw-allow-dark-mode .brsw-damage-roll-damage > span {
     background-image: none;
     position: relative;
 }
 
-.themed.theme-dark .brsw-allow-dark-mode .brsw-damage-roll-damage > span::after {
+.themed.theme-dark .brsw-allow-dark-mode .brsw-damage-roll-damage > span::after,
+.theme-dark .chat-popout .brsw-allow-dark-mode .brsw-damage-roll-damage > span::after {
     content: attr(data-text);
     text-align: center;
     align-content: center;
@@ -1110,7 +1122,8 @@
     -webkit-text-stroke: 2px black;
 }
 
-.themed.theme-dark .brsw-allow-dark-mode .brsw-damage-roll-damage > span::before {
+.themed.theme-dark .brsw-allow-dark-mode .brsw-damage-roll-damage > span::before,
+.theme-dark .chat-popout .brsw-allow-dark-mode .brsw-damage-roll-damage > span::before {
     content: "";
     position: absolute;
     inset: 0;
