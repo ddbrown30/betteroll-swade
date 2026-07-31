@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.21.1
+* Vehicle items now use the vehicles roll data when rolling damage. This basically does nothing at the moment but will fix an issue once the swade system is updated.
+
 # Version 5.21.0
 * Added dark mode support. It can be disabled in the user settings independent of the Foundry UI setting.
 * We now hide various header tools on certain cards
