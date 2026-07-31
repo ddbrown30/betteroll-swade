@@ -147,7 +147,7 @@ game.brsw.createItemCardFromId(token_id, actor_id, itemid)
 ```js
 game.brsw.rollItem(brCard, html, expendBenny, roll_damage)
 /**
- * Roll and existing item card
+ * Roll an existing item card
  *
  * @param {BrCommonCard } brCard Message that originates this roll
  * @param {string} html Html code to parse for extra options

@@ -829,7 +829,7 @@ async function findMacro(macro_name_or_id) {
 }
 
 /**
- * Roll and existing item card
+ * Roll an existing item card
  *
  * @param {BrCommonCard } brCard Message that originates this roll
  * @param {string} html Html code to parse for extra options
