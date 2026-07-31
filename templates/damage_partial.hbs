@@ -6,7 +6,7 @@
                     {{../label}}
                 </span>
                 <span class="brsw-damage-roll-damage">
-                    <span class="{{roll.extra_class}}" data-text="{{roll.damageResultText}}">{{roll.damageResultText}}</span>
+                    <span class="{{roll.extraClass}}" data-text="{{roll.damageResultText}}">{{roll.damageResultText}}</span>
                     <button class="brsw-row-button brsw-damage-bennie-button brsw-form brsw-icon-button" {{#if roll.raise}}id="raise_roll" {{/if}}
                             {{#if ../../bennie_available}}title="{{localize 'BRSW.Roll_and_bennie'}}" {{/if}} data-target="{{roll.target_id}}"
                             {{#unless ../../bennie_available}}disabled{{/unless}}>
@@ -41,7 +41,7 @@
                     </span>
                 </div>
                 {{#each ../brswroll.dice as |current_dice|}}
-                    <div class="brsw-roll-detail-row {{this.extra_class}}">
+                    <div class="brsw-roll-detail-row {{this.extraClass}}">
                         <span>{{this.label}}</span>
                         <span>{{#each this.results}}
                                 <span class="brsw-d{{current_dice.faces}} brsw-dice-image" data-text="{{this}}">{{this}}</span>
@@ -49,7 +49,7 @@
                     </div>
                 {{/each}}
                 {{#each ../brswroll.modifiers}}
-                    <div class="brsw-roll-detail-row {{this.extra_class}}">
+                    <div class="brsw-roll-detail-row {{this.extraClass}}">
                         <span>{{this.name}}</span>
                         {{#if this.dice}}
                             <span>{{#each this.dice.terms as |current_term|}}

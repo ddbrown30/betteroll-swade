@@ -3,7 +3,7 @@
 import { BrCommonCard } from "./BrCommonCard.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
 import {
-    are_bennies_available,
+    areBenniesAvailable,
     create_common_card,
     roll_trait,
     spendBenny,
@@ -58,7 +58,7 @@ export async function createDamageCard(
             undo_values: undo_values,
             wounds: wounds,
             soaked: 0,
-            soak_possible: are_bennies_available(actor) && can_soak,
+            soak_possible: areBenniesAvailable(actor) && can_soak,
             show_incapacitation: damageResult.incapacitated && actor.isWildcard,
             showInjury: showInjury,
             heavyDamage: heavyDamage,
@@ -99,29 +99,29 @@ export function get_owner(actor) {
 
 /**
  * Applies damage to a token
- * @param token_or_token_id
+ * @param tokenOrTokenId
  * @param {int} wounds
  * @param {int} soaked
  */
-async function apply_damage(token_or_token_id, wounds, soaked = 0) {
+async function apply_damage(tokenOrTokenId, wounds, soaked = 0) {
     if (wounds < 0) {
         return { text: "", incapacitated: false, wounds: 0 };
     }
     const token =
-        token_or_token_id instanceof foundry.canvas.placeables.Token
-            ? token_or_token_id
-            : canvas.tokens.get(token_or_token_id);
+        tokenOrTokenId instanceof foundry.canvas.placeables.Token
+            ? tokenOrTokenId
+            : canvas.tokens.get(tokenOrTokenId);
     // We take the starting situation
-    const initial_wounds = token.actor.system.wounds.value;
+    const initialWounds = token.actor.system.wounds.value;
     // noinspection JSUnresolvedVariable
-    const initial_shaken = token.actor.system.status.isShaken;
+    const initialShaken = token.actor.system.status.isShaken;
     // We test for double shaken
     let damageWounds = wounds;
-    let final_shaken = true; // Any damage also shakes the token
+    let finalShaken = true; // Any damage also shakes the token
     let text = "";
-    if (wounds < 1 && initial_shaken) {
+    if (wounds < 1 && initialShaken) {
         // Shaken twice
-        const has_hardy = token.actor.items.find((item) => {
+        const hasHardy = token.actor.items.find((item) => {
             return (
                 item.name
                     .toLowerCase()
@@ -129,7 +129,7 @@ async function apply_damage(token_or_token_id, wounds, soaked = 0) {
                 (item.type === "edge" || item.type === "ability")
             );
         });
-        if (has_hardy || token.actor.getFlag("swade", "hardy")) {
+        if (hasHardy || token.actor.getFlag("swade", "hardy")) {
             text += game.i18n.localize("BRSW.HardyActivated");
             damageWounds = 0;
         } else {
@@ -150,29 +150,29 @@ async function apply_damage(token_or_token_id, wounds, soaked = 0) {
         if (damageWounds <= 0) {
             // All damage soaked, remove shaken
             damageWounds = 0;
-            final_shaken = false;
+            finalShaken = false;
             text += game.i18n.localize("BRSW.AllSoaked");
         } else {
             text += game.i18n.format("BRSW.SomeSoaked", { soaked: soaked });
         }
     }
     // Final damage
-    let final_wounds = initial_wounds + damageWounds;
-    const incapacitated = final_wounds > token.actor.system.wounds.max;
-    const downed_condition = token.actor.isWildcard ? "incapacitated" : "dead";
+    let finalWounds = initialWounds + damageWounds;
+    const incapacitated = finalWounds > token.actor.system.wounds.max;
+    const downedCondition = token.actor.isWildcard ? "incapacitated" : "dead";
     if (incapacitated) {
-        await token.actor.toggleStatusEffect(downed_condition, { active: true, overlay: true });
+        await token.actor.toggleStatusEffect(downedCondition, { active: true, overlay: true });
     } else {
-        await token.actor.toggleStatusEffect(downed_condition, { active: false });
+        await token.actor.toggleStatusEffect(downedCondition, { active: false });
     }
     if (incapacitated) {
-        final_shaken = false;
+        finalShaken = false;
     }
     // We cap damage on actor number of wounds
-    final_wounds = Math.min(final_wounds, token.actor.system.wounds.max);
+    finalWounds = Math.min(finalWounds, token.actor.system.wounds.max);
     // Finally, we update actor and mark defeated
-    await token.actor.update({ "system.wounds.value": final_wounds });
-    if (final_shaken) {
+    await token.actor.update({ "system.wounds.value": finalWounds });
+    if (finalShaken) {
         await token.actor.toggleStatusEffect("shaken", { active: true });
     } else {
         await token.actor.toggleStatusEffect("shaken", { active: false });
@@ -180,11 +180,11 @@ async function apply_damage(token_or_token_id, wounds, soaked = 0) {
     Hooks.call(
         "BRSW-AfterApplyDamage",
         token,
-        final_wounds,
-        final_shaken,
+        finalWounds,
+        finalShaken,
         incapacitated,
-        initial_wounds,
-        initial_shaken,
+        initialWounds,
+        initialShaken,
         soaked,
     );
     return { text, incapacitated, wounds: damageWounds };

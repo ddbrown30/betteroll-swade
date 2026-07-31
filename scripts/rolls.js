@@ -6,7 +6,7 @@ import { detect_fumble } from "./cards_common.js";
 class Die {
   constructor(data) {
     this.sides = 0;
-    this.extra_class = ""; // Extra class for rendering this die
+    this.extraClass = ""; // Extra class for rendering this die
     this.raw_total = null; // Number rolled counting explosions
     this.modifiers = 0; // Modifiers to the roll
     this.result = null; // Result (total - target number) usually
@@ -93,7 +93,7 @@ class SingleRoll {
       if (term.hasOwnProperty("_faces")) {
         let newDie = new Die(null);
         if (term.total === 1) {
-          newDie.extra_class = " brsw-red-text";
+          newDie.extraClass = " brsw-red-text";
         }
         newDie.sides = term.faces;
         newDie.raw_total = term.total;
@@ -124,7 +124,7 @@ class SingleRoll {
     this.remove_discarded_die();
     // Mark the lower die as discarded.
     if (has_wild_die && this.dice.length) {
-      this.dice[min_position].extra_class += " brsw-discarded-roll";
+      this.dice[min_position].extraClass += " brsw-discarded-roll";
       this.dice[min_position].result = null;
     }
     this.is_fumble = await detect_fumble(
@@ -136,7 +136,7 @@ class SingleRoll {
 
   remove_discarded_die() {
     for (let die of this.dice) {
-      die.extra_class = die.extra_class.replace(/ brsw-discarded-roll/g, "");
+      die.extraClass = die.extraClass.replace(/ brsw-discarded-roll/g, "");
     }
   }
 

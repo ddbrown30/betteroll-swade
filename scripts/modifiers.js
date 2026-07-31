@@ -33,7 +33,7 @@ export class TraitModifier {
     }
   }
 
-  get extra_class() {
+  get extraClass() {
     return this.value < 0 ? " brsw-underline" : "";
   }
 }

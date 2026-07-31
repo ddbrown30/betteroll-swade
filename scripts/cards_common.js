@@ -44,9 +44,9 @@ import {
  */
 export function BRSWRoll() {
     this.rolls = []; // Array with all the dice rolled {sides, result,
-    // extra_class, tn, result_txt, result_icons, ap, armor, target_id}
-    this.modifiers = []; // Array of modifiers {name, value, extra_class, dice}
-    this.dice = []; // Array with the dice {sides, results: [int], label, extra_class}
+    // extraClass, tn, result_txt, result_icons, ap, armor, target_id}
+    this.modifiers = []; // Array of modifiers {name, value, extraClass, dice}
+    this.dice = []; // Array with the dice {sides, results: [int], label, extraClass}
     // noinspection JSUnusedGlobalSymbols
     this.is_fumble = false;
 }
@@ -99,7 +99,7 @@ export function create_common_card(origin, render_data, template) {
  * Returns true if an actor has bennies available or is master controlled.
  * @param {SwadeActor} actor - The actor that we are checking
  */
-export function are_bennies_available(actor) {
+export function areBenniesAvailable(actor) {
     if (actor.hasPlayerOwner) {
         return actor.system.bennies.value > 0;
     } else if (actor.system.wildcard && actor.system.bennies.value > 0) {
@@ -227,7 +227,7 @@ export function activateCommonListeners(brCard, html) {
         if (vehicle_img) {
             vehicle_img.classList.add("bound");
             vehicle_img.addEventListener("click", async (ev) => {
-                await manage_sheet(brCard.vehicle_actor);
+                await manage_sheet(brCard.vehicleActor);
             });
         }
         html
@@ -298,7 +298,7 @@ export function activateCommonListeners(brCard, html) {
                 await edit_modifier(brCard, parseInt(index), {
                     name: values.Label,
                     value: values.value,
-                    extra_class: parseInt(values.value) < 0 ? " brsw-red-text" : "",
+                    extraClass: parseInt(values.value) < 0 ? " brsw-red-text" : "",
                 });
             },
         );
@@ -711,7 +711,7 @@ async function getNewRollOptions(
 ) {
     const extraOptions = {};
 
-    const targetToken = getTargetedToken([brCard.actor, brCard.vehicle_actor].filter(Boolean));
+    const targetToken = getTargetedToken([brCard.actor, brCard.vehicleActor].filter(Boolean));
     if (targetToken) {
         const originToken = brCard.token;
         const targetData = await getTNFromToken(
@@ -797,8 +797,8 @@ async function getNewRollOptions(
     }
 
     // Vehicle
-    if (brCard.vehicle_actor) {
-        const vehicle = brCard.vehicle_actor;
+    if (brCard.vehicleActor) {
+        const vehicle = brCard.vehicleActor;
         let handling = vehicle.system.handling;
         handling -= Math.max(
             vehicle.system.wounds.value - vehicle.system.wounds.ignored,
@@ -835,22 +835,22 @@ async function get_reroll_options(brCard, extraData) {
     // Modifiers from effects
     if (brCard.trait_roll.reroll_mode === "benny") {
         for (const mod of brCard.actor.system.stats.globalMods.bennyTrait) {
-            const new_modifier = new TraitModifier(mod.label, mod.value);
-            new_modifier.isReroll = true;
-            brCard.trait_roll.modifiers.push(new_modifier);
+            const newModifier = new TraitModifier(mod.label, mod.value);
+            newModifier.isReroll = true;
+            brCard.trait_roll.modifiers.push(newModifier);
         }
     }
     // Modifiers from actions
     if (extraData.reroll_modifier &&
         (!brCard.trait_roll.reroll_mode ||
             brCard.trait_roll.reroll_mode === extraData.reroll_mode)) {
-        const new_modifier = new TraitModifier(
+        const newModifier = new TraitModifier(
             extraData.reroll_modifier.name,
             extraData.reroll_modifier.value,
         );
-        new_modifier.isReroll = true;
-        new_modifier.evaluate();
-        brCard.trait_roll.modifiers.push(new_modifier);
+        newModifier.isReroll = true;
+        newModifier.evaluate();
+        brCard.trait_roll.modifiers.push(newModifier);
     }
 }
 
@@ -1075,12 +1075,12 @@ async function override_die_result(brCard, die_index, new_value) {
 async function add_modifier(brCard, modifier) {
     if (modifier.value) {
         const name = modifier.label || game.i18n.localize("BRSW.ManuallyAdded");
-        const new_mod = new TraitModifier(name, modifier.value);
-        await new_mod.evaluate();
-        if (new_mod.dice) {
-            await roll_dice(brCard.message, brCard.trait_roll, new_mod.dice);
+        const newMod = new TraitModifier(name, modifier.value);
+        await newMod.evaluate();
+        if (newMod.dice) {
+            await roll_dice(brCard.message, brCard.trait_roll, newMod.dice);
         }
-        brCard.trait_roll.modifiers.push(new_mod);
+        brCard.trait_roll.modifiers.push(newMod);
         await brCard.trait_roll.recalculate_trait_results();
         await brCard.render();
         brCard.save().catch(() => {
@@ -1107,14 +1107,14 @@ async function delete_modifier(brCard, index) {
  * Edits one modifier
  * @param {BrCommonCard} brCard
  * @param {int} index
- * @param {Object} new_modifier
+ * @param {Object} newModifier
  */
-async function edit_modifier(brCard, index, new_modifier) {
+async function edit_modifier(brCard, index, newModifier) {
     // noinspection JSCheckFunctionSignatures
     // Add float modifier support
-    const mod_value = parseFloat(new_modifier.value);
+    const mod_value = parseFloat(newModifier.value);
     if (mod_value) {
-        brCard.trait_roll.modifiers[index].label = new_modifier.label;
+        brCard.trait_roll.modifiers[index].label = newModifier.label;
         brCard.trait_roll.modifiers[index].value = mod_value;
         await brCard.trait_roll.recalculate_trait_results();
         await brCard.render();
@@ -1244,13 +1244,13 @@ async function duplicate_message(message, event) {
  * Processes actions common to skill and item cards
  */
 export function process_common_actions(action, extraData, macros, actor) {
-    let action_name = action.name || action.button_name;
-    action_name = action_name.includes("BRSW.")
-        ? game.i18n.localize(action_name)
-        : action_name;
+    let actionName = action.name || action.button_name;
+    actionName = actionName.includes("BRSW.")
+        ? game.i18n.localize(actionName)
+        : actionName;
     // noinspection JSUnresolvedVariable
     if (action.skillMod) {
-        const modifier = new TraitModifier(action_name, action.skillMod);
+        const modifier = new TraitModifier(actionName, action.skillMod);
         modifier.evaluate();
         if (extraData.modifiers) {
             extraData.modifiers.push(modifier);
@@ -1278,7 +1278,7 @@ export function process_common_actions(action, extraData, macros, actor) {
     if (action.rerollSkillMod) {
         //Reroll
         extraData.reroll_modifier = new TraitModifier(
-            action_name,
+            actionName,
             action.rerollSkillMod,
         );
         extraData.reroll_mode = action.rerollMode;
@@ -1361,7 +1361,7 @@ function get_actor_armor_minimum_strength(actor) {
 export function process_minimum_str_modifiers(item, actor, name) {
     const splited_minStr = item.system.minStr.split("d");
     const min_str_die_size = parseInt(splited_minStr[splited_minStr.length - 1]);
-    let new_mod;
+    let newMod;
     let str_die_size = actor?.system?.attributes?.strength?.die?.sides;
     if (actor?.system?.attributes?.strength.encumbranceSteps) {
         str_die_size += Math.max(
@@ -1371,12 +1371,12 @@ export function process_minimum_str_modifiers(item, actor, name) {
     }
     if (min_str_die_size > str_die_size) {
         // Minimum strength is not meet
-        new_mod = new TraitModifier(
+        newMod = new TraitModifier(
             game.i18n.localize(name),
             -Math.trunc((min_str_die_size - str_die_size) / 2),
         );
     }
-    return new_mod;
+    return newMod;
 }
 
 /**

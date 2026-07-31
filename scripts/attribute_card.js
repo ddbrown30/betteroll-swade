@@ -136,18 +136,18 @@ export function activateAttributeCardListeners(card, html) {
  * Roll an attribute showing from an existing card
  *
  * @param {BrCommonCard} brCard The card being rolled
- * @param {boolean} expend_bennie True if we want to spend a bennie
+ * @param {boolean} expendBenny True if we want to spend a bennie
  */
-export async function rollAttribute(brCard, expend_bennie) {
+export async function rollAttribute(brCard, expendBenny) {
   const extraData = { modifiers: [] };
   const macros = [];
   for (const action of brCard.getSelectedActions()) {
     process_common_actions(action.code, extraData, macros, brCard.actor);
   }
   if (brCard.trait_roll.is_rolled) {
-    brCard.trait_roll.reroll_mode = expend_bennie ? "benny" : "free";
+    brCard.trait_roll.reroll_mode = expendBenny ? "benny" : "free";
   }
-  if (expend_bennie) {
+  if (expendBenny) {
     await spendBenny(brCard.actor);
   }
   await roll_trait(

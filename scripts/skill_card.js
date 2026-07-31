@@ -53,9 +53,9 @@ async function createSkillCard(
     );
     brCard.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_SKILL_CARD;
     if (vehicle) {
-        brCard.vehicle_actor_id = vehicle.actor?.id || vehicle.id;
+        brCard.vehicleActorId = vehicle.actor?.id || vehicle.id;
         if (vehicle instanceof TokenDocument || vehicle instanceof foundry.canvas.placeables.Token) {
-            brCard.vehicle_token_id = vehicle.id;
+            brCard.vehicleTokenId = vehicle.id;
         }
     }
     await brCard.render(actions_stored);

@@ -76,7 +76,7 @@ async function vehicle_weapon_clicked(ev, vehicle) {
     }
 
     if (gunner) {
-        const brCard = await createItemCard(gunner, item.uuid);
+        const brCard = await createItemCard(gunner, item.uuid, { vehicle });
 
         if (action.includes("dialog")) {
             game.brsw.dialog.show_card(brCard);

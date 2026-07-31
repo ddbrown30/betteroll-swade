@@ -61,12 +61,12 @@ game.brsw.createAttributeCardFromId(token_id, actor_id, name)
  ```
 
 ```js
-game.brsw.rollAttribute(brCard, expend_bennie)
+game.brsw.rollAttribute(brCard, expendBenny)
 /**
  * Roll an attribute showing from an existing card
  *
  * @param {BrCommonCard} brCard The card being rolled
- * @param {boolean} expend_bennie True if we want to spend a bennie
+ * @param {boolean} expendBenny True if we want to spend a bennie
  */
 ```
 
@@ -145,13 +145,13 @@ game.brsw.createItemCardFromId(token_id, actor_id, itemid)
 ```
 
 ```js
-game.brsw.rollItem(brCard, html, expend_bennie, roll_damage)
+game.brsw.rollItem(brCard, html, expendBenny, roll_damage)
 /**
  * Roll and existing item card
  *
  * @param {BrCommonCard } brCard Message that originates this roll
  * @param {string} html Html code to parse for extra options
- * @param {boolean} expend_bennie Whenever to expend a bennie
+ * @param {boolean} expendBenny Whenever to expend a bennie
  * @param {boolean} roll_damage true if we want to auto-roll damage
  *
  * @return {Promise<void>}
@@ -184,12 +184,12 @@ game.brsw.createSkillCardFromId(token_id, actor_id, skillId)
  ```
 
 ```js
- game.brsw.rollSkill(brCard, expend_bennie)
+ game.brsw.rollSkill(brCard, expendBenny)
  /**
  * Roll an existing skill card
  *
  * @param {BrCommonCard} brCard
- * @param {boolean} expend_bennie True if we want to spend a bennie
+ * @param {boolean} expendBenny True if we want to spend a bennie
  */
 ```
 

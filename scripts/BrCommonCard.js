@@ -5,7 +5,7 @@
 import { brAction } from "./actions.js";
 import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
-import { are_bennies_available, traitToDieString } from "./cards_common.js";
+import { areBenniesAvailable, traitToDieString } from "./cards_common.js";
 import { get_actions, process_action } from "./global_actions.js";
 import { calc_pp_cost } from "./item_card.js";
 import { TraitRoll } from "./rolls.js";
@@ -43,8 +43,8 @@ export class BrCommonCard {
         this.actor_id = undefined;
         this.item_id = undefined;
         this.damage = undefined;
-        this.vehicle_actor_id = undefined;
-        this.vehicle_token_id = undefined;
+        this.vehicleActorId = undefined;
+        this.vehicleTokenId = undefined;
         this.target_ids = [];
         this.environment = { light: "bright" };
         this.extra_text = "";
@@ -124,8 +124,8 @@ export class BrCommonCard {
             token_id: this.token_id,
             actor_id: this.actor_id,
             item_id: this.item_id,
-            vehicle_actor_id: this.vehicle_actor_id,
-            vehicle_token_id: this.vehicle_token_id,
+            vehicleActorId: this.vehicleActorId,
+            vehicleTokenId: this.vehicleTokenId,
             environment: this.environment,
             extra_text: this.extra_text,
             action_sections: this.action_sections,
@@ -153,8 +153,8 @@ export class BrCommonCard {
             "actor_id",
             "item_id",
             "trait",
-            "vehicle_actor_id",
-            "vehicle_token_id",
+            "vehicleActorId",
+            "vehicleTokenId",
             "environment",
             "extra_text",
             "action_sections",
@@ -207,30 +207,30 @@ export class BrCommonCard {
         return undefined;
     }
 
-    get vehicle_token() {
+    get vehicleToken() {
         if (canvas.tokens) {
-            if (this.vehicle_token_id) {
-                return canvas.tokens.get(this.vehicle_token_id);
+            if (this.vehicleTokenId) {
+                return canvas.tokens.get(this.vehicleTokenId);
             }
-            if (this.vehicle_actor_id) {
-                return this.vehicle_actor.getActiveTokens()[0];
+            if (this.vehicleActorId) {
+                return this.vehicleActor.getActiveTokens()[0];
             }
         }
         return undefined;
     }
 
-    get vehicle_actor() {
+    get vehicleActor() {
         // We always prefer the token actor if available
-        if (this.vehicle_token_id) {
-            const { vehicle_token } = this;
-            if (vehicle_token) {
+        if (this.vehicleTokenId) {
+            const { vehicleToken } = this;
+            if (vehicleToken) {
                 // Token can be undefined even with an id if the scene is not
                 // ready or the token has been removed.
-                return vehicle_token.actor;
+                return vehicleToken.actor;
             }
         }
-        if (this.vehicle_actor_id) {
-            return game.actors.get(this.vehicle_actor_id);
+        if (this.vehicleActorId) {
+            return game.actors.get(this.vehicleActorId);
         }
         return undefined;
     }
@@ -337,7 +337,7 @@ export class BrCommonCard {
     }
 
     get bennie_available() {
-        return are_bennies_available(this.actor);
+        return areBenniesAvailable(this.actor);
     }
 
     recover_targets_from_user() {
@@ -944,7 +944,7 @@ export class BrCommonCard {
             ...this.render_data,
         };
         data.actor = this.actor;
-        data.vehicle_actor = this.vehicle_actor;
+        data.vehicleActor = this.vehicleActor;
         data.item = this.item;
         data.bennie_available = this.bennie_available;
         data.show_rerolls = this.show_rerolls;
@@ -952,7 +952,7 @@ export class BrCommonCard {
         data.hasFooterButtons = this.hasFooterButtons;
         data.skill_tooltip = this.skill_tooltip;
         data.showRepeat = BRSW2_CONST.ALLOW_SAVE_REPEAT_CARDS.has(this.type);
-        data.showSave = !this.vehicle_actor && BRSW2_CONST.ALLOW_SAVE_REPEAT_CARDS.has(this.type);
+        data.showSave = !this.vehicleActor && BRSW2_CONST.ALLOW_SAVE_REPEAT_CARDS.has(this.type);
         data.showManualMods = !!(this.trait || this.damage);
         data.showTools = data.showRepeat || data.showSave || data.showManualMods;
         data.noPowerPoints = game.settings.get("swade", "noPowerPoints");
