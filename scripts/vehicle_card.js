@@ -1,7 +1,7 @@
 // Functions for cards representing vehicles
 
 import { getActionFromClick } from "./cards_common.js";
-import { createItemCard } from "./item_card.js";
+import { createItemCard, roll_dmg } from "./item_card.js";
 import { rollSkill } from "./skill_card.js";
 import { Utils } from "./utils.js";
 
@@ -59,7 +59,11 @@ async function vehicle_click_listener(ev, vehicle) {
 /**
  * Fired from an event clicking a vehicle weapon
  */
-function vehicle_weapon_clicked(ev, vehicle) {
+async function vehicle_weapon_clicked(ev, vehicle) {
+    const action = getActionFromClick(ev);
+    if (action === "system") {
+        return;
+    }
     ev.stopImmediatePropagation();
     ev.preventDefault();
     ev.stopPropagation();
@@ -72,7 +76,25 @@ function vehicle_weapon_clicked(ev, vehicle) {
     }
 
     if (gunner) {
-        createItemCard(gunner, item.uuid);
+        const brCard = await createItemCard(gunner, item.uuid, { vehicle });
+
+        if (action.includes("dialog")) {
+            game.brsw.dialog.show_card(brCard);
+        } else {
+            if (brCard.trait && action.includes("trait")) {
+                await rollSkill(brCard, false);
+
+                if (brCard.damage && action.includes("damage")) {
+                    brCard.trait_roll.current_roll.dice.forEach((roll) => {
+                        if (roll.result !== null && roll.result >= 0) {
+                            roll_dmg(brCard, "", false, {}, roll.result > 3);
+                        }
+                    });
+                }
+            } else if (brCard.damage && action.includes("damage")) {
+                await roll_dmg(brCard, "");
+            }
+        }
     } else {
         ui.notifications.error("BRSW.NoGunner");
     }

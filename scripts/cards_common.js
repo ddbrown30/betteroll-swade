@@ -44,9 +44,9 @@ import {
  */
 export function BRSWRoll() {
     this.rolls = []; // Array with all the dice rolled {sides, result,
-    // extra_class, tn, result_txt, result_icons, ap, armor, target_id}
-    this.modifiers = []; // Array of modifiers {name, value, extra_class, dice}
-    this.dice = []; // Array with the dice {sides, results: [int], label, extra_class}
+    // extraClass, tn, result_txt, result_icons, ap, armor, target_id}
+    this.modifiers = []; // Array of modifiers {name, value, extraClass, dice}
+    this.dice = []; // Array with the dice {sides, results: [int], label, extraClass}
     // noinspection JSUnusedGlobalSymbols
     this.is_fumble = false;
 }
@@ -99,7 +99,7 @@ export function create_common_card(origin, render_data, template) {
  * Returns true if an actor has bennies available or is master controlled.
  * @param {SwadeActor} actor - The actor that we are checking
  */
-export function are_bennies_available(actor) {
+export function areBenniesAvailable(actor) {
     if (actor.hasPlayerOwner) {
         return actor.system.bennies.value > 0;
     } else if (actor.system.wildcard && actor.system.bennies.value > 0) {
@@ -227,7 +227,7 @@ export function activateCommonListeners(brCard, html) {
         if (vehicle_img) {
             vehicle_img.classList.add("bound");
             vehicle_img.addEventListener("click", async (ev) => {
-                await manage_sheet(brCard.vehicle_actor);
+                await manage_sheet(brCard.vehicleActor);
             });
         }
         html
@@ -295,10 +295,10 @@ export function activateCommonListeners(brCard, html) {
                 { id: "value", label: label_mod, default_value: value },
             ],
             async (values) => {
-                await edit_modifier(brCard, parseInt(index), {
+                await editModifier(brCard, parseInt(index), {
                     name: values.Label,
                     value: values.value,
-                    extra_class: parseInt(values.value) < 0 ? " brsw-red-text" : "",
+                    extraClass: parseInt(values.value) < 0 ? " brsw-red-text" : "",
                 });
             },
         );
@@ -711,7 +711,7 @@ async function getNewRollOptions(
 ) {
     const extraOptions = {};
 
-    const targetToken = getTargetedToken([brCard.actor, brCard.vehicle_actor].filter(Boolean));
+    const targetToken = getTargetedToken([brCard.actor, brCard.vehicleActor].filter(Boolean));
     if (targetToken) {
         const originToken = brCard.token;
         const targetData = await getTNFromToken(
@@ -797,8 +797,8 @@ async function getNewRollOptions(
     }
 
     // Vehicle
-    if (brCard.vehicle_actor) {
-        const vehicle = brCard.vehicle_actor;
+    if (brCard.vehicleActor) {
+        const vehicle = brCard.vehicleActor;
         let handling = vehicle.system.handling;
         handling -= Math.max(
             vehicle.system.wounds.value - vehicle.system.wounds.ignored,
@@ -814,9 +814,9 @@ async function getNewRollOptions(
 /**
  * Get the options for a re-roll
  * @param {BrCommonCard} brCard - The card to get the options from
- * @param {Object} extra_data
+ * @param {Object} extraData
  */
-async function get_reroll_options(brCard, extra_data) {
+async function get_reroll_options(brCard, extraData) {
     // Reroll, clear out old reroll mods so we don't double add
     // This doesn't use filter() because the array is referenced elsewhere
     brCard.trait_roll.modifiers.splice(
@@ -835,22 +835,22 @@ async function get_reroll_options(brCard, extra_data) {
     // Modifiers from effects
     if (brCard.trait_roll.reroll_mode === "benny") {
         for (const mod of brCard.actor.system.stats.globalMods.bennyTrait) {
-            const new_modifier = new TraitModifier(mod.label, mod.value);
-            new_modifier.isReroll = true;
-            brCard.trait_roll.modifiers.push(new_modifier);
+            const newModifier = new TraitModifier(mod.label, mod.value);
+            newModifier.isReroll = true;
+            brCard.trait_roll.modifiers.push(newModifier);
         }
     }
     // Modifiers from actions
-    if (extra_data.reroll_modifier &&
+    if (extraData.reroll_modifier &&
         (!brCard.trait_roll.reroll_mode ||
-            brCard.trait_roll.reroll_mode === extra_data.reroll_mode)) {
-        const new_modifier = new TraitModifier(
-            extra_data.reroll_modifier.name,
-            extra_data.reroll_modifier.value,
+            brCard.trait_roll.reroll_mode === extraData.reroll_mode)) {
+        const newModifier = new TraitModifier(
+            extraData.reroll_modifier.name,
+            extraData.reroll_modifier.value,
         );
-        new_modifier.isReroll = true;
-        new_modifier.evaluate();
-        brCard.trait_roll.modifiers.push(new_modifier);
+        newModifier.isReroll = true;
+        newModifier.evaluate();
+        brCard.trait_roll.modifiers.push(newModifier);
     }
 }
 
@@ -955,51 +955,51 @@ function createRollString(traitDie, rof, traitName) {
  * @param {BrCommonCard}brCard
  * @param traitDie - An object representing a trait die
  * @param traitName - Label for the trait die
- * @param extra_data - Extra data to add to render options
+ * @param extraData - Extra data to add to render options
  */
-export async function roll_trait(brCard, traitDie, traitName, extra_data) {
+export async function roll_trait(brCard, traitDie, traitName, extraData) {
     const { actor } = brCard;
     const roll_options = { modifiers: [], rof: undefined };
 
     if (!brCard.trait_roll.is_rolled) {
-        await getNewRollOptions(brCard, extra_data, traitDie, roll_options);
+        await getNewRollOptions(brCard, extraData, traitDie, roll_options);
     } else {
         roll_options.modifiers = brCard.trait_roll.modifiers;
         roll_options.rof = brCard.trait_roll.rof;
-        await get_reroll_options(brCard, extra_data);
+        await get_reroll_options(brCard, extraData);
     }
 
     let rollString = createRollString(traitDie, roll_options.rof, traitName);
 
     // Wild Die
     let wild_die_formula = `+1d${traitDie["wild-die"].sides}x`;
-    if (extra_data.hasOwnProperty("wildDieFormula")) {
-        wild_die_formula = extra_data.wildDieFormula;
+    if (extraData.hasOwnProperty("wildDieFormula")) {
+        wild_die_formula = extraData.wildDieFormula;
         if (wild_die_formula.charAt(0) !== "+") {
             wild_die_formula = `+${wild_die_formula}`;
         }
     }
 
-    if ((actor.isWildcard || extra_data.add_wild_die) && wild_die_formula) {
+    if ((actor.isWildcard || extraData.add_wild_die) && wild_die_formula) {
         rollString += wild_die_formula;
         brCard.trait_roll.wild_die = true;
     } else {
         brCard.trait_roll.wild_die = false;
     }
 
-    if (extra_data.total_aiming_ignorable_penalties > 0 && extra_data.aiming_ignore_data?.length > 0) {
+    if (extraData.total_aiming_ignorable_penalties > 0 && extraData.aiming_ignore_data?.length > 0) {
         //We are aiming and we have penalties that we can ignore
-        apply_aiming_ignore(extra_data);
+        apply_aiming_ignore(extraData);
     }
 
     brCard.trait_roll.modifiers = roll_options.modifiers;
 
-    if (extra_data.tn) {
-        brCard.trait_roll.tn = extra_data.tn;
-        brCard.trait_roll.tn_reason = extra_data.tn_reason;
+    if (extraData.tn) {
+        brCard.trait_roll.tn = extraData.tn;
+        brCard.trait_roll.tn_reason = extraData.tn_reason;
     }
 
-    brCard.trait_roll.arcaneActivationOffset = extra_data.arcaneActivationOffset;
+    brCard.trait_roll.arcaneActivationOffset = extraData.arcaneActivationOffset;
 
     const roll = new Roll(rollString);
     await roll.evaluate();
@@ -1075,12 +1075,12 @@ async function override_die_result(brCard, die_index, new_value) {
 async function add_modifier(brCard, modifier) {
     if (modifier.value) {
         const name = modifier.label || game.i18n.localize("BRSW.ManuallyAdded");
-        const new_mod = new TraitModifier(name, modifier.value);
-        await new_mod.evaluate();
-        if (new_mod.dice) {
-            await roll_dice(brCard.message, brCard.trait_roll, new_mod.dice);
+        const newMod = new TraitModifier(name, modifier.value);
+        await newMod.evaluate();
+        if (newMod.dice) {
+            await roll_dice(brCard.message, brCard.trait_roll, newMod.dice);
         }
-        brCard.trait_roll.modifiers.push(new_mod);
+        brCard.trait_roll.modifiers.push(newMod);
         await brCard.trait_roll.recalculate_trait_results();
         await brCard.render();
         brCard.save().catch(() => {
@@ -1107,20 +1107,18 @@ async function delete_modifier(brCard, index) {
  * Edits one modifier
  * @param {BrCommonCard} brCard
  * @param {int} index
- * @param {Object} new_modifier
+ * @param {Object} newModifier
  */
-async function edit_modifier(brCard, index, new_modifier) {
+async function editModifier(brCard, index, newModifier) {
     // noinspection JSCheckFunctionSignatures
     // Add float modifier support
-    const mod_value = parseFloat(new_modifier.value);
-    if (mod_value) {
-        brCard.trait_roll.modifiers[index].label = new_modifier.label;
-        brCard.trait_roll.modifiers[index].value = mod_value;
+    const modValue = parseFloat(newModifier.value);
+    if (Number.isFinite(modValue)) {
+        brCard.trait_roll.modifiers[index].name = newModifier.name;
+        brCard.trait_roll.modifiers[index].value = modValue;
         await brCard.trait_roll.recalculate_trait_results();
         await brCard.render();
-        brCard.save().catch(() => {
-            console.error("Error saving a card after editing a modifier");
-        });
+        brCard.save();
     }
 }
 
@@ -1152,7 +1150,7 @@ async function edit_tn(brCard, new_tn, reason) {
 async function getTNFromTarget(brCard, selected) {
     const targetToken = selected ? getSelectedToken([brCard.actor]) : getTargetedToken([brCard.actor]);
     if (targetToken) {
-        const extra_data = { modifiers: [] };
+        const extraData = { modifiers: [] };
         const originToken = brCard.token;
         const target = await getTNFromToken(
             brCard.skill,
@@ -1160,7 +1158,7 @@ async function getTNFromTarget(brCard, selected) {
             originToken,
             brCard.actor,
             brCard.item,
-            extra_data,
+            extraData,
         );
 
         if (target.value) {
@@ -1176,7 +1174,7 @@ async function getTNFromTarget(brCard, selected) {
             brCard.item,
             tn,
             brCard.skill,
-            extra_data,
+            extraData,
         );
 
         brCard.trait_roll.delete_range_modifiers();
@@ -1243,60 +1241,60 @@ async function duplicate_message(message, event) {
 /**
  * Processes actions common to skill and item cards
  */
-export function process_common_actions(action, extra_data, macros, actor) {
-    let action_name = action.name || action.button_name;
-    action_name = action_name.includes("BRSW.")
-        ? game.i18n.localize(action_name)
-        : action_name;
+export function process_common_actions(action, extraData, macros, actor) {
+    let actionName = action.name || action.button_name;
+    actionName = actionName.includes("BRSW.")
+        ? game.i18n.localize(actionName)
+        : actionName;
     // noinspection JSUnresolvedVariable
     if (action.skillMod) {
-        const modifier = new TraitModifier(action_name, action.skillMod);
+        const modifier = new TraitModifier(actionName, action.skillMod);
         modifier.evaluate();
-        if (extra_data.modifiers) {
-            extra_data.modifiers.push(modifier);
+        if (extraData.modifiers) {
+            extraData.modifiers.push(modifier);
         } else {
-            extra_data.modifiers = [modifier];
+            extraData.modifiers = [modifier];
         }
         if (action.aimingIgnoreMod > 0) {
             //This is an aiming type action which can ignore certain penalties
             //Save some data about it so we can process it later
-            add_aiming_ignore_modifier(extra_data, modifier, action.aimingIgnoreMod);
+            add_aiming_ignore_modifier(extraData, modifier, action.aimingIgnoreMod);
         } else if (action.aiming_ignores) {
             //This is an action that can be ignored by aiming
             //Save some data about it so we can process it later
-            extra_data.total_aiming_ignorable_penalties =
-                extra_data.total_aiming_ignorable_penalties ?? 0;
-            extra_data.total_aiming_ignorable_penalties += Math.abs(modifier.value);
+            extraData.total_aiming_ignorable_penalties =
+                extraData.total_aiming_ignorable_penalties ?? 0;
+            extraData.total_aiming_ignorable_penalties += Math.abs(modifier.value);
         }
 
         const skillModValue = Number(action.skillMod);
         if (action.ignoresArcaneActivation && !isNaN(skillModValue)) {
-            extra_data.arcaneActivationOffset ??= 0;
-            extra_data.arcaneActivationOffset += skillModValue;
+            extraData.arcaneActivationOffset ??= 0;
+            extraData.arcaneActivationOffset += skillModValue;
         }
     }
     if (action.rerollSkillMod) {
         //Reroll
-        extra_data.reroll_modifier = new TraitModifier(
-            action_name,
+        extraData.reroll_modifier = new TraitModifier(
+            actionName,
             action.rerollSkillMod,
         );
-        extra_data.reroll_mode = action.rerollMode;
+        extraData.reroll_mode = action.rerollMode;
     }
     if (action.rof) {
-        extra_data.rof = action.rof;
+        extraData.rof = action.rof;
     }
     if (action.dice) {
-        extra_data.rof = action.dice;
+        extraData.rof = action.dice;
     }
     if (action.tnOverride) {
         const userTargets = getUserTargets();
         if (isNaN(action.tnOverride) && action.tnOverride.toLowerCase() === "parry" && userTargets[0]) {
-            extra_data.tn = parseInt(userTargets[0].actor.system.stats.parry.value);
+            extraData.tn = parseInt(userTargets[0].actor.system.stats.parry.value);
         } else {
-            extra_data.tn = parseInt(action.tnOverride);
+            extraData.tn = parseInt(action.tnOverride);
         }
-        extra_data.tn_reason = action.button_name;
+        extraData.tn_reason = action.button_name;
     }
     // noinspection JSUnresolvedVariable
     if (action.self_add_status) {
@@ -1305,9 +1303,9 @@ export function process_common_actions(action, extra_data, macros, actor) {
         });
     }
     if (action.hasOwnProperty("wildDieFormula")) {
-        extra_data.wildDieFormula = action.wildDieFormula;
-        if (extra_data.wildDieFormula.charAt(0) !== "+") {
-            extra_data.wildDieFormula = "+" + extra_data.wildDieFormula;
+        extraData.wildDieFormula = action.wildDieFormula;
+        if (extraData.wildDieFormula.charAt(0) !== "+") {
+            extraData.wildDieFormula = "+" + extraData.wildDieFormula;
         }
     }
     if (action.runSkillMacro) {
@@ -1317,7 +1315,7 @@ export function process_common_actions(action, extra_data, macros, actor) {
         macros.push(action.uuid);
     }
     if (action.add_wild_die) {
-        extra_data.add_wild_die = true;
+        extraData.add_wild_die = true;
     }
 }
 
@@ -1361,7 +1359,7 @@ function get_actor_armor_minimum_strength(actor) {
 export function process_minimum_str_modifiers(item, actor, name) {
     const splited_minStr = item.system.minStr.split("d");
     const min_str_die_size = parseInt(splited_minStr[splited_minStr.length - 1]);
-    let new_mod;
+    let newMod;
     let str_die_size = actor?.system?.attributes?.strength?.die?.sides;
     if (actor?.system?.attributes?.strength.encumbranceSteps) {
         str_die_size += Math.max(
@@ -1371,54 +1369,54 @@ export function process_minimum_str_modifiers(item, actor, name) {
     }
     if (min_str_die_size > str_die_size) {
         // Minimum strength is not meet
-        new_mod = new TraitModifier(
+        newMod = new TraitModifier(
             game.i18n.localize(name),
             -Math.trunc((min_str_die_size - str_die_size) / 2),
         );
     }
-    return new_mod;
+    return newMod;
 }
 
 /**
- * Added a penalty that can be ignored by aiming to the extra_data
- * @param extra_data
+ * Added a penalty that can be ignored by aiming to the extraData
+ * @param extraData
  * @param modifier
  */
-export function add_aiming_ignore_modifier(extra_data, modifier, ignore_mod) {
+export function add_aiming_ignore_modifier(extraData, modifier, ignore_mod) {
     const aiming_ignore_data = {
         modifier: modifier,
         ignore_mod: ignore_mod,
     };
-    if (extra_data.aiming_ignore_data) {
-        extra_data.aiming_ignore_data.push(aiming_ignore_data);
+    if (extraData.aiming_ignore_data) {
+        extraData.aiming_ignore_data.push(aiming_ignore_data);
     } else {
-        extra_data.aiming_ignore_data = [aiming_ignore_data];
+        extraData.aiming_ignore_data = [aiming_ignore_data];
     }
 }
 
 /**
  * Adjust our action modifiers to reflect ignored penalties
- * @param extra_data
+ * @param extraData
  */
-function apply_aiming_ignore(extra_data) {
+function apply_aiming_ignore(extraData) {
     //Sort the list so that the smaller mods are used first. This ensures we maximize the benefit
-    extra_data.aiming_ignore_data = extra_data.aiming_ignore_data.sort(
+    extraData.aiming_ignore_data = extraData.aiming_ignore_data.sort(
         (a, b) => a.ignore_mod - b.ignore_mod,
     );
     //Loop over our aiming modifiers and adjust them to reflect the ignored penalties
-    for (const ignore_data of extra_data.aiming_ignore_data) {
+    for (const ignore_data of extraData.aiming_ignore_data) {
         if (
-            ignore_data.modifier.value >= extra_data.total_aiming_ignorable_penalties
+            ignore_data.modifier.value >= extraData.total_aiming_ignorable_penalties
         ) {
             //The default skill mod is more than we would ignore so just use that
             continue;
         }
         ignore_data.modifier.value = Math.min(
-            extra_data.total_aiming_ignorable_penalties,
+            extraData.total_aiming_ignorable_penalties,
             ignore_data.ignore_mod,
         );
-        extra_data.total_aiming_ignorable_penalties -= ignore_data.modifier.value;
-        if (extra_data.total_aiming_ignorable_penalties === 0) {
+        extraData.total_aiming_ignorable_penalties -= ignore_data.modifier.value;
+        if (extraData.total_aiming_ignorable_penalties === 0) {
             break;
         }
     }

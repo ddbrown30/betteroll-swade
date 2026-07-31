@@ -53,9 +53,9 @@ async function createSkillCard(
     );
     brCard.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_SKILL_CARD;
     if (vehicle) {
-        brCard.vehicle_actor_id = vehicle.actor?.id || vehicle.id;
+        brCard.vehicleActorId = vehicle.actor?.id || vehicle.id;
         if (vehicle instanceof TokenDocument || vehicle instanceof foundry.canvas.placeables.Token) {
-            brCard.vehicle_token_id = vehicle.id;
+            brCard.vehicleTokenId = vehicle.id;
         }
     }
     await brCard.render(actions_stored);
@@ -163,26 +163,26 @@ export function activateSkillCardListeners(brCard, html) {
  * Roll an existing skill card
  *
  * @param {BrCommonCard} brCard
- * @param {boolean} expend_bennie True if we want to spend a bennie
+ * @param {boolean} expendBennie True if we want to spend a bennie
  */
-export async function rollSkill(brCard, expend_bennie) {
-    const extra_data = { modifiers: [] };
+export async function rollSkill(brCard, expendBennie) {
+    const extraData = { modifiers: [] };
     const macros = [];
     // Actions
     for (const action of brCard.getSelectedActions()) {
-        process_common_actions(action.code, extra_data, macros, brCard.actor);
+        process_common_actions(action.code, extraData, macros, brCard.actor);
     }
     if (brCard.trait_roll.is_rolled) {
-        brCard.trait_roll.reroll_mode = expend_bennie ? "benny" : "free";
+        brCard.trait_roll.reroll_mode = expendBennie ? "benny" : "free";
     }
-    if (expend_bennie) {
+    if (expendBennie) {
         await spendBenny(brCard.actor);
     }
     await roll_trait(
         brCard,
         brCard.skill.system,
         brCard.skill.name,
-        extra_data,
+        extraData,
     );
     await runMacros(macros, brCard);
 }
@@ -204,7 +204,7 @@ function calculateGenericDistanceModifier(
     targetToken,
     skill,
     tn,
-    extra_data,
+    extraData,
 ) {
     const range = item.system.range.split("/");
     if (originToken.elevation !== targetToken.elevation) {
@@ -249,8 +249,8 @@ function calculateGenericDistanceModifier(
             ),
         );
         //Range penalties can be ignored by aiming so add it to the total
-        extra_data.total_aiming_ignorable_penalties = extra_data.total_aiming_ignorable_penalties ?? 0;
-        extra_data.total_aiming_ignorable_penalties += distancePenalty;
+        extraData.total_aiming_ignorable_penalties = extraData.total_aiming_ignorable_penalties ?? 0;
+        extraData.total_aiming_ignorable_penalties += distancePenalty;
     }
 }
 
@@ -269,7 +269,7 @@ export function calculateDistance(
     item,
     tn,
     skill,
-    extra_data,
+    extraData,
 ) {
     if (item.system.isVehicular && originToken.actor.type !== "vehicle") {
         return false;
@@ -295,7 +295,7 @@ export function calculateDistance(
                 targetToken,
                 skill,
                 tn,
-                extra_data,
+                extraData,
             );
         }
     }
@@ -337,7 +337,7 @@ export async function getTNFromToken(
     originToken,
     originActor,
     item,
-    extra_data,
+    extraData,
 ) {
     const tn = {
         reason: game.i18n.localize("BRSW.Default"),
@@ -363,7 +363,7 @@ export async function getTNFromToken(
                 item,
                 tn,
                 skill,
-                extra_data,
+                extraData,
             );
         }
     }
@@ -377,7 +377,7 @@ export async function getTNFromToken(
     }
     // Size modifiers
     if (shouldUseScale(originActor, targetToken, item, skill)) {
-        getScaleModifier(originActor, targetToken.actor, item, tn, extra_data);
+        getScaleModifier(originActor, targetToken.actor, item, tn, extraData);
     }
     if (
         targetToken.actor.system.status.isVulnerable ||
@@ -410,7 +410,7 @@ function shouldUseScale(origin_actor, targetToken, item, skill) {
  * Get the scale modifier
  **/
 
-function getScaleModifier(originActor, targetActor, item, tn, extra_data) {
+function getScaleModifier(originActor, targetActor, item, tn, extraData) {
     const originScaleMod = sizeToScale(originActor?.system.stats.size ?? 0);
     const targetScaleMod = sizeToScale(
         targetActor?.system.size ?? // Vehicles
@@ -430,9 +430,9 @@ function getScaleModifier(originActor, targetActor, item, tn, extra_data) {
 
     tn.modifiers.push(new TraitModifier(game.i18n.localize("BRSW.Scale"), scaleMod));
 
-    if (extra_data.arcaneActivationOffset !== undefined) {
+    if (extraData.arcaneActivationOffset !== undefined) {
         //Scale does not affect arcane activation
-        extra_data.arcaneActivationOffset += scaleMod;
+        extraData.arcaneActivationOffset += scaleMod;
     }
 
     // If the scale mod is negative, check if the attacking actor has the swat ability
@@ -454,8 +454,8 @@ function getScaleModifier(originActor, targetActor, item, tn, extra_data) {
 
         if (unignoredPenalty > 0) {
             //Scale penalties can be ignored by aiming so add it to the total
-            extra_data.total_aiming_ignorable_penalties ??= 0;
-            extra_data.total_aiming_ignorable_penalties += unignoredPenalty;
+            extraData.total_aiming_ignorable_penalties ??= 0;
+            extraData.total_aiming_ignorable_penalties += unignoredPenalty;
         }
     }
 }

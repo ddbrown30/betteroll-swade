@@ -50,11 +50,10 @@ const ROF_BULLETS = { 1: 1, 2: 5, 3: 10, 4: 20, 5: 40, 6: 50 };
  *   and a boolean meaning if they need to set on or off
  * @return {Promise} A promise for the BrCommonCard object
  */
-// eslint-disable-next-line complexity
 export async function createItemCard(
     origin,
     item_id,
-    { actions_stored = {} } = {},
+    { actions_stored = {}, vehicle } = {},
 ) {
     const actor = Utils.toActor(origin);
 
@@ -102,6 +101,12 @@ export async function createItemCard(
     );
 
     brCard.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD;
+    if (vehicle) {
+        brCard.vehicleActorId = vehicle.actor?.id || vehicle.id;
+        if (vehicle instanceof TokenDocument || vehicle instanceof foundry.canvas.placeables.Token) {
+            brCard.vehicleTokenId = vehicle.id;
+        }
+    }
     brCard.damage = !!item.system.damage;
     brCard.item_id = item_id;
     brCard.applicable_effects = get_applicable_effects(item);
@@ -824,31 +829,30 @@ async function findMacro(macro_name_or_id) {
 }
 
 /**
- * Roll and existing item card
+ * Roll an existing item card
  *
  * @param {BrCommonCard } brCard Message that originates this roll
  * @param {string} html Html code to parse for extra options
- * @param {boolean} expend_bennie Whenever to expend a bennie
- * @param {boolean} roll_damage true if we want to auto-roll damage
+ * @param {boolean} expendBennie Whenever to expend a bennie
+ * @param {boolean} rollDamage true if we want to auto-roll damage
  *
  * @return {Promise<void>}
  */
-export async function rollItem(brCard, html, expend_bennie, roll_damage) {
+export async function rollItem(brCard, html, expendBennie, rollDamage) {
     const macros = [];
-    let shots_override; // Override the number of shots used
-    let shots_modifier = 0; // Modifier to the number of shots
-    const extra_data = { modifiers: [] };
+    let shotsOverride; // Override the number of shots used
+    const extraData = { modifiers: [] };
     if (brCard.trait_roll.is_rolled) {
-        brCard.trait_roll.reroll_mode = expend_bennie ? "benny" : "free";
+        brCard.trait_roll.reroll_mode = expendBennie ? "benny" : "free";
     }
 
-    if (expend_bennie) {
+    if (expendBennie) {
         await spendBenny(brCard.actor);
     }
 
-    extra_data.rof = brCard.item.system.rof || 1;
+    extraData.rof = brCard.item.system.rof || 1;
     if (SettingsUtils.getUserSetting(USER_SETTING_KEYS.defaultRateOfFire) === "single_shot") {
-        extra_data.rof = 1;
+        extraData.rof = 1;
     }
 
     // Actions
@@ -867,10 +871,10 @@ export async function rollItem(brCard, html, expend_bennie, roll_damage) {
                 first_char = shots_used.charAt(0);
             } catch { }
             if (first_char !== "+" && first_char !== "-") {
-                shots_override = parseInt(shots_used);
+                shotsOverride = parseInt(shots_used);
             }
         }
-        process_common_actions(action.code, extra_data, macros, brCard.actor);
+        process_common_actions(action.code, extraData, macros, brCard.actor);
     }
 
     // Check for minimum strength
@@ -884,13 +888,13 @@ export async function rollItem(brCard, html, expend_bennie, roll_damage) {
             "BRSW.NotEnoughStrength",
         );
         if (penalty) {
-            extra_data.modifiers.push(penalty);
+            extraData.modifiers.push(penalty);
         }
     }
 
     // Trademark weapon
     if (brCard.item.system.trademark) {
-        extra_data.modifiers.push(
+        extraData.modifiers.push(
             new TraitModifier(
                 game.i18n.localize("BRSW.TrademarkWeapon"),
                 brCard.item.system.trademark,
@@ -900,16 +904,15 @@ export async function rollItem(brCard, html, expend_bennie, roll_damage) {
 
     // Offhand
     if (brCard.item.system.equipStatus === 2) {
-        let is_ambidextrous = brCard.actor.items.find(
+        let isAmbidextrous = brCard.actor.items.find(
             (item) =>
                 item.type === "edge" &&
                 item.name.toLowerCase() ===
                 game.i18n.localize("BRSW.EdgeName.Ambidextrous").toLowerCase(),
         );
-        is_ambidextrous =
-            is_ambidextrous || brCard.actor.getFlag("swade", "ambidextrous");
-        if (!is_ambidextrous) {
-            extra_data.modifiers.push(
+        isAmbidextrous = isAmbidextrous || brCard.actor.getFlag("swade", "ambidextrous");
+        if (!isAmbidextrous) {
+            extraData.modifiers.push(
                 new TraitModifier(game.i18n.localize("BRSW.Offhand"), -2),
             );
         }
@@ -917,12 +920,12 @@ export async function rollItem(brCard, html, expend_bennie, roll_damage) {
 
     // Item properties tab
     if (brCard.item.system.actions.traitMod) {
-        const new_modifier = new TraitModifier(
+        const newModifier = new TraitModifier(
             game.i18n.localize("BRSW.ItemPropertiesTraitMod"),
             brCard.item.system.actions.traitMod,
         );
-        await new_modifier.evaluate();
-        extra_data.modifiers.push(new_modifier);
+        await newModifier.evaluate();
+        extraData.modifiers.push(newModifier);
     }
 
     // Item global modifiers
@@ -931,7 +934,7 @@ export async function rollItem(brCard, html, expend_bennie, roll_damage) {
         brCard.actor.system.stats.globalMods.attack
     ) {
         for (const modifier of brCard.actor.system.stats.globalMods.attack) {
-            extra_data.modifiers.push(
+            extraData.modifiers.push(
                 new TraitModifier(modifier.label, modifier.value),
             );
         }
@@ -943,7 +946,7 @@ export async function rollItem(brCard, html, expend_bennie, roll_damage) {
         function addMods(mods) {
             for (const modifier of mods) {
                 if (modifier.ignore) continue;
-                extra_data.modifiers.push(new TraitModifier(modifier.label, modifier.value));
+                extraData.modifiers.push(new TraitModifier(modifier.label, modifier.value));
             }
         }
 
@@ -963,21 +966,17 @@ export async function rollItem(brCard, html, expend_bennie, roll_damage) {
         brCard,
         brCard.traitDie,
         brCard.render_data.trait?.name,
-        extra_data,
+        extraData,
     );
 
     // Ammo management
-    if (
-        parseInt(brCard.item.system.shots) ||
-        brCard.item.system.autoReload
-    ) {
-        const dis_ammo_selected = html
+    if (parseInt(brCard.item.system.shots) || brCard.item.system.autoReload) {
+        const consumeAmmoSelected = html
             ? !!html.querySelector(".brsw-ammo-toggle.brsw-toggle-active")
             : SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.defaultAmmoManagement);
-        if (dis_ammo_selected || macros.length) {
-            brCard.render_data.used_shots =
-                shots_override || ROF_BULLETS[brCard.trait_roll.rof || 1];
-            if (dis_ammo_selected && brCard.trait_roll.rolls.length === 1) {
+        if (consumeAmmoSelected || macros.length) {
+            brCard.render_data.used_shots = shotsOverride || ROF_BULLETS[brCard.trait_roll.rof || 1];
+            if (consumeAmmoSelected && brCard.trait_roll.rolls.length === 1) {
                 await brCard.item.consume(brCard.render_data.used_shots);
             }
         }
@@ -987,10 +986,7 @@ export async function rollItem(brCard, html, expend_bennie, roll_damage) {
     const subtractPP = brCard.render_data.subtractPP;
     const previous_pp = brCard.trait_roll.old_rolls.length ? brCard.render_data.used_pp : 0;
     if (subtractPP && !isNaN(parseInt(brCard.item.system.pp)) && brCard.item.type === "power") {
-        brCard.render_data.used_pp = await spendPP(
-            brCard,
-            previous_pp,
-        );
+        brCard.render_data.used_pp = await spendPP(brCard, previous_pp);
     }
 
     await brCard.render();
@@ -1000,7 +996,7 @@ export async function rollItem(brCard, html, expend_bennie, roll_damage) {
 
     //Call a hook after roll for other modules
     Hooks.call("BRSW-RollItem", brCard, html);
-    if (roll_damage && brCard.damage) {
+    if (rollDamage && brCard.damage) {
         brCard.trait_roll.current_roll.dice.forEach((roll) => {
             if (roll.result !== null && roll.result >= 0) {
                 roll_dmg(brCard, html, false, {}, roll.result > 3);
@@ -1081,38 +1077,35 @@ function adjust_dmg_str(damage_roll, roll_formula, str_die_size) {
 }
 
 async function roll_dmg_target(
-    damage_roll,
+    damageRoll,
     damageFormulas,
     target,
-    total_modifiers,
+    totalModifiers,
     message,
 ) {
     const brCard = new BrCommonCard(message);
-    const { actor, item } = brCard;
-    const current_damage_roll = JSON.parse(JSON.stringify(damage_roll));
-    // @zk-sn: If strength is 1, make @str not explode: fix for #211 (Str 1 can't be rolled)
-    const shortcuts = actor.getRollData();
-    if (shortcuts.str === "1d1x[Strength]") {
-        shortcuts.str = "1d1[Strength]";
-    }
+    const { actor, item, vehicleActor } = brCard;
+    const damageSourceActor = vehicleActor ?? brCard.actor;
+    const currentDamageRoll = JSON.parse(JSON.stringify(damageRoll));
 
+    const rollData = damageSourceActor.getRollData();
     if (!damageFormulas.explodes) {
         for (const key of ["sma", "spi", "str", "agi", "vig"]) {
-            shortcuts[key] = shortcuts[key].replace("x", "");
+            rollData[key] = rollData[key].replace("x", "");
         }
     }
 
-    const roll = new Roll(damageFormulas.damage + damageFormulas.raise, shortcuts);
+    const roll = new Roll(damageFormulas.damage + damageFormulas.raise, rollData);
     await roll.evaluate();
 
     // Heavy armor
-    if (target && !item.system.isHeavyWeapon && !damageFormulas.heavy_weapon && hasHeavyArmor(target.actor, damageFormulas.location)) {
+    if (target && !item.system.isHeavyWeapon && !damageFormulas.heavyWeapon && hasHeavyArmor(target.actor, damageFormulas.location)) {
         const no_damage_mod = new DamageModifier(
             game.i18n.localize("BRSW.HeavyArmor"),
             -999999,
         );
-        current_damage_roll.brswroll.modifiers.push(no_damage_mod);
-        total_modifiers += -999999;
+        currentDamageRoll.brswroll.modifiers.push(no_damage_mod);
+        totalModifiers += -999999;
     }
 
     // Target damage global mods
@@ -1120,8 +1113,8 @@ async function roll_dmg_target(
         for (const mod of target.actor.system.stats.globalMods.targetDamage) {
             if (!mod.ignore) {
                 const targetDamage = new DamageModifier(mod.label, mod.value);
-                current_damage_roll.brswroll.modifiers.push(targetDamage);
-                total_modifiers += mod.value;
+                currentDamageRoll.brswroll.modifiers.push(targetDamage);
+                totalModifiers += mod.value;
             }
         }
     }
@@ -1129,36 +1122,36 @@ async function roll_dmg_target(
     // Multiply modifiers must be last
     if (damageFormulas.multiplier !== 1) {
         const multiplier = parseFloat(damageFormulas.multiplier) || 2;
-        const final_value = (roll.total + total_modifiers) * multiplier;
+        const final_value = (roll.total + totalModifiers) * multiplier;
         const multiply_mod = new DamageModifier(
             `x ${damageFormulas.multiplier}`,
-            final_value - total_modifiers - roll.total,
+            final_value - totalModifiers - roll.total,
         );
-        current_damage_roll.brswroll.modifiers.push(multiply_mod);
-        total_modifiers = final_value - roll.total;
+        currentDamageRoll.brswroll.modifiers.push(multiply_mod);
+        totalModifiers = final_value - roll.total;
     }
 
-    const defense_values = get_target_defense(
+    const defenseValues = get_target_defense(
         actor,
         target,
         damageFormulas.location,
     );
 
-    current_damage_roll.brswroll.rolls.push({
-        result: roll.total + total_modifiers,
-        tn: defense_values.toughness,
-        armor: defense_values.armor,
+    currentDamageRoll.brswroll.rolls.push({
+        result: roll.total + totalModifiers,
+        tn: defenseValues.toughness,
+        armor: defenseValues.armor,
         ap: damageFormulas.ap || 0,
-        target_id: defense_values.token_id || null,
+        target_id: defenseValues.token_id || null,
     });
 
-    let last_string_term = "";
+    let lastStringTerm = "";
     for (const term of roll.terms) {
         if (term.hasOwnProperty("_faces")) {
             const newDie = {
                 faces: term._faces,
                 results: [],
-                extra_class: "",
+                extraClass: "",
             };
             newDie.label = term.flavor
                 ? `${term.flavor.charAt(0).toUpperCase()}${term.flavor.slice(1)}`
@@ -1167,52 +1160,51 @@ async function roll_dmg_target(
             for (const result of term.results) {
                 newDie.results.push(result.result);
                 if (result.result >= term._faces) {
-                    newDie.extra_class = " brsw-blue-text";
-                    if (!current_damage_roll.brswroll.rolls[0].extra_class) {
-                        current_damage_roll.brswroll.rolls[0].extra_class =
-                            " brsw-blue-text";
+                    newDie.extraClass = " brsw-blue-text";
+                    if (!currentDamageRoll.brswroll.rolls[0].extraClass) {
+                        currentDamageRoll.brswroll.rolls[0].extraClass = " brsw-blue-text";
                     }
                 }
             }
-            current_damage_roll.brswroll.dice.push(newDie);
+            currentDamageRoll.brswroll.dice.push(newDie);
         } else {
             if (term.number) {
-                const modifier_value = parseInt(last_string_term + term.number);
-                if (modifier_value) {
-                    const new_mod = new DamageModifier(
-                        game.i18n.localize("SWADE.Dmg") + ` (${modifier_value})`,
-                        modifier_value,
+                const modifierValue = parseInt(lastStringTerm + term.number);
+                if (modifierValue) {
+                    const newMod = new DamageModifier(
+                        game.i18n.localize("SWADE.Dmg") + ` (${modifierValue})`,
+                        modifierValue,
                     );
-                    current_damage_roll.brswroll.modifiers.unshift(new_mod);
+                    currentDamageRoll.brswroll.modifiers.unshift(newMod);
                 }
             }
-            last_string_term = term.operator;
+            lastStringTerm = term.operator;
         }
     }
 
     if (damageFormulas.raise) {
         // The Last die is raise die.
-        current_damage_roll.brswroll.dice[
-            current_damage_roll.brswroll.dice.length - 1
+        currentDamageRoll.brswroll.dice[
+            currentDamageRoll.brswroll.dice.length - 1
         ].label = game.i18n.localize("BRSW.Raise");
     }
 
-    current_damage_roll.label = defense_values.name;
+    currentDamageRoll.label = defenseValues.name;
 
-    const damage_theme = SettingsUtils.getUserSetting("damageDieTheme");
-    if (damage_theme !== "None") {
+    const damageTheme = SettingsUtils.getUserSetting("damageDieTheme");
+    if (damageTheme !== "None") {
         for (const die of roll.dice) {
-            die.options.colorset = damage_theme;
+            die.options.colorset = damageTheme;
         }
     }
 
-    await roll_dice(message, damage_roll.brswroll, roll);
+    await roll_dice(message, damageRoll.brswroll, roll);
 
-    current_damage_roll.damageResult = calculate_damage_results(
-        current_damage_roll.brswroll.rolls,
+    currentDamageRoll.damageResult = calculate_damage_results(
+        currentDamageRoll.brswroll.rolls,
     );
 
-    return current_damage_roll;
+    return currentDamageRoll;
 }
 
 function get_chat_dmg_modifiers(options, damage_roll) {
@@ -1267,13 +1259,14 @@ function joker_modifiers(brCard, damage_roll) {
 async function getDamageModsFromActions(
     brCard,
     damageFormulas,
-    damage_roll,
+    damageRoll,
     macros,
-    expend_bennie,
+    expendBenny,
 ) {
+    const damageSourceActor = brCard.vehicleActor ?? brCard.actor;
     for (const action of brCard.getSelectedActions()) {
         if (action.code.isHeavyWeapon) {
-            damageFormulas.heavy_weapon = true;
+            damageFormulas.heavyWeapon = true;
         }
 
         if (action.code.dmgMod) {
@@ -1286,15 +1279,15 @@ async function getDamageModsFromActions(
                 }
             }
 
-            const action_name = game.i18n.localize(action.code.name);
-            const new_modifier = new DamageModifier(
-                action_name,
+            const actionName = game.i18n.localize(action.code.name);
+            const newModifier = new DamageModifier(
+                actionName,
                 dmgMod,
-                brCard.actor?.getRollData(),
+                { rollData: damageSourceActor?.getRollData() },
             );
 
-            await new_modifier.evaluate();
-            damage_roll.brswroll.modifiers.push(new_modifier);
+            await newModifier.evaluate();
+            damageRoll.brswroll.modifiers.push(newModifier);
         }
 
         if (action.code.dmgOverride) {
@@ -1302,11 +1295,7 @@ async function getDamageModsFromActions(
         }
 
         if (action.code.self_add_status) {
-            set_or_update_condition(action.code.self_add_status, brCard.actor).catch(
-                () => {
-                    console.error("BR2: Unable to update condition");
-                },
-            );
+            set_or_update_condition(action.code.self_add_status, brCard.actor);
         }
 
         if (action.code.runDamageMacro) {
@@ -1325,16 +1314,13 @@ async function getDamageModsFromActions(
             damageFormulas.ap += parseInt(action.code.apMod);
         }
 
-        const reroll_mode = expend_bennie ? "benny" : "free";
-        if (
-            action.code.rerollDamageMod &&
-            (!action.code.rerollMode || action.code.rerollMode === reroll_mode)
-        ) {
-            damage_roll.brswroll.modifiers.push(
+        const rerollMode = expendBenny ? "benny" : "free";
+        if (action.code.rerollDamageMod && (!action.code.rerollMode || action.code.rerollMode === rerollMode)) {
+            damageRoll.brswroll.modifiers.push(
                 new DamageModifier(
                     game.i18n.localize(action.code.name),
                     action.code.rerollDamageMod,
-                    brCard.actor?.getRollData(),
+                    { rollData: damageSourceActor?.getRollData() },
                 ),
             );
         }
@@ -1357,24 +1343,24 @@ async function getDamageModsFromActions(
  * Rolls damage dor an item
  * @param {BrCommonCard} brCard
  * @param html
- * @param expend_bennie
- * @param default_options
+ * @param expendBenny
+ * @param defaultOptions
  * @param {boolean} raise
- * @param {string} target_token_id
+ * @param {string} targetTokenId
  * @return {Promise<void>}*
  */
 export async function roll_dmg(
     brCard,
     html,
-    expend_bennie,
-    default_options,
+    expendBenny,
+    defaultOptions,
     raise,
-    target_token_id,
+    targetTokenId,
 ) {
     const { render_data, actor, item } = brCard;
-    const raise_die_size = item.system.bonusDamageDie || 6;
-    const number_raise_dice = item.system.bonusDamageDice || 1;
-    let raiseFormula = `+${number_raise_dice}d${raise_die_size}x`;
+    const raiseDieSize = item.system.bonusDamageDie || 6;
+    const numberRaiseDice = item.system.bonusDamageDice || 1;
+    let raiseFormula = `+${numberRaiseDice}d${raiseDieSize}x`;
 
     const damage = item.system.damage;
 
@@ -1384,17 +1370,17 @@ export async function roll_dmg(
         ap: parseInt(item.system.ap ?? 0),
         multiplier: 1,
         explodes: true,
-        heavy_weapon: false,
+        heavyWeapon: false,
         location: "torso",
     };
 
     const macros = [];
-    if (expend_bennie) {
+    if (expendBenny) {
         await spendBenny(actor);
     }
 
     // Calculate modifiers
-    const options = getRollOptions(default_options, brCard);
+    const options = getRollOptions(defaultOptions, brCard);
 
     // Shotgun
     if (damageFormulas.damage?.includes("1-3d6") && item.type === "weapon") {
@@ -1402,33 +1388,33 @@ export async function roll_dmg(
         damageFormulas.damage = "3d6";
     }
 
-    const damage_roll = { label: "---", brswroll: new BRSWRoll(), raise: raise };
-    get_chat_dmg_modifiers(options, damage_roll);
-    joker_modifiers(brCard, damage_roll);
+    const damageRoll = { label: "---", brswroll: new BRSWRoll(), raise: raise };
+    get_chat_dmg_modifiers(options, damageRoll);
+    joker_modifiers(brCard, damageRoll);
 
     // Item properties tab
     if (item.system.actions.dmgMod) {
-        const new_modifier = new DamageModifier(
+        const newModifier = new DamageModifier(
             game.i18n.localize("BRSW.ItemPropertiesDmgMod"),
             item.system.actions.dmgMod,
-            brCard.actor?.getRollData(),
+            brCard.vehicleActor ? brCard.vehicleActor.getRollData() : brCard.actor?.getRollData(),
         );
-        await new_modifier.evaluate();
-        damage_roll.brswroll.modifiers.push(new_modifier);
+        await newModifier.evaluate();
+        damageRoll.brswroll.modifiers.push(newModifier);
     }
 
     // Minimum strength
     if (item.system.minStr) {
-        calc_min_str_penalty(item, actor, damageFormulas, damage_roll);
+        calc_min_str_penalty(item, actor, damageFormulas, damageRoll);
     }
 
     // Actions
     await getDamageModsFromActions(
         brCard,
         damageFormulas,
-        damage_roll,
+        damageRoll,
         macros,
-        expend_bennie,
+        expendBenny,
     );
 
     //If our selected damage has a type use that otherwise fall back to the type on the item
@@ -1450,10 +1436,10 @@ export async function roll_dmg(
     //Conviction
     const conviction_modifier = await check_and_roll_conviction(actor);
     if (conviction_modifier) {
-        damage_roll.brswroll.modifiers.push(conviction_modifier);
+        damageRoll.brswroll.modifiers.push(conviction_modifier);
     }
 
-    get_global_modifiers(expend_bennie, actor, damage_roll, damageFormulas);
+    get_global_modifiers(expendBenny, actor, damageRoll, damageFormulas);
 
     // Roll
     if (damageFormulas.explodes) {
@@ -1464,7 +1450,7 @@ export async function roll_dmg(
         damageFormulas.raise = removeExplode(damageFormulas.raise);
     }
 
-    const targets = await get_dmg_targets(target_token_id, brCard);
+    const targets = await get_dmg_targets(targetTokenId, brCard);
     if (!raise) {
         damageFormulas.raise = "";
     }
@@ -1473,14 +1459,14 @@ export async function roll_dmg(
     if (Utils.isMeleeAttack(item, brCard.skill) && actor?.system.stats?.gangUpDamage && targets[0]) {
         const gangUp = calculateGangUp(brCard.token, targets[0]);
         if (gangUp.bonus) {
-            damage_roll.brswroll.modifiers.push(
+            damageRoll.brswroll.modifiers.push(
                 new DamageModifier(gangUp.name, gangUp.bonus)
             );
         }
     }
 
     let total_modifiers = 0;
-    for (const modifier of damage_roll.brswroll.modifiers) {
+    for (const modifier of damageRoll.brswroll.modifiers) {
         total_modifiers += modifier.value;
     }
 
@@ -1489,7 +1475,7 @@ export async function roll_dmg(
         if (target || first_roll) {
             render_data.damage_rolls.push(
                 await roll_dmg_target(
-                    damage_roll,
+                    damageRoll,
                     damageFormulas,
                     target,
                     total_modifiers,
@@ -1509,21 +1495,21 @@ export async function roll_dmg(
 }
 
 function get_global_modifiers(
-    expend_bennie,
+    expendBenny,
     actor,
-    damage_roll,
+    damageRoll,
     damageFormulas,
 ) {
-    if (expend_bennie && actor.system.stats.globalMods.bennyDamage.length) {
+    if (expendBenny && actor.system.stats.globalMods.bennyDamage.length) {
         for (const modifier of actor.system.stats.globalMods.bennyDamage) {
-            damage_roll.brswroll.modifiers.push(
+            damageRoll.brswroll.modifiers.push(
                 new DamageModifier(modifier.label, modifier.value),
             );
         }
     }
     for (const modifier of actor.system.stats.globalMods.ap) {
         damageFormulas.ap += modifier.value;
-        damage_roll.brswroll.modifiers.push(
+        damageRoll.brswroll.modifiers.push(
             new DamageModifier(
                 `${game.i18n.localize("BRSW.APModifier")}: ${modifier.label}`,
                 0,
@@ -1534,12 +1520,12 @@ function get_global_modifiers(
 
 /**
  * Return an array of actors from a token id or targeted tokens
- * @param {string} token_id
+ * @param {string} tokenId
  * @param {BrCommonCard} brCard
  */
-async function get_dmg_targets(token_id, brCard) {
-    if (token_id) {
-        const token = canvas.tokens?.get(token_id);
+async function get_dmg_targets(tokenId, brCard) {
+    if (tokenId) {
+        const token = canvas.tokens?.get(tokenId);
         if (token) {
             return [token];
         }
@@ -1565,27 +1551,27 @@ async function add_damage_dice(brCard, index) {
         "betterrolls-swade2",
         "render_data",
     );
-    const damage_rolls = render_data.damage_rolls[index].brswroll;
+    const damageRolls = render_data.damage_rolls[index].brswroll;
     const roll = new Roll("1d6x");
     await roll.evaluate();
-    damage_rolls.rolls[0].result += roll.total;
+    damageRolls.rolls[0].result += roll.total;
     roll.terms.forEach((term) => {
         const newDie = {
             faces: term.faces,
             results: [],
-            extra_class: "",
+            extraClass: "",
             label: game.i18n.localize("SWADE.Dmg"),
         };
         if (term.total > term.faces) {
-            newDie.extra_class = " brsw-blue-text";
+            newDie.extraClass = " brsw-blue-text";
         }
         term.results.forEach((result) => {
             newDie.results.push(result.result);
         });
-        damage_rolls.dice.push(newDie);
+        damageRolls.dice.push(newDie);
     });
     render_data.damage_rolls[index].damageResult = calculate_damage_results(
-        damage_rolls.rolls,
+        damageRolls.rolls,
     );
 
     const damage_theme = SettingsUtils.getUserSetting("damageDieTheme");
@@ -1617,20 +1603,20 @@ function show_fixed_damage_dialog(event, brCard) {
 /**
  * Adds a fixed amount of damage to a roll
  * @param event
- * @param form_results
+ * @param formResults
  */
-async function add_fixed_damage(target, brCard, form_results) {
-    const modifier = parseInt(form_results.Value);
+async function add_fixed_damage(target, brCard, formResults) {
+    const modifier = parseInt(formResults.Value);
     if (!modifier) {
         return;
     }
     const { index } = target.dataset;
     const render_data = brCard.message.getFlag("betterrolls-swade2", "render_data");
-    const damage_rolls = render_data.damage_rolls[index].brswroll;
-    damage_rolls.modifiers.push({ value: modifier, name: form_results.Label });
-    damage_rolls.rolls[0].result += modifier;
+    const damageRolls = render_data.damage_rolls[index].brswroll;
+    damageRolls.modifiers.push({ value: modifier, name: formResults.Label });
+    damageRolls.rolls[0].result += modifier;
     render_data.damage_rolls[index].damageResult = calculate_damage_results(
-        damage_rolls.rolls,
+        damageRolls.rolls,
     );
     await update_message(brCard, render_data);
 }
@@ -1645,15 +1631,15 @@ async function half_damage(brCard, index) {
         "betterrolls-swade2",
         "render_data",
     );
-    const damage_rolls = render_data.damage_rolls[index].brswroll;
-    const half_damage = -Math.round(damage_rolls.rolls[0].result / 2);
-    damage_rolls.modifiers.push({
-        value: half_damage,
+    const damageRolls = render_data.damage_rolls[index].brswroll;
+    const halfDamage = -Math.round(damageRolls.rolls[0].result / 2);
+    damageRolls.modifiers.push({
+        value: halfDamage,
         name: game.i18n.localize("BRSW.HalfDamage"),
     });
-    damage_rolls.rolls[0].result += half_damage;
+    damageRolls.rolls[0].result += halfDamage;
     render_data.damage_rolls[index].damageResult = calculate_damage_results(
-        damage_rolls.rolls,
+        damageRolls.rolls,
     );
     await update_message(brCard, render_data);
 }
@@ -1666,14 +1652,14 @@ async function half_damage(brCard, index) {
  */
 async function edit_toughness(brCard, index) {
     const { render_data, actor } = brCard;
-    const defense_values = get_target_defense(actor);
-    const damage_rolls = render_data.damage_rolls[index].brswroll.rolls;
-    damage_rolls[0].tn = defense_values.toughness;
-    damage_rolls[0].armor = defense_values.armor;
-    damage_rolls[0].target_id = defense_values.token_id || null;
-    render_data.damage_rolls[index].label = defense_values.name;
+    const defenseValues = get_target_defense(actor);
+    const damageRolls = render_data.damage_rolls[index].brswroll.rolls;
+    damageRolls[0].tn = defenseValues.toughness;
+    damageRolls[0].armor = defenseValues.armor;
+    damageRolls[0].target_id = defenseValues.token_id || null;
+    render_data.damage_rolls[index].label = defenseValues.name;
     render_data.damage_rolls[index].damageResult =
-        calculate_damage_results(damage_rolls);
+        calculate_damage_results(damageRolls);
     // noinspection JSIgnoredPromiseFromCall
     await update_message(brCard, render_data);
 }
@@ -1724,41 +1710,41 @@ function get_template_from_item(item) {
     if (["weapon", "power", "action", "gear", "shield"].indexOf(item.type) < 0) {
         return [];
     }
-    const templates_found = [];
-    for (const template_key in item.system.templates) {
-        if (item.system.templates[template_key] === true) {
-            const template = TEMPLATE_KEYS[template_key];
-            templates_found.push(template);
+    const templatesFound = [];
+    for (const templateKey in item.system.templates) {
+        if (item.system.templates[templateKey] === true) {
+            const template = TEMPLATE_KEYS[templateKey];
+            templatesFound.push(template);
         }
     }
-    for (const [template_key, template_value] of Object.entries(TEMPLATE_KEYS)) {
-        for (const key_text of template_value.key_text) {
+    for (const [templateKey, templateValue] of Object.entries(TEMPLATE_KEYS)) {
+        for (const key_text of templateValue.key_text) {
             const translated_key_text = game.i18n.localize(key_text);
-            if (templates_found.find((t) => t.key == template_key)) {
+            if (templatesFound.find((t) => t.key == templateKey)) {
                 break;
             }
             if (
                 item.system?.description?.toLowerCase().includes(translated_key_text)
             ) {
-                templates_found.push(template_value);
+                templatesFound.push(templateValue);
                 break;
             } else if (typeof item.system?.range === "string") {
                 const range = item.system.range.toLowerCase();
                 if (range.includes(translated_key_text)) {
                     if (
-                        template_key == "cone" &&
-                        templates_found.find((t) => t.key == "scone")
+                        templateKey == "cone" &&
+                        templatesFound.find((t) => t.key == "scone")
                     ) {
                         //If we have the small cone, don't add a normal cone
                         break;
                     }
-                    templates_found.push(template_value);
+                    templatesFound.push(templateValue);
                     break;
                 }
             }
         }
     }
-    return templates_found;
+    return templatesFound;
 }
 
 /**

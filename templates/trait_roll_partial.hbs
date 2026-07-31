@@ -6,7 +6,7 @@
                 {{#each trait_roll.old_rolls}}
                     <span class="brsw-old-roll" data-index="{{@index}}">
                         {{#each dice}}
-                            <span class="brsw-small-dice-image {{this.extra_class}}">
+                            <span class="brsw-small-dice-image {{this.extraClass}}">
                                 {{this.final_total}}
                             </span>
                         {{/each}}</span>
@@ -19,7 +19,7 @@
             <div class="brsw-roll-values">
                 {{#each trait_roll.current_roll.dice}}
                     <div class="brsw-roll-value brsw-roll-value-total">
-                        <span class="{{this.extra_class}}" title="{{this.result_text}}">
+                        <span class="{{this.extraClass}}" title="{{this.result_text}}">
                             {{this.final_total}}
                         </span>
                         <i class="{{this.result_icon}} brsw-roll-value-result-icon"></i>
@@ -47,7 +47,7 @@
             </span>
         </div>
         {{#each trait_roll.current_roll.dice as |current_dice|}}
-            <div class="brsw-roll-detail-row brsw-editable-tn-row {{this.extra_class}} brsw-override-die" data-die-index="{{@index}}">
+            <div class="brsw-roll-detail-row brsw-editable-tn-row {{this.extraClass}} brsw-override-die" data-die-index="{{@index}}">
                 <span>{{this.label}}</span>
                 <span class="brsw-die-results">
                     {{#each this.unexploded}}
@@ -57,7 +57,7 @@
             </div>
         {{/each}}
         {{#each trait_roll.modifiers}}
-            <div class="brsw-roll-detail-row brsw-editable-tn-row {{this.extra_class}} brsw-edit-modifier" data-index="{{@index}}" data-label="{{this.name}}" data-value="{{this.value}}">
+            <div class="brsw-roll-detail-row brsw-editable-tn-row {{this.extraClass}} brsw-edit-modifier" data-index="{{@index}}" data-label="{{this.name}}" data-value="{{this.value}}">
                 <span>{{this.name}}</span>
                 <span>
                     {{#if this.dice}}
