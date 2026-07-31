@@ -139,10 +139,10 @@ export function activateAttributeCardListeners(card, html) {
  * @param {boolean} expend_bennie True if we want to spend a bennie
  */
 export async function rollAttribute(brCard, expend_bennie) {
-  const extra_data = { modifiers: [] };
+  const extraData = { modifiers: [] };
   const macros = [];
   for (const action of brCard.getSelectedActions()) {
-    process_common_actions(action.code, extra_data, macros, brCard.actor);
+    process_common_actions(action.code, extraData, macros, brCard.actor);
   }
   if (brCard.trait_roll.is_rolled) {
     brCard.trait_roll.reroll_mode = expend_bennie ? "benny" : "free";
@@ -154,7 +154,7 @@ export async function rollAttribute(brCard, expend_bennie) {
     brCard,
     brCard.actor.system.attributes[brCard.attribute],
     game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS[brCard.attribute]),
-    extra_data,
+    extraData,
   );
   // noinspection ES6MissingAwait
   runMacros(macros, brCard);

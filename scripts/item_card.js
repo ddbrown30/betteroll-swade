@@ -50,7 +50,6 @@ const ROF_BULLETS = { 1: 1, 2: 5, 3: 10, 4: 20, 5: 40, 6: 50 };
  *   and a boolean meaning if they need to set on or off
  * @return {Promise} A promise for the BrCommonCard object
  */
-// eslint-disable-next-line complexity
 export async function createItemCard(
     origin,
     item_id,
@@ -828,27 +827,26 @@ async function findMacro(macro_name_or_id) {
  *
  * @param {BrCommonCard } brCard Message that originates this roll
  * @param {string} html Html code to parse for extra options
- * @param {boolean} expend_bennie Whenever to expend a bennie
- * @param {boolean} roll_damage true if we want to auto-roll damage
+ * @param {boolean} expendBennie Whenever to expend a bennie
+ * @param {boolean} rollDamage true if we want to auto-roll damage
  *
  * @return {Promise<void>}
  */
-export async function rollItem(brCard, html, expend_bennie, roll_damage) {
+export async function rollItem(brCard, html, expendBennie, rollDamage) {
     const macros = [];
-    let shots_override; // Override the number of shots used
-    let shots_modifier = 0; // Modifier to the number of shots
-    const extra_data = { modifiers: [] };
+    let shotsOverride; // Override the number of shots used
+    const extraData = { modifiers: [] };
     if (brCard.trait_roll.is_rolled) {
-        brCard.trait_roll.reroll_mode = expend_bennie ? "benny" : "free";
+        brCard.trait_roll.reroll_mode = expendBennie ? "benny" : "free";
     }
 
-    if (expend_bennie) {
+    if (expendBennie) {
         await spendBenny(brCard.actor);
     }
 
-    extra_data.rof = brCard.item.system.rof || 1;
+    extraData.rof = brCard.item.system.rof || 1;
     if (SettingsUtils.getUserSetting(USER_SETTING_KEYS.defaultRateOfFire) === "single_shot") {
-        extra_data.rof = 1;
+        extraData.rof = 1;
     }
 
     // Actions
@@ -867,10 +865,10 @@ export async function rollItem(brCard, html, expend_bennie, roll_damage) {
                 first_char = shots_used.charAt(0);
             } catch { }
             if (first_char !== "+" && first_char !== "-") {
-                shots_override = parseInt(shots_used);
+                shotsOverride = parseInt(shots_used);
             }
         }
-        process_common_actions(action.code, extra_data, macros, brCard.actor);
+        process_common_actions(action.code, extraData, macros, brCard.actor);
     }
 
     // Check for minimum strength
@@ -884,13 +882,13 @@ export async function rollItem(brCard, html, expend_bennie, roll_damage) {
             "BRSW.NotEnoughStrength",
         );
         if (penalty) {
-            extra_data.modifiers.push(penalty);
+            extraData.modifiers.push(penalty);
         }
     }
 
     // Trademark weapon
     if (brCard.item.system.trademark) {
-        extra_data.modifiers.push(
+        extraData.modifiers.push(
             new TraitModifier(
                 game.i18n.localize("BRSW.TrademarkWeapon"),
                 brCard.item.system.trademark,
@@ -900,16 +898,15 @@ export async function rollItem(brCard, html, expend_bennie, roll_damage) {
 
     // Offhand
     if (brCard.item.system.equipStatus === 2) {
-        let is_ambidextrous = brCard.actor.items.find(
+        let isAmbidextrous = brCard.actor.items.find(
             (item) =>
                 item.type === "edge" &&
                 item.name.toLowerCase() ===
                 game.i18n.localize("BRSW.EdgeName.Ambidextrous").toLowerCase(),
         );
-        is_ambidextrous =
-            is_ambidextrous || brCard.actor.getFlag("swade", "ambidextrous");
-        if (!is_ambidextrous) {
-            extra_data.modifiers.push(
+        isAmbidextrous = isAmbidextrous || brCard.actor.getFlag("swade", "ambidextrous");
+        if (!isAmbidextrous) {
+            extraData.modifiers.push(
                 new TraitModifier(game.i18n.localize("BRSW.Offhand"), -2),
             );
         }
@@ -922,7 +919,7 @@ export async function rollItem(brCard, html, expend_bennie, roll_damage) {
             brCard.item.system.actions.traitMod,
         );
         await new_modifier.evaluate();
-        extra_data.modifiers.push(new_modifier);
+        extraData.modifiers.push(new_modifier);
     }
 
     // Item global modifiers
@@ -931,7 +928,7 @@ export async function rollItem(brCard, html, expend_bennie, roll_damage) {
         brCard.actor.system.stats.globalMods.attack
     ) {
         for (const modifier of brCard.actor.system.stats.globalMods.attack) {
-            extra_data.modifiers.push(
+            extraData.modifiers.push(
                 new TraitModifier(modifier.label, modifier.value),
             );
         }
@@ -943,7 +940,7 @@ export async function rollItem(brCard, html, expend_bennie, roll_damage) {
         function addMods(mods) {
             for (const modifier of mods) {
                 if (modifier.ignore) continue;
-                extra_data.modifiers.push(new TraitModifier(modifier.label, modifier.value));
+                extraData.modifiers.push(new TraitModifier(modifier.label, modifier.value));
             }
         }
 
@@ -963,21 +960,17 @@ export async function rollItem(brCard, html, expend_bennie, roll_damage) {
         brCard,
         brCard.traitDie,
         brCard.render_data.trait?.name,
-        extra_data,
+        extraData,
     );
 
     // Ammo management
-    if (
-        parseInt(brCard.item.system.shots) ||
-        brCard.item.system.autoReload
-    ) {
-        const dis_ammo_selected = html
+    if (parseInt(brCard.item.system.shots) || brCard.item.system.autoReload) {
+        const consumeAmmoSelected = html
             ? !!html.querySelector(".brsw-ammo-toggle.brsw-toggle-active")
             : SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.defaultAmmoManagement);
-        if (dis_ammo_selected || macros.length) {
-            brCard.render_data.used_shots =
-                shots_override || ROF_BULLETS[brCard.trait_roll.rof || 1];
-            if (dis_ammo_selected && brCard.trait_roll.rolls.length === 1) {
+        if (consumeAmmoSelected || macros.length) {
+            brCard.render_data.used_shots = shotsOverride || ROF_BULLETS[brCard.trait_roll.rof || 1];
+            if (consumeAmmoSelected && brCard.trait_roll.rolls.length === 1) {
                 await brCard.item.consume(brCard.render_data.used_shots);
             }
         }
@@ -987,10 +980,7 @@ export async function rollItem(brCard, html, expend_bennie, roll_damage) {
     const subtractPP = brCard.render_data.subtractPP;
     const previous_pp = brCard.trait_roll.old_rolls.length ? brCard.render_data.used_pp : 0;
     if (subtractPP && !isNaN(parseInt(brCard.item.system.pp)) && brCard.item.type === "power") {
-        brCard.render_data.used_pp = await spendPP(
-            brCard,
-            previous_pp,
-        );
+        brCard.render_data.used_pp = await spendPP(brCard, previous_pp);
     }
 
     await brCard.render();
@@ -1000,7 +990,7 @@ export async function rollItem(brCard, html, expend_bennie, roll_damage) {
 
     //Call a hook after roll for other modules
     Hooks.call("BRSW-RollItem", brCard, html);
-    if (roll_damage && brCard.damage) {
+    if (rollDamage && brCard.damage) {
         brCard.trait_roll.current_roll.dice.forEach((roll) => {
             if (roll.result !== null && roll.result >= 0) {
                 roll_dmg(brCard, html, false, {}, roll.result > 3);
