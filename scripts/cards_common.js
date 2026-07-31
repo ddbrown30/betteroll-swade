@@ -295,7 +295,7 @@ export function activateCommonListeners(brCard, html) {
                 { id: "value", label: label_mod, default_value: value },
             ],
             async (values) => {
-                await edit_modifier(brCard, parseInt(index), {
+                await editModifier(brCard, parseInt(index), {
                     name: values.Label,
                     value: values.value,
                     extraClass: parseInt(values.value) < 0 ? " brsw-red-text" : "",
@@ -1109,18 +1109,16 @@ async function delete_modifier(brCard, index) {
  * @param {int} index
  * @param {Object} newModifier
  */
-async function edit_modifier(brCard, index, newModifier) {
+async function editModifier(brCard, index, newModifier) {
     // noinspection JSCheckFunctionSignatures
     // Add float modifier support
-    const mod_value = parseFloat(newModifier.value);
-    if (mod_value) {
-        brCard.trait_roll.modifiers[index].label = newModifier.label;
-        brCard.trait_roll.modifiers[index].value = mod_value;
+    const modValue = parseFloat(newModifier.value);
+    if (Number.isFinite(modValue)) {
+        brCard.trait_roll.modifiers[index].name = newModifier.name;
+        brCard.trait_roll.modifiers[index].value = modValue;
         await brCard.trait_roll.recalculate_trait_results();
         await brCard.render();
-        brCard.save().catch(() => {
-            console.error("Error saving a card after editing a modifier");
-        });
+        brCard.save();
     }
 }
 
