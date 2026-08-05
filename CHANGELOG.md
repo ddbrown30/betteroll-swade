@@ -1,7 +1,7 @@
 # Changelog
 
 # Version 5.22.0
-* Vehicle items now use the vehicles roll data when rolling damage. This basically does nothing at the moment but will fix an issue once the swade system is updated.
+* Vehicle items now use the vehicle's roll data when rolling damage. This basically does nothing at the moment but will fix an issue once the swade system is updated.
 * Fixed an issue when editing modifiers
 * Added a spinner to buttons when rolling and waiting for the result
 
