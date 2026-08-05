@@ -10,6 +10,7 @@ import {
     roll_trait,
     spendBenny,
     traitToDieString,
+    withButtonSpinner,
 } from "./cards_common.js";
 import { runMacros } from "./item_card.js";
 import { TraitModifier } from "./modifiers.js";
@@ -147,9 +148,11 @@ export function activate_skill_listeners(app, html) {
 export function activateSkillCardListeners(brCard, html) {
     addEventListenerAll(html, ".brsw-roll-button", "click", async (ev) => {
         ev.stopPropagation();
-        await rollSkill(
-            brCard,
-            ev.currentTarget.classList.contains("roll-bennie-button"),
+        await withButtonSpinner(ev.currentTarget, () =>
+            rollSkill(
+                brCard,
+                ev.currentTarget.classList.contains("roll-bennie-button"),
+            ),
         );
     });
     html.querySelector(".brsw-header-img").addEventListener("click", (_) => {
