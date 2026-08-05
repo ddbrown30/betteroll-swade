@@ -1,7 +1,9 @@
 # Changelog
 
-# Version 5.21.1
+# Version 5.22.0
 * Vehicle items now use the vehicles roll data when rolling damage. This basically does nothing at the moment but will fix an issue once the swade system is updated.
+* Fixed an issue when editing modifiers
+* Added a spinner to buttons when rolling and waiting for the result
 
 # Version 5.21.0
 * Added dark mode support. It can be disabled in the user settings independent of the Foundry UI setting.
