@@ -1,7 +1,4 @@
 // Common functions used in all cards
-/* globals game, Token, TokenDocument, Roll, canvas, console, $, foundry,
-      duplicate, ChatMessage, ui, Macro */
-// noinspection JSUnusedAssignment
 
 import { BrCommonCard } from "./BrCommonCard.js";
 import { rollAttribute } from "./attribute_card.js";
@@ -1419,5 +1416,51 @@ function apply_aiming_ignore(extraData) {
         if (extraData.total_aiming_ignorable_penalties === 0) {
             break;
         }
+    }
+}
+
+/**
+ * @param {HTMLElement} button The button to show the spinner on
+ */
+function addSpinnerToButton(button) {
+    if (!button || button.classList.contains("brsw-button-loading")) {
+        //Already spinning, so probably a double click. Ignore
+        return;
+    }
+    button.dataset.brswOriginalContent = button.innerHTML;
+    button.innerHTML = '<span class="brsw-button-spinner"></span>';
+    button.classList.add("brsw-button-loading");
+}
+
+/**
+ * @param {HTMLElement} button The button to remove the spinner from
+ */
+function removeSpinnerFromButton(button) {
+    if (!button || !button.classList.contains("brsw-button-loading")) {
+        return;
+    }
+    button.classList.remove("brsw-button-loading");
+    if (button.dataset.brswOriginalContent !== undefined) {
+        button.innerHTML = button.dataset.brswOriginalContent;
+        delete button.dataset.brswOriginalContent;
+    }
+}
+
+/**
+ * Wraps an async action with a loading spinner on the button that triggered it.
+ * @param {HTMLElement} button The button that was clicked
+ * @param {Function} action A function (sync or async) to execute
+ * @returns {Promise} The result of action()
+ */
+export async function withButtonSpinner(button, action) {
+    if (!button || button.classList.contains("brsw-button-loading")) {
+        //Already spinning, so probably a double click. Ignore
+        return;
+    }
+    addSpinnerToButton(button);
+    try {
+        await action();
+    } finally {
+        removeSpinnerFromButton(button);
     }
 }

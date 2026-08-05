@@ -8,6 +8,7 @@ import {
   create_common_card,
   roll_trait,
   spendBenny,
+  withButtonSpinner,
 } from "./cards_common.js";
 import { get_owner } from "./damage_card.js";
 import { TraitModifier } from "./modifiers.js";
@@ -109,7 +110,7 @@ export function activateRemoveStatusCardListeners(
       spendBenny = true;
     }
     // noinspection JSIgnoredPromiseFromCall
-    roll_function(brCard, spendBenny);
+    withButtonSpinner(ev.currentTarget, () => roll_function(brCard, spendBenny));
   });
 }
 

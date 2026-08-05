@@ -1,16 +1,15 @@
 // Functions for cards representing attributes
-/* global TokenDocument, Token, game, CONST, $ */
 
-import { BrCommonCard } from "./BrCommonCard.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
 import {
-  create_common_card,
-  getActionFromClick,
-  getActorFromIds,
-  process_common_actions,
-  roll_trait,
-  spendBenny,
-  traitToDieString,
+    create_common_card,
+    getActionFromClick,
+    getActorFromIds,
+    process_common_actions,
+    roll_trait,
+    spendBenny,
+    traitToDieString,
+    withButtonSpinner,
 } from "./cards_common.js";
 import { runMacros } from "./item_card.js";
 import { Utils, addEventListenerAll } from "./utils.js";
@@ -25,24 +24,24 @@ import { Utils, addEventListenerAll } from "./utils.js";
  * @return {Promise} A promise for the BrCommonCard object
  */
 async function createAttributeCard(origin, name, { actions_stored = {} } = {},) {
-  const actor = Utils.toActor(origin);
+    const actor = Utils.toActor(origin);
 
-  const translatedName = game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS[name]);
-  const title = translatedName + " " + traitToDieString(actor.system.attributes[name.toLowerCase()]);
+    const translatedName = game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS[name]);
+    const title = translatedName + " " + traitToDieString(actor.system.attributes[name.toLowerCase()]);
 
-  const brCard = create_common_card(
-    origin,
-    {
-      header: { type: game.i18n.localize("BRSW.Attribute"), title: title },
-      trait: Utils.traitFromString(actor, translatedName),
-    },
-    "modules/betterrolls-swade2/templates/attribute_card.hbs",
-  );
+    const brCard = create_common_card(
+        origin,
+        {
+            header: { type: game.i18n.localize("BRSW.Attribute"), title: title },
+            trait: Utils.traitFromString(actor, translatedName),
+        },
+        "modules/betterrolls-swade2/templates/attribute_card.hbs",
+    );
 
-  brCard.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ATTRIBUTE_CARD;
+    brCard.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ATTRIBUTE_CARD;
 
-  await brCard.render(actions_stored);
-  return brCard;
+    await brCard.render(actions_stored);
+    return brCard;
 }
 
 /**
@@ -58,24 +57,24 @@ async function createAttributeCard(origin, name, { actions_stored = {} } = {},) 
  * @return {Promise} a promise for the ChatMessage object
  */
 function createAttributeCardFromId(
-  token_id,
-  actor_id,
-  name,
-  { actions_stored = {} } = {},
+    token_id,
+    actor_id,
+    name,
+    { actions_stored = {} } = {},
 ) {
-  const actor = getActorFromIds(token_id, actor_id);
-  return createAttributeCard(actor, name, {
-    actions_stored: actions_stored,
-  });
+    const actor = getActorFromIds(token_id, actor_id);
+    return createAttributeCard(actor, name, {
+        actions_stored: actions_stored,
+    });
 }
 
 /**
  * Hooks the public functions to a global object
  */
 export function exposeAttributeAPI() {
-  Utils.exposeAPI("createAttributeCard", createAttributeCard, "create_atribute_card");
-  Utils.exposeAPI("createAttributeCardFromId", createAttributeCardFromId, "create_attribute_card_from_id");
-  Utils.exposeAPI("rollAttribute", rollAttribute, "roll_attribute");
+    Utils.exposeAPI("createAttributeCard", createAttributeCard, "create_atribute_card");
+    Utils.exposeAPI("createAttributeCardFromId", createAttributeCardFromId, "create_attribute_card_from_id");
+    Utils.exposeAPI("rollAttribute", rollAttribute, "roll_attribute");
 }
 
 /**
@@ -84,22 +83,22 @@ export function exposeAttributeAPI() {
  * @param {SwadeActor, Token} target token or actor from the char sheet
  */
 async function attribute_click_listener(ev, target) {
-  const action = getActionFromClick(ev);
-  if (action === "system") {
-    return;
-  }
-  ev.stopImmediatePropagation();
-  ev.preventDefault();
-  ev.stopPropagation();
-  // The attribute id placement is sheet dependent.
-  const attribute_id = ev.currentTarget.dataset.attribute;
-  // Show card
-  const brCard = await createAttributeCard(target, attribute_id);
-  if (action.includes("dialog")) {
-    game.brsw.dialog.show_card(brCard);
-  } else if (action.includes("trait")) {
-    await rollAttribute(brCard, false);
-  }
+    const action = getActionFromClick(ev);
+    if (action === "system") {
+        return;
+    }
+    ev.stopImmediatePropagation();
+    ev.preventDefault();
+    ev.stopPropagation();
+    // The attribute id placement is sheet dependent.
+    const attribute_id = ev.currentTarget.dataset.attribute;
+    // Show card
+    const brCard = await createAttributeCard(target, attribute_id);
+    if (action.includes("dialog")) {
+        game.brsw.dialog.show_card(brCard);
+    } else if (action.includes("trait")) {
+        await rollAttribute(brCard, false);
+    }
 }
 
 /**
@@ -108,10 +107,10 @@ async function attribute_click_listener(ev, target) {
  * @param html Html code
  */
 export function activate_attribute_listeners(app, html) {
-  const target = app.token || app.actor || app.object;
-  addEventListenerAll(html, ".attribute-value", "click", async (ev) => {
-    await attribute_click_listener(ev, target);
-  }, true);
+    const target = app.token || app.actor || app.object;
+    addEventListenerAll(html, ".attribute-value", "click", async (ev) => {
+        await attribute_click_listener(ev, target);
+    }, true);
 }
 
 /**
@@ -120,16 +119,18 @@ export function activate_attribute_listeners(app, html) {
  * @param html Html produced
  */
 export function activateAttributeCardListeners(card, html) {
-  const roll_buttons = html.querySelectorAll(".brsw-roll-button");
-  for (const roll_button of roll_buttons) {
-    roll_button.addEventListener("click", async (ev) => {
-      ev.stopPropagation();
-      await rollAttribute(
-        card,
-        ev.currentTarget.classList.contains("roll-bennie-button"),
-      );
-    });
-  }
+    const roll_buttons = html.querySelectorAll(".brsw-roll-button");
+    for (const roll_button of roll_buttons) {
+        roll_button.addEventListener("click", async (ev) => {
+            ev.stopPropagation();
+            await withButtonSpinner(ev.currentTarget, () =>
+                rollAttribute(
+                    card,
+                    ev.currentTarget.classList.contains("roll-bennie-button"),
+                ),
+            );
+        });
+    }
 }
 
 /**
@@ -139,23 +140,23 @@ export function activateAttributeCardListeners(card, html) {
  * @param {boolean} expendBenny True if we want to spend a bennie
  */
 export async function rollAttribute(brCard, expendBenny) {
-  const extraData = { modifiers: [] };
-  const macros = [];
-  for (const action of brCard.getSelectedActions()) {
-    process_common_actions(action.code, extraData, macros, brCard.actor);
-  }
-  if (brCard.trait_roll.is_rolled) {
-    brCard.trait_roll.reroll_mode = expendBenny ? "benny" : "free";
-  }
-  if (expendBenny) {
-    await spendBenny(brCard.actor);
-  }
-  await roll_trait(
-    brCard,
-    brCard.actor.system.attributes[brCard.attribute],
-    game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS[brCard.attribute]),
-    extraData,
-  );
-  // noinspection ES6MissingAwait
-  runMacros(macros, brCard);
+    const extraData = { modifiers: [] };
+    const macros = [];
+    for (const action of brCard.getSelectedActions()) {
+        process_common_actions(action.code, extraData, macros, brCard.actor);
+    }
+    if (brCard.trait_roll.is_rolled) {
+        brCard.trait_roll.reroll_mode = expendBenny ? "benny" : "free";
+    }
+    if (expendBenny) {
+        await spendBenny(brCard.actor);
+    }
+    await roll_trait(
+        brCard,
+        brCard.actor.system.attributes[brCard.attribute],
+        game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS[brCard.attribute]),
+        extraData,
+    );
+    // noinspection ES6MissingAwait
+    runMacros(macros, brCard);
 }

@@ -21,6 +21,7 @@ import {
     roll_trait,
     spendBenny,
     update_message,
+    withButtonSpinner,
 } from "./cards_common.js";
 import { createDamageCard } from "./damage_card.js";
 import { DamageModifier, TraitModifier } from "./modifiers.js";
@@ -458,10 +459,12 @@ export function activateItemCardListeners(brCard, html) {
 
     addEventListenerAll(html, ".brsw-roll-button", "click", async (ev) => {
         ev.stopPropagation();
-        await rollItem(
-            brCard,
-            html,
-            ev.currentTarget.classList.contains("roll-bennie-button"),
+        await withButtonSpinner(ev.currentTarget, () =>
+            rollItem(
+                brCard,
+                html,
+                ev.currentTarget.classList.contains("roll-bennie-button"),
+            ),
         );
     });
 
@@ -471,13 +474,15 @@ export function activateItemCardListeners(brCard, html) {
         "click",
         (ev) => {
             // noinspection JSIgnoredPromiseFromCall
-            roll_dmg(
-                brCard,
-                html,
-                ev.currentTarget.classList.contains("brsw-damage-bennie-button"),
-                {},
-                ev.currentTarget.id.includes("raise"),
-                ev.currentTarget.dataset.target,
+            withButtonSpinner(ev.currentTarget, () =>
+                roll_dmg(
+                    brCard,
+                    html,
+                    ev.currentTarget.classList.contains("brsw-damage-bennie-button"),
+                    {},
+                    ev.currentTarget.id.includes("raise"),
+                    ev.currentTarget.dataset.target,
+                ),
             );
         },
     );

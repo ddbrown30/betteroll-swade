@@ -7,6 +7,7 @@ import {
     create_common_card,
     roll_trait,
     spendBenny,
+    withButtonSpinner,
 } from "./cards_common.js";
 import {
     createIncapacitationCard,
@@ -228,7 +229,7 @@ export function activateDamageCardListeners(message, html) {
         ) {
             spendBenny = true;
         }
-        rollSoak(brCard, spendBenny);
+        withButtonSpinner(ev.currentTarget, () => rollSoak(brCard, spendBenny));
     });
     html.querySelector(".brsw-show-incapacitation")?.addEventListener("click", () => {
         brCard.closePopout(); //We assume we're done with the card at this point so close any popouts

@@ -1,13 +1,12 @@
 // functions for the incapacitation card
-/* globals canvas, game, CONST, Roll, Hooks, succ, fromUuid, console */
 
 import { BrCommonCard } from "./BrCommonCard.js";
-import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
 import {
     create_common_card,
     roll_trait,
     spendBenny,
+    withButtonSpinner,
 } from "./cards_common.js";
 import { get_owner } from "./damage_card.js";
 import { Utils, addEventListenerAll } from "./utils.js";
@@ -67,7 +66,9 @@ function roll_incapacitation_clicked(ev, brCard) {
         spendBenny = true;
     }
     // noinspection JSIgnoredPromiseFromCall
-    roll_incapacitation(brCard, spendBenny);
+    withButtonSpinner(ev.currentTarget, () =>
+        roll_incapacitation(brCard, spendBenny),
+    );
 }
 
 /**
