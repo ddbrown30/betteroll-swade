@@ -259,11 +259,13 @@ Hooks.on("renderChatMessageHTML", (message, html, _options) => {
 
         // Scroll the chat to the bottom if this is the last message
         if (game.messages.contents[game.messages.contents.length - 1] === message) {
-            const chat_bar = document.querySelector(".chat-log");
-            if (chat_bar) {
-                const rect = chat_bar.getBoundingClientRect();
-                if (chat_bar.scrollHeight - rect.height * 2 < chat_bar.scrollTop) {
-                    chat_bar.scrollTop = chat_bar.scrollHeight;
+            const chatScroll = document.querySelector(".chat-scroll");
+            if (chatScroll) {
+                const distanceFromBottom = chatScroll.scrollHeight - chatScroll.scrollTop - chatScroll.clientHeight;
+                if (distanceFromBottom < 600) {
+                    window.requestAnimationFrame(() => {
+                        chatScroll.scrollTop = chatScroll.scrollHeight;
+                    });
                 }
             }
         }
