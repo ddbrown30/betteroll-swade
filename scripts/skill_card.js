@@ -351,6 +351,8 @@ export async function getTNFromToken(
     originToken = Utils.toTokenDoc(originToken);
     targetToken = Utils.toTokenDoc(targetToken);
 
+    const targetActor = targetToken.actor;
+
     const isFighting = Utils.isFightingSkill(skill);
     let useParryAsTN = isFighting;
     if (originToken) {
@@ -370,35 +372,45 @@ export async function getTNFromToken(
             );
         }
     }
+
     if (useParryAsTN) {
-        if (targetToken.actor.type !== "vehicle") {
+        if (targetActor.type !== "vehicle") {
             tn.reason = `${game.i18n.localize("SWADE.Parry")} - ${targetToken.name}`;
-            tn.value = parseInt(targetToken.actor.system.stats.parry.value);
+            tn.value = parseInt(targetActor.system.stats.parry.value);
         } else {
             await get_vehicle_tn(tn, targetToken);
         }
     }
+
     // Size modifiers
     if (shouldUseScale(originActor, targetToken, item, skill)) {
-        getScaleModifier(originActor, targetToken.actor, item, tn, extraData);
+        getScaleModifier(originActor, targetActor, item, tn, extraData);
     }
-    if (
-        targetToken.actor.system.status.isVulnerable ||
-        targetToken.actor.system.status.isStunned
-    ) {
-        tn.modifiers.push(
-            new TraitModifier(
-                `${targetToken.name}: ${game.i18n.localize("SWADE.Vuln")}`,
-                2,
-            ),
-        );
+
+    if (targetActor.system.status.isVulnerable && shouldApplyVulnerable(originToken, targetToken, item, skill)) {
+        tn.modifiers.push(new TraitModifier(`${targetToken.name}: ${game.i18n.localize("SWADE.Vuln")}`, 2));
     }
     return tn;
 }
 
-function shouldUseScale(origin_actor, targetToken, item, skill) {
-    if (!origin_actor || !targetToken) return false;
-    if (item?.system?.isVehicular || origin_actor.type === "vehicle") return false;
+function shouldApplyVulnerable(originToken, targetToken, item, skill) {
+    if (!originToken || !targetToken) return false;
+
+    //Can't be vulnerable to yourself
+    if (originToken.id === targetToken.id) return false;
+
+    if (!item) {
+        return Utils.isFightingSkill(skill) || Utils.isShootingSkill(skill) || Utils.isThrowingSkill(skill);
+    }
+
+    if (Utils.isWeaponOrBolt(item)) return true;
+
+    return false;
+}
+
+function shouldUseScale(originActor, targetToken, item, skill) {
+    if (!originActor || !targetToken) return false;
+    if (item?.system?.isVehicular || originActor.type === "vehicle") return false;
 
     if (!item) {
         return Utils.isFightingSkill(skill) || Utils.isShootingSkill(skill) || Utils.isThrowingSkill(skill);
