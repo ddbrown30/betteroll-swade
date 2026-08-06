@@ -1,5 +1,11 @@
 # Changelog
 
+# Version 5.22.1
+* Chat now once again scrolls to the bottom for new messages
+* We now only apply vulnerable when it makes sense
+* Added a timeout to the roll spinner
+* Fixed raise damage when rerolling damage with a benny
+
 # Version 5.22.0
 * Vehicle items now use the vehicle's roll data when rolling damage. This basically does nothing at the moment but will fix an issue once the swade system is updated.
 * Fixed an issue when editing modifiers
