@@ -1459,7 +1459,12 @@ export async function withButtonSpinner(button, action) {
     }
     addSpinnerToButton(button);
     try {
-        await action();
+        await Promise.race([
+            action(),
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error("Operation timed out after 10 seconds")), 10_000)
+            )
+        ]);
     } finally {
         removeSpinnerFromButton(button);
     }
