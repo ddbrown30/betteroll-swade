@@ -7,7 +7,7 @@
                 </span>
                 <span class="brsw-damage-roll-damage">
                     <span class="{{roll.extraClass}}" data-text="{{roll.damageResultText}}">{{roll.damageResultText}}</span>
-                    <button class="brsw-row-button brsw-damage-bennie-button brsw-form brsw-icon-button" {{#if roll.raise}}id="raise_roll" {{/if}}
+                    <button class="brsw-row-button brsw-damage-bennie-button brsw-form brsw-icon-button" {{#if ../raise}}id="raise_roll" {{/if}}
                             {{#if ../../bennie_available}}title="{{localize 'BRSW.Roll_and_bennie'}}" {{/if}} data-target="{{roll.target_id}}"
                             {{#unless ../../bennie_available}}disabled{{/unless}}>
                         <img src="{{{../../benny_image}}}" class="brsw-button-image" alt="Reroll with benny">
