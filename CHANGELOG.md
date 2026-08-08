@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.22.2
+* Fixed resist actions being broken in some cases
+
 # Version 5.22.1
 * Chat now once again scrolls to the bottom for new messages
 * We now only apply vulnerable when it makes sense
