@@ -398,6 +398,10 @@ export class BrCommonCard {
         const item = this.item || this.skill || { type: "attribute", name: this.attribute };
         const userTargets = getUserTargets();
 
+        this.action_sections["none"] = {
+            action_groups: {},
+        };
+
         for (const global_action of get_actions(item, this.actor, userTargets)) {
             const name = game.i18n.localize(global_action.button_name);
             const section_name = (global_action.section ? global_action.section : "none").toLowerCase();
