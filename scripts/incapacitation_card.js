@@ -107,7 +107,7 @@ async function roll_incapacitation(brCard, spend_benny) {
         {},
     );
     let result = 0;
-    for (let roll of brCard.trait_roll.rolls) {
+    for (let roll of brCard.traitRoll.rolls) {
         for (let die of roll.dice) {
             if (die.result !== null) {
                 result = Math.max(die.final_total, result);
@@ -116,7 +116,7 @@ async function roll_incapacitation(brCard, spend_benny) {
     }
     brCard.render_data.show_roll_injury = true;
     brCard.render_data.injury_type = "none";
-    if (brCard.trait_roll.current_roll.is_fumble) {
+    if (brCard.traitRoll.currentRoll.isCritFail) {
         brCard.render_data.text_after = `</p><p>${game.i18n.localize(
             "BRSW.Fumble",
         )}</p><p>${brCard.token.name} ${game.i18n.localize("BRSW.IsDead")}</p>`;

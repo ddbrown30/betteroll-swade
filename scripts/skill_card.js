@@ -175,8 +175,8 @@ export async function rollSkill(brCard, expendBennie) {
     for (const action of brCard.getSelectedActions()) {
         process_common_actions(action.code, extraData, macros, brCard.actor);
     }
-    if (brCard.trait_roll.is_rolled) {
-        brCard.trait_roll.reroll_mode = expendBennie ? "benny" : "free";
+    if (brCard.traitRoll.is_rolled) {
+        brCard.traitRoll.reroll_mode = expendBennie ? "benny" : "free";
     }
     if (expendBennie) {
         await spendBenny(brCard.actor);

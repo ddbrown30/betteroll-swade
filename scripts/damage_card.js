@@ -293,7 +293,7 @@ async function rollSoak(brCard, useBenny) {
     );
 
     let result = 0;
-    for (const roll of brCard.trait_roll.rolls) {
+    for (const roll of brCard.traitRoll.rolls) {
         for (const die of roll.dice) {
             if (die.result !== null) {
                 result = Math.max(die.final_total, result);

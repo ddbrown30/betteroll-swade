@@ -85,7 +85,7 @@ async function vehicle_weapon_clicked(ev, vehicle) {
                 await rollSkill(brCard, false);
 
                 if (brCard.damage && action.includes("damage")) {
-                    brCard.trait_roll.current_roll.dice.forEach((roll) => {
+                    brCard.traitRoll.currentRoll.dice.forEach((roll) => {
                         if (roll.result !== null && roll.result >= 0) {
                             roll_dmg(brCard, "", false, {}, roll.result > 3);
                         }

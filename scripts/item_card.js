@@ -616,8 +616,8 @@ async function roll_resist(trait, brCard, trait_mod) {
             newCard = await game.brsw.createSkillCard(token, Utils.traitFromString(token.actor, trait).id);
         }
 
-        newCard.trait_roll.tn = getTraitRollDifficulty(brCard);
-        newCard.trait_roll.tn_reason = game.i18n.localize("BRSW.ResistingRoll");
+        newCard.traitRoll.tn = getTraitRollDifficulty(brCard);
+        newCard.traitRoll.tn_reason = game.i18n.localize("BRSW.ResistingRoll");
         if (!isNaN(trait_mod)) {
             const localized_name = game.i18n.localize("BRSW.ResistingRoll");
             const resist_action = new brAction(localized_name, {
@@ -654,15 +654,15 @@ function getTraitRollDifficulty(brCard) {
         }
     }
 
-    if (!brCard.trait_roll.current_roll) {
-        return brCard.trait_roll.tn;
+    if (!brCard.traitRoll.currentRoll) {
+        return brCard.traitRoll.tn;
     }
 
-    const results = brCard.trait_roll.current_roll.dice.map((die) => {
+    const results = brCard.traitRoll.currentRoll.dice.map((die) => {
         return die.result;
     });
 
-    return Math.max(...results) + brCard.trait_roll.tn;
+    return Math.max(...results) + brCard.traitRoll.tn;
 }
 
 export async function displayPPChangeCard(actor, chatData) {
@@ -704,12 +704,12 @@ export async function spendPP(brCard, prevSpentPP) {
 
     let success = false;
     let raise = false;
-    for (const roll of brCard.trait_roll.current_roll.dice) {
+    for (const roll of brCard.traitRoll.currentRoll.dice) {
         if (roll.result === null) continue;
 
         //Subtract any arcaneActivationOffset from the roll result to get the activation roll
         //This is for cases like missing with bolt due to cover but the power still activates
-        const rollResult = roll.result - (brCard.trait_roll.arcaneActivationOffset ?? 0);
+        const rollResult = roll.result - (brCard.traitRoll.arcaneActivationOffset ?? 0);
         success = success || rollResult >= 0;
         raise = raise || rollResult >= 4;
     }
@@ -847,8 +847,8 @@ export async function rollItem(brCard, html, expendBennie, rollDamage) {
     const macros = [];
     let shotsOverride; // Override the number of shots used
     const extraData = { modifiers: [] };
-    if (brCard.trait_roll.is_rolled) {
-        brCard.trait_roll.reroll_mode = expendBennie ? "benny" : "free";
+    if (brCard.traitRoll.is_rolled) {
+        brCard.traitRoll.reroll_mode = expendBennie ? "benny" : "free";
     }
 
     if (expendBennie) {
@@ -980,8 +980,8 @@ export async function rollItem(brCard, html, expendBennie, rollDamage) {
             ? !!html.querySelector(".brsw-ammo-toggle.brsw-toggle-active")
             : SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.defaultAmmoManagement);
         if (consumeAmmoSelected || macros.length) {
-            brCard.render_data.used_shots = shotsOverride || ROF_BULLETS[brCard.trait_roll.rof || 1];
-            if (consumeAmmoSelected && brCard.trait_roll.rolls.length === 1) {
+            brCard.render_data.used_shots = shotsOverride || ROF_BULLETS[brCard.traitRoll.rof || 1];
+            if (consumeAmmoSelected && brCard.traitRoll.rolls.length === 1) {
                 await brCard.item.consume(brCard.render_data.used_shots);
             }
         }
@@ -989,7 +989,7 @@ export async function rollItem(brCard, html, expendBennie, rollDamage) {
 
     // Power points management
     const subtractPP = brCard.render_data.subtractPP;
-    const previous_pp = brCard.trait_roll.old_rolls.length ? brCard.render_data.used_pp : 0;
+    const previous_pp = brCard.traitRoll.old_rolls.length ? brCard.render_data.used_pp : 0;
     if (subtractPP && !isNaN(parseInt(brCard.item.system.pp)) && brCard.item.type === "power") {
         brCard.render_data.used_pp = await spendPP(brCard, previous_pp);
     }
@@ -1002,7 +1002,7 @@ export async function rollItem(brCard, html, expendBennie, rollDamage) {
     //Call a hook after roll for other modules
     Hooks.call("BRSW-RollItem", brCard, html);
     if (rollDamage && brCard.damage) {
-        brCard.trait_roll.current_roll.dice.forEach((roll) => {
+        brCard.traitRoll.currentRoll.dice.forEach((roll) => {
             if (roll.result !== null && roll.result >= 0) {
                 roll_dmg(brCard, html, false, {}, roll.result > 3);
             }
