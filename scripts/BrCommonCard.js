@@ -53,7 +53,7 @@ export class BrCommonCard {
         this.render_data = {}; // Old render data, to be removed
         this.update_list = {}; // List of properties pending to be updated
         this.resist_buttons = [];
-        this.trait_roll = new TraitRoll();
+        this.traitRoll = new TraitRoll();
         this.showPopout = true;
         this.manual_mods = {};
         this.applicable_effects = [];
@@ -132,7 +132,7 @@ export class BrCommonCard {
             macro_buttons: this.macro_buttons,
             id: this.id,
             target_ids: this.target_ids,
-            trait_roll: this.trait_roll,
+            traitRoll: this.traitRoll,
             resist_buttons: this.resist_buttons,
             damage: this.damage,
             showPopout: this.showPopout,
@@ -172,7 +172,7 @@ export class BrCommonCard {
         for (const field of FIELDS) {
             this[field] = data[field];
         }
-        this.trait_roll.load(data.trait_roll);
+        this.traitRoll.load(data.traitRoll);
         if (this.message) {
             this.render_data = this.message.getFlag(
                 "betterrolls-swade2",
@@ -826,6 +826,10 @@ export class BrCommonCard {
         render_data.actor = this.actor;
         render_data.result_master_only = SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.resultCard) === "master";
 
+        const useTokenImg = this.token && !this.token.document.actorLink;
+        render_data.actorImg = useTokenImg ? this.token.document.texture.src : this.actor.img;
+        render_data.actorImgScale = useTokenImg ? this.token.document.texture.scaleX ?? 1 : 1;
+
         // Benny image
         render_data.benny_image = game.settings.get("swade", "bennyImage3DFront") || "/systems/swade/assets/benny/benny-chip-front.png";
 
@@ -842,11 +846,11 @@ export class BrCommonCard {
     }
 
     get show_rerolls() {
-        if (game.settings.get("swade", "dumbLuck") || !this.trait_roll.current_roll) {
+        if (game.settings.get("swade", "dumbLuck") || !this.traitRoll.currentRoll) {
             return true;
         }
 
-        return this.trait_roll.current_roll && !this.trait_roll.current_roll.is_fumble;
+        return this.traitRoll.currentRoll && !this.traitRoll.currentRoll.isCritFail;
     }
 
     /**

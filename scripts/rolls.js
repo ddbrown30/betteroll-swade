@@ -82,7 +82,7 @@ class Die {
 class SingleRoll {
   constructor(data) {
     this.dice = [];
-    this.is_fumble = false;
+    this.isCritFail = false;
     if (data) {
       this.load(data);
     }
@@ -127,7 +127,7 @@ class SingleRoll {
       this.dice[min_position].extraClass += " brsw-discarded-roll";
       this.dice[min_position].result = null;
     }
-    this.is_fumble = await detect_fumble(
+    this.isCritFail = await detect_fumble(
       has_wild_die,
       num_fumble_results,
       this.dice,
@@ -177,7 +177,7 @@ export class TraitRoll {
     this.selected_roll_index = this.rolls.indexOf(new_roll);
   }
 
-  get current_roll() {
+  get currentRoll() {
     if (this.rolls.length > 0) {
       return this.rolls[this.selected_roll_index];
     }
@@ -214,9 +214,9 @@ export class TraitRoll {
   }
 
   get rof() {
-    if (this.current_roll) {
+    if (this.currentRoll) {
       const wild_die = this.wild_die ? -1 : 0;
-      return this.current_roll.dice.length + wild_die;
+      return this.currentRoll.dice.length + wild_die;
     }
   }
 
