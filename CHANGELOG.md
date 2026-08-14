@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.22.4
+* Unlinked tokens now use the token img instead of the actor img
+
 # Version 5.22.3
 * Fixed a case where we would sometimes lose the skill ref
 
