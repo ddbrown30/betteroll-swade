@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.22.3
+* Fixed a case where we would sometimes lose the skill ref
+
 # Version 5.22.2
 * Fixed resist actions being broken in some cases
 
