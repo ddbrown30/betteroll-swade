@@ -249,7 +249,7 @@ export class BrCommonCard {
 
         this.trait = {};
         if( trait.type === "skill") {
-            this.trait.id = trait.id;
+            this.trait.id = trait.id ?? trait._id;
         } else {
             this.trait.name = trait.name.toLowerCase();
         }
