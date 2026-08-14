@@ -828,7 +828,7 @@ export class BrCommonCard {
 
         const useTokenImg = this.token && !this.token.document.actorLink;
         render_data.actorImg = useTokenImg ? this.token.document.texture.src : this.actor.img;
-        render_data.actorImgScale = useTokenImg ? this.token.document.texture.scaleX : 1;
+        render_data.actorImgScale = useTokenImg ? this.token.document.texture.scaleX ?? 1 : 1;
 
         // Benny image
         render_data.benny_image = game.settings.get("swade", "bennyImage3DFront") || "/systems/swade/assets/benny/benny-chip-front.png";
