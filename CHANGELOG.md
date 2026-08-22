@@ -179,7 +179,6 @@
 * Added better support for the no power points setting
 * Bolt mods no longer show up on minor bolt
 * PP management no longer shows epic mods if the actor does not have the edge
-* We now properly handle the case where a weapon has not set its range type when checking if an attack is melee or ranged
 
 # Version 5.5.0
 * Updated the gang up calculation to match the system
