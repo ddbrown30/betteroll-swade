@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.24.0
+* Added an option to not create a chat message when creating a card
+
 # Version 5.23.0
 * Reworked tooltips
 * Reworked the repeat roll logic so that it doesn't end up with stale roll data
