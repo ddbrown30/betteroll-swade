@@ -609,6 +609,11 @@ export class Utils {
             return false;
         }
 
+        if (!item.system.isRanged && !item.system.isMelee) {
+            //The range type has not been set on this item. Fall back to checking the swid
+            return skill?.system?.swid === 'fighting';
+        }
+
         return item.system.isMelee && (!item.system.isRanged || skill?.system.swid === 'fighting');
     }
 
@@ -622,6 +627,11 @@ export class Utils {
         }
 
         skill = skill ?? Utils.getItemTrait(item, actor);
+        if (!item.system.isRanged && !item.system.isMelee) {
+            //The range type has not been set on this item. Fall back to checking the swid
+            return skill?.system?.swid !== 'fighting';
+        }
+
         return item.system.isRanged && (!item.system.isMelee || skill?.system?.swid !== 'fighting');
     }
 
