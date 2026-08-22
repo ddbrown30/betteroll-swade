@@ -69,14 +69,6 @@ export function exposeCardClass() {
 export function create_common_card(origin, render_data, template) {
     const actor = Utils.toActor(origin);
 
-    if (render_data.tooltip) {
-        render_data.tooltip = // Limit tooltip size.
-            render_data.tooltip.length <=
-                BRSW2_CONFIG.MAX_TOOLTIP_LENGTH
-                ? render_data.tooltip
-                : null;
-    }
-
     const brCard = new BrCommonCard(undefined);
     brCard.actor_id = actor.id;
 
@@ -341,7 +333,7 @@ export function activateCommonListeners(brCard, html) {
     // Repeat card
     html.querySelector(".brsw-repeat-card")?.addEventListener("click", (ev) => {
         // noinspection JSIgnoredPromiseFromCall
-        duplicate_message(brCard.message, ev);
+        duplicateMessage(brCard, ev);
     });
     // Save a macro using the current settings
     html.querySelector(".brsw-save-macro")?.addEventListener("click", () => {
@@ -1205,34 +1197,37 @@ export function has_joker(token_id) {
  * @param {ChatMessage} message
  * @param event - javascript event for click
  */
-async function duplicate_message(message, event) {
-    const data = foundry.utils.duplicate(message);
-    // Remove rolls
-    data.timestamp = new Date().getTime();
-    delete data._id;
-    const new_message = await ChatMessage.create(data);
-    const brCard = new BrCommonCard(new_message);
-    brCard.traitRoll = new TraitRoll();
-    brCard.render_data.damage_rolls = [];
-    await brCard.render();
-    await brCard.save();
+async function duplicateMessage(brCard, event) {
+    let actions_stored = {};
+    Utils.forEachActionGroup(brCard, group => {
+        for (const action of group.actions) {
+            actions_stored[action.code.id] = action.selected;
+        }
+    });
+
+    let newBRCard = null;
+    if (brCard.item_id) {
+        newBRCard = await game.brsw.createItemCard(brCard.token ?? brCard.actor, brCard.item_id, {actions_stored});
+    } else if (brCard.skill) {
+        newBRCard = await game.brsw.createSkillCard(brCard.token ?? brCard.actor, brCard.skill.id, {actions_stored});
+    } else if (brCard.attribute) {
+        newBRCard = await game.brsw.createAttributeCard(brCard.token ?? brCard.actor, brCard.trait.name, {actions_stored});
+    }
+
     const action = getActionFromClick(event);
     if (action.includes("dialog")) {
-        game.brsw.dialog.show_card(brCard);
+        game.brsw.dialog.show_card(newBRCard);
     } else if (action.includes("trait")) {
-        // noinspection JSUnresolvedVariable
-        const brCard = new BrCommonCard(message);
-        const card_type = brCard.type;
+        const card_type = newBRCard.type;
         if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ATTRIBUTE_CARD) {
-            await rollAttribute(brCard, false);
+            await rollAttribute(newBRCard, false);
         } else if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_SKILL_CARD) {
-            await rollSkill(brCard, false);
+            await rollSkill(newBRCard, false);
         } else if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD) {
             const roll_damage = action.includes("damage");
-            await rollItem(brCard, $(brCard.message.content), false, roll_damage);
+            await rollItem(newBRCard, $(brCard.message.content), false, roll_damage);
         }
     }
-    return new_message;
 }
 
 /**
