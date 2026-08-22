@@ -315,16 +315,6 @@ export class BrCommonCard {
         return undefined;
     }
 
-    get skill_tooltip() {
-        if (!this.skill || !this.skill.system.description) {
-            return;
-        }
-        return this.skill.system.description.length <=
-            BRSW2_CONFIG.MAX_TOOLTIP_LENGTH
-            ? this.skill.system.description
-            : "";
-    }
-
     get targets() {
         const target_array = [];
         for (const target_id of this.target_ids) {
@@ -958,7 +948,6 @@ export class BrCommonCard {
         data.show_rerolls = this.show_rerolls;
         data.selected_actions = this.getSelectedActions();
         data.hasFooterButtons = this.hasFooterButtons;
-        data.skill_tooltip = this.skill_tooltip;
         data.showRepeat = BRSW2_CONST.ALLOW_SAVE_REPEAT_CARDS.has(this.type);
         data.showSave = !this.vehicleActor && BRSW2_CONST.ALLOW_SAVE_REPEAT_CARDS.has(this.type);
         data.showManualMods = !!(this.trait || this.damage);

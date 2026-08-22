@@ -1,5 +1,9 @@
 # Changelog
 
+# Version 5.23.0
+* Reworked tooltips
+* Reworked the repeat roll logic so that it doesn't end up with stale roll data
+
 # Version 5.22.4
 * Unlinked tokens now use the token img instead of the actor img
 

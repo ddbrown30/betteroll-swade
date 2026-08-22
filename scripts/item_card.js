@@ -95,7 +95,6 @@ export async function createItemCard(
             is_power: is_power,
             used_shots: 0,
             description: description,
-            tooltip: create_item_card_tooltip(item),
             swade_templates: get_template_from_item(item),
         },
         "modules/betterrolls-swade2/templates/item_card.hbs",
@@ -267,17 +266,6 @@ export function check_for_actions_with_damage(item) {
         }
     }
     return false;
-}
-
-function create_item_card_tooltip(item) {
-    let tooltip = "";
-    if (item.type === "weapon") {
-        tooltip += `${game.i18n.localize("BRSW.Dmg")}: ${item.system.damage} ${game.i18n.localize("BRSW.ApShort")}: ${item.system.ap}`;
-        if (item.system.currentShots !== null && item.system.shots !== null) {
-            tooltip += `<br>${game.i18n.localize("BRSW.Shots")}: ${item.system.currentShots}/${item.system.shots}`;
-        }
-    }
-    return tooltip;
 }
 
 function call_create_item_card_hooks(item, brCard) {

@@ -963,15 +963,6 @@
     border-bottom: 1px solid currentColor;
 }
 
-.brsw-header-title-group:hover .brsw-tooltip {
-    visibility: visible;
-    transition-delay: 1000ms;
-    transition-duration: 500ms;
-    opacity: 1;
-    height: auto;
-    overflow: visible;
-}
-
 .brsw-header-title:not(.brsw-collapse-button):hover {
     text-shadow: none;
 }
@@ -1332,27 +1323,6 @@
 .brsw-trait-title {
     font-size: var(--brsw-text-lg);
     line-height: var(--brsw-text-lg-line-height);
-}
-
-.brsw-tooltip {
-    width: calc(var(--brsw-spacing) * 56);
-    opacity: 0;
-    height: 0;
-    position: absolute;
-    transition-property: opacity;
-    transition-duration: var(--brsw-transition-duration);
-    transition-timing-function: var(--brsw-transition-timing);
-    padding-inline: calc(var(--brsw-spacing) * 3);
-    padding-block: calc(var(--brsw-spacing) * 2);
-    font-size: var(--brsw-text-sm);
-    line-height: var(--brsw-text-sm-line-height);
-    font-weight: var(--brsw-font-weight-medium);
-    color: white;
-    background-color: var(--brsw-color-gray-900);
-    border-radius: var(--brsw-radius-lg);
-    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    overflow: hidden;
-    z-index: 1;
 }
 
 /* Ammo and power points */
