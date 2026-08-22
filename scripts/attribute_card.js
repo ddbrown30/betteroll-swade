@@ -23,7 +23,7 @@ import { Utils, addEventListenerAll } from "./utils.js";
  *   and a boolean meaning if they need to set on or off
  * @return {Promise} A promise for the BrCommonCard object
  */
-async function createAttributeCard(origin, name, { actions_stored = {} } = {},) {
+async function createAttributeCard(origin, name, { actions_stored = {}, options = {} } = {},) {
     const actor = Utils.toActor(origin);
 
     const translatedName = game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS[name]);
@@ -36,6 +36,7 @@ async function createAttributeCard(origin, name, { actions_stored = {} } = {},) 
             trait: Utils.traitFromString(actor, translatedName),
         },
         "modules/betterrolls-swade2/templates/attribute_card.hbs",
+        options,
     );
 
     brCard.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ATTRIBUTE_CARD;

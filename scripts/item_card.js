@@ -54,7 +54,7 @@ const ROF_BULLETS = { 1: 1, 2: 5, 3: 10, 4: 20, 5: 40, 6: 50 };
 export async function createItemCard(
     origin,
     item_id,
-    { actions_stored = {}, vehicle } = {},
+    { actions_stored = {}, vehicle, options = {} } = {},
 ) {
     const actor = Utils.toActor(origin);
 
@@ -98,6 +98,7 @@ export async function createItemCard(
             swade_templates: get_template_from_item(item),
         },
         "modules/betterrolls-swade2/templates/item_card.hbs",
+        options,
     );
 
     brCard.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD;

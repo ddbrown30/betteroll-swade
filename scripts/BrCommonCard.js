@@ -58,6 +58,7 @@ export class BrCommonCard {
         this.manual_mods = {};
         this.applicable_effects = [];
         this.pp_modifiers = {};
+        this.createChatMessage = true;
         if (message) {
             const data = this.message.getFlag("betterrolls-swade2", "br_data");
             if (data) {
@@ -80,6 +81,7 @@ export class BrCommonCard {
     async save() {
         if (!this.message) {
             await this.render();
+            return;
         }
         const { update_list } = this;
         update_list.id = this.message.id;
@@ -927,7 +929,7 @@ export class BrCommonCard {
 
         if (this.message) {
             this.update_list.content = newContent;
-        } else {
+        } else if (this.createChatMessage) {
             await this.createFoundryMessage(newContent);
         }
     }
