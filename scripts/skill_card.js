@@ -34,7 +34,7 @@ import {
 async function createSkillCard(
     origin,
     skillId,
-    { actions_stored = {}, vehicle } = {},
+    { actions_stored = {}, vehicle, options = {} } = {},
 ) {
     const actor = Utils.toActor(origin);
     const skill = actor.items.get(skillId);
@@ -51,6 +51,7 @@ async function createSkillCard(
             description: skill.system.description,
         },
         "modules/betterrolls-swade2/templates/skill_card.hbs",
+        options,
     );
     brCard.type = BRSW2_CONST.BRSW_CARD_TYPES.TYPE_SKILL_CARD;
     if (vehicle) {
@@ -79,7 +80,7 @@ function createSkillCardFromId(
     tokenId,
     actorId,
     skillId,
-    { actions_stored = {} } = {},
+    { actions_stored = {}, options = {} } = {},
 ) {
     const actor = getActorFromIds(tokenId, actorId);
     return createSkillCard(actor, skillId, {
