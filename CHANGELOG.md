@@ -3,6 +3,7 @@
 # Version 5.23.0
 * Reworked tooltips
 * Reworked the repeat roll logic so that it doesn't end up with stale roll data
+* We now properly handle the case where a weapon has not set its range type when checking if an attack is melee or ranged
 
 # Version 5.22.4
 * Unlinked tokens now use the token img instead of the actor img
