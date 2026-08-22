@@ -25,8 +25,8 @@
                 </span>
             {{/if}}
         </div>
-        <div class="brsw-trait-row">
-            {{#if is_power}}
+        {{#if is_power}}
+            <div class="brsw-trait-row">
                 <span class="brsw-common-modifiers brsw-form brsw-flex brsw-grow brsw-gap-1">
                     {{#if noPowerPoints}}
                         <div class="brsw-self-center">
@@ -50,8 +50,8 @@
                         <img src="modules/betterrolls-swade2/assets/magic-swirl.svg" alt="reload" title="{{localize 'BRSW.PPManagement.Button'}}" class="brsw-toggle-icon brsw-pp-manual">
                     </div>
                 </span>
-            {{/if}}
-        </div>
+            </div>
+        {{/if}}
     {{/if}}
     {{#if applicable_effects}}
         <p>{{localize 'BRSW.ApplicableEffects'}}</p>
