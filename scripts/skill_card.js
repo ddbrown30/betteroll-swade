@@ -80,7 +80,7 @@ function createSkillCardFromId(
     tokenId,
     actorId,
     skillId,
-    { actions_stored = {} } = {},
+    { actions_stored = {}, options = {} } = {},
 ) {
     const actor = getActorFromIds(tokenId, actorId);
     return createSkillCard(actor, skillId, {

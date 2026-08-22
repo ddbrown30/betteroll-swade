@@ -64,6 +64,7 @@ export function exposeCardClass() {
  * @param {PlaceableObject|SwadeActor} origin - The origin of this card.
  * @param {Object} render_data - Data to pass to the render template.
  * @param {string} template - Path to the template that renders this card.
+ * @param {Object} options
  * @returns {BrCommonCard} The created common card.
  */
 export function create_common_card(origin, render_data, template, options) {

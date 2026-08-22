@@ -296,7 +296,7 @@ function createItemCardFromId(
     token_id,
     actor_id,
     itemId,
-    { actions_stored = {} } = {},
+    { actions_stored = {}, options = {} } = {},
 ) {
     let origin;
     if (canvas && token_id) {

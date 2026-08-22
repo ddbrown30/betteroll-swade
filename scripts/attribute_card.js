@@ -61,7 +61,7 @@ function createAttributeCardFromId(
     token_id,
     actor_id,
     name,
-    { actions_stored = {} } = {},
+    { actions_stored = {}, options = {} } = {},
 ) {
     const actor = getActorFromIds(token_id, actor_id);
     return createAttributeCard(actor, name, {
