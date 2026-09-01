@@ -281,7 +281,7 @@ export function calculateDistance(
     const grid_unit = canvas.grid.distance;
     let useParryAsTN = false;
     let distance = measureDistance(originToken, targetToken);
-    if (distance / grid_unit < 1 && item) {
+    if (distance / grid_unit <= 1 && item) {
         useParryAsTN = item.type !== "power";
     } else if (item) {
         if (grid_unit % 5 === 0) {
