@@ -635,6 +635,19 @@ export class Utils {
         return item.system.isRanged && (!item.system.isMelee || skill?.system?.swid !== 'fighting');
     }
 
+    static getMeleeRange(scene) {
+        let meleeRange = SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.measureFromEdge) ?
+            0 : //0 when using edge distance since edges have to be touching
+            Math.SQRT2; //Range is SQRT2 to account for diagonals
+
+        if (scene?.grid?.isGridless) {
+            //If we're gridless, give a bit of extra buffer so placement doesn't have to be so exact
+            meleeRange += 0.5;
+        }
+
+        return meleeRange;
+    }
+
     static actorHasArcaneMastery(actor) {
         const edgeNames = BRSW2_CONST.ARCANE_MASTERY_EDGES.map((edge) => game.i18n.localize(edge).toLowerCase());
         const edge = actor?.items.find((item) => {

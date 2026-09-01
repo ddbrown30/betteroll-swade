@@ -278,13 +278,16 @@ export function calculateDistance(
     if (item.system.isVehicular && originToken.actor.type !== "vehicle") {
         return false;
     }
-    const grid_unit = canvas.grid.distance;
+
+    const gridUnit = canvas.grid.distance;
+    const meleeRange = Utils.getMeleeRange(targetToken.scene);
+
     let useParryAsTN = false;
     let distance = measureDistance(originToken, targetToken);
-    if (distance / grid_unit <= 1 && item) {
+    if (distance / gridUnit <= (meleeRange + Number.EPSILON) && item) {
         useParryAsTN = item.type !== "power";
     } else if (item) {
-        if (grid_unit % 5 === 0) {
+        if (gridUnit % 5 === 0) {
             distance /= 5;
         }
         if (item.type === "power") {
@@ -303,6 +306,7 @@ export function calculateDistance(
             );
         }
     }
+
     return useParryAsTN;
 }
 
@@ -530,14 +534,7 @@ export function calculateGangUp(attackerToken, targetToken) {
     const scene = targetToken.scene;
     if (!scene) return 0;
 
-    let meleeRange = SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.measureFromEdge) ?
-        0 : //0 when using edge distance since edges have to be touching
-        Math.SQRT2; //Range is SQRT2 to account for diagonals
-
-    if (scene.grid.isGridless) {
-        //If we're gridless, give a bit of extra buffer so placement doesn't have to be so exact
-        meleeRange += 0.5;
-    }
+    const meleeRange = Utils.getMeleeRange(scene);
 
     //Get all the attacker allies that are next to the target
     const attackerAllies =
