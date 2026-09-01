@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.24.2
+* Fixed null error that was breaking a bunch of stuff
+
 # Version 5.24.1
 * Fixed corner measurement for TN
 
