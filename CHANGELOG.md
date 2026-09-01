@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.24.1
+* Fixed corner measurement for TN
+
 # Version 5.24.0
 * Added an option to not create a chat message when creating a card
 * Fixed distance check for useParryAsTN
