@@ -73,7 +73,7 @@ export function create_common_card(origin, render_data, template, options) {
     const brCard = new BrCommonCard(undefined);
     brCard.actor_id = actor.id;
 
-    if (options.createChatMessage != null) {
+    if (options?.createChatMessage != null) {
         brCard.createChatMessage = options.createChatMessage;
     }
 
