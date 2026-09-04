@@ -2,7 +2,7 @@
 /* globals Token, TokenDocument, game, CONST, canvas, console, CONFIG, ChatMessage, ui, Hooks, Roll, succ, structuredClone, $, fromUuid */
 // noinspection JSCheckFunctionSignatures
 
-import { get_current_generic_mods } from "../config/generic_pp_modifiers.js";
+import { get_current_generic_mods as getCurrentGenericMods } from "../config/generic_pp_modifiers.js";
 import { BrCommonCard } from "./BrCommonCard.js";
 import { brAction } from "./actions.js";
 import { USER_SETTING_KEYS, WORLD_SETTING_KEYS } from "./brsw2-config.js";
@@ -54,7 +54,7 @@ const ROF_BULLETS = { 1: 1, 2: 5, 3: 10, 4: 20, 5: 40, 6: 50 };
 export async function createItemCard(
     origin,
     item_id,
-    { actions_stored = {}, vehicle, options = {} } = {},
+    { actions_stored = {}, ppModsStored = {}, vehicle, options = {} } = {},
 ) {
     const actor = Utils.toActor(origin);
 
@@ -111,7 +111,7 @@ export async function createItemCard(
     brCard.damage = !!item.system.damage;
     brCard.item_id = item_id;
     brCard.applicable_effects = get_applicable_effects(item);
-    brCard.ppModifiers = isPower ? get_pp_mods(item) : {};
+    brCard.ppModifiers = isPower ? getPPMods(item, ppModsStored) : {};
     brCard.checkWarnings(brCard.render_data);
 
     await brCard.render(actions_stored);
@@ -129,14 +129,16 @@ function get_applicable_effects(item) {
     return effects;
 }
 
-function get_pp_mods(item) {
+function getPPMods(item, ppModsStored) {
     const ppMods = {
         powerMods: [],
         additionalRecipientsMod: {},
-        extraCost: 0,
-        shortAmount: 0,
+        extraCost: ppModsStored?.extraCost ?? 0,
+        shortAmount: ppModsStored?.shortAmount ?? 0,
     };
-    ppMods.genericMods = get_current_generic_mods().map(mod => ({ ...mod, selected: false }));
+
+    //Default selected is false so if it's not in ppModsOverrides, we still end up with false
+    ppMods.genericMods = getCurrentGenericMods().map(mod => ({ ...mod, selected: !!ppModsStored[mod.name] }));
 
     const processLis = (li) => {
         const text = li.textContent.trim();
@@ -202,12 +204,16 @@ function get_pp_mods(item) {
     if (modifiers.length) {
         for (let mod of modifiers) {
             for (let cost of mod.costs) {
+                const name = Utils.toTitleCase(mod.name);
+                const exclusiveGroup = mod.costs.length > 1 ? mod.name : undefined;
+                // Mods with multiple cost tiers share a name, so the cost has to be part of the key
+                const key = exclusiveGroup ? `${name}|${cost}` : name;
                 ppMods.powerMods.push({
-                    name: Utils.toTitleCase(mod.name),
+                    name,
                     cost: cost,
                     isEpic: mod.isEpic,
-                    selected: false,
-                    exclusiveGroup: mod.costs.length > 1 ? mod.name : undefined,
+                    selected: !!ppModsStored[key], //Default selected is false so if it's not in ppModsOverrides, we still end up with false
+                    exclusiveGroup,
                 });
             }
         }
@@ -303,7 +309,7 @@ function createItemCardFromId(
     token_id,
     actor_id,
     itemId,
-    { actions_stored = {}, options = {} } = {},
+    { actions_stored = {}, ppModsStored = {}, options = {} } = {},
 ) {
     let origin;
     if (canvas && token_id) {
@@ -317,6 +323,7 @@ function createItemCardFromId(
     }
     return createItemCard(origin, itemId, {
         actions_stored: actions_stored,
+        ppModsStored: ppModsStored,
     });
 }
 
