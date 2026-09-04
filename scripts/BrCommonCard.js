@@ -732,7 +732,7 @@ export class BrCommonCard {
      * Selects fallback trait and damage actions when appropriate
      */
     selectFallbackActions() {
-        if (!this.item) return;
+        if (!this.item || this.item.type === "power") return;
 
         const selectedActions = this.getSelectedActions();
 
