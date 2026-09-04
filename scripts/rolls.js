@@ -1,241 +1,251 @@
 // Definition of the roll clases
 /* global game */
 
-import { detect_fumble } from "./cards_common.js";
+import { detectCritFail } from "./cards_common.js";
 
 class Die {
-  constructor(data) {
-    this.sides = 0;
-    this.extraClass = ""; // Extra class for rendering this die
-    this.raw_total = null; // Number rolled counting explosions
-    this.modifiers = 0; // Modifiers to the roll
-    this.result = null; // Result (total - target number) usually
-    this.label = game.i18n.localize("BRSW.TraitDie");
-    this.wild_die = false;
-    if (data) {
-      Object.assign(this, data);
+    constructor(data) {
+        this.sides = 0;
+        this.extraClass = ""; // Extra class for rendering this die
+        this.rawTotal = null; // Number rolled counting explosions
+        this.modifiers = 0; // Modifiers to the roll
+        this.result = null; // Result (total - target number) usually
+        this.label = game.i18n.localize("BRSW.TraitDie");
+        this.wild_die = false;
+        if (data) {
+            Object.assign(this, data);
+        }
     }
-  }
 
-  // noinspection JSUnusedGlobalSymbols, used in templates
-  get result_text() {
-    if (this.result === null) {
-      return "";
+    // noinspection JSUnusedGlobalSymbols, used in templates
+    get result_text() {
+        if (this.result === null) {
+            return "";
+        }
+        if (this.result < 0) {
+            return game.i18n.localize("BRSW.Failure");
+        } else if (this.result < 4) {
+            return game.i18n.localize("BRSW.Success");
+        } else if (this.result < 8) {
+            return game.i18n.localize("BRSW.Raise");
+        } else {
+            const raises = Math.floor(this.result / 4);
+            return game.i18n.localize("BRSW.RaisePlural") + " " + raises;
+        }
     }
-    if (this.result < 0) {
-      return game.i18n.localize("BRSW.Failure");
-    } else if (this.result < 4) {
-      return game.i18n.localize("BRSW.Success");
-    } else if (this.result < 8) {
-      return game.i18n.localize("BRSW.Raise");
-    } else {
-      const raises = Math.floor(this.result / 4);
-      return game.i18n.localize("BRSW.RaisePlural") + " " + raises;
+
+    // noinspection JSUnusedGlobalSymbols, used in templates
+    get result_icon() {
+        if (this.result === null) {
+            return "";
+        } else if (this.result < 0) {
+            return "brsw-red-text fas fa-xmark fa-xs";
+        } else if (this.result < 4) {
+            return "brsw-lime-text fas fa-check fa-xs";
+        } else {
+            return "brsw-lime-text fas fa-check-double fa-xs";
+        }
     }
-  }
 
-  // noinspection JSUnusedGlobalSymbols, used in templates
-  get result_icon() {
-    if (this.result === null) {
-      return "";
-    } else if (this.result < 0) {
-      return "brsw-red-text fas fa-xmark fa-xs";
-    } else if (this.result < 4) {
-      return "brsw-lime-text fas fa-check fa-xs";
-    } else {
-      return "brsw-lime-text fas fa-check-double fa-xs";
+    // noinspection JSUnusedGlobalSymbols, used in templates
+    get unexploded() {
+        const unexplodedDie = [];
+        let currentTotal = this.rawTotal;
+        let out = false;
+        while (!out) {
+            if (currentTotal > this.sides) {
+                unexplodedDie.push(this.sides);
+                currentTotal -= this.sides;
+            } else {
+                unexplodedDie.push(currentTotal);
+                out = true;
+            }
+        }
+        return unexplodedDie;
     }
-  }
 
-  // noinspection JSUnusedGlobalSymbols, used in templates
-  get unexploded() {
-    const unexploded_die = [];
-    let current_total = this.raw_total;
-    let out = false;
-    while (!out) {
-      if (current_total > this.sides) {
-        unexploded_die.push(this.sides);
-        current_total -= this.sides;
-      } else {
-        unexploded_die.push(current_total);
-        out = true;
-      }
+    get finalTotal() {
+        return this.rawTotal + this.modifiers;
     }
-    return unexploded_die;
-  }
 
-  get final_total() {
-    return this.raw_total + this.modifiers;
-  }
+    // noinspection JSUnusedGlobalSymbols, used in templates
+    get is_not_discarded() {
+        return this.result !== null;
+    }
 
-  // noinspection JSUnusedGlobalSymbols, used in templates
-  get is_not_discarded() {
-    return this.result !== null;
-  }
-
-  // noinspection JSUnusedGlobalSymbols, used in templates
-  get exploded() {
-    return this.raw_total > this.sides;
-  }
+    // noinspection JSUnusedGlobalSymbols, used in templates
+    get exploded() {
+        return this.rawTotal > this.sides;
+    }
 }
 
 class SingleRoll {
-  constructor(data) {
-    this.dice = [];
-    this.isCritFail = false;
-    if (data) {
-      this.load(data);
-    }
-  }
-
-  add_roll(roll, wild_die, modifiers) {
-    roll.terms.forEach((term) => {
-      if (term.hasOwnProperty("_faces")) {
-        let newDie = new Die(null);
-        if (term.total === 1) {
-          newDie.extraClass = " brsw-red-text";
+    constructor(data) {
+        this.dice = [];
+        this.isCritFail = false;
+        this.isShorting = false;
+        if (data) {
+            this.load(data);
         }
-        newDie.sides = term.faces;
-        newDie.raw_total = term.total;
-        newDie.modifiers = modifiers;
-        newDie.label = term.flavor ?? newDie.label;
-        this.dice.push(newDie);
-      }
-    });
-    if (wild_die) {
-      this.dice[this.dice.length - 1].label =
-        game.i18n.localize("SWADE.WildDie");
-        this.dice[this.dice.length - 1].wild_die = wild_die;
     }
-  }
 
-  async calculate_trait_results(tn, has_wild_die) {
-    let minimum_value = 10000000;
-    let min_position = 0;
-    let num_fumble_results = 0;
-    for (const [index, roll] of this.dice.entries()) {
-      num_fumble_results += roll.raw_total == 1;
-      if (roll.raw_total <= minimum_value) {
-        min_position = index;
-        minimum_value = roll.raw_total;
-      }
-      roll.result = roll.final_total - tn;
+    add_roll(roll, wild_die, modifiers) {
+        roll.terms.forEach((term) => {
+            if (term.hasOwnProperty("_faces")) {
+                let newDie = new Die(null);
+                if (term.total === 1) {
+                    newDie.extraClass = " brsw-red-text";
+                }
+                newDie.sides = term.faces;
+                newDie.rawTotal = term.total;
+                newDie.modifiers = modifiers;
+                newDie.label = term.flavor ?? newDie.label;
+                this.dice.push(newDie);
+            }
+        });
+        if (wild_die) {
+            this.dice[this.dice.length - 1].label =
+                game.i18n.localize("SWADE.WildDie");
+            this.dice[this.dice.length - 1].wild_die = wild_die;
+        }
     }
-    this.remove_discarded_die();
-    // Mark the lower die as discarded.
-    if (has_wild_die && this.dice.length) {
-      this.dice[min_position].extraClass += " brsw-discarded-roll";
-      this.dice[min_position].result = null;
-    }
-    this.isCritFail = await detect_fumble(
-      has_wild_die,
-      num_fumble_results,
-      this.dice,
-    );
-  }
 
-  remove_discarded_die() {
-    for (let die of this.dice) {
-      die.extraClass = die.extraClass.replace(/ brsw-discarded-roll/g, "");
-    }
-  }
+    async calculateTraitResults(tn, hasWildDie, isShorting) {
+        if (isShorting !== undefined) {
+            this.isShorting = isShorting;
+        }
+        let minimumValue = 10000000;
+        let highestTotal = -10000000;
+        let minPosition = 0;
+        let numFumbleResults = 0;
+        for (const [index, roll] of this.dice.entries()) {
+            numFumbleResults += roll.rawTotal == 1;
+            if (roll.rawTotal <= minimumValue) {
+                minPosition = index;
+                minimumValue = roll.rawTotal;
+            }
+            if (roll.finalTotal > highestTotal) {
+                highestTotal = roll.finalTotal;
+            }
+            roll.result = roll.finalTotal - tn;
+        }
 
-  load(data) {
-    Object.assign(this, data);
-    let new_dice = [];
-    for (let die of this.dice) {
-      new_dice.push(new Die(die));
+        this.removeDiscardedDie();
+
+        // Mark the lower die as discarded.
+        if (hasWildDie && this.dice.length) {
+            this.dice[minPosition].extraClass += " brsw-discarded-roll";
+            this.dice[minPosition].result = null;
+        }
+
+        this.isCritFail = await detectCritFail(hasWildDie, numFumbleResults, this.dice);
+
+        //If we're shorting, any failed roll is a crit fail
+        this.isCritFail = this.isCritFail || (this.isShorting && highestTotal < tn);
     }
-    this.dice = new_dice;
-  }
+
+    removeDiscardedDie() {
+        for (let die of this.dice) {
+            die.extraClass = die.extraClass.replace(/ brsw-discarded-roll/g, "");
+        }
+    }
+
+    load(data) {
+        Object.assign(this, data);
+        let new_dice = [];
+        for (let die of this.dice) {
+            new_dice.push(new Die(die));
+        }
+        this.dice = new_dice;
+    }
 }
 
 export class TraitRoll {
-  constructor() {
-    this.rolls = [];
-    this.tn = 4;
-    this.tn_reason = "BRSW.Default";
-    this.target_id = null;
-    this.wild_die = null;
-    this.modifiers = [];
-    this.selected_roll_index = null;
-  }
-
-  get is_rolled() {
-    return this.rolls.length > 0;
-  }
-
-  /**
-   * Adds a Foundry roll to the trait roll
-   * @param roll
-   */
-  async add_roll(roll) {
-    const new_roll = new SingleRoll(null);
-    new_roll.add_roll(roll, this.wild_die, this.total_modifiers);
-    await new_roll.calculate_trait_results(this.tn, this.wild_die);
-    this.rolls.push(new_roll);
-    this.selected_roll_index = this.rolls.indexOf(new_roll);
-  }
-
-  get currentRoll() {
-    if (this.rolls.length > 0) {
-      return this.rolls[this.selected_roll_index];
+    constructor() {
+        this.rolls = [];
+        this.tn = 4;
+        this.tn_reason = "BRSW.Default";
+        this.target_id = null;
+        this.wild_die = null;
+        this.modifiers = [];
+        this.selected_roll_index = null;
     }
-  }
 
-  get old_rolls() {
-    return this.rolls.filter((arr, index) => {
-      return index !== this.selected_roll_index;
-    });
-  }
-
-  get total_modifiers() {
-    let total = 0;
-    this.modifiers.forEach((mod) => {
-      if (mod && mod.value) {
-        total += mod.value;
-      }
-    });
-    // Round down the total in case it's a floating number
-    return Math.floor(total);
-  }
-
-  /**
-   * Loads data from an object
-   * @param data
-   */
-  load(data) {
-    Object.assign(this, data);
-    let new_rolls = [];
-    for (let roll of this.rolls) {
-      new_rolls.push(new SingleRoll(roll));
+    get is_rolled() {
+        return this.rolls.length > 0;
     }
-    this.rolls = new_rolls;
-  }
 
-  get rof() {
-    if (this.currentRoll) {
-      const wild_die = this.wild_die ? -1 : 0;
-      return this.currentRoll.dice.length + wild_die;
+    /**
+     * Adds a Foundry roll to the trait roll
+     * @param roll
+     */
+    async add_roll(roll, isShorting) {
+        const new_roll = new SingleRoll(null);
+        new_roll.add_roll(roll, this.wild_die, this.total_modifiers);
+        await new_roll.calculateTraitResults(this.tn, this.wild_die, isShorting);
+        this.rolls.push(new_roll);
+        this.selected_roll_index = this.rolls.indexOf(new_roll);
     }
-  }
 
-  async recalculate_trait_results() {
-    this._deep_update_modifiers();
-    for (let roll of this.rolls) {
-      await roll.calculate_trait_results(this.tn, this.wild_die);
+    get currentRoll() {
+        if (this.rolls.length > 0) {
+            return this.rolls[this.selected_roll_index];
+        }
     }
-  }
 
-  delete_range_modifiers() {
-    this.modifiers = this.modifiers.filter(modifier => modifier.type !== "range");
-  }
-
-  _deep_update_modifiers() {
-    for (let roll of this.rolls) {
-      for (let die of roll.dice) {
-        die.modifiers = this.total_modifiers;
-      }
+    get old_rolls() {
+        return this.rolls.filter((arr, index) => {
+            return index !== this.selected_roll_index;
+        });
     }
-  }
+
+    get total_modifiers() {
+        let total = 0;
+        this.modifiers.forEach((mod) => {
+            if (mod && mod.value) {
+                total += mod.value;
+            }
+        });
+        // Round down the total in case it's a floating number
+        return Math.floor(total);
+    }
+
+    /**
+     * Loads data from an object
+     * @param data
+     */
+    load(data) {
+        Object.assign(this, data);
+        let new_rolls = [];
+        for (let roll of this.rolls) {
+            new_rolls.push(new SingleRoll(roll));
+        }
+        this.rolls = new_rolls;
+    }
+
+    get rof() {
+        if (this.currentRoll) {
+            const wild_die = this.wild_die ? -1 : 0;
+            return this.currentRoll.dice.length + wild_die;
+        }
+    }
+
+    async recalculateTraitResults() {
+        this._deep_update_modifiers();
+        for (let roll of this.rolls) {
+            await roll.calculateTraitResults(this.tn, this.wild_die);
+        }
+    }
+
+    delete_range_modifiers() {
+        this.modifiers = this.modifiers.filter(modifier => modifier.type !== "range");
+    }
+
+    _deep_update_modifiers() {
+        for (let roll of this.rolls) {
+            for (let die of roll.dice) {
+                die.modifiers = this.total_modifiers;
+            }
+        }
+    }
 }

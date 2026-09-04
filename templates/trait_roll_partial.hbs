@@ -7,7 +7,7 @@
                     <span class="brsw-old-roll" data-index="{{@index}}">
                         {{#each dice}}
                             <span class="brsw-small-dice-image {{this.extraClass}}">
-                                {{this.final_total}}
+                                {{this.finalTotal}}
                             </span>
                         {{/each}}</span>
                 {{/each}}
@@ -20,7 +20,7 @@
                 {{#each traitRoll.currentRoll.dice}}
                     <div class="brsw-roll-value brsw-roll-value-total">
                         <span class="{{this.extraClass}}" title="{{this.result_text}}">
-                            {{this.final_total}}
+                            {{this.finalTotal}}
                         </span>
                         <i class="{{this.result_icon}} brsw-roll-value-result-icon"></i>
                     </div>

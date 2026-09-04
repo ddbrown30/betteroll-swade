@@ -1,5 +1,10 @@
 # Changelog
 
+# Version 5.25.0
+* Added support for shorting powers
+* Added PP mods when saving macros
+* We no longer enable fallback actions for powers
+
 # Version 5.24.2
 * Fixed null error that was breaking a bunch of stuff
 

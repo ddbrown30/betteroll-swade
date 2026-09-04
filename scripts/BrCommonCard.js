@@ -7,7 +7,7 @@ import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
 import { areBenniesAvailable, traitToDieString } from "./cards_common.js";
 import { get_actions, process_action } from "./global_actions.js";
-import { calc_pp_cost } from "./item_card.js";
+import { calcPPCost } from "./item_card.js";
 import { TraitRoll } from "./rolls.js";
 import { broofa, getAuthor, getUserTargets, getWhisperData, SettingsUtils, Utils } from "./utils.js";
 
@@ -57,7 +57,7 @@ export class BrCommonCard {
         this.showPopout = true;
         this.manual_mods = {};
         this.applicable_effects = [];
-        this.pp_modifiers = {};
+        this.ppModifiers = {};
         this.createChatMessage = true;
         if (message) {
             const data = this.message.getFlag("betterrolls-swade2", "br_data");
@@ -140,8 +140,8 @@ export class BrCommonCard {
             showPopout: this.showPopout,
             manual_mods: this.manual_mods,
             applicable_effects: this.applicable_effects,
-            pp_modifiers: this.pp_modifiers,
-            pp_cost: this.pp_cost,
+            ppModifiers: this.ppModifiers,
+            ppCost: this.ppCost,
             showActions: this.showActions,
             trait: this.trait,
         };
@@ -167,8 +167,8 @@ export class BrCommonCard {
             "showPopout",
             "manual_mods",
             "applicable_effects",
-            "pp_modifiers",
-            "pp_cost",
+            "ppModifiers",
+            "ppCost",
             "showActions",
         ];
         for (const field of FIELDS) {
@@ -503,7 +503,7 @@ export class BrCommonCard {
 
                 //Check if this item action exists in our PP mods
                 //If so, add it to the PP mods group
-                for (const ppMod of this.pp_modifiers.powerMods) {
+                for (const ppMod of this.ppModifiers.powerMods) {
                     const nameSimilarity = Utils.actionNameSimilarity(itemAction.name, game.i18n.localize(ppMod.name));
                     if (nameSimilarity === 1) {
                         if (!this.action_sections.hasOwnProperty("power")) {
@@ -622,11 +622,11 @@ export class BrCommonCard {
      * Populates actions needed for the No Power Points optional rule
      */
     populateNoPowerPointsActions() {
-        if (!game.settings.get("swade", "noPowerPoints") || !this.item || !this.item.system.pp) {
+        if (!Utils.isNoPPEnabled() || !this.item || !this.item.system.pp) {
             return;
         }
 
-        const ppCost = calc_pp_cost(this);
+        const ppCost = calcPPCost(this, false);
         const penaltySelections = Utils.getNoPPPenaltySelections(ppCost);
 
         const action_array = [];
@@ -666,8 +666,8 @@ export class BrCommonCard {
     }
 
     refreshPPModsFromActions() {
-        if (this.pp_modifiers.genericMods) {
-            for (const mod of this.pp_modifiers.genericMods) {
+        if (this.ppModifiers.genericMods) {
+            for (const mod of this.ppModifiers.genericMods) {
                 if (mod.actionId) {
                     const action = this.getActionById(mod.actionId);
                     if (action) {
@@ -677,8 +677,8 @@ export class BrCommonCard {
             }
         }
 
-        if (this.pp_modifiers.powerMods) {
-            for (const mod of this.pp_modifiers.powerMods) {
+        if (this.ppModifiers.powerMods) {
+            for (const mod of this.ppModifiers.powerMods) {
                 const action = this.getActionByName(mod.name);
                 if (action) {
                     mod.selected = action.selected;
@@ -917,7 +917,7 @@ export class BrCommonCard {
 
             this.getTrait();
 
-            this.pp_cost = this.render_data.is_power ? calc_pp_cost(this) : 0;
+            this.ppCost = this.render_data.isPower ? calcPPCost(this, true) : 0;
         }
 
         const newContent = await foundry.applications.handlebars.renderTemplate(
@@ -954,8 +954,8 @@ export class BrCommonCard {
         data.showSave = !this.vehicleActor && BRSW2_CONST.ALLOW_SAVE_REPEAT_CARDS.has(this.type);
         data.showManualMods = !!(this.trait || this.damage);
         data.showTools = data.showRepeat || data.showSave || data.showManualMods;
-        data.noPowerPoints = game.settings.get("swade", "noPowerPoints");
-        data.ppPenalty = -Math.ceil(this.pp_cost / 2);
+        data.noPowerPoints = Utils.isNoPPEnabled();
+        data.ppPenalty = -Math.ceil(this.ppCost / 2);
         data.shots_pp_info = this.itemShots;
         data.applicable_effects = this.applicable_effects;
         return data;

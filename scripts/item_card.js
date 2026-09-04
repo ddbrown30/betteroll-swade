@@ -2,7 +2,7 @@
 /* globals Token, TokenDocument, game, CONST, canvas, console, CONFIG, ChatMessage, ui, Hooks, Roll, succ, structuredClone, $, fromUuid */
 // noinspection JSCheckFunctionSignatures
 
-import { get_current_generic_mods } from "../config/generic_pp_modifiers.js";
+import { get_current_generic_mods as getCurrentGenericMods } from "../config/generic_pp_modifiers.js";
 import { BrCommonCard } from "./BrCommonCard.js";
 import { brAction } from "./actions.js";
 import { USER_SETTING_KEYS, WORLD_SETTING_KEYS } from "./brsw2-config.js";
@@ -54,7 +54,7 @@ const ROF_BULLETS = { 1: 1, 2: 5, 3: 10, 4: 20, 5: 40, 6: 50 };
 export async function createItemCard(
     origin,
     item_id,
-    { actions_stored = {}, vehicle, options = {} } = {},
+    { actions_stored = {}, ppModsStored = {}, vehicle, options = {} } = {},
 ) {
     const actor = Utils.toActor(origin);
 
@@ -73,7 +73,7 @@ export async function createItemCard(
 
     const description = item.system.description;
     const ammoEnabled = parseInt(item.system.shots) || item.system.ammo;
-    const is_power = !isNaN(parseFloat(item.system.pp)) || item.type === "power";
+    const isPower = !isNaN(parseFloat(item.system.pp)) || item.type === "power";
     const subtract_select = ammoEnabled
         ? SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.defaultAmmoManagement)
         : false;
@@ -88,11 +88,11 @@ export async function createItemCard(
             trait: trait ?? false,
             ammo: ammoEnabled,
             subtract_selected: subtract_select,
-            subtractPP: is_power
+            subtractPP: isPower
                 ? Utils.getDefaultPPManagementSetting()
                 : false,
             damage_rolls: [],
-            is_power: is_power,
+            isPower: isPower,
             used_shots: 0,
             description: description,
             swade_templates: get_template_from_item(item),
@@ -111,7 +111,7 @@ export async function createItemCard(
     brCard.damage = !!item.system.damage;
     brCard.item_id = item_id;
     brCard.applicable_effects = get_applicable_effects(item);
-    brCard.pp_modifiers = is_power ? get_pp_mods(item) : {};
+    brCard.ppModifiers = isPower ? getPPMods(item, ppModsStored) : {};
     brCard.checkWarnings(brCard.render_data);
 
     await brCard.render(actions_stored);
@@ -129,13 +129,16 @@ function get_applicable_effects(item) {
     return effects;
 }
 
-function get_pp_mods(item) {
-    const pp_mods = {
+function getPPMods(item, ppModsStored) {
+    const ppMods = {
         powerMods: [],
         additionalRecipientsMod: {},
-        extraCost: 0,
+        extraCost: ppModsStored?.extraCost ?? 0,
+        shortAmount: ppModsStored?.shortAmount ?? 0,
     };
-    pp_mods.genericMods = get_current_generic_mods().map(mod => ({ ...mod, selected: false }));
+
+    //Default selected is false so if it's not in ppModsOverrides, we still end up with false
+    ppMods.genericMods = getCurrentGenericMods().map(mod => ({ ...mod, selected: !!ppModsStored[mod.name] }));
 
     const processLis = (li) => {
         const text = li.textContent.trim();
@@ -149,7 +152,7 @@ function get_pp_mods(item) {
         };
 
         if (mod.name.toLowerCase() == "additional recipients") {
-            pp_mods.additionalRecipientsMod = {
+            ppMods.additionalRecipientsMod = {
                 name: Utils.toTitleCase(mod.name),
                 cost: mod.costs[0],
                 isEpic: mod.isEpic,
@@ -201,17 +204,21 @@ function get_pp_mods(item) {
     if (modifiers.length) {
         for (let mod of modifiers) {
             for (let cost of mod.costs) {
-                pp_mods.powerMods.push({
-                    name: Utils.toTitleCase(mod.name),
+                const name = Utils.toTitleCase(mod.name);
+                const exclusiveGroup = mod.costs.length > 1 ? mod.name : undefined;
+                // Mods with multiple cost tiers share a name, so the cost has to be part of the key
+                const key = exclusiveGroup ? `${name}|${cost}` : name;
+                ppMods.powerMods.push({
+                    name,
                     cost: cost,
                     isEpic: mod.isEpic,
-                    selected: false,
-                    exclusiveGroup: mod.costs.length > 1 ? mod.name : undefined,
+                    selected: !!ppModsStored[key], //Default selected is false so if it's not in ppModsOverrides, we still end up with false
+                    exclusiveGroup,
                 });
             }
         }
 
-        pp_mods.powerMods.sort((a, b) => {
+        ppMods.powerMods.sort((a, b) => {
             const nameA = a.name.toLowerCase();
             const nameB = b.name.toLowerCase();
             if (nameA < nameB) {
@@ -225,23 +232,23 @@ function get_pp_mods(item) {
         });
     }
 
-    return pp_mods;
+    return ppMods;
 }
 
-export function calc_pp_cost(brCard) {
+export function calcPPCost(brCard, applyShorting) {
     if (brCard.item.system.innate && !SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.innatePowersSpendPP)) {
         return 0;
     }
 
     let ppCost = brCard.item.system.pp;
 
-    ppCost += brCard.pp_modifiers.extraCost;
+    ppCost += brCard.ppModifiers.extraCost;
 
-    if (brCard.pp_modifiers.additionalRecipientsMod.name) {
-        ppCost += brCard.pp_modifiers.additionalRecipientsMod.cost * brCard.pp_modifiers.additionalRecipientsMod.count;
+    if (brCard.ppModifiers.additionalRecipientsMod.name) {
+        ppCost += brCard.ppModifiers.additionalRecipientsMod.cost * brCard.ppModifiers.additionalRecipientsMod.count;
     }
 
-    const modGroups = [brCard.pp_modifiers.genericMods, brCard.pp_modifiers.powerMods];
+    const modGroups = [brCard.ppModifiers.genericMods, brCard.ppModifiers.powerMods];
     for (const group of modGroups) {
         for (const mod of group) {
             if (mod.selected) {
@@ -250,6 +257,12 @@ export function calc_pp_cost(brCard) {
                     ppCost += cost;
                 }
             }
+        }
+    }
+
+    if (applyShorting) {
+        if (brCard.ppModifiers.shortAmount) {
+            ppCost = Math.max(0, ppCost - Math.abs(brCard.ppModifiers.shortAmount));
         }
     }
 
@@ -296,7 +309,7 @@ function createItemCardFromId(
     token_id,
     actor_id,
     itemId,
-    { actions_stored = {}, options = {} } = {},
+    { actions_stored = {}, ppModsStored = {}, options = {} } = {},
 ) {
     let origin;
     if (canvas && token_id) {
@@ -310,6 +323,7 @@ function createItemCardFromId(
     }
     return createItemCard(origin, itemId, {
         actions_stored: actions_stored,
+        ppModsStored: ppModsStored,
     });
 }
 
@@ -491,15 +505,15 @@ export function activateItemCardListeners(brCard, html) {
         //Update the pp text of the card we just clicked on.
         //This won't affect the popout or vice versa,
         //but doing that would require an update to the chat message which would refresh the render which is disruptive
-        if (game.settings.get("swade", "noPowerPoints")) {
+        if (Utils.isNoPPEnabled()) {
             const ppPenalty = ev.target.parentElement.parentElement.querySelector(".brsw-pp-penalty");
-            ppPenalty.innerText = -Math.ceil(calc_pp_cost(brCard) / 2);
+            ppPenalty.innerText = -Math.ceil(calcPPCost(brCard, false) / 2);
         } else {
             const ppRemaining = ev.target.parentElement.parentElement.querySelector(".brsw-shots-pp");
             ppRemaining.innerText = brCard.itemShots;
 
             const ppCost = ev.target.parentElement.parentElement.querySelector(".brsw-pp-cost");
-            ppCost.innerText = calc_pp_cost(brCard);
+            ppCost.innerText = calcPPCost(brCard, true);
         }
     });
 
@@ -673,13 +687,12 @@ export async function displayPPChangeCard(actor, chatData) {
 }
 
 /**
- * Discount pps from an actor © Javier or Arcane Device © Salieri
  *
  * @param {BrCommonCard} brCard
  * @param prevSpentPP PP we already spent on a previous roll
  */
 export async function spendPP(brCard, prevSpentPP) {
-    if (game.settings.get("swade", "noPowerPoints")) {
+    if (Utils.isNoPPEnabled()) {
         return 0;
     }
 
@@ -719,7 +732,7 @@ export async function spendPP(brCard, prevSpentPP) {
         dataKey = `system.powerPoints.${item.system.arcane}.value`;
     }
 
-    const basePPCost = success ? calc_pp_cost(brCard) : 1;
+    const basePPCost = success ? calcPPCost(brCard, true) : 1;
     let ppCost = basePPCost;
 
     if (raise) {
@@ -733,7 +746,7 @@ export async function spendPP(brCard, prevSpentPP) {
         }
     }
 
-    brCard.render_data.used_pp = ppCost;
+    brCard.render_data.usedPP = ppCost;
     await brCard.save();
 
     const newPP = currentPP - ppCost + prevSpentPP;
@@ -956,6 +969,18 @@ export async function rollItem(brCard, html, expendBennie, rollDamage) {
         }
     }
 
+    // Power shorting
+    brCard.render_data.isShorting = false;
+    if (brCard.item.type === "power" && brCard.ppModifiers.shortAmount) {
+        const ppCost = calcPPCost(brCard, false);
+        //We can't short more than the cost
+        const shortAmount = Math.min(ppCost, Math.abs(brCard.ppModifiers.shortAmount));
+        if (shortAmount) {
+            brCard.render_data.isShorting = true;
+            extraData.modifiers.push(new TraitModifier(game.i18n.localize("BRSW.Shorting"), -shortAmount));
+        }
+    }
+
     await roll_trait(
         brCard,
         brCard.traitDie,
@@ -978,9 +1003,9 @@ export async function rollItem(brCard, html, expendBennie, rollDamage) {
 
     // Power points management
     const subtractPP = brCard.render_data.subtractPP;
-    const previous_pp = brCard.traitRoll.old_rolls.length ? brCard.render_data.used_pp : 0;
+    const previous_pp = brCard.traitRoll.old_rolls.length ? brCard.render_data.usedPP : 0;
     if (subtractPP && !isNaN(parseInt(brCard.item.system.pp)) && brCard.item.type === "power") {
-        brCard.render_data.used_pp = await spendPP(brCard, previous_pp);
+        brCard.render_data.usedPP = await spendPP(brCard, previous_pp);
     }
 
     await brCard.render();

@@ -688,6 +688,12 @@
     flex: 1;
 }
 
+.brsw-pp-dialog .input-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
 /* Global Actions Menu */
 
 .brsw-global-actions-form {

@@ -153,21 +153,21 @@ export function getActorFromIds(token_id, actor_id) {
  * Saves a card as a macro
  * @param {BrCommonCard} brCard
  */
-function save_macro(brCard) {
-    let macro_slot = 0;
+function saveMacro(brCard) {
+    let macroSlot = 0;
     let { page } = ui.hotbar;
     // Starting from the current hotbar page, find the first empty slot
     do {
         const macros = game.user.getHotbarMacros(page);
         for (const macro of macros) {
             if (macro.macro === undefined || macro.macro === null) {
-                macro_slot = macro.slot;
+                macroSlot = macro.slot;
                 break;
             }
         }
         page = page < 5 ? page + 1 : 1;
-    } while (macro_slot === 0 && page !== ui.hotbar.page);
-    const command = create_macro_command_from_card(brCard);
+    } while (macroSlot === 0 && page !== ui.hotbar.page);
+    const command = createMacroCommandFromCard(brCard);
     Macro.create({
         name: brCard.render_data.header.title,
         img: brCard.render_data.header.img || "icons/svg/aura.svg",
@@ -175,10 +175,9 @@ function save_macro(brCard) {
         command: command,
         scope: "global",
     }).then((macro) => {
-        // noinspection JSIgnoredPromiseFromCall
         // If we found an empty slot, assign the macro to that slot
-        if (macro_slot > 0) {
-            game.user.assignHotbarMacro(macro, macro_slot).catch(() => {
+        if (macroSlot > 0) {
+            game.user.assignHotbarMacro(macro, macroSlot).catch(() => {
                 console.error("Error assigning macro to Hot Bar");
             });
         }
@@ -309,7 +308,7 @@ export function activateCommonListeners(brCard, html) {
             async (values) => {
                 const new_value = values.new_result;
                 // Actual roll manipulation
-                await override_die_result(brCard, die_index, new_value);
+                await overrideDieResult(brCard, die_index, new_value);
             },
         );
     });
@@ -342,7 +341,7 @@ export function activateCommonListeners(brCard, html) {
     });
     // Save a macro using the current settings
     html.querySelector(".brsw-save-macro")?.addEventListener("click", () => {
-        save_macro(brCard);
+        saveMacro(brCard);
     });
     // Open the manual mods popup
     html
@@ -357,29 +356,46 @@ export function activateCommonListeners(brCard, html) {
     });
 }
 
-function create_macro_command_from_card(brCard) {
-    let actions_stored = "";
+function createMacroCommandFromCard(brCard) {
+    let actionsStored = "";
     Utils.forEachActionGroup(brCard, group => {
         for (const action of group.actions) {
-            actions_stored += `'${action.code.id}':` + action.selected + `,`;
+            actionsStored += `'${action.code.id}':` + action.selected + `,`;
         }
     });
 
-    let card_function_name = "";
-    let roll_function = "";
+    let ppModsStored = {};
+
+    if (brCard.render_data.isPower) {
+        for (const mod of brCard.ppModifiers.genericMods) {
+            ppModsStored[mod.name] = mod.selected;
+        }
+
+        for (const mod of brCard.ppModifiers.powerMods) {
+            // Mods with multiple cost tiers share a name, so the cost has to be part of the key
+            const key = mod.exclusiveGroup ? `${mod.name}|${mod.cost}` : mod.name;
+            ppModsStored[key] = mod.selected;
+        }
+
+        ppModsStored.extraCost = brCard.ppModifiers.extraCost;
+        ppModsStored.shortAmount = brCard.ppModifiers.shortAmount;
+    }
+
+    let cardFunctionName = "";
+    let rollFunction = "";
     let id = "";
     if (brCard.item_id) {
-        card_function_name = "createItemCardFromId";
-        roll_function =
+        cardFunctionName = "createItemCardFromId";
+        rollFunction =
             "game.brsw.rollItem(message, $(message.content), false, behaviour.includes('damage'));";
         id = brCard.item_id;
     } else if (brCard.skill) {
-        card_function_name = "createSkillCardFromId";
-        roll_function = "game.brsw.rollSkill(message, $(message.content), false);";
+        cardFunctionName = "createSkillCardFromId";
+        rollFunction = "game.brsw.rollSkill(message, $(message.content), false);";
         id = brCard.trait.id;
     } else if (brCard.attribute) {
-        card_function_name = "createAttributeCardFromId";
-        roll_function =
+        cardFunctionName = "createAttributeCardFromId";
+        rollFunction =
             "game.brsw.rollAttribute(message, $(message.content), false);";
         id = brCard.trait.name;
     }
@@ -389,14 +405,14 @@ function create_macro_command_from_card(brCard) {
     game.swade.rollItemMacro(\`${brCard.render_data.header.title}\`);
     return;
   }
-  let message = await game.brsw.${card_function_name}(
+  let message = await game.brsw.${cardFunctionName}(
     '${brCard.token_id}',
     '${brCard.actor_id}',
     '${id}',
-    {actions_stored:{${actions_stored}}});
+    {actions_stored:{${actionsStored}}, ppModsStored:${JSON.stringify(ppModsStored)}});
   if (event) {
     if (behaviour.includes('trait')) {
-      ${roll_function}
+      ${rollFunction}
     }
   }
   `;
@@ -522,7 +538,7 @@ export function traitToDieString(trait) {
     return `d${sides}${mod ? (mod > 0 ? "+" : "") + mod : ""}`;
 }
 
-export async function detect_fumble(has_wild_die, num_fumble_results, dice) {
+export async function detectCritFail(has_wild_die, num_fumble_results, dice) {
     if (num_fumble_results === 0) {
         //No dice came up as a 1 so it's not possible to fumble
         return false;
@@ -549,7 +565,7 @@ export async function detect_fumble(has_wild_die, num_fumble_results, dice) {
     } else {
         //This roll does have a wild die so we need to check if it came up as a 1
         const wild_die = dice.find((d) => d.wild_die);
-        if (wild_die.raw_total !== 1) {
+        if (wild_die.rawTotal !== 1) {
             //It's not possible to fumble unless the wild die is a 1
             return false;
         }
@@ -997,7 +1013,7 @@ export async function roll_trait(brCard, traitDie, traitName, extraData) {
 
     const roll = new Roll(rollString);
     await roll.evaluate();
-    await brCard.traitRoll.add_roll(roll);
+    await brCard.traitRoll.add_roll(roll, brCard.render_data.isShorting);
     await roll_dice(brCard.message, brCard.traitRoll, roll);
 
     await brCard.render();
@@ -1018,12 +1034,9 @@ async function old_roll_clicked(event, brCard) {
     if (
         brCard.item &&
         !isNaN(parseInt(brCard.item.system.pp)) &&
-        brCard.render_data.used_pp
+        brCard.render_data.usedPP
     ) {
-        brCard.render_data.used_pp = await spendPP(
-            brCard,
-            brCard.render_data.used_pp,
-        );
+        brCard.render_data.usedPP = await spendPP(brCard, brCard.render_data.usedPP);
     }
     await brCard.render();
     brCard
@@ -1039,19 +1052,22 @@ async function old_roll_clicked(event, brCard) {
  * @param {int} die_index
  * @param {int, string} new_value
  */
-async function override_die_result(brCard, die_index, new_value) {
-    brCard.traitRoll.currentRoll.dice[die_index].raw_total =
-        parseInt(new_value);
-    await brCard.traitRoll.recalculate_trait_results(
+async function overrideDieResult(brCard, die_index, new_value) {
+    brCard.traitRoll.currentRoll.dice[die_index].rawTotal = parseInt(new_value);
+
+    await brCard.traitRoll.recalculateTraitResults(
         brCard.traitRoll.tn,
         brCard.traitRoll.wild_die,
     );
+
     await brCard.render();
     await brCard.save();
+
     // Rerun macros.
     const macro_actions = brCard.getSelectedActions().filter((action) => {
         return action.code.hasOwnProperty("runSkillMacro");
     });
+
     if (macro_actions) {
         const macros = [];
         for (const macro of macro_actions) {
@@ -1075,7 +1091,7 @@ async function add_modifier(brCard, modifier) {
             await roll_dice(brCard.message, brCard.traitRoll, newMod.dice);
         }
         brCard.traitRoll.modifiers.push(newMod);
-        await brCard.traitRoll.recalculate_trait_results();
+        await brCard.traitRoll.recalculateTraitResults();
         await brCard.render();
         brCard.save().catch(() => {
             console.error("Error saving a card after adding a modifier");
@@ -1090,7 +1106,7 @@ async function add_modifier(brCard, modifier) {
  */
 async function delete_modifier(brCard, index) {
     brCard.traitRoll.modifiers.splice(index, 1);
-    await brCard.traitRoll.recalculate_trait_results();
+    await brCard.traitRoll.recalculateTraitResults();
     await brCard.render();
     brCard.save().catch(() => {
         console.error("Error saving a card after deleting a modifier");
@@ -1110,7 +1126,7 @@ async function editModifier(brCard, index, newModifier) {
     if (Number.isFinite(modValue)) {
         brCard.traitRoll.modifiers[index].name = newModifier.name;
         brCard.traitRoll.modifiers[index].value = modValue;
-        await brCard.traitRoll.recalculate_trait_results();
+        await brCard.traitRoll.recalculateTraitResults();
         await brCard.render();
         brCard.save();
     }
@@ -1128,7 +1144,7 @@ async function edit_tn(brCard, new_tn, reason) {
     if (reason) {
         brCard.traitRoll.tn_reason = reason;
     }
-    await brCard.traitRoll.recalculate_trait_results();
+    await brCard.traitRoll.recalculateTraitResults();
     await brCard.render();
     brCard.save().catch(() => {
         console.error("Error saving a card after editing a TN");
@@ -1176,7 +1192,7 @@ async function getTNFromTarget(brCard, selected) {
             tn.modifiers,
         );
 
-        await brCard.traitRoll.recalculate_trait_results();
+        await brCard.traitRoll.recalculateTraitResults();
         await brCard.render();
         await brCard.save();
     }

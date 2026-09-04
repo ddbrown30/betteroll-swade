@@ -59,9 +59,7 @@ If this action is checked it will add a penalty of 4 to the skill roll and a bon
   can use an empty string for no wild die.
 * `rerollSkillMod`: A number used as a modifier for skill reroll
 * `rerollDamageMod`: A number used as a modifier for damage reroll
-* `resourcesUsed`: A number that makes the action use that number of shots. If the item is a power and the values is a
-  simple number it will make it use that number of PPs instead. If the value is a number preceded by a plus or minus
-  symbol it will add or subtract that number from the usual PP cost of the power.
+* `resourcesUsed`: A number that makes the action use that number of shots
 * `rof`: Number of trait dice rolled.
 * `tnOverride`: A number that is set as the tn of the roll. Note that this takes precedence from other ways of setting
   the target number like targeting. This option accepts the special value "Parry", when it is present and there is a
