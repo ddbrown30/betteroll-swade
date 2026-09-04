@@ -110,7 +110,7 @@ async function roll_incapacitation(brCard, spend_benny) {
     for (let roll of brCard.traitRoll.rolls) {
         for (let die of roll.dice) {
             if (die.result !== null) {
-                result = Math.max(die.final_total, result);
+                result = Math.max(die.finalTotal, result);
             }
         }
     }

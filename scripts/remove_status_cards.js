@@ -143,7 +143,7 @@ async function roll_unshaken(brCard, use_bennie) {
     for (let roll of brCard.traitRoll.rolls) {
       for (let die of roll.dice) {
         if (die.result !== null) {
-          result = Math.max(die.final_total, result);
+          result = Math.max(die.finalTotal, result);
         }
       }
     }
@@ -280,7 +280,7 @@ async function roll_unstun(brCard) {
   for (let roll of brCard.traitRoll.rolls) {
     for (let die of roll.dice) {
       if (die.result !== null) {
-        result = Math.max(die.final_total, result);
+        result = Math.max(die.finalTotal, result);
       }
     }
   }

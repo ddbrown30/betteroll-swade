@@ -309,7 +309,7 @@ export function activateCommonListeners(brCard, html) {
             async (values) => {
                 const new_value = values.new_result;
                 // Actual roll manipulation
-                await override_die_result(brCard, die_index, new_value);
+                await overrideDieResult(brCard, die_index, new_value);
             },
         );
     });
@@ -522,7 +522,7 @@ export function traitToDieString(trait) {
     return `d${sides}${mod ? (mod > 0 ? "+" : "") + mod : ""}`;
 }
 
-export async function detect_fumble(has_wild_die, num_fumble_results, dice) {
+export async function detectCritFail(has_wild_die, num_fumble_results, dice) {
     if (num_fumble_results === 0) {
         //No dice came up as a 1 so it's not possible to fumble
         return false;
@@ -549,7 +549,7 @@ export async function detect_fumble(has_wild_die, num_fumble_results, dice) {
     } else {
         //This roll does have a wild die so we need to check if it came up as a 1
         const wild_die = dice.find((d) => d.wild_die);
-        if (wild_die.raw_total !== 1) {
+        if (wild_die.rawTotal !== 1) {
             //It's not possible to fumble unless the wild die is a 1
             return false;
         }
@@ -997,7 +997,7 @@ export async function roll_trait(brCard, traitDie, traitName, extraData) {
 
     const roll = new Roll(rollString);
     await roll.evaluate();
-    await brCard.traitRoll.add_roll(roll);
+    await brCard.traitRoll.add_roll(roll, brCard.render_data.isShorting);
     await roll_dice(brCard.message, brCard.traitRoll, roll);
 
     await brCard.render();
@@ -1018,12 +1018,9 @@ async function old_roll_clicked(event, brCard) {
     if (
         brCard.item &&
         !isNaN(parseInt(brCard.item.system.pp)) &&
-        brCard.render_data.used_pp
+        brCard.render_data.usedPP
     ) {
-        brCard.render_data.used_pp = await spendPP(
-            brCard,
-            brCard.render_data.used_pp,
-        );
+        brCard.render_data.usedPP = await spendPP(brCard, brCard.render_data.usedPP);
     }
     await brCard.render();
     brCard
@@ -1039,19 +1036,22 @@ async function old_roll_clicked(event, brCard) {
  * @param {int} die_index
  * @param {int, string} new_value
  */
-async function override_die_result(brCard, die_index, new_value) {
-    brCard.traitRoll.currentRoll.dice[die_index].raw_total =
-        parseInt(new_value);
-    await brCard.traitRoll.recalculate_trait_results(
+async function overrideDieResult(brCard, die_index, new_value) {
+    brCard.traitRoll.currentRoll.dice[die_index].rawTotal = parseInt(new_value);
+
+    await brCard.traitRoll.recalculateTraitResults(
         brCard.traitRoll.tn,
         brCard.traitRoll.wild_die,
     );
+
     await brCard.render();
     await brCard.save();
+
     // Rerun macros.
     const macro_actions = brCard.getSelectedActions().filter((action) => {
         return action.code.hasOwnProperty("runSkillMacro");
     });
+
     if (macro_actions) {
         const macros = [];
         for (const macro of macro_actions) {
@@ -1075,7 +1075,7 @@ async function add_modifier(brCard, modifier) {
             await roll_dice(brCard.message, brCard.traitRoll, newMod.dice);
         }
         brCard.traitRoll.modifiers.push(newMod);
-        await brCard.traitRoll.recalculate_trait_results();
+        await brCard.traitRoll.recalculateTraitResults();
         await brCard.render();
         brCard.save().catch(() => {
             console.error("Error saving a card after adding a modifier");
@@ -1090,7 +1090,7 @@ async function add_modifier(brCard, modifier) {
  */
 async function delete_modifier(brCard, index) {
     brCard.traitRoll.modifiers.splice(index, 1);
-    await brCard.traitRoll.recalculate_trait_results();
+    await brCard.traitRoll.recalculateTraitResults();
     await brCard.render();
     brCard.save().catch(() => {
         console.error("Error saving a card after deleting a modifier");
@@ -1110,7 +1110,7 @@ async function editModifier(brCard, index, newModifier) {
     if (Number.isFinite(modValue)) {
         brCard.traitRoll.modifiers[index].name = newModifier.name;
         brCard.traitRoll.modifiers[index].value = modValue;
-        await brCard.traitRoll.recalculate_trait_results();
+        await brCard.traitRoll.recalculateTraitResults();
         await brCard.render();
         brCard.save();
     }
@@ -1128,7 +1128,7 @@ async function edit_tn(brCard, new_tn, reason) {
     if (reason) {
         brCard.traitRoll.tn_reason = reason;
     }
-    await brCard.traitRoll.recalculate_trait_results();
+    await brCard.traitRoll.recalculateTraitResults();
     await brCard.render();
     brCard.save().catch(() => {
         console.error("Error saving a card after editing a TN");
@@ -1176,7 +1176,7 @@ async function getTNFromTarget(brCard, selected) {
             tn.modifiers,
         );
 
-        await brCard.traitRoll.recalculate_trait_results();
+        await brCard.traitRoll.recalculateTraitResults();
         await brCard.render();
         await brCard.save();
     }

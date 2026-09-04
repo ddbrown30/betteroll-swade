@@ -21,20 +21,30 @@
             </div>
         </fieldset>
     {{/if}}
-    {{#if additionalRecipientsMod.name}}
+    <div class="input-groups">
+        {{#if additionalRecipientsMod.name}}
+            <div class="form-group">
+                <label for="additional-recipients">
+                    {{#if isEpic}}<i class="fas fa-star" style="color: #db8f26;"></i>{{/if}}
+                    {{localize additionalRecipientsMod.name}} [{{additionalRecipientsMod.cost}}PP]
+                </label>
+                <input type='number' id='additional-recipients' value='{{additionalRecipientsMod.count}}' />
+            </div>
+        {{/if}}
         <div class="form-group">
-            <label for="additional-recipients">
-                {{#if isEpic}}<i class="fas fa-star" style="color: #db8f26;"></i>{{/if}}
-                {{localize additionalRecipientsMod.name}} [{{additionalRecipientsMod.cost}}PP]
+            <label for="extra-pp">
+                {{localize "BRSW.PPManagement.ExtraCosts"}}
             </label>
-            <input type='number' id='additional-recipients' value='{{additionalRecipientsMod.count}}' />
+            <input type='number' id='extra-pp' value='{{extraCost}}' />
         </div>
-    {{/if}}
-    <div class="form-group">
-        <label for="extra-pp">
-            {{localize "Extra PP Costs"}}
-        </label>
-        <input type='number' id='extra-pp' value='{{extraCost}}' />
+        {{#unless noPowerPoints}}
+            <div class="form-group">
+                <label for="short-amount">
+                    {{localize "BRSW.PPManagement.ShortAmount"}}
+                </label>
+                <input type='number' id='short-amount' value='{{shortAmount}}' />
+            </div>
+        {{/unless}}
     </div>
     <footer class="form-footer">
         <button type="button" data-action="set">{{localize "BRSW.PPManagement.Set"}}</button>

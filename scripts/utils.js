@@ -660,6 +660,10 @@ export class Utils {
         return !!edge;
     }
 
+    static isNoPPEnabled() {
+        return game.settings.get("swade", "noPowerPoints");
+    }
+
     static getNoPPPenaltySelections(ppCost) {
         const result = [];
         if (ppCost === 0) return result;
