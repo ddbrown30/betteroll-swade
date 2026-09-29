@@ -15,6 +15,7 @@ import { TraitModifier } from "./modifiers.js";
 import {
     createUnshakeCard,
     createUnstunCard,
+    resolveRendingAttack,
 } from "./remove_status_cards.js";
 import { TraitRoll } from "./rolls.js";
 import {
@@ -1026,6 +1027,11 @@ export async function roll_trait(brCard, traitDie, traitName, extraData) {
  * @param {BrCommonCard } brCard - The card to be updated
  */
 async function old_roll_clicked(event, brCard) {
+    const isRendingCard = brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_RENDING_CARD;
+    if (isRendingCard && brCard.render_data.rendingWoundApplied) {
+        // The outcome is final once the wound has been applied
+        return;
+    }
     let index = parseInt(event.currentTarget.dataset.index);
     if (index >= brCard.traitRoll.selected_roll_index) {
         index += 1;
@@ -1037,6 +1043,10 @@ async function old_roll_clicked(event, brCard) {
         brCard.render_data.usedPP
     ) {
         brCard.render_data.usedPP = await spendPP(brCard, brCard.render_data.usedPP);
+    }
+    if (isRendingCard) {
+        await resolveRendingAttack(brCard);
+        return;
     }
     await brCard.render();
     brCard

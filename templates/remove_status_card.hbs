@@ -5,6 +5,14 @@
 {{#if traitRoll.rolls}}
   {{>"modules/betterrolls-swade2/templates/trait_roll_partial.hbs"}}
   {{>"modules/betterrolls-swade2/templates/trait_result_partial.hbs"}}
+  {{#if showApplyWound}}
+    <div class="brsw-button-row brsw-form brsw-card-row-divider">
+      <button class="brsw-apply-wound-button brsw-full-button">
+        <i class="fas fa-tint"></i>
+        {{localize "BRSW.ApplyWound"}}
+      </button>
+    </div>
+  {{/if}}
 {{else}}
   <div class="brsw-button-row brsw-form brsw-card-row-divider">
     <button class="brsw-spirit-button brsw-full-button">

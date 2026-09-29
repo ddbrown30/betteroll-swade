@@ -826,7 +826,6 @@
 .brsw-dialog-button {
     padding-block: calc(var(--brsw-spacing) * 0.5);
     padding-inline: calc(var(--brsw-spacing) * 5);
-    margin-right: calc(var(--brsw-spacing) * 2);
     margin-bottom: calc(var(--brsw-spacing) * 2);
     font-weight: var(--brsw-font-weight-medium);
     background-color: var(--brsw-button-bg-color);
@@ -1202,7 +1201,11 @@
 
 .brsw-spirit-button {
     font-weight: var(--brsw-font-weight-medium);
-    margin-right: calc(var(--brsw-spacing) * 2);
+    margin-block: calc(var(--brsw-spacing) * 2);
+}
+
+.brsw-apply-wound-button {
+    font-weight: var(--brsw-font-weight-medium);
     margin-block: calc(var(--brsw-spacing) * 2);
 }
 
