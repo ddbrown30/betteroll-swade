@@ -10,6 +10,7 @@ export class BRSW2_CONST {
         TYPE_INJ_CARD: 12,
         TYPE_UNSHAKE_CARD: 13,
         TYPE_UNSTUN_CARD: 14,
+        TYPE_RENDING_CARD: 15,
         TYPE_RESULT_CARD: 100,
     };
 
@@ -186,4 +187,6 @@ export class BRSW2_CONST {
         BRSW2_CONST.BRSW_CARD_TYPES.TYPE_SKILL_CARD,
         BRSW2_CONST.BRSW_CARD_TYPES.TYPE_ITEM_CARD,
     ]);
+
+    static RENDING_ATTACK_NAME = "rending-attack";
 }
