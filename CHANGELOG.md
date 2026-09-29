@@ -3,6 +3,7 @@
 # Version 5.29.0
 * Added support for rending attacks. The actual status effect is added by SWPF, SUCC, or other modules. This change just allows BR2 to handle the expiration behaviour when the effect is present
 * Fixed Stun recovery using Spirit instead of Vigor
+* Fixed things like Elan not working on the Unstun reroll
 
 # Version 5.28.0
 * Added item_damage_has_type, target_has_damage_resistance, and target_has_damage_weakness selectors
