@@ -6,6 +6,7 @@ import * as BRSW2_CONFIG from "./brsw2-config.js";
 import { BRSW2_CONST } from "./brsw2-const.js";
 import {
     create_common_card,
+    process_common_actions,
     roll_trait,
     spendBenny,
     withButtonSpinner,
@@ -150,10 +151,10 @@ export function activateRemoveStatusCardListeners(
 /**
  * Checks if a benny has been expended and rolls to remove shaken
  * @param {BrCommonCard} brCard
- * @param {Boolean} use_bennie
+ * @param {Boolean} expendBennie
  */
-async function rollUnshaken(brCard, use_bennie) {
-    if (use_bennie) {
+async function rollUnshaken(brCard, expendBennie) {
+    if (expendBennie) {
         // remove shaken
         await spendBenny(brCard.actor);
         brCard.render_data.text = game.i18n.format("BRSW.UnshakeBennie", {
@@ -288,11 +289,34 @@ async function check_abilities(actor) {
 }
 
 /**
+ * Sets the reroll mode, adds reroll modifiers from actions (e.g. Elan) and spends a benny if needed
+ * Only reroll actions are processed as these cards don't show the actions menu
+ * @param {BrCommonCard} brCard
+ * @param {Boolean} expendBenny
+ * @param {Object} extraData
+ */
+async function prepareReroll(brCard, expendBenny, extraData) {
+    for (const action of brCard.getSelectedActions()) {
+        if (action.code.rerollSkillMod) {
+            process_common_actions(action.code, extraData, [], brCard.actor);
+        }
+    }
+    if (brCard.traitRoll.is_rolled) {
+        brCard.traitRoll.reroll_mode = expendBenny ? "benny" : "free";
+    }
+    if (expendBenny) {
+        await spendBenny(brCard.actor);
+    }
+}
+
+/**
  * Roll to remove stunned
  * @param {BrCommonCard} brCard
+ * @param {Boolean} expendBenny
  */
-async function rollUnstun(brCard) {
+async function rollUnstun(brCard, expendBenny) {
     let extra_options = {};
+    await prepareReroll(brCard, expendBenny, extra_options);
     // Unstun Bonus
     if (brCard.actor.system.attributes.vigor.unStunBonus) {
         const bonus = parseInt(brCard.actor.system.attributes.vigor.unStunBonus);
@@ -344,16 +368,19 @@ function getRendingEffect(actor) {
 /**
  * Roll vigor to resist a rending attack
  * @param {BrCommonCard} brCard
+ * @param {Boolean} expendBenny
  */
-async function rollRendingAttack(brCard) {
+async function rollRendingAttack(brCard, expendBenny) {
     if (brCard.render_data.rendingWoundApplied) {
         return;
     }
+    const extraData = {};
+    await prepareReroll(brCard, expendBenny, extraData);
     await roll_trait(
         brCard,
         brCard.actor.system.attributes.vigor,
         game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS.vigor),
-        {},
+        extraData,
     );
     await resolveRendingAttack(brCard);
 }
