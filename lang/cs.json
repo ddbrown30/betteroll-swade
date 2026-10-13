@@ -514,5 +514,11 @@
         "Javier Rivera"
     ],
     "BRSW.Settings.AllowDarkMode.Hint": "Když je zakázáno, Better Rolls bude vždy používat světlý režim bez ohledu na nastavení Foundry",
-    "BRSW.Settings.AllowDarkMode.Name": "Povolit tmavý režim"
+    "BRSW.Settings.AllowDarkMode.Name": "Povolit tmavý režim",
+    "BRSW.PPManagement.ExtraCosts": "Dodatečné náklady v BS",
+    "BRSW.PPManagement.ShortAmount": "Míra Krácení",
+    "BRSW.Shorting": "Krácení",
+    "BRSW.Tooltip.OpenModsButton": "Otevřít okno modifikátorů hodu",
+    "BRSW.Tooltip.RepeatButton": "Zopakovat hod se stejným nastavením",
+    "BRSW.Tooltip.SaveMacroButton": "Přidat makro s nastavením tohoto hodu na lištu maker"
 }
