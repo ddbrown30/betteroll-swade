@@ -520,5 +520,16 @@
     "BRSW.Shorting": "Krácení",
     "BRSW.Tooltip.OpenModsButton": "Otevřít okno modifikátorů hodu",
     "BRSW.Tooltip.RepeatButton": "Zopakovat hod se stejným nastavením",
-    "BRSW.Tooltip.SaveMacroButton": "Přidat makro s nastavením tohoto hodu na lištu maker"
+    "BRSW.Tooltip.SaveMacroButton": "Přidat makro s nastavením tohoto hodu na lištu maker",
+    "BRSW.AbilityName.EnvironmentalResistance": "Odolnost Prostředí",
+    "BRSW.AbilityName.EnvironmentalWeakness": "Slabost Prostředí",
+    "BRSW.ApplyWound": "Přidat Zranění",
+    "BRSW.IgnoreShield": "Ignorovat štít",
+    "BRSW.IgnoreShieldName": "Ignorovat štít",
+    "BRSW.RendingAttack": "Drásavý útok",
+    "BRSW.RendingAttackFailure": "{name}: neúspěch v hodu na Vitalitu proti drásavému útoku; utrpěno jedno Zranění.",
+    "BRSW.RendingAttackRaise": "{name}: hod na Vitalitu se Zvýšením; krvácení zastaveno.",
+    "BRSW.RendingAttackSuccess": "{name}: úspěch v hodu na Vitalitu bez Zranění; v příštím tahu je nutné hodit znovu.",
+    "BRSW.RendingAttackText": "Hodit na Vitalitu, aby se předešlo Zranění. Zvýšení zastaví krvácení.",
+    "BRSW.RendingAttackWounded": "{name}: utrpěno jedno Zranění z krvácení; v příštím tahu je nutné hodit znovu."
 }
