@@ -890,7 +890,7 @@ async function show_3d_dice(message, brswroll, roll) {
         set_wild_die_theme(roll.dice[roll.dice.length - 1]);
     }
     let users = null;
-    if (message.whisper.length > 0) {
+    if (message?.whisper.length > 0) {
         users = message.whisper;
     }
     // Dice buried in modifiers.
