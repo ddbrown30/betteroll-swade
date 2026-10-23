@@ -2,7 +2,7 @@
 
 # Version 5.29.1
 * Resist buttons now show for everyone
-* Updated Czech translations
+* Updated Czech translations (Michal Várady)
 
 # Version 5.29.0
 * Added support for rending attacks. The actual status effect is added by SWPF, SUCC, or other modules. This change just allows BR2 to handle the expiration behaviour when the effect is present
