@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.29.1
+* Resist buttons now show for everyone
+
 # Version 5.29.0
 * Added support for rending attacks. The actual status effect is added by SWPF, SUCC, or other modules. This change just allows BR2 to handle the expiration behaviour when the effect is present
 * Fixed Stun recovery using Spirit instead of Vigor
