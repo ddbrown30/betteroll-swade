@@ -311,27 +311,6 @@ export function calculateDistance(
 }
 
 /**
- * Gets the tn for a vehicle
- * @param tn
- * @param targetToken
- */
-async function get_vehicle_tn(tn, targetToken) {
-    tn.reason = `Veh - ${targetToken.name}`;
-    //lookup the vehicle operator and get their maneuveringSkill
-    let operator_skill = 0;
-    const target_operator_id = targetToken.actor.system.driver.id;
-    const target_operator = await fromUuid(target_operator_id);
-    const operatorItems = target_operator ? target_operator.items : [];
-    const maneuveringSkill = targetToken.actor.system.driver.skill;
-    for (const value of operatorItems) {
-        if (value.name === maneuveringSkill) {
-            operator_skill = value.system.die.sides || 0;
-        }
-    }
-    tn.value = operator_skill / 2 + 2 + targetToken.actor.system.handling;
-}
-
-/**
  * Get a target number and modifiers from a token appropriated to a skill
  *
  * @param {Item} skill
@@ -379,18 +358,14 @@ export async function getTNFromToken(
     }
 
     if (useParryAsTN) {
-        if (targetActor.type !== "vehicle") {
-            tn.reason = `${game.i18n.localize("SWADE.Parry")} - ${targetToken.name}`;
-            tn.value = parseInt(targetActor.system.stats.parry.value);
-            if (extraData?.ignoreShield) {
-                const shield = parseInt(targetActor.system.stats.parry.shield);
-                if (shield) {
-                    tn.value -= shield;
-                    tn.reason = `${game.i18n.localize("BRSW.IgnoreShield")} - ${targetToken.name}`;
-                }
+        tn.reason = `${game.i18n.localize("SWADE.Parry")} - ${targetToken.name}`;
+        tn.value = parseInt(targetActor.system.stats.parry.value);
+        if (extraData?.ignoreShield) {
+            const shield = parseInt(targetActor.system.stats.parry.shield);
+            if (shield) {
+                tn.value -= shield;
+                tn.reason = `${game.i18n.localize("BRSW.IgnoreShield")} - ${targetToken.name}`;
             }
-        } else {
-            await get_vehicle_tn(tn, targetToken);
         }
     }
 
