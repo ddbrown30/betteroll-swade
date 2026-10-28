@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.29.2
+* We now get the parry from the vehicle rather than calculate it manually
+
 # Version 5.29.1
 * Resist buttons now show for everyone
 * Updated Czech translations (Michal Várady)
