@@ -418,7 +418,6 @@ export function activate_item_listeners(app, html) {
         html,
         ".item-image, .item-img, .name.item-show, span.item>.item-control.item-edit," +
         " .gear-card .card-header>.item-name, .damage-roll, .item-name>h4," +
-        " .power-header>.item-name, .card-button, .item-control.item-show," +
         " .power button.item-show, .weapon button.item-show, .edge-hindrance>.item-control" +
         " .item-control.item-edit, .item-control.item-show, .item.edge-hindrance>.item-show," +
         " .item>.item-show",
