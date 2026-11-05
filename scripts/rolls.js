@@ -38,6 +38,8 @@ class Die {
     get result_icon() {
         if (this.result === null) {
             return "";
+        } else if (this.result <=-4) {
+            return "brsw-red-text fas fa-angles-down fa-xs";
         } else if (this.result < 0) {
             return "brsw-red-text fas fa-xmark fa-xs";
         } else if (this.result < 4) {
