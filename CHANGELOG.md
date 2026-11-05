@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.29.3
+* Added a result icon for if a roll fails by 4 or more
+
 # Version 5.29.2
 * We now get the parry from the vehicle rather than calculate it manually
 * Clicking the power name no longer opens the card
