@@ -877,20 +877,25 @@ export class SettingsUtils {
         if (!WORLD_SETTINGS[key]) {
             return undefined;
         }
-
-        return WORLD_SETTINGS[key].value !== undefined
-            ? WORLD_SETTINGS[key].value
-            : WORLD_SETTINGS[key].default;
+        return SettingsUtils.getSettingValue(WORLD_SETTINGS[key]);
     }
 
     static getUserSetting(key) {
         if (!USER_SETTINGS[key]) {
             return undefined;
         }
+        return SettingsUtils.getSettingValue(USER_SETTINGS[key]);
+    }
 
-        return USER_SETTINGS[key].value !== undefined
-            ? USER_SETTINGS[key].value
-            : USER_SETTINGS[key].default;
+    static getSettingValue(setting) {
+        const value =
+            setting.value !== undefined && setting.value !== ""
+            ? setting.value
+            : setting.default;
+
+        return setting.type._cast
+            ? setting.type._cast(value)
+            : setting.type(value);
     }
 
     static allowDarkMode() {
