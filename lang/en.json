@@ -426,6 +426,7 @@
   "BRSW.Settings.Title": "Better Rolls Settings",
   "BRSW.Settings.UndeadIgnoresIllumination.Hint": "Characters with the Undead ability ignore Illumination Penalties. Used in Pathfinder for Savage Worlds.",
   "BRSW.Settings.UndeadIgnoresIllumination.Name": "Undead Ignores Illumination",
+  "BRSW.Settings.ValidationError": "Setting \"{name}\" is invalid: {error}",
   "BRSW.Settings.WorldGlobalMenu.Hint": "Use this window to create global actions for this world.",
   "BRSW.Settings.WorldGlobalMenu.Label": "World Global actions",
   "BRSW.Settings.WorldGlobalMenu.Name": "Configure global actions",

@@ -155,6 +155,9 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 (WORLD_SETTINGS[k].value !== undefined
                     ? WORLD_SETTINGS[k].value !== v
                     : WORLD_SETTINGS[k].default !== v)) {
+                if (!SettingsUtils.validateSetting(WORLD_SETTINGS[k], v)) {
+                    continue;
+                }
                 WORLD_SETTINGS[k].value = v;
                 if (WORLD_SETTINGS[k].onChange) changedCallbacks.push(() => WORLD_SETTINGS[k].onChange(v));
                 requiresWorldReload = requiresWorldReload || !!WORLD_SETTINGS[k].requiresReload;
@@ -162,6 +165,9 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 (USER_SETTINGS[k].value !== undefined
                     ? USER_SETTINGS[k].value !== v
                     : USER_SETTINGS[k].default !== v)) {
+                if (!SettingsUtils.validateSetting(USER_SETTINGS[k], v)) {
+                    continue;
+                }
                 USER_SETTINGS[k].value = v;
                 if (USER_SETTINGS[k].onChange) changedCallbacks.push(() => USER_SETTINGS[k].onChange(v));
                 requiresClientReload = requiresClientReload || !!USER_SETTINGS[k].requiresReload;

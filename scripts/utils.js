@@ -835,6 +835,20 @@ export class SettingsUtils {
         await SettingsUtils.setModuleFlag(game.user, USER_FLAGS.userSettings, userSettings);
     }
 
+    static validateSetting(setting, value) {
+        if (setting.type.validate) {
+            const failure = setting.type.validate(setting.type._cast(value));
+            if (failure) {
+                ui.notifications.notify(game.i18n.format("BRSW.Settings.ValidationError", {
+                    name: game.i18n.localize(setting.name),
+                    error: failure.message
+                }));
+                return false
+            }
+        }
+        return true;
+    }
+
     static hasModuleFlags(obj) {
         if (!obj.flags) {
             return false;
