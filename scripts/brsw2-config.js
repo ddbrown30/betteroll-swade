@@ -50,6 +50,7 @@ export const USER_SETTING_KEYS = {
     defaultRateOfFire: "default_rate_of_fire",
     expandDescriptions: "expand-descriptions",
     expandResults: "expand-results",
+    iconTheme: "iconTheme",
     playerDefaultPPManagement: "playerDefaultPPManagement",
 };
 

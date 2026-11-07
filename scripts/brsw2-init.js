@@ -257,6 +257,16 @@ Hooks.on("renderChatMessageHTML", (message, html, _options) => {
             html.classList.add("brsw-allow-dark-mode");
         }
 
+        const sfcThemedIcons = game.settings.get("swade-scifi-companion", "applyThemedIcons");
+        if (sfcThemedIcons && sfcThemedIcons !== "off") {
+            html.setAttribute("data-brsw-icon-recolor", sfcThemedIcons);
+
+            const brswIconTheme = SettingsUtils.getUserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.iconTheme);
+            if (brswIconTheme && brswIconTheme !== "none") {
+                html.classList.add(`brsw-theme-${brswIconTheme}`);
+            }
+        }
+
         // This chat card is one of ours
         const brCard = new BrCommonCard(message);
         activateCardListeners(brCard, html, message);
