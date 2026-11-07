@@ -111,6 +111,12 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                             continue;
                         }
                     }
+                    if (setting.key === USER_SETTING_KEYS.iconTheme) {
+                        if (!game.modules.get("swade-scifi-companion")?.active) {
+                            //If this is the iconTheme setting and the sci-fi companion isn't active, don't render this setting
+                            continue;
+                        }
+                    }
                     context.userSettings.push(this.getSettingData(setting));
                 }
                 break;

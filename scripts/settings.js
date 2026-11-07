@@ -352,6 +352,33 @@ function registerUserSettings() {
             }
         },
     });
+
+    SettingsUtils.registerBR2UserSetting(USER_SETTING_KEYS.iconTheme, {
+        name: "BRSW.Settings.IconTheme.Name",
+        hint: "BRSW.Settings.IconTheme.Hint",
+        default: "none",
+        type: String,
+        choices: {
+            none: game.i18n.localize("BRSW.IconThemes.None"),
+            cyberpunk: game.i18n.localize("BRSW.IconThemes.Cyberpunk"),
+            military: game.i18n.localize("BRSW.IconThemes.Military"),
+            pulp: game.i18n.localize("BRSW.IconThemes.Pulp"),
+            "space-opera": game.i18n.localize("BRSW.IconThemes.SpaceOpera"),
+            "techno-horror": game.i18n.localize("BRSW.IconThemes.TechnoHorror"),
+        },
+        onChange: (allow) => {
+            const messages = game.messages.contents.filter(m => m.getFlag("betterrolls-swade2", "br_data"));
+            for (const message of messages) {
+                ui.chat.updateMessage(message);
+
+                //Loop over all the apps of this message and trigger their render
+                //This is needed to refresh things like popped out chat cards
+                for (const app of Object.values(message.apps)) {
+                    app.render();
+                }
+            }
+        },
+    });
 }
 
 function cacheSettings(savedSettings, settingsCache) {

@@ -884,6 +884,14 @@ export class SettingsUtils {
             ? userSettings[key]
             : USER_SETTINGS[key].default;
     }
+
+    static iconTheme() {
+        const userSettings = SettingsUtils.getModuleFlag(game.user, USER_FLAGS.userSettings) ?? {};
+        const key = USER_SETTING_KEYS.iconTheme;
+        return userSettings[key] !== undefined
+            ? userSettings[key]
+            : USER_SETTINGS[key].default;
+    }
 }
 
 export class TelemetryUtils {

@@ -46,6 +46,8 @@
 
     --brsw-transition-duration: 150ms;
     --brsw-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+
+    --brsw-item-icon-filter: none;
 }
 
 .themed.theme-dark .brsw-allow-dark-mode,
@@ -242,6 +244,31 @@
 
 .brsw-header-img {
     max-width: unset;
+}
+
+.brsw-theme-cyberpunk {
+    --brsw-item-icon-filter: grayscale(15%) hue-rotate(300deg) saturate(85%) drop-shadow(0 0 2px #8c2096);
+}
+
+.brsw-theme-military {
+    --brsw-item-icon-filter: hue-rotate(90deg);
+}
+
+.brsw-theme-pulp {
+    --brsw-item-icon-filter: none;
+}
+
+.brsw-theme-space-opera {
+    --brsw-item-icon-filter: hue-rotate(195deg);
+}
+
+.brsw-theme-techno-horror {
+    --brsw-item-icon-filter: hue-rotate(104deg) saturate(53%);
+}
+
+.brsw-chat-message[data-brsw-icon-recolor=system] .brsw-header-img[src*=assets\/icons],
+.brsw-chat-message[data-brsw-icon-recolor=all] .brsw-header-img {
+    filter: var(--brsw-item-icon-filter);
 }
 
 .brsw-item-subheading {
