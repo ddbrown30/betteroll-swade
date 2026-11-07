@@ -254,7 +254,7 @@ function registerWorldSettings() {
     SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.gridlessMeleeDistance, {
         name: "BRSW.Settings.GridlessMeleeDistance.Name",
         hint: "BRSW.Settings.GridlessMeleeDistance.Hint",
-        type: Number,
+        type: new foundry.data.fields.NumberField({nullable: true, min: 0}),
         default: null,
         group: "BRSW.Settings.MeasurementGroup",
     });
