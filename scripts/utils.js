@@ -839,7 +839,7 @@ export class SettingsUtils {
         if (setting.type.validate) {
             const failure = setting.type.validate(setting.type._cast(value));
             if (failure) {
-                ui.notifications.error(game.i18n.format("BRSW.Settings.ValidationError", {
+                ui.notifications.notify(game.i18n.format("BRSW.Settings.ValidationError", {
                     name: game.i18n.localize(setting.name),
                     error: failure.message
                 }));
@@ -847,10 +847,6 @@ export class SettingsUtils {
             }
         }
         return true;
-    }
-
-    static setSettingValue(setting, value) {
-        setting.value = setting.type._cast ? setting.type._cast(value) : setting.type(value);
     }
 
     static hasModuleFlags(obj) {

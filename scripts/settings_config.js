@@ -136,7 +136,7 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         s.id = s.key;
         s.name = game.i18n.localize(s.name);
         s.hint = game.i18n.localize(s.hint);
-        s.value = s.value !== undefined ? s.value : s.default;
+        s.value = s.value ?? s.default;
         s.type = setting.type instanceof Function ? setting.type.name : "String";
         s.isCheckbox = setting.type === Boolean;
         s.isSelect = s.choices !== undefined;
@@ -158,7 +158,7 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 if (!SettingsUtils.validateSetting(WORLD_SETTINGS[k], v)) {
                     continue;
                 }
-                SettingsUtils.setSettingValue(WORLD_SETTINGS[k], v);
+                WORLD_SETTINGS[k].value = v;
                 if (WORLD_SETTINGS[k].onChange) changedCallbacks.push(() => WORLD_SETTINGS[k].onChange(v));
                 requiresWorldReload = requiresWorldReload || !!WORLD_SETTINGS[k].requiresReload;
             } else if (USER_SETTINGS[k] &&
@@ -168,7 +168,7 @@ export class SettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 if (!SettingsUtils.validateSetting(USER_SETTINGS[k], v)) {
                     continue;
                 }
-                SettingsUtils.setSettingValue(USER_SETTINGS[k], v);
+                USER_SETTINGS[k].value = v;
                 if (USER_SETTINGS[k].onChange) changedCallbacks.push(() => USER_SETTINGS[k].onChange(v));
                 requiresClientReload = requiresClientReload || !!USER_SETTINGS[k].requiresReload;
             }

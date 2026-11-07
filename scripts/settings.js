@@ -392,7 +392,7 @@ function registerUserSettings() {
 function cacheSettings(savedSettings, settingsCache) {
     for (const key in settingsCache) {
         if (Object.hasOwn(savedSettings, key)) {
-            if (savedSettings[key] && savedSettings[key].name !== undefined) {
+            if (savedSettings[key].name !== undefined) {
                 //If we have a name, this is old data which means we need to migrate it to the new structure
                 if (savedSettings[key].value === savedSettings[key].default ||
                     savedSettings[key].value === settingsCache[key].default) {
