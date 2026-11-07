@@ -256,6 +256,7 @@ function registerWorldSettings() {
         hint: "BRSW.Settings.GridlessMeleeDistance.Hint",
         type: new foundry.data.fields.NumberField({nullable: true, min: 0}),
         default: null,
+        requiresReload: true,
         group: "BRSW.Settings.MeasurementGroup",
     });
 
