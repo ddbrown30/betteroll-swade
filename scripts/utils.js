@@ -644,7 +644,7 @@ export class Utils {
             //On a gridless scene, if we've set gridlessMeleeDistance, we use that
             //Otherwise, we add 0.5 to give a bit of extra buffer so placement doesn't have to be so exact
             const gridlessMeleeDistance = SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.gridlessMeleeDistance);
-            meleeRange = gridlessMeleeDistance ?? meleeRange + 0.5;
+            meleeRange = gridlessMeleeDistance ? gridlessMeleeDistance : meleeRange + 0.5;
         }
 
         return meleeRange;
