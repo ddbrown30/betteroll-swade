@@ -261,7 +261,7 @@ Hooks.on("renderChatMessageHTML", (message, html, _options) => {
         if (sfcThemedIcons && sfcThemedIcons !== "off") {
             html.setAttribute("data-brsw-icon-recolor", sfcThemedIcons);
 
-            const brswIconTheme = SettingsUtils.getUserSetting(BRSW2_CONFIG.USER_SETTING_KEYS.iconTheme);
+            const brswIconTheme = SettingsUtils.iconTheme();
             if (brswIconTheme && brswIconTheme !== "none") {
                 html.classList.add(`brsw-theme-${brswIconTheme}`);
             }
