@@ -31,6 +31,7 @@ export const WORLD_SETTING_KEYS = {
     defaultPPManagement: "default-pp-management",
     disableGangUp: "disable-gang-up",
     genericPPModifiersSource: "generic-pp-modifiers-source",
+    gridlessMeleeDistance: "gridlessMeleeDistance",
     grittyDamage: "grittyDamage",
     innatePowersSpendPP: "innatePowersSpendPP",
     measureFromEdge: "measure_from_edge",

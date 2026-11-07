@@ -641,8 +641,10 @@ export class Utils {
             Math.SQRT2; //Range is SQRT2 to account for diagonals
 
         if (scene?.grid?.isGridless) {
-            //If we're gridless, give a bit of extra buffer so placement doesn't have to be so exact
-            meleeRange += 0.5;
+            //On a gridless scene, if we've set gridlessMeleeDistance, we use that
+            //Otherwise, we add 0.5 to give a bit of extra buffer so placement doesn't have to be so exact
+            const gridlessMeleeDistance = SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.gridlessMeleeDistance);
+            meleeRange = gridlessMeleeDistance != null ? gridlessMeleeDistance : meleeRange + 0.5;
         }
 
         return meleeRange;
@@ -833,6 +835,20 @@ export class SettingsUtils {
         await SettingsUtils.setModuleFlag(game.user, USER_FLAGS.userSettings, userSettings);
     }
 
+    static validateSetting(setting, value) {
+        if (setting.type.validate) {
+            const failure = setting.type.validate(setting.type._cast(value));
+            if (failure) {
+                ui.notifications.error(game.i18n.format("BRSW.Settings.ValidationError", {
+                    name: game.i18n.localize(setting.name),
+                    error: failure.message
+                }));
+                return false
+            }
+        }
+        return true;
+    }
+
     static hasModuleFlags(obj) {
         if (!obj.flags) {
             return false;
@@ -861,20 +877,25 @@ export class SettingsUtils {
         if (!WORLD_SETTINGS[key]) {
             return undefined;
         }
-
-        return WORLD_SETTINGS[key].value !== undefined
-            ? WORLD_SETTINGS[key].value
-            : WORLD_SETTINGS[key].default;
+        return SettingsUtils.getSettingValue(WORLD_SETTINGS[key]);
     }
 
     static getUserSetting(key) {
         if (!USER_SETTINGS[key]) {
             return undefined;
         }
+        return SettingsUtils.getSettingValue(USER_SETTINGS[key]);
+    }
 
-        return USER_SETTINGS[key].value !== undefined
-            ? USER_SETTINGS[key].value
-            : USER_SETTINGS[key].default;
+    static getSettingValue(setting) {
+        const value =
+            setting.value !== undefined && setting.value !== ""
+            ? setting.value
+            : setting.default;
+
+        return setting.type._cast
+            ? setting.type._cast(value)
+            : setting.type(value);
     }
 
     static allowDarkMode() {

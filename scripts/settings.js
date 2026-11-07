@@ -251,6 +251,15 @@ function registerWorldSettings() {
         group: "BRSW.Settings.MeasurementGroup",
     });
 
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.gridlessMeleeDistance, {
+        name: "BRSW.Settings.GridlessMeleeDistance.Name",
+        hint: "BRSW.Settings.GridlessMeleeDistance.Hint",
+        type: new foundry.data.fields.NumberField({nullable: true, min: 0}),
+        default: null,
+        requiresReload: true,
+        group: "BRSW.Settings.MeasurementGroup",
+    });
+
     SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.undeadIgnoresIllumination, {
         name: game.i18n.localize("BRSW.Settings.UndeadIgnoresIllumination.Name"),
         hint: game.i18n.localize("BRSW.Settings.UndeadIgnoresIllumination.Hint"),
