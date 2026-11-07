@@ -377,6 +377,8 @@
   "BRSW.Settings.MeasurementGroup": "Measurement",
   "BRSW.Settings.NoActionMessage.Hint": "Set the message to show the players when no action was selected",
   "BRSW.Settings.NoActionMessage.Name": "No actions selected message",
+  "BRSW.Settings.GridlessMeleeDistance.Hint": "The distance between tokens where we treat them as being in melee. Only used in gridless scenes. Uses the default distance if unset.",
+  "BRSW.Settings.GridlessMeleeDistance.Name": "Gridless Melee Distance",
   "BRSW.Settings.GrittyDamage.Hint": "Wounds cause injuries",
   "BRSW.Settings.GrittyDamage.Name": "Gritty Damage",
   "BRSW.Settings.InnatePowersSpendPP.Hint": "Innate powers spend PP when activated",
