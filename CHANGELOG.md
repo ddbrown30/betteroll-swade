@@ -2,6 +2,7 @@
 
 # Version 5.30.0
 * Added support for the sci-fi companion icon tinting. This uses the setting in the Sci-Fi Companion to determine if it applies to system or all icons but the tint is controlled by a user setting in the BR2 options.
+* Added an optional melee distance setting for gridless scenes
 * Added a result icon for if a roll fails by 4 or more
 
 # Version 5.29.2
