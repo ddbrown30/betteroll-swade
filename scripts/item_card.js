@@ -798,6 +798,7 @@ export async function runMacros(macros, brCard) {
                         token: brCard.token,
                         item: brCard.item,
                         targets: brCard.targets,
+                        brCard: brCard,
                     };
                     await macro.execute(scope);
                 } catch (err) {
@@ -1806,6 +1807,7 @@ async function execute_macro(action, brCard) {
         actor: targetActor,
         token: targetToken,
         item: brCard.item,
+        brCard: brCard,
     });
     return null;
 }
