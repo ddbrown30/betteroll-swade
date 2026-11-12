@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.31.0
+* Added support for bleeding out
+
 # Version 5.30.0
 * Added support for the sci-fi companion icon tinting. This uses the setting in the Sci-Fi Companion to determine if it applies to system or all icons but the tint is controlled by a user setting in the BR2 options.
 * Added an optional melee distance setting for gridless scenes

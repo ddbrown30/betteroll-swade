@@ -11,6 +11,7 @@ export class BRSW2_CONST {
         TYPE_UNSHAKE_CARD: 13,
         TYPE_UNSTUN_CARD: 14,
         TYPE_RENDING_CARD: 15,
+        TYPE_BLEEDING_OUT_CARD: 16,
         TYPE_RESULT_CARD: 100,
     };
 
@@ -189,4 +190,5 @@ export class BRSW2_CONST {
     ]);
 
     static RENDING_ATTACK_NAME = "rending-attack";
+    static BLEEDING_OUT_NAME = "bleeding-out";
 }
