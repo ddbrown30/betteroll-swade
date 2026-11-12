@@ -30,7 +30,11 @@ async function createRemoveStatusCard(original_message, actor, type) {
     } else if (actor) {
         tokenId = actor.token ? actor.token.id : actor.getActiveTokens()[0].id;
     }
-    if (type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_RENDING_CARD) {
+    if (type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_BLEEDING_OUT_CARD) {
+        if (!actor.statuses.has(BRSW2_CONST.BLEEDING_OUT_NAME)) {
+            return;
+        }
+    } else if (type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_RENDING_CARD) {
         if (!actor.statuses.has(BRSW2_CONST.RENDING_ATTACK_NAME)) {
             return;
         }
@@ -44,6 +48,11 @@ async function createRemoveStatusCard(original_message, actor, type) {
         titleName = "BRSW.Unshake";
         rollTitle = game.i18n.localize("BRSW.SpiritRoll");
         traitName = "spirit";
+    } else if (type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_BLEEDING_OUT_CARD) {
+        text = game.i18n.format("BRSW.BleedingOutText", { token_name: actor.name });
+        titleName = "BRSW.BleedingOut";
+        rollTitle = game.i18n.localize("BRSW.VigorRoll");
+        traitName = "vigor";
     } else if (type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_RENDING_CARD) {
         text = game.i18n.format("BRSW.RendingAttackText", { token_name: actor.name });
         titleName = "BRSW.RendingAttack";
@@ -99,6 +108,19 @@ export async function createUnstunCard(original_message, token_id) {
 }
 
 /**
+ * Shows the bleeding out card
+ * @param {ChatMessage} originalMessage
+ * @param {Number} tokenId
+ */
+export async function createBleedingOutCard(originalMessage, tokenId) {
+    await createRemoveStatusCard(
+        originalMessage,
+        tokenId,
+        BRSW2_CONST.BRSW_CARD_TYPES.TYPE_BLEEDING_OUT_CARD,
+    );
+}
+
+/**
  * Shows the rending attack card
  * @param {ChatMessage} original_message
  * @param {SwadeActor} actor
@@ -112,7 +134,7 @@ export async function createRendingAttackCard(original_message, actor) {
 }
 
 /**
- * Activate the listeners of the unshake card
+ * Activate the listeners of the status cards
  * @param {BrCommonCard} brCard
  * @param html Html produced
  * @param card_type Type of card
@@ -125,6 +147,8 @@ export function activateRemoveStatusCardListeners(
     let roll_function;
     if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_UNSHAKE_CARD) {
         roll_function = rollUnshaken;
+    } else if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_BLEEDING_OUT_CARD) {
+        roll_function = rollBleedingOut;
     } else if (card_type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_RENDING_CARD) {
         roll_function = rollRendingAttack;
         addEventListenerAll(html, ".brsw-apply-wound-button", "click", (ev) => {
@@ -163,6 +187,10 @@ async function rollUnshaken(brCard, expendBennie) {
         brCard.actor
             .toggleStatusEffect("shaken", { active: false })
             .catch(console.error("Error removing shaken") || false);
+
+        await brCard.render();
+        await brCard.save();
+        Hooks.call("BRSW-Unshake", brCard, brCard.actor);
     } else {
         // Check for Edges & Abilities
         const modifiers = await check_abilities(brCard.actor);
@@ -173,33 +201,31 @@ async function rollUnshaken(brCard, expendBennie) {
             game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS.spirit),
             { modifiers: modifiers },
         );
-        let result = 0;
-        for (let roll of brCard.traitRoll.rolls) {
-            for (let die of roll.dice) {
-                if (die.result !== null) {
-                    result = Math.max(die.finalTotal, result);
-                }
-            }
-        }
-        if (result >= 4) {
-            if (SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.swdUnshake) === true && result < 8) {
-                brCard.render_data.text = game.i18n.format(
-                    "BRSW.UnshakeSuccessfulRollSWD",
-                    { name: brCard.actor.name },
-                );
-            } else {
-                brCard.render_data.text = game.i18n.format(
-                    "BRSW.UnshakeSuccessfulRoll",
-                    { name: brCard.actor.name },
-                );
-            }
-            brCard.actor.toggleStatusEffect("shaken", { active: false });
-        } else {
-            brCard.render_data.text = game.i18n.format("BRSW.UnshakeFailure", {
-                name: brCard.actor.name,
-            });
+        await resolveUnshaken(brCard);
+    }
+}
+
+export async function resolveUnshaken(brCard) {
+    const currentRoll = brCard.traitRoll.currentRoll;
+    let result = null;
+    for (const die of currentRoll.dice) {
+        if (die.result !== null) {
+            result = Math.max(die.result, result ?? die.result);
         }
     }
+
+    if (currentRoll.isCritFail || result < 0) {
+        brCard.render_data.text = game.i18n.format("BRSW.UnshakeFailure", { name: brCard.actor.name });
+        if (!brCard.actor.statuses.has("shaken")) { await brCard.actor.toggleStatusEffect("shaken", { active: true }); }
+    } else {
+        if (SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.swdUnshake) === true && result < 4) {
+            brCard.render_data.text = game.i18n.format("BRSW.UnshakeSuccessfulRollSWD", { name: brCard.actor.name });
+        } else {
+            brCard.render_data.text = game.i18n.format("BRSW.UnshakeSuccessfulRoll", { name: brCard.actor.name });
+        }
+        brCard.actor.toggleStatusEffect("shaken", { active: false });
+    }
+
     await brCard.render();
     await brCard.save();
     Hooks.call("BRSW-Unshake", brCard, brCard.actor);
@@ -317,6 +343,7 @@ async function prepareReroll(brCard, expendBenny, extraData) {
 async function rollUnstun(brCard, expendBenny) {
     let extra_options = {};
     await prepareReroll(brCard, expendBenny, extra_options);
+
     // Unstun Bonus
     if (brCard.actor.system.attributes.vigor.unStunBonus) {
         const bonus = parseInt(brCard.actor.system.attributes.vigor.unStunBonus);
@@ -327,34 +354,89 @@ async function rollUnstun(brCard, expendBenny) {
             extra_options.total_modifiers += bonus;
         }
     }
+
     await roll_trait(
         brCard,
         brCard.actor.system.attributes.vigor,
         game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS.vigor),
         extra_options,
     );
-    let result = 0;
-    for (let roll of brCard.traitRoll.rolls) {
-        for (let die of roll.dice) {
-            if (die.result !== null) {
-                result = Math.max(die.finalTotal, result);
-            }
+    await resolveUnstun(brCard);
+}
+
+export async function resolveUnstun(brCard) {
+    const currentRoll = brCard.traitRoll.currentRoll;
+    let result = null;
+    for (const die of currentRoll.dice) {
+        if (die.result !== null) {
+            result = Math.max(die.result, result ?? die.result);
         }
     }
-    if (result >= 4) {
-        brCard.render_data.text = game.i18n.format("BRSW.UnstunSuccessfulRoll", {
-            name: brCard.actor.name,
-        });
-        brCard.actor.toggleStatusEffect("stunned", { active: false })
-            .catch(console.error("Error removing stunned") || false);
+
+    if (currentRoll.isCritFail || result < 0) {
+        brCard.render_data.text = game.i18n.format("BRSW.UnstunFailure", { name: brCard.actor.name });
+        if (!brCard.actor.statuses.has("stunned")) { await brCard.actor.toggleStatusEffect("stunned", { active: true }); }
     } else {
-        brCard.render_data.text = game.i18n.format("BRSW.UnstunFailure", {
-            name: brCard.actor.name,
-        });
+        brCard.render_data.text = game.i18n.format("BRSW.UnstunSuccessfulRoll", { name: brCard.actor.name });
+        brCard.actor.toggleStatusEffect("stunned", { active: false });
     }
+
     await brCard.render();
     await brCard.save();
     Hooks.call("BRSW-Unstun", brCard, brCard.actor);
+}
+
+/**
+ * Roll vigor to resist a bleeding out
+ * @param {BrCommonCard} brCard
+ * @param {Boolean} expendBenny
+ */
+async function rollBleedingOut(brCard, expendBenny) {
+    const extraData = {};
+    await prepareReroll(brCard, expendBenny, extraData);
+    await roll_trait(
+        brCard,
+        brCard.actor.system.attributes.vigor,
+        game.i18n.localize(BRSW2_CONST.ATTRIBUTES_TRANSLATION_KEYS.vigor),
+        extraData,
+    );
+    await resolveBleedingOut(brCard);
+}
+
+/**
+ * Applies the outcome of the currently selected bleeding out roll
+ * Raise stabilizes, success does nothing, failure kills the character
+ * @param {BrCommonCard} brCard
+ */
+export async function resolveBleedingOut(brCard) {
+    const currentRoll = brCard.traitRoll.currentRoll;
+    let result = null;
+    for (const die of currentRoll.dice) {
+        if (die.result !== null) {
+            result = Math.max(die.result, result ?? die.result);
+        }
+    }
+
+    if (currentRoll.isCritFail || result < 0) {
+        brCard.render_data.text = game.i18n.format("BRSW.BleedingOutFailure", { name: brCard.actor.name });
+        await brCard.actor.toggleStatusEffect("incapacitated", { active: false });
+        await brCard.actor.toggleStatusEffect("bleeding-out", { active: false });
+        if (!brCard.actor.statuses.has("dead")) { await brCard.actor.toggleStatusEffect("dead", { active: true, overlay: true }); }
+    } else if (result >= 4) {
+        brCard.render_data.text = game.i18n.format("BRSW.BleedingOutRaise", { name: brCard.actor.name });
+        await brCard.actor.toggleStatusEffect("incapacitated", { active: true, overlay: true });
+        await brCard.actor.toggleStatusEffect("bleeding-out", { active: false });
+        await brCard.actor.toggleStatusEffect("dead", { active: false });
+    } else {
+        brCard.render_data.text = game.i18n.format("BRSW.BleedingOutSuccess", { name: brCard.actor.name });
+        if (!brCard.actor.statuses.has("incapacitated")) { await brCard.actor.toggleStatusEffect("incapacitated", { active: true }); }
+        if (!brCard.actor.statuses.has("bleeding-out")) { await brCard.actor.toggleStatusEffect("bleeding-out", { active: true, overlay: true }); }
+        await brCard.actor.toggleStatusEffect("dead", { active: false });
+    }
+
+    await brCard.render();
+    await brCard.save();
+    Hooks.call("BRSW-BleedingOut", brCard, brCard.actor);
 }
 
 /**

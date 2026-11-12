@@ -15,7 +15,7 @@ import {
     exposeCardClass,
     getActionFromClick,
 } from "./cards_common.js";
-import { createRendingAttackWrapper, createUnshakeWrapper, createUnstunWrapper } from "./combat.js";
+import { createBleedingOutWrapper, createRendingAttackWrapper, createUnshakeWrapper, createUnstunWrapper } from "./combat.js";
 import { activateDamageCardListeners, fitDamageTargetText } from "./damage_card.js";
 import {
     exposeGlobalActionsAPI,
@@ -98,6 +98,7 @@ Hooks.on(`ready`, async () => {
     if (SettingsUtils.getWorldSetting(BRSW2_CONFIG.WORLD_SETTING_KEYS.autoStatusCards)) {
         game.swade.effectCallbacks.set("shaken", createUnshakeWrapper);
         game.swade.effectCallbacks.set("stunned", createUnstunWrapper);
+        game.swade.effectCallbacks.set("bleeding-out", createBleedingOutWrapper);
 
         //Rending attack is added by the PF modules but can also come from other places
         //We register the callback here whether or not the effect exists at the moment
@@ -145,6 +146,7 @@ export function activateCardListeners(brCard, html, message) {
     } else if (
         brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_UNSHAKE_CARD ||
         brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_UNSTUN_CARD ||
+        brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_BLEEDING_OUT_CARD ||
         brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_RENDING_CARD
     ) {
         activateRemoveStatusCardListeners(brCard, html, brCard.type);

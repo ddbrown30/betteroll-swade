@@ -15,7 +15,10 @@ import { TraitModifier } from "./modifiers.js";
 import {
     createUnshakeCard,
     createUnstunCard,
+    resolveBleedingOut,
     resolveRendingAttack,
+    resolveUnshaken,
+    resolveUnstun,
 } from "./remove_status_cards.js";
 import { TraitRoll } from "./rolls.js";
 import {
@@ -249,7 +252,7 @@ export function activateCommonListeners(brCard, html) {
         const old_rolls = html.querySelectorAll(".brsw-old-roll");
         for (const old_roll of old_rolls) {
             old_roll.addEventListener("click", async (ev) => {
-                await old_roll_clicked(ev, brCard);
+                await oldRollClicked(ev, brCard);
             });
         }
     }
@@ -1026,16 +1029,18 @@ export async function roll_trait(brCard, traitDie, traitName, extraData) {
  * @param event - mouse click event
  * @param {BrCommonCard } brCard - The card to be updated
  */
-async function old_roll_clicked(event, brCard) {
+async function oldRollClicked(event, brCard) {
     const isRendingCard = brCard.type === BRSW2_CONST.BRSW_CARD_TYPES.TYPE_RENDING_CARD;
     if (isRendingCard && brCard.render_data.rendingWoundApplied) {
         // The outcome is final once the wound has been applied
         return;
     }
+
     let index = parseInt(event.currentTarget.dataset.index);
     if (index >= brCard.traitRoll.selected_roll_index) {
         index += 1;
     }
+
     brCard.traitRoll.selected_roll_index = index;
     if (
         brCard.item &&
@@ -1044,10 +1049,24 @@ async function old_roll_clicked(event, brCard) {
     ) {
         brCard.render_data.usedPP = await spendPP(brCard, brCard.render_data.usedPP);
     }
-    if (isRendingCard) {
-        await resolveRendingAttack(brCard);
-        return;
+
+    switch (brCard.type) {
+        case BRSW2_CONST.BRSW_CARD_TYPES.TYPE_UNSHAKE_CARD:
+            await resolveUnshaken(brCard);
+            return;
+        case BRSW2_CONST.BRSW_CARD_TYPES.TYPE_UNSTUN_CARD:
+            await resolveUnstun(brCard);
+            return;
+        case BRSW2_CONST.BRSW_CARD_TYPES.TYPE_BLEEDING_OUT_CARD:
+            await resolveBleedingOut(brCard);
+            return;
+        case BRSW2_CONST.BRSW_CARD_TYPES.TYPE_RENDING_CARD:
+            await resolveRendingAttack(brCard);
+            return;
+        default:
+            break;
     }
+
     await brCard.render();
     brCard
         .save()
