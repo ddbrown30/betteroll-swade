@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.32.1
+* Added brCard to the macro scope
+
 # Version 5.32.0
 * Added a way to make evade rolls. Includes a new attribute key, `brsw.evade-modifier`, which will modify the roll e.g. adding +2 from Improved Dodge
 
