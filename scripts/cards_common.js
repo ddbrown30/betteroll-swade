@@ -492,8 +492,7 @@ export function getRollOptions(old_options, brCard) {
     const modifiers = old_options?.additionalMods || [];
     const dmg_modifiers = old_options?.dmgMods || [];
     const tn = old_options?.tn || 4;
-    const tn_reason =
-        old_options?.tn_reason || game.i18n.localize("BRSW.Default");
+    const tnReason = old_options?.tnReason || game.i18n.localize("BRSW.Default");
     let rof = old_options?.rof || 1;
     // We only check for modifiers when there are no old ones.
     if (!old_options?.hasOwnProperty("additionalMods")) {
@@ -528,7 +527,7 @@ export function getRollOptions(old_options, brCard) {
         dmgMods: dmg_modifiers,
         tn: tn,
         rof: rof,
-        tn_reason: tn_reason,
+        tnReason: tnReason,
     };
 }
 
@@ -737,13 +736,13 @@ async function getNewRollOptions(
             extraData,
         );
         brCard.traitRoll.tn = targetData.value;
-        brCard.traitRoll.tn_reason = targetData.reason;
+        brCard.traitRoll.tnReason = targetData.reason;
         extraOptions.target_modifiers = targetData.modifiers;
     }
 
     if (extraData.hasOwnProperty("tn")) {
         extraOptions.tn = extraData.tn;
-        extraOptions.tn_reason = extraData.tn_reason.slice(0, 20);
+        extraOptions.tnReason = extraData.tnReason.slice(0, 20);
     }
 
     if (extraData.hasOwnProperty("rof")) {
@@ -1010,7 +1009,7 @@ export async function roll_trait(brCard, traitDie, traitName, extraData) {
 
     if (extraData.tn) {
         brCard.traitRoll.tn = extraData.tn;
-        brCard.traitRoll.tn_reason = extraData.tn_reason;
+        brCard.traitRoll.tnReason = extraData.tnReason;
     }
 
     brCard.traitRoll.arcaneActivationOffset = extraData.arcaneActivationOffset;
@@ -1171,7 +1170,7 @@ async function editModifier(brCard, index, newModifier) {
 async function edit_tn(brCard, new_tn, reason) {
     brCard.traitRoll.tn = new_tn;
     if (reason) {
-        brCard.traitRoll.tn_reason = reason;
+        brCard.traitRoll.tnReason = reason;
     }
     await brCard.traitRoll.recalculateTraitResults();
     await brCard.render();
@@ -1340,7 +1339,7 @@ export function process_common_actions(action, extraData, macros, actor) {
         } else {
             extraData.tn = parseInt(action.tnOverride);
         }
-        extraData.tn_reason = action.button_name;
+        extraData.tnReason = action.button_name;
     }
     // noinspection JSUnresolvedVariable
     if (action.self_add_status) {

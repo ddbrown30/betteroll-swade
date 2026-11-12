@@ -17,6 +17,7 @@ import {
 } from "./cards_common.js";
 import { createBleedingOutWrapper, createRendingAttackWrapper, createUnshakeWrapper, createUnstunWrapper } from "./combat.js";
 import { activateDamageCardListeners, fitDamageTargetText } from "./damage_card.js";
+import { exposeEvadeAPI } from "./evade_card.js";
 import {
     exposeGlobalActionsAPI,
     registerActions,
@@ -70,6 +71,7 @@ Hooks.on(`ready`, async () => {
     exposeSkillCardAPI();
     exposeItemCardAPI();
     exposeGlobalActionsAPI();
+    exposeEvadeAPI();
     exposeCardClass();
     exposeIncapacitationCardAPI();
     Utils.exposeAPI("activateCardListeners", activateCardListeners);

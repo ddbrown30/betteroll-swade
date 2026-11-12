@@ -938,7 +938,7 @@ export class BrCommonCard {
         data.selected_actions = this.getSelectedActions();
         data.hasFooterButtons = this.hasFooterButtons;
         data.showRepeat = BRSW2_CONST.ALLOW_SAVE_REPEAT_CARDS.has(this.type);
-        data.showSave = !this.vehicleActor && BRSW2_CONST.ALLOW_SAVE_REPEAT_CARDS.has(this.type);
+        data.showSave = !this.vehicleActor && BRSW2_CONST.ALLOW_SAVE_REPEAT_CARDS.has(this.type) && !this.render_data.isEvade;
         data.showManualMods = !!(this.trait || this.damage);
         data.showTools = data.showRepeat || data.showSave || data.showManualMods;
         data.noPowerPoints = Utils.isNoPPEnabled();

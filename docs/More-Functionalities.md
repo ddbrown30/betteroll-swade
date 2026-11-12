@@ -193,5 +193,14 @@ game.brsw.createSkillCardFromId(token_id, actor_id, skillId)
  */
 ```
 
+```js
+game.brsw.createEvadeCard(origin, { options: { evadeTN } })
+/**
+ * Shows an evade card
+ * @param {string} token_id As it comes from damage its target is always a token
+ * @param {Number} evadeTN Overrides the TN for the roll. Defaults to 4 if unset
+ */
+```
+
 If this document gets outdated you can always inspect `game.brsw` in your browser to get the most current API.
 

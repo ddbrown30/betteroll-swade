@@ -166,7 +166,7 @@ export class TraitRoll {
     constructor() {
         this.rolls = [];
         this.tn = 4;
-        this.tn_reason = "BRSW.Default";
+        this.tnReason = "BRSW.Default";
         this.target_id = null;
         this.wild_die = null;
         this.modifiers = [];
