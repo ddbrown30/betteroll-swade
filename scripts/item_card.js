@@ -619,7 +619,7 @@ async function roll_resist(trait, brCard, trait_mod) {
         }
 
         newCard.traitRoll.tn = getTraitRollDifficulty(brCard);
-        newCard.traitRoll.tn_reason = game.i18n.localize("BRSW.ResistingRoll");
+        newCard.traitRoll.tnReason = game.i18n.localize("BRSW.ResistingRoll");
         if (!isNaN(trait_mod)) {
             const localizedName = game.i18n.localize("BRSW.ResistingRoll");
             const resistAction = new BRAction(localizedName, {

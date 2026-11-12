@@ -12,6 +12,7 @@ import {
     withButtonSpinner,
 } from "./cards_common.js";
 import { runMacros } from "./item_card.js";
+import { TraitModifier } from "./modifiers.js";
 import { Utils, addEventListenerAll } from "./utils.js";
 
 /**
@@ -143,15 +144,43 @@ export function activateAttributeCardListeners(card, html) {
 export async function rollAttribute(brCard, expendBenny) {
     const extraData = { modifiers: [] };
     const macros = [];
+
     for (const action of brCard.getSelectedActions()) {
         process_common_actions(action.code, extraData, macros, brCard.actor);
     }
+
     if (brCard.traitRoll.is_rolled) {
         brCard.traitRoll.reroll_mode = expendBenny ? "benny" : "free";
     }
+
     if (expendBenny) {
         await spendBenny(brCard.actor);
     }
+
+    if (brCard.render_data.isEvade) {
+        const modifier = new TraitModifier("Evade", -2);
+        if (extraData.modifiers) {
+            extraData.modifiers.push(modifier);
+        } else {
+            extraData.modifiers = [modifier];
+        }
+
+        const evadeTN = parseInt(brCard.render_data.evadeTN);
+        if (evadeTN !== 4 && !isNaN(evadeTN)) {
+            extraData.tn = evadeTN;
+            extraData.tnReason = game.i18n.localize("BRSW.Evade");
+        }
+
+        const evadeActiveEffects = brCard.actor.appliedEffects.filter((e) =>
+            e.changes.find((ch) => ch.key === "brsw.evade-modifier")
+        );
+
+        for (const effect of evadeActiveEffects) {
+            const change = effect.changes.find((ch) => ch.key === "brsw.evade-modifier");
+            extraData.modifiers.push({ name: effect.name, value: parseInt(change.value) });
+        }
+    }
+
     await roll_trait(
         brCard,
         brCard.actor.system.attributes[brCard.attribute],
