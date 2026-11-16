@@ -72,7 +72,7 @@ export async function createItemCard(
     }
 
     const description = item.system.description;
-    const ammoEnabled = parseInt(item.system.shots) || item.system.ammo;
+    const ammoEnabled = (parseInt(item.system.shots) || item.system.ammo) && game.settings.get('swade', 'ammoManagement');
     const isPower = !isNaN(parseFloat(item.system.pp)) || item.type === "power";
     const subtract_select = ammoEnabled
         ? SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.defaultAmmoManagement)
