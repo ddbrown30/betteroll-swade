@@ -860,7 +860,7 @@ export class BrCommonCard {
         render_data.warning = "";
 
         if (this.actor.system.status.isShaken) {
-            render_data.warning += `<span class="br2-unstun-card brsw-clickable">${game.i18n.localize("BRSW.CharacterIsShaken")}</span>`;
+            render_data.warning += `<span class="br2-unshake-card brsw-clickable">${game.i18n.localize("BRSW.CharacterIsShaken")}</span>`;
         }
 
         if (this.actor.system.status.isStunned) {
