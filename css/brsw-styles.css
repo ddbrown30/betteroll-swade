@@ -1035,6 +1035,8 @@
 
 .brsw-card-note-warning {
     color: var(--brsw-card-note-warning-color);
+    display: flex;
+    flex-direction: column;
 }
 
 .brsw-card-note-extra {

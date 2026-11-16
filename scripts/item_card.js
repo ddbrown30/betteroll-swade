@@ -74,7 +74,7 @@ export async function createItemCard(
     const description = item.system.description;
     const ammoEnabled = (parseInt(item.system.shots) || item.system.ammo) && game.settings.get('swade', 'ammoManagement');
     const isPower = !isNaN(parseFloat(item.system.pp)) || item.type === "power";
-    const subtract_select = ammoEnabled
+    const subtractAmmo = ammoEnabled
         ? SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.defaultAmmoManagement)
         : false;
 
@@ -87,13 +87,12 @@ export async function createItemCard(
             notes: notes,
             trait: trait ?? false,
             ammo: ammoEnabled,
-            subtract_selected: subtract_select,
+            subtractAmmo: subtractAmmo,
             subtractPP: isPower
                 ? Utils.getDefaultPPManagementSetting()
                 : false,
             damage_rolls: [],
             isPower: isPower,
-            used_shots: 0,
             description: description,
             swade_templates: get_template_from_item(item),
         },
@@ -567,8 +566,10 @@ export function activateItemCardListeners(brCard, html) {
         );
     });
 
-    html.querySelector(".brsw-ammo-toggle")?.addEventListener("click", (ev) => {
-        ev.currentTarget.classList.toggle("brsw-toggle-active");
+    html.querySelector(".brsw-ammo-toggle")?.addEventListener("click", async (ev) => {
+        brCard.render_data.subtractAmmo = !brCard.render_data.subtractAmmo;
+        await brCard.render();
+        await brCard.save();
     });
 
     html.querySelector(".brsw-pp-toggle")?.addEventListener("click", async (ev) => {
@@ -981,25 +982,38 @@ export async function rollItem(brCard, html, expendBennie, rollDamage) {
         }
     }
 
+    if (parseInt(brCard.item.system.shots) || brCard.item.system.reloadType === foundry.CONFIG.SWADE.CONST.RELOAD_TYPE.NONE) {
+        brCard.render_data.ammoUsed = (shotsOverride || ROF_BULLETS[brCard.traitRoll.rof || 1]) ?? 1;
+        brCard.render_data.notEnoughAmmo = false;
+    }
+
+    if (SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.requireAmmo)) {
+        if (!brCard.traitRoll.is_rolled) {
+            if (brCard.item.type === 'weapon' && !brCard.item.canExpendResources(brCard.render_data.ammoUsed ?? 1)) {
+                brCard.render_data.notEnoughAmmo = true;
+                await brCard.render();
+                await brCard.save();
+                return;
+            }
+        }
+    }
+
+    // Ammo management
+    if (!brCard.traitRoll.is_rolled) {
+        const consumeAmmoSelected = html
+            ? !!html.querySelector(".brsw-ammo-toggle.brsw-toggle-active")
+            : SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.defaultAmmoManagement);
+        if (consumeAmmoSelected) {
+            await brCard.item.consume(brCard.render_data.ammoUsed);
+        }
+    }
+
     await roll_trait(
         brCard,
         brCard.traitDie,
         brCard.render_data.trait?.name,
         extraData,
     );
-
-    // Ammo management
-    if (parseInt(brCard.item.system.shots) || brCard.item.system.autoReload) {
-        const consumeAmmoSelected = html
-            ? !!html.querySelector(".brsw-ammo-toggle.brsw-toggle-active")
-            : SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.defaultAmmoManagement);
-        if (consumeAmmoSelected || macros.length) {
-            brCard.render_data.used_shots = shotsOverride || ROF_BULLETS[brCard.traitRoll.rof || 1];
-            if (consumeAmmoSelected && brCard.traitRoll.rolls.length === 1) {
-                await brCard.item.consume(brCard.render_data.used_shots);
-            }
-        }
-    }
 
     // Power points management
     const subtractPP = brCard.render_data.subtractPP;

@@ -140,15 +140,6 @@ function registerWorldSettings() {
         },
     });
 
-    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.defaultAmmoManagement, {
-        name: game.i18n.localize("BRSW.Settings.AmmoManagement.Name"),
-        hint: game.i18n.localize("BRSW.Settings.AmmoManagement.Hint"),
-        default: true,
-        scope: "world",
-        type: Boolean,
-        config: true,
-    });
-
     SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.defaultPPManagement, {
         name: game.i18n.localize("BRSW.Settings.PPManagement.Name"),
         hint: game.i18n.localize("BRSW.Settings.PPManagement.Hint"),
@@ -192,6 +183,24 @@ function registerWorldSettings() {
             master_and_gm: game.i18n.localize("BRSW.VisibilityTypes.OwnersAndGM"),
             everybody: game.i18n.localize("BRSW.VisibilityTypes.Everybody"),
         },
+    });
+
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.defaultAmmoManagement, {
+        name: game.i18n.localize("BRSW.Settings.AmmoManagement.Name"),
+        hint: game.i18n.localize("BRSW.Settings.AmmoManagement.Hint"),
+        default: true,
+        scope: "world",
+        type: Boolean,
+        group: "BRSW.Settings.AmmoManagementGroup",
+    });
+
+    SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.requireAmmo, {
+        name: game.i18n.localize("BRSW.Settings.RequireAmmo.Name"),
+        hint: game.i18n.localize("BRSW.Settings.RequireAmmo.Hint"),
+        default: false,
+        scope: "world",
+        type: Boolean,
+        group: "BRSW.Settings.AmmoManagementGroup",
     });
 
     SettingsUtils.registerBR2WorldSetting(WORLD_SETTING_KEYS.grittyDamage, {
