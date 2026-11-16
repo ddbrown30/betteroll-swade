@@ -1,7 +1,9 @@
 # Changelog
 
-# Version 5.32.1
+# Version 5.33.0
 * Added brCard to the macro scope
+* Added an option to require ammo in order to roll
+* Ammo no longer appears on cards if ammo management is disabled in the SWADE settings
 
 # Version 5.32.0
 * Added a way to make evade rolls. Includes a new attribute key, `brsw.evade-modifier`, which will modify the roll e.g. adding +2 from Improved Dodge

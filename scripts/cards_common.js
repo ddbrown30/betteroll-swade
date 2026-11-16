@@ -1513,6 +1513,8 @@ export async function withButtonSpinner(button, action) {
                 setTimeout(() => reject(new Error("Operation timed out after 10 seconds")), 10_000)
             )
         ]);
+    } catch (error) {
+        console.error(error);
     } finally {
         removeSpinnerFromButton(button);
     }

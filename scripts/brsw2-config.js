@@ -39,6 +39,7 @@ export const WORLD_SETTING_KEYS = {
     ppChangeCardBehaviour: "pp_change_card_behaviour",
     ppManagementPlayerChoice: "ppManagementPlayerChoice",
     rangeCalcGrid: "range_calc_grid",
+    requireAmmo: "requireAmmo",
     resultCard: "result-card",
     riftsGrittyDamage: "riftsGrittyDamage",
     swdUnshake: "swd-unshake",
