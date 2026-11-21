@@ -29,7 +29,7 @@ export class TraitModifier {
   async evaluate() {
     if (this.dice) {
       await this.dice.evaluate();
-      this.value = parseInt(this.dice.result);
+      this.value = parseInt(this.dice.total);
     }
   }
 
