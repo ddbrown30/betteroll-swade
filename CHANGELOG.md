@@ -1,5 +1,8 @@
 # Changelog
 
+# Version 5.33.1
+* Fixed dice eval parsing
+
 # Version 5.33.0
 * Added brCard to the macro scope
 * Added an option to require ammo in order to roll
