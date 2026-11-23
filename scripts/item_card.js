@@ -348,13 +348,6 @@ async function itemClickListener(ev, target, currentTarget) {
         return;
     }
 
-    if ((action === "trait" || action === "trait_damage") &&
-        ev.target.classList.contains("damage-roll")) {
-        //If we clicked the damage button and we have auto-roll turned on, just show the card
-        //This will ensure we only roll damage
-        action = "card";
-    }
-
     ev.stopImmediatePropagation();
     ev.preventDefault();
     ev.stopPropagation();
@@ -370,6 +363,17 @@ async function itemClickListener(ev, target, currentTarget) {
         item,
         "system.actions.additional." + itemAction,
     );
+
+    const isDamageRoll =
+        ev.target.classList.contains("damage-roll") ||
+        actionObj?.type === "damage" ||
+        itemAction === "damage";
+
+    if ((action === "trait" || action === "trait_damage") && isDamageRoll) {
+        //If we clicked the damage button and we have auto-roll turned on, just show the card
+        //This will ensure we only roll damage
+        action = "card";
+    }
 
     const actionsStored = {};
     if (actionObj) {
@@ -395,16 +399,19 @@ async function itemClickListener(ev, target, currentTarget) {
     const brCard = await createItemCard(target, itemId, {
         actions_stored: actionsStored,
     });
-    if (action.includes("dialog")) {
-        game.brsw.dialog.show_card(brCard);
-    } else if (brCard.trait && action.includes("trait")) {
-        await rollItem(brCard, "", false, action.includes("damage"));
-    } else if (brCard.damage && action.includes("damage")) {
+
+    const shouldRollDamage =
+        action.includes("damage") ||
+        ev.target.classList.contains("damage-roll") ||
+        actionObj?.type === "damage" ||
+        itemAction === "damage";
+
+    if (brCard.trait && action.includes("trait")) {
+        await rollItem(brCard, "", false, shouldRollDamage);
+    } else if (brCard.damage && shouldRollDamage) {
         await roll_dmg(brCard, "");
-    }
-    // Shortcut for rolling damage
-    if (ev.target.classList.contains("damage-roll") || actionObj?.type === "damage" || itemAction === "damage") {
-        await roll_dmg(brCard, $(brCard.message.content), false, false);
+    } else if (action.includes("dialog")) {
+        game.brsw.dialog.show_card(brCard);
     }
 }
 
