@@ -3,6 +3,7 @@
 # Version 5.34.0
 * Fixed dice eval parsing
 * Added support for the Ammo Counter edge
+* Skills are now clicked from the icon rather than the text
 
 # Version 5.33.0
 * Added brCard to the macro scope
