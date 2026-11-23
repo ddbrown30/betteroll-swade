@@ -342,7 +342,7 @@ export function exposeItemCardAPI() {
  * @param {SwadeActor, Token} target token or actor from the char sheet
  * @param {HTMLElement} currentTarget the element that was clicked
  */
-async function item_click_listener(ev, target, currentTarget) {
+async function itemClickListener(ev, target, currentTarget) {
     let action = getActionFromClick(ev);
     if (action === "system") {
         return;
@@ -359,21 +359,24 @@ async function item_click_listener(ev, target, currentTarget) {
     ev.preventDefault();
     ev.stopPropagation();
     const actor = Utils.toActor(target);
-    const item_action = ev.currentTarget.dataset.action;
-    const item_id = ev.target.closest("[data-item-id]").dataset.itemId;
+    const itemAction = ev.currentTarget.dataset.action;
+
+    const itemId = ev.target.closest("[data-item-id]").dataset.itemId;
     const item = actor.items.find((item) => {
-        return item.id === item_id;
+        return item.id === itemId;
     });
+
     const actionObj = foundry.utils.getProperty(
         item,
-        "system.actions.additional." + item_action,
+        "system.actions.additional." + itemAction,
     );
-    const actions_stored = {};
+
+    const actionsStored = {};
     if (actionObj) {
         if (actionObj.type === "trait" || actionObj.type === "damage") {
             // This is a trait or damage action
             // Start with the action enabled
-            actions_stored[item_action] = true;
+            actionsStored[itemAction] = true;
         } else if (actionObj.type === "macro") {
             // This is a macro action
             // Execute the macro and return; no need to create a card
@@ -389,8 +392,8 @@ async function item_click_listener(ev, target, currentTarget) {
         }
     }
     // Show card
-    const brCard = await createItemCard(target, item_id, {
-        actions_stored: actions_stored,
+    const brCard = await createItemCard(target, itemId, {
+        actions_stored: actionsStored,
     });
     if (action.includes("dialog")) {
         game.brsw.dialog.show_card(brCard);
@@ -400,7 +403,7 @@ async function item_click_listener(ev, target, currentTarget) {
         await roll_dmg(brCard, "");
     }
     // Shortcut for rolling damage
-    if (ev.target.classList.contains("damage-roll")) {
+    if (ev.target.classList.contains("damage-roll") || actionObj?.type === "damage" || itemAction === "damage") {
         await roll_dmg(brCard, $(brCard.message.content), false, false);
     }
 }
@@ -416,13 +419,13 @@ export function activate_item_listeners(app, html) {
     addEventListenerAll(
         html,
         ".item-image, .item-img, .name.item-show, span.item>.item-control.item-edit," +
-        " .gear-card .card-header>.item-name, .damage-roll, .item-name>h4," +
+        " .damage-roll, .card-button," +
         " .power button.item-show, .weapon button.item-show, .edge-hindrance>.item-control" +
         " .item-control.item-edit, .item-control.item-show, .item.edge-hindrance>.item-show," +
         " .item>.item-show",
         "click",
         async (ev) => {
-            await item_click_listener(ev, target, ev.currentTarget);
+            await itemClickListener(ev, target, ev.currentTarget);
         },
         true,
     );
