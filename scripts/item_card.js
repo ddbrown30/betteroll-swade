@@ -985,6 +985,10 @@ export async function rollItem(brCard, html, expendBennie, rollDamage) {
     if (parseInt(brCard.item.system.shots) || brCard.item.system.reloadType === foundry.CONFIG.SWADE.CONST.RELOAD_TYPE.NONE) {
         brCard.render_data.ammoUsed = (shotsOverride || ROF_BULLETS[extraData.rof || 1]) ?? 1;
         brCard.render_data.notEnoughAmmo = false;
+
+        if (extraData.shotsUsedMult != null) {
+            brCard.render_data.ammoUsed = Math.ceil(brCard.render_data.ammoUsed * extraData.shotsUsedMult);
+        }
     }
 
     if (SettingsUtils.getWorldSetting(WORLD_SETTING_KEYS.requireAmmo)) {

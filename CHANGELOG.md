@@ -1,7 +1,8 @@
 # Changelog
 
-# Version 5.33.1
+# Version 5.34.0
 * Fixed dice eval parsing
+* Added support for the Ammo Counter edge
 
 # Version 5.33.0
 * Added brCard to the macro scope

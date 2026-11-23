@@ -1288,7 +1288,7 @@ export function process_common_actions(action, extraData, macros, actor) {
     actionName = actionName.includes("BRSW.")
         ? game.i18n.localize(actionName)
         : actionName;
-    // noinspection JSUnresolvedVariable
+
     if (action.skillMod) {
         const modifier = new TraitModifier(actionName, action.skillMod);
         modifier.evaluate();
@@ -1315,6 +1315,7 @@ export function process_common_actions(action, extraData, macros, actor) {
             extraData.arcaneActivationOffset += skillModValue;
         }
     }
+
     if (action.rerollSkillMod) {
         //Reroll
         extraData.reroll_modifier = new TraitModifier(
@@ -1323,15 +1324,19 @@ export function process_common_actions(action, extraData, macros, actor) {
         );
         extraData.reroll_mode = action.rerollMode;
     }
+
     if (action.rof) {
         extraData.rof = action.rof;
     }
+
     if (action.dice) {
         extraData.rof = action.dice;
     }
+
     if (action.ignoreShield) {
         extraData.ignoreShield = true;
     }
+
     if (action.tnOverride) {
         const userTargets = getUserTargets();
         if (isNaN(action.tnOverride) && action.tnOverride.toLowerCase() === "parry" && userTargets[0]) {
@@ -1341,26 +1346,35 @@ export function process_common_actions(action, extraData, macros, actor) {
         }
         extraData.tnReason = action.button_name;
     }
-    // noinspection JSUnresolvedVariable
+
     if (action.self_add_status) {
         set_or_update_condition(action.self_add_status, actor).catch(() => {
             console.error("BR2: Unable to update condition");
         });
     }
+
     if (action.hasOwnProperty("wildDieFormula")) {
         extraData.wildDieFormula = action.wildDieFormula;
         if (extraData.wildDieFormula.charAt(0) !== "+") {
             extraData.wildDieFormula = "+" + extraData.wildDieFormula;
         }
     }
+
     if (action.runSkillMacro) {
         macros.push(action.runSkillMacro);
     }
+
     if (action.type === "macro") {
         macros.push(action.uuid);
     }
+
     if (action.add_wild_die) {
         extraData.add_wild_die = true;
+    }
+
+    if (action.shotsUsedMult != null) {
+        extraData.shotsUsedMult = extraData.shotsUsedMult ?? 1;
+        extraData.shotsUsedMult *= action.shotsUsedMult;
     }
 }
 

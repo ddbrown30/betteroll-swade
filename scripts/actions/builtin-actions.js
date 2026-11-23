@@ -544,6 +544,20 @@ export const SYSTEM_GLOBAL_ACTION = [
     group: "BRSW.Edges",
     rof: "2",
   },
+  {
+    id: "Ammo Counter",
+    name: "BRSW.EdgeName.AmmoCounter",
+    button_name: "BRSW.EdgeName.AmmoCounter",
+    and_selector: [
+      { selector_type: "skill", selector_value: "shooting" },
+      { selector_type: "actor_has_edge", selector_value: "BRSW.EdgeName.AmmoCounter" },
+      { selector_type: "item_type", selector_value: "weapon" },
+    ],
+    defaultChecked: "on",
+    section: "character",
+    group: "BRSW.Edges",
+    shotsUsedMult: "0.5",
+  },
 ]
   .concat(COMMON_ACTIONS)
   .concat(COMBAT_OPTIONS)
