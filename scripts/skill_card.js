@@ -132,7 +132,7 @@ export function activate_skill_listeners(app, html) {
     const target = app.token || app.actor || app.object;
     addEventListenerAll(
         html,
-        ".skill-label a, .skill.item>a, .skill-name, .skill-die",
+        ".skill-label a, .skill.item>a, .skill-icon, .skill-die",
         "click",
         async (ev) => {
             await skill_click_listener(ev, target);
