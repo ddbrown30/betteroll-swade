@@ -1372,7 +1372,7 @@ export function process_common_actions(action, extraData, macros, actor) {
         extraData.add_wild_die = true;
     }
 
-    if (action.shotsUsedMult != null) {
+    if (action.shotsUsedMult != null && !isNaN(action.shotsUsedMult)) {
         extraData.shotsUsedMult = extraData.shotsUsedMult ?? 1;
         extraData.shotsUsedMult *= action.shotsUsedMult;
     }
