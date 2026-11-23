@@ -68,6 +68,7 @@ If this action is checked it will add a penalty of 4 to the skill roll and a bon
 * `overrideAp`: Override the Armor Penetration value of the item.
 * `multiplyDmgMod`: Multiply the final damage by this number.
 * `self_add_status`: Add that status to the token making the roll.
+* `shotsUsedMult`: Multiply the amount of ammo used (rounded up) when firing.
 * `ignoreShield`: If true, and the roll uses the target's parry as its TN, the shield parry bonus is removed.
 * `add_wild_die`: If true a wild die will be added to the roll even if it normally doesn't have one.
 * `avoid_exploding_damage`: If this is set to "true" damage will not explode (like when attacking objects)
